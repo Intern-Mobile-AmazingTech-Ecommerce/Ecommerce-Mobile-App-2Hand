@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Home"
+        android:id="@+id/itemHome"
+        android:icon="@drawable/home"
+        app:showAsAction="withText"
+        />
+    <item android:title="Notifications"
+        android:id="@+id/itemNotifications"
+        android:icon="@drawable/notifications"
+        app:showAsAction="withText"
+        />
+    <item android:title="Orders"
+        android:id="@+id/itemOrders"
+        android:icon="@drawable/orders"
+        app:showAsAction="withText"
+        />
+    <item android:title="Settings"
+        android:id="@+id/itemSettings"
+        android:icon="@drawable/settings"
+        app:showAsAction="withText"
+        />
+</menu>
