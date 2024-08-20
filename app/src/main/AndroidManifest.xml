@@ -11,18 +11,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
-        tools:targetApi="31">
+        tools:targetApi="34">
+        <activity
+            android:name=".Views.Account.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.Account.SignIn_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.Account.SignIn_2_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.SplashScreen.SplashScreenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.Login.returnlogin"
+            android:exported="false" />
         <activity
             android:name=".Views.Homepage.CategoryProductActivity"
             android:exported="false" />
         <activity
-            android:name=".Views.Homepage.CategoriesActivity"
-            android:exported="true">
+
+            android:name=".Views.SignUp"
+            android:exported="false" />
+        <activity
+            android:name=".Views.MainActivity"
+            android:exported="true" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".Views.Account.CreateAccountActivity"
+            android:exported="false">
+
         </activity>
     </application>
 
