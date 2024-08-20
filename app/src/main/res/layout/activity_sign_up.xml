@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="390dp"
+    android:layout_height="844dp"
+    android:orientation="vertical"
+    tools:context=".Views.SignUp">
+
+    <TextView
+        android:id="@+id/create_acco"
+        android:layout_width="230dp"
+        android:layout_height="35dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="27dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="123dp"
+        android:textSize="32sp"
+        android:letterSpacing="-0.01"
+        android:textColor="#272727"
+        android:text="Create Account"
+        android:lineSpacingExtra="-6sp"
+        android:gravity="top"
+        android:fontFamily="@font/circularstdmedium500"
+        />
+</LinearLayout>
