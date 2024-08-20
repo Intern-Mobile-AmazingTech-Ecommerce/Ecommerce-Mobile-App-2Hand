@@ -12,7 +12,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.SignUp;
 
 public class returnlogin extends AppCompatActivity {
     Button btnReturnLogin;
@@ -31,7 +30,7 @@ public class returnlogin extends AppCompatActivity {
         btnReturnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myintent = new Intent(returnlogin.this, SignUp.class);
+                Intent myintent = new Intent(returnlogin.this, SignInActivity.class);
                 startActivity(myintent);
             }
         });
