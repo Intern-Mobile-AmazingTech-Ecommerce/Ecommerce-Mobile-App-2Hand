@@ -16,7 +16,7 @@
             android:name=".Views.Homepage.CategoryProductActivity"
             android:exported="false" />
         <activity
-            android:name=".Views.MainActivity"
+            android:name=".Views.Homepage.CategoriesActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
