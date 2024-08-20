@@ -40,15 +40,15 @@
             android:layout_height="wrap_content"
             android:text="Hoodies (240)"
             android:textSize="16dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="16dp"
             android:layout_marginLeft="24dp"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="23dp"
         android:layout_below="@id/linearlayout">
 
         <LinearLayout
@@ -61,7 +61,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
                 android:layout_marginEnd="24dp" />
         </LinearLayout>
     </ScrollView>
