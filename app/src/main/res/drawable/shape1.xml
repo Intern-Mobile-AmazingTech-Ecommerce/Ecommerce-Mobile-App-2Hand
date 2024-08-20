@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <layer-list>
-            <item>
-                <shape android:shape="rectangle">
-                    <!-- Nền của view -->
-                    <solid android:color="#F4F4F4"/> <!-- Bạn có thể thay đổi màu nền ở đây -->
 
-                    <!-- Đặt bán kính cho các góc -->
-                    <corners android:radius="100dp"/>
-                    <padding android:right="15dp"/>
-                </shape>
-            </item>
-            <item android:drawable="@drawable/arrowdown2"
-                android:gravity="center_vertical|right" />
-        </layer-list>
-    </item>
-</selector>
+<shape android:shape="rectangle"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+        <!-- Nền của view -->
+        <solid android:color="#F4F4F4"/> <!-- Bạn có thể thay đổi màu nền ở đây -->
+
+        <!-- Đặt bán kính cho các góc -->
+        <corners android:radius="100dp"/>
+
+    </shape>

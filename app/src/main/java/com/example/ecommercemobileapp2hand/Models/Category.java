@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.Homepage;
+package com.example.ecommercemobileapp2hand.Models;
 
 public class Category {
     private String name;

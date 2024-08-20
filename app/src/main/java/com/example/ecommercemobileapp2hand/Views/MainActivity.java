@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.CustomAdapter.CustomObjectSpinnerAdapter;
+
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFragment;
 import com.example.ecommercemobileapp2hand.Views.Orders.OrdersFragment;
@@ -40,9 +40,10 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout frameLayout;
     private TextView tvFragmentName;
     private ImageButton btnAvt,btnBag;
-    private Spinner spinnerObj;
+    private MaterialButton btnObject;
     private ArrayList<String> listObj;
-    private CustomObjectSpinnerAdapter spinnerObjectAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         addEvent();
-        LoadObjectSpinner();
+
     }
 
     private void addControl(){
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         tvFragmentName = findViewById(R.id.tvFragmentName);
         btnAvt = findViewById(R.id.btnAvt);
         btnBag = findViewById(R.id.btnBag);
-        spinnerObj = findViewById(R.id.spinnerObject);
+        btnObject = findViewById(R.id.btnObject);
 
     }
     private void addEvent(){
@@ -82,14 +83,14 @@ public class MainActivity extends AppCompatActivity {
                 if (id == R.id.itemHome) {
 
                     LoadFragment(new HomeFragment());
-                    spinnerObj.setVisibility(View.VISIBLE);
+                    btnObject.setVisibility(View.VISIBLE);
                     btnAvt.setVisibility(View.VISIBLE);
                     btnBag.setVisibility(View.VISIBLE);
                     tvFragmentName.setVisibility(View.GONE);
                     return true;
                 } else if (id == R.id.itemNotifications) {
 
-                    spinnerObj.setVisibility(GONE);
+                    btnObject.setVisibility(GONE);
                     btnAvt.setVisibility(GONE);
                     btnBag.setVisibility(GONE);
                     LoadFragment(new NotificationsFragment());
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
                     tvFragmentName.setVisibility(View.VISIBLE);
                     return true;
                 } else if (id == R.id.itemOrders) {
-                    spinnerObj.setVisibility(GONE);
+                    btnObject.setVisibility(GONE);
                     btnAvt.setVisibility(GONE);
                     btnBag.setVisibility(GONE);
                     LoadFragment(new OrdersFragment());
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                     tvFragmentName.setVisibility(View.VISIBLE);
                     return true;
                 } else if (id == R.id.itemSettings) {
-                    spinnerObj.setVisibility(GONE);
+                    btnObject.setVisibility(GONE);
                     btnAvt.setVisibility(GONE);
                     btnBag.setVisibility(GONE);
                     tvFragmentName.setVisibility(View.GONE);
@@ -116,13 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private void LoadObjectSpinner(){
-        listObj = new ArrayList<String>();
-        listObj.add("Men");
-        listObj.add("Women");
-        spinnerObjectAdapter = new CustomObjectSpinnerAdapter(listObj);
-        spinnerObj.setAdapter(spinnerObjectAdapter);
-    }
+
     private void LoadFragment(Fragment fragment){
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();

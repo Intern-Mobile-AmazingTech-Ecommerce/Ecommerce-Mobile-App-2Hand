@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.Homepage;
+package com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Models.Category;
 import com.example.ecommercemobileapp2hand.R;
 
 import java.util.List;
@@ -17,15 +18,16 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     private List<Category> categories;
     private Context context;
-
-    public CategoriesAdapter(List<Category> categories, Context context) {
+    private int layout;
+    public CategoriesAdapter(List<Category> categories, Context context, int layout) {
         this.categories = categories;
         this.context = context;
+        this.layout = layout;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return new ViewHolder(view);
     }
 

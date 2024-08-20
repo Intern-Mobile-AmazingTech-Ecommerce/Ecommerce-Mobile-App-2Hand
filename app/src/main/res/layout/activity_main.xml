@@ -12,7 +12,7 @@
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginHorizontal="24dp"
      >
         <TextView
             android:id="@+id/tvFragmentName"
@@ -32,14 +32,19 @@
             android:src="@drawable/avt1"
             android:background="@drawable/shape"
             />
-        <Spinner
-            android:id="@+id/spinnerObject"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnObject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:background="@drawable/shape1"
             android:layout_centerInParent="true"
-
+            android:text="Men"
+            android:backgroundTint="#F4F4F4"
+            android:textColor="@color/Black_100"
+            android:textStyle="bold"
+            android:textSize="14dp"
+            app:icon="@drawable/arrowdown2"
+            app:iconGravity="end"
+            app:iconTint="@color/Black_100"
             />
         <ImageButton
             android:id="@+id/btnBag"
@@ -61,9 +66,9 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_nav"
         android:layout_below="@id/action_bar"
+        android:layout_marginHorizontal="24dp"
         android:layout_marginTop="-3dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginHorizontal="20dp"/>
+        android:layout_marginBottom="3dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
