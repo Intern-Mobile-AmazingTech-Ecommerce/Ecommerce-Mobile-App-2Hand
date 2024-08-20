@@ -13,13 +13,16 @@
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
         <activity
-            android:name=".Views.Account.ForgotPasswordActivity"
+            android:name=".Views.Login.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".Views.Account.SignIn_Activity"
+            android:name=".Views.Login.SignInActivity"
             android:exported="false" />
         <activity
-            android:name=".Views.Account.SignIn_2_Activity"
+            android:name=".Views.Login.SignInPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.Login.SignUpActivity"
             android:exported="false" />
         <activity
             android:name=".Views.SplashScreen.SplashScreenActivity"
@@ -31,17 +34,10 @@
             android:name=".Views.Homepage.CategoryProductActivity"
             android:exported="false" />
         <activity
-
-            android:name=".Views.SignUp"
-            android:exported="false" />
-        <activity
-            android:name=".Views.Account.returnlogin"
+            android:name=".Views.Login.returnlogin"
             android:exported="false" />
         <activity
             android:name=".Views.Homepage.CategoryProductActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Views.SignUp"
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"
@@ -52,11 +48,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name=".Views.Account.CreateAccountActivity"
-            android:exported="false">
-
         </activity>
     </application>
 
