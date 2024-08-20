@@ -34,6 +34,15 @@
             android:name=".Views.SignUp"
             android:exported="false" />
         <activity
+            android:name=".Views.Account.returnlogin"
+            android:exported="false" />
+        <activity
+            android:name=".Views.Homepage.CategoryProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.SignUp"
+            android:exported="false" />
+        <activity
             android:name=".Views.MainActivity"
             android:exported="false" />
         <activity
