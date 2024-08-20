@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">EcommerceMobileApp2Hand</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sign_in">Sign in</string>
+    <string name="create_acc">Create Account</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="btn_continue">Continue</string>
+    <string name="dont_have_account">Dont have an Account ? Create One</string>
+    <string name="forgot_pass">Forgot Password ? Reset</string>
 </resources>
