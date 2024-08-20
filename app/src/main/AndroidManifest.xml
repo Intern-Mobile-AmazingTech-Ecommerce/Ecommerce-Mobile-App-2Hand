@@ -30,13 +30,13 @@
         <activity
             android:name=".Views.Login.returnlogin"
             android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".Views.Homepage.CategoryProductActivity"-->
-<!--            android:exported="false" />-->
+        <activity
+            android:name=".Views.Homepage.CategoryProductActivity"
+            android:exported="false" />
         <activity android:name=".Views.Homepage.CategoriesActivity"
             android:exported="false"/>
         <activity
-            android:name=".Views.Homepage.CategoryProductActivity"
+            android:name=".Views.MainActivity"
             android:exported="true" >
 
             <intent-filter>
