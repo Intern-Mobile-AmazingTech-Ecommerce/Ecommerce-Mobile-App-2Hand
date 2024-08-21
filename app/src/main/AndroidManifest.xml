@@ -28,6 +28,7 @@
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"
+
             android:exported="false" />
         <activity
             android:name=".Views.SplashScreen.SplashScreenActivity"
@@ -44,12 +45,13 @@
         <activity
             android:name=".Views.Login.SignInActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -78,6 +80,7 @@
         <meta-data
             android:name="com.facebook.sdk.ClientToken"
             android:value="@string/facebook_client_token" />
+
     </application>
 
 </manifest>
