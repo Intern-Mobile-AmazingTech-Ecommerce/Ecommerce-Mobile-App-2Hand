@@ -17,7 +17,7 @@
         android:background="@drawable/frame_17"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrowleft" />
+        android:src="@drawable/arrowleft2" />
 
     <TextView
         android:id="@+id/tvCreateAccount"
@@ -40,7 +40,7 @@
 
     <RelativeLayout
         android:id="@+id/frame_1"
-        android:layout_width="344dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -129,7 +129,7 @@
 
         <RelativeLayout
             android:id="@+id/frame_6"
-            android:layout_width="342dp"
+            android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_below="@id/frame_5"
             android:layout_marginBottom="30dp"

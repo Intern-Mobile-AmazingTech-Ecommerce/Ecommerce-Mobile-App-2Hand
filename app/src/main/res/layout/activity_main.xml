@@ -24,14 +24,22 @@
             android:textStyle="bold"
             android:visibility="gone"
             />
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="999dp"
+        android:layout_centerVertical="true">
         <ImageButton
             android:id="@+id/btnAvt"
             android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:src="@drawable/avt1"
+            android:layout_height="40dp"
+
+            android:src="@drawable/avt"
             android:background="@drawable/shape"
+            android:scaleType="centerCrop"
             />
+    </androidx.cardview.widget.CardView>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnObject"
             android:layout_width="wrap_content"
@@ -54,7 +62,7 @@
             android:layout_centerVertical="true"
             android:backgroundTint="#8E6CEF"
             android:background="@drawable/shape"
-            android:src="@drawable/bag2"
+            android:src="@drawable/bag_icon"
 
             />
     </RelativeLayout>
@@ -67,8 +75,8 @@
         android:layout_above="@id/bottom_nav"
         android:layout_below="@id/action_bar"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="-3dp"
-        android:layout_marginBottom="3dp" />
+        android:layout_marginTop="-2dp"
+        android:layout_marginBottom="2dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"

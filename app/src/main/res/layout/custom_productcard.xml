@@ -21,6 +21,7 @@
         <ImageView
             android:id="@+id/img_Product"
             android:layout_width="match_parent"
+            android:scaleType="fitCenter"
             android:layout_height="220dp"
             android:background="#F4F4F4"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,8 +39,9 @@
             android:fontFamily="@font/circularstdmedium500"
             android:lineHeight="19sp"
             android:maxLines="1"
+            android:lineSpacingExtra="4sp"
+            android:layout_marginTop="8dp"
             android:text="Men's Fleece Pullover Hoo....................."
-            android:textFontWeight="450"
             app:layout_constraintTop_toBottomOf="@id/img_Product" />
 
         <LinearLayout
@@ -59,10 +61,9 @@
                 android:fontFamily="@font/gabarito"
                 android:gravity="top"
                 android:lineHeight="14sp"
-
+                android:textFontWeight="700"
                 android:text="$100.00"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:textColor="#272727" />
 
             <TextView
                 android:id="@+id/tvPrice"
@@ -73,7 +74,8 @@
                 android:gravity="top"
                 android:lineHeight="15sp"
                 android:text="$100.00"
-                android:textColor="@color/Black_50"
+                android:textFontWeight="500"
+                android:textColor="#8E8E8E"
                 android:textStyle="normal" />
 
         </LinearLayout>
