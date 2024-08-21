@@ -7,4 +7,13 @@
     <string name="btn_continue">Continue</string>
     <string name="dont_have_account">Dont have an Account ? Create One</string>
     <string name="forgot_pass">Forgot Password ? Reset</string>
+
+    //google
+    <string name="default_web_client_id">100988898087-b7dg3l4c94d6rvufbuam29cjj5kntgto.apps.googleusercontent.com</string>
+
+    //facebook
+    <string name="facebook_app_id">1074320554029734</string>
+    <string name="fb_login_protocol_scheme">fb1074320554029734</string>
+    <string name="facebook_client_token">56789</string>
+
 </resources>

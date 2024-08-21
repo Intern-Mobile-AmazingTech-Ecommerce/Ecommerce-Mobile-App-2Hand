@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -58,8 +58,8 @@
                 android:layout_height="56dp"
                 android:layout_marginLeft="12dp"
                 android:hint="@string/email_address"
-                android:background="@android:color/transparent"
-                style="@style/hint"/>
+                android:inputType="textEmailAddress"
+                android:background="@android:color/transparent" />
         </RelativeLayout>
         <RelativeLayout
             android:id="@+id/frame_3"
@@ -85,7 +85,7 @@
             style="@style/dont_have_a" />
     </RelativeLayout>
     <Button
-        android:id="@+id/btnGoogle"
+        android:id="@+id/btnSignInGoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="23dp"
@@ -103,7 +103,7 @@
         android:textColor="@color/Black_100"/>
 
     <Button
-        android:id="@+id/btnFacebook"
+        android:id="@+id/btnSignInFacebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="23dp"
@@ -119,4 +119,4 @@
         android:drawablePadding="10dp"
         android:backgroundTint="@color/Bg_Light_2"
         android:textColor="@color/Black_100"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
