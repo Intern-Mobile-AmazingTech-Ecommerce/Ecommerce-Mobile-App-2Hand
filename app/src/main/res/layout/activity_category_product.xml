@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
+    android:layout_marginHorizontal="24dp"
     android:orientation="vertical"
     tools:context=".Views.Homepage.CategoryProductActivity">
 
@@ -13,7 +13,7 @@
         android:id="@+id/linearlayout"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginHorizontal="24dp"
+
         >
 
         <ImageView
@@ -39,7 +39,7 @@
         android:textStyle="normal"
         android:fontFamily="@font/gabarito"
         android:textFontWeight="700"
-        android:layout_marginHorizontal="24dp"
+
 
         />
 
@@ -55,8 +55,7 @@
                 android:id="@+id/recyCategoryProduct"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="24dp"/>
+             />
 
     </ScrollView>
 

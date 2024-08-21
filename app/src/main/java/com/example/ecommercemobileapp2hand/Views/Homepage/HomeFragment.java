@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ecommercemobileapp2hand.Models.Category;
+import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.CategoriesAdapter;
+import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.ProductCardAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +32,14 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerViewCategories;
     private List<Category> categoryList;
     private CategoriesAdapter categoriesAdapter;
+
+    private RecyclerView recyclerViewNewIn;
+    private ArrayList<Product> lstProNewIn;
+    private ProductCardAdapter NewInAdapter;
+    private TextView tvNewInSeeAll,tvTopSellingSeeAll;
+    private RecyclerView recyclerViewTopSelling;
+    private ArrayList<Product> lstProTopSelling;
+    private ProductCardAdapter TopSellingAdapter;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -83,16 +93,25 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadData();
+        loadCategoriesData();
+        loadTopSellingProductsData();
+        loadNewInProductsData();
         addEvent();
     }
 
     private void addControl(View view){
         recyclerViewCategories = view.findViewById(R.id.recyclerViewCategories);
         tvSeeAll = view.findViewById(R.id.tvSeeAll);
+
+        recyclerViewNewIn = view.findViewById(R.id.recyclerViewNewIn);
+        recyclerViewTopSelling = view.findViewById(R.id.recyclerViewTopSelling);
+
+        tvNewInSeeAll = view.findViewById(R.id.tvNewInSeeAll);
+        tvTopSellingSeeAll = view .findViewById(R.id.tvTopSellingSeeAll);
+
     }
 
-    private void loadData(){
+    private void loadCategoriesData(){
         categoryList = new ArrayList<>();
         categoryList.add(new Category("Hoodies", R.drawable.hoodies));
         categoryList.add(new Category("Accessories", R.drawable.ic_accessories));
@@ -105,6 +124,22 @@ public class HomeFragment extends Fragment {
         recyclerViewCategories.setLayoutManager(layoutManager);
        recyclerViewCategories.setAdapter(categoriesAdapter);
 
+    }
+    private void loadTopSellingProductsData(){
+        lstProTopSelling = new ArrayList<>();
+        lstProTopSelling = Product.initProduct();
+        TopSellingAdapter = new ProductCardAdapter(lstProTopSelling,getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        recyclerViewTopSelling.setLayoutManager(layoutManager);
+        recyclerViewTopSelling.setAdapter(TopSellingAdapter);
+    }
+    private void loadNewInProductsData(){
+        lstProNewIn = new ArrayList<>();
+        lstProNewIn = Product.initProduct();
+        NewInAdapter = new ProductCardAdapter(lstProNewIn,getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        recyclerViewNewIn.setLayoutManager(layoutManager);
+        recyclerViewNewIn.setAdapter(NewInAdapter);
     }
     private void addEvent(){
         tvSeeAll.setOnClickListener(new View.OnClickListener() {

@@ -27,43 +27,128 @@
         app:cornerRadius="100dp"
         app:icon="@drawable/search_icon"
         app:iconTint="@color/Black_100" />
-
+<ScrollView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="24dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="Categories"
-                android:textSize="16dp"
-                android:textStyle="normal"
-                android:textColor="@color/Black_100"
-                android:fontFamily="@font/gabarito"
-                android:textFontWeight="450"
-                />
-
-            <TextView
-                android:id="@+id/tvSeeAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="See All"
-                android:textSize="16dp"
-                />
-        </RelativeLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewCategories"
+        android:orientation="vertical">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"/>
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Categories"
+                    android:textSize="16dp"
+                    android:textStyle="normal"
+                    android:textColor="@color/Black_100"
+                    android:fontFamily="@font/gabarito"
+                    android:textFontWeight="450"
+                    />
+
+                <TextView
+                    android:id="@+id/tvSeeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="See All"
+                    android:textSize="16dp"
+                    />
+            </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewCategories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Top Selling"
+                    android:textSize="16dp"
+                    android:textStyle="normal"
+                    android:textColor="@color/Black_100"
+                    android:fontFamily="@font/gabarito"
+                    android:textFontWeight="450"
+                    />
+
+                <TextView
+                    android:id="@+id/tvTopSellingSeeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="See All"
+                    android:textSize="16dp"
+                    />
+            </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewTopSelling"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="New In"
+                    android:lineHeight="19sp"
+                    android:textStyle="normal"
+                    android:textColor="@color/purple"
+                    android:fontFamily="@font/gabarito"
+
+                    />
+
+                <TextView
+                    android:id="@+id/tvNewInSeeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="See All"
+                    android:textSize="16dp"
+                    />
+            </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewNewIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
     </LinearLayout>
+</ScrollView>
+
 </LinearLayout>
