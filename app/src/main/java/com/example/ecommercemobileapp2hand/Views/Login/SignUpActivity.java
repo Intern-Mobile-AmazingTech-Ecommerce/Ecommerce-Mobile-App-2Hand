@@ -20,6 +20,7 @@ public class SignUpActivity extends AppCompatActivity {
     Button btnContinue;
     ImageButton btnReturn;
     TextView txtResetPassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,7 @@ public class SignUpActivity extends AppCompatActivity {
         returnToSignIn();
         resetPassword();
     }
+
     private void continueCreateAccount(){
         btnContinue=(Button) findViewById(R.id.btnContinue);
         btnContinue.setOnClickListener(new View.OnClickListener() {
@@ -54,13 +56,13 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
+
     private void resetPassword(){
         txtResetPassword=(TextView) findViewById(R.id.dont_have_a);
         txtResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SignUpActivity.this, ForgotPasswordActivity.class));
-                finish();
             }
         });
     }
