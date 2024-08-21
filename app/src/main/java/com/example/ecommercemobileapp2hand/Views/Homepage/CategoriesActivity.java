@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.example.ecommercemobileapp2hand.Models.Category;
 import com.example.ecommercemobileapp2hand.R;
@@ -19,7 +22,7 @@ import java.util.List;
 
 public class CategoriesActivity extends AppCompatActivity {
 
-
+    private ImageView btnBack;
     private RecyclerView recyclerViewCategories;
     private CategoriesAdapter categoriesAdapter;
     private List<Category> categoryList;
@@ -47,10 +50,16 @@ public class CategoriesActivity extends AppCompatActivity {
     private void addControl(){
         recyclerViewCategories = findViewById(R.id.recyclerViewCategories);
         recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this));
+
+        btnBack = findViewById(R.id.btnBack);
     }
     private void addEvent(){
-        // Back button listener
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
     private void loadRecycleViewCategories(){
         // Initialize category list
@@ -64,6 +73,7 @@ public class CategoriesActivity extends AppCompatActivity {
         categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
         recyclerViewCategories.setLayoutManager(layoutManager);
+
         recyclerViewCategories.setAdapter(categoriesAdapter);
     }
 }

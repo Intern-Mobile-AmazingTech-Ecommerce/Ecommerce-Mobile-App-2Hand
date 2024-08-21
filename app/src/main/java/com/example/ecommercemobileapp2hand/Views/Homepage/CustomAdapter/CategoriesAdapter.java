@@ -1,16 +1,20 @@
 package com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.Category;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Homepage.CategoriesActivity;
+import com.example.ecommercemobileapp2hand.Views.Homepage.CategoryProductActivity;
 
 import java.util.List;
 
@@ -36,6 +40,18 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         Category category = categories.get(position);
         holder.textViewCategoryName.setText(category.getName());
         holder.imageViewCategoryIcon.setImageResource(category.getIconResId());
+
+
+        holder.relative_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (category.getName().equals("Hoodies"))
+                {
+                    Intent intent = new Intent(context, CategoryProductActivity.class);
+                    context.startActivity(intent);
+                }
+            }
+        });
     }
 
     @Override
@@ -44,11 +60,13 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        public RelativeLayout relative_layout;
         public TextView textViewCategoryName;
         public ImageView imageViewCategoryIcon;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            relative_layout = itemView.findViewById(R.id.relative_layout);
             textViewCategoryName = itemView.findViewById(R.id.textViewCategoryName);
             imageViewCategoryIcon = itemView.findViewById(R.id.imageViewCategoryIcon);
         }
