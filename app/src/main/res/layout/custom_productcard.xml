@@ -1,43 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingBottom="16dp"
-    android:background="@drawable/background_productcard">
 
-    <ImageView
-        android:id="@+id/img_Product"
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:background="#F4F4F4"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp"
-        tools:ignore="MissingConstraints"
+    app:cardCornerRadius="8px"
+    app:cardElevation="0dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginBottom="20dp"
+    >
 
-      />
-
-    <ImageView
-        android:id="@+id/img_Heart"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:padding="4dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/img_Product"
-        tools:srcCompat="@drawable/heart"
-
-        />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/img_Product">
 
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints"
+        >
+
+        <ImageView
+            android:id="@+id/img_Product"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="#F4F4F4"
+            app:layout_constraintTop_toTopOf="parent"
+
+
+            />
         <TextView
             android:id="@+id/tvProductName"
             android:layout_width="match_parent"
@@ -58,31 +49,50 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginTop="8dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
 
-            <TextView
-                android:id="@+id/tvPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="$100.00"
-                android:textStyle="bold"
-                android:gravity="top"
-                android:fontFamily="@font/gabarito"
-                android:lineHeight="14sp"
-                />
+
 
             <TextView
                 android:id="@+id/tvSalePrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
                 android:text="$100.00"
                 android:textStyle="bold"
                 android:gravity="top"
+
                 android:fontFamily="@font/gabarito"
-                android:lineHeight="14sp"/>
+                android:lineHeight="14sp"
+                android:textColor="@color/black"
+                />
+            <TextView
+                android:id="@+id/tvPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="$100.00"
+                android:textStyle="normal"
+                android:gravity="top"
+                android:textColor="@color/Black_50"
+                android:fontFamily="@font/circularstdmedium500"
+                android:lineHeight="15sp"/>
+
         </LinearLayout>
 
     </LinearLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/img_Heart"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:padding="4dp"
+        android:layout_gravity="end"
+        app:icon="@drawable/black_heart"
+        android:backgroundTint="@color/Bg_Light_2"
+        app:iconTint="@color/black"
+        />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

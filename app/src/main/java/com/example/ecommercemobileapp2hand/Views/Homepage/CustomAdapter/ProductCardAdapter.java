@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.R;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 
@@ -48,7 +50,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         }
         else
         {
-            holder.tvPrice.setVisibility(View.VISIBLE);
+            holder.tvSalePrice.setVisibility(View.VISIBLE);
             holder.tvSalePrice.setText("$" + String.valueOf(pro.getSale_price()) + ".00");
             holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()) + ".00");
 
@@ -64,9 +66,9 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
-        private ImageView img_Product, img_Heart;
+        private ImageView img_Product;
         private TextView tvProductName, tvSalePrice, tvPrice;
-
+        private MaterialButton img_Heart;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             this.img_Product = itemView.findViewById(R.id.img_Product);
