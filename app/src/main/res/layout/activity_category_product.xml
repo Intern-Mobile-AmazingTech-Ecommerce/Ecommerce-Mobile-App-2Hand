@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="24dp"
-    android:layout_marginRight="4dp"
+    android:layout_marginRight="-6dp"
     android:orientation="vertical"
     tools:context=".Views.Homepage.CategoryProductActivity">
 
@@ -49,6 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
         android:scrollbars="none"
+
 
 
         >
