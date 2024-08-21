@@ -5,7 +5,9 @@ import android.content.IntentSender;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -43,6 +45,8 @@ public class SignInActivity extends AppCompatActivity {
     CallbackManager callbackManager;
     Button btnSignInGoogle;
     Button btnSignInFacebook;
+    Button btnContinue;
+    TextView txtCreateAccount;
     private static final int REQ_GOOGLE_SIGN_IN = 1;
     private static final int REQ_FACEBOOK_LOGIN = 2;
 
@@ -58,8 +62,11 @@ public class SignInActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        continueSignIn();
+        createAccount();
         signInGoogle();
         signInFacebook();
+
     }
 
     private void signInGoogle() {
@@ -104,6 +111,26 @@ public class SignInActivity extends AppCompatActivity {
         btnSignInFacebook = findViewById(R.id.btnSignInFacebook);
         btnSignInFacebook.setOnClickListener(v -> {
             LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+        });
+    }
+
+    private void continueSignIn(){
+        btnContinue=(Button) findViewById(R.id.btnContinue);
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignInActivity.this,SignInPasswordActivity.class));
+            }
+        });
+    }
+
+    private void createAccount(){
+        txtCreateAccount=(TextView) findViewById(R.id.dont_have_a);
+        txtCreateAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignInActivity.this,SignUpActivity.class));
+            }
         });
     }
 
