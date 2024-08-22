@@ -4,8 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
         android:allowBackup="true"
@@ -17,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
+        <activity
+            android:name=".Views.ProductPage.ProductPage"
+            android:exported="false" />
         <activity
             android:name=".Views.Login.ForgotPasswordActivity"
             android:exported="false" />
@@ -31,7 +34,7 @@
             android:exported="false" />
         <activity
             android:name=".Views.SplashScreen.SplashScreenActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,10 +52,7 @@
             android:exported="false" />
         <activity
             android:name=".Views.Login.SignInActivity"
-            android:exported="false">
-
-        </activity>
-
+            android:exported="false"></activity>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -73,7 +73,6 @@
         <meta-data
             android:name="com.google.android.gms.client_id"
             android:value="@string/default_web_client_id" />
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
