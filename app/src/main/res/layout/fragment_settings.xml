@@ -142,8 +142,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginStart="130dp"
             android:layout_marginTop="40dp"
+            android:gravity="center_vertical"
             android:text="Sign Out"
-            android:textAppearance="@style/sign_out"
-            android:gravity="center_vertical"/>
+            android:textAppearance="@style/sign_out" />
     </LinearLayout>
 </RelativeLayout>
