@@ -16,7 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="27dp"
-        android:layout_marginTop="123dp"
+        android:layout_marginTop="84dp"
         android:layout_marginEnd="264dp"
         android:gravity="top"
         android:lineSpacingExtra="-6sp"
@@ -33,14 +33,13 @@
         android:id="@+id/frame_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:layout_marginStart="23dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="23dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_below="@id/tvSignIn">
 
         <EditText
             android:id="@+id/email_address"
@@ -70,22 +69,27 @@
                 style="@style/btn_continue"
                 android:backgroundTint="@color/purple"/>
         </RelativeLayout>
+
         <TextView
             android:id="@+id/dont_have_a"
-            android:layout_width="183dp"
-            android:layout_height="15dp"
-            android:layout_marginTop="16dp"
+            style="@style/dont_have_a"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@id/frame_3"
-            android:text="@string/dont_have_account"
-            style="@style/dont_have_a" />
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/circularstdmedium500"
+            android:lineHeight="15sp"
+            android:text="@string/dont_have_account" />
     </RelativeLayout>
     <Button
         android:id="@+id/btnSignInGoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="23dp"
-        android:layout_marginTop="413dp"
+        android:layout_marginTop="71dp"
         android:layout_marginEnd="23dp"
+        android:fontFamily="@font/circularstdmedium500"
+        android:textFontWeight="500"
         android:text="Continue With Google"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -95,6 +99,7 @@
         android:drawableLeft="@drawable/google"
         android:drawablePadding="10dp"
         style="@style/button_signin"
+        android:layout_below="@id/frame_1"
         />
 
     <Button
@@ -102,8 +107,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="23dp"
-        android:layout_marginTop="474dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="23dp"
+        android:fontFamily="@font/circularstdmedium500"
+        android:textFontWeight="500"
         android:text="Continue With Facebook"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -113,6 +120,7 @@
         android:drawableLeft="@drawable/facebook"
         android:drawablePadding="10dp"
         style="@style/button_signin"
+        android:layout_below="@id/btnSignInGoogle"
         />
     <Switch
         android:id="@+id/switcher"
