@@ -53,6 +53,7 @@
             android:text="Men"
             android:layout_marginRight="20dp"
             android:backgroundTint="#8E6CEF"
+            style="@style/TEXT"
             />
 
         <Button
@@ -62,8 +63,9 @@
             android:layout_weight="1"
 
             android:text="Women"
-            android:backgroundTint="#F4F4F4F4"
-            android:textColor="@color/black"/>
+
+            style="@style/button_signin"
+            />
     </LinearLayout>
 
     <TextView
@@ -75,7 +77,9 @@
         android:fontFamily="@font/circularstdmedium500"
         android:layout_marginTop="72dp"
         android:layout_marginRight="24dp"
-        android:layout_marginLeft="24dp"/>
+        android:layout_marginLeft="24dp"
+        style="@style/TEXT"
+        />
 
     <Spinner
         android:id="@+id/spi_age"

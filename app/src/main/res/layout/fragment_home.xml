@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:layout_marginTop="12dp"
-        android:backgroundTint="#f3f3f2"
         android:fontFamily="@font/circularstdmedium500"
         android:lineHeight="19.2dp"
         android:paddingLeft="19dp"
@@ -20,14 +19,16 @@
         android:paddingRight="257dp"
         android:paddingBottom="11dp"
         android:text="Search"
-        android:textColor="@color/Black_100"
+
         android:textFontWeight="450"
         android:textSize="12dp"
         android:textStyle="normal"
         app:cornerRadius="100dp"
         app:icon="@drawable/search_icon"
-        app:iconTint="@color/Black_100"
-        android:layout_marginBottom="20.5dp"/>
+        android:layout_marginBottom="20.5dp"
+        style="@style/search_bar"
+
+        />
 <ScrollView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -49,16 +50,15 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:text="Categories"
                     android:textSize="16dp"
                     android:textStyle="normal"
-                    android:textColor="@color/Black_100"
+                    style="@style/TEXT"
                     android:fontFamily="@font/gabarito"
-                    android:textFontWeight="700"
+                    android:textFontWeight="450"
                     />
 
                 <TextView
@@ -67,7 +67,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:text="See All"
-                    android:textFontWeight="450"
+                    style="@style/TEXT"
                     android:textSize="16dp"
                     />
             </RelativeLayout>
@@ -75,6 +75,7 @@
                 android:id="@+id/recyclerViewCategories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:layout_marginTop="16dp"/>
         </LinearLayout>
         <LinearLayout
@@ -95,9 +96,9 @@
                     android:text="Top Selling"
                     android:textSize="16dp"
                     android:textStyle="normal"
-                    android:textColor="@color/Black_100"
+                    style="@style/TEXT"
                     android:fontFamily="@font/gabarito"
-                    android:textFontWeight="700"
+                    android:textFontWeight="450"
                     />
 
                 <TextView
@@ -106,8 +107,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:text="See All"
-                    android:textFontWeight="450"
                     android:textSize="16dp"
+                    style="@style/TEXT"
                     />
             </RelativeLayout>
             <androidx.recyclerview.widget.RecyclerView
@@ -134,7 +135,6 @@
                     android:text="New In"
                     android:lineHeight="19sp"
                     android:textStyle="normal"
-                    android:textFontWeight="700"
                     android:textColor="@color/purple"
                     android:fontFamily="@font/gabarito"
 
@@ -146,7 +146,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:text="See All"
-                    android:textFontWeight="450"
                     android:textSize="16dp"
                     />
             </RelativeLayout>

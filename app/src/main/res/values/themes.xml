@@ -9,9 +9,10 @@
     <!-- Lightmode -->
     <style name="SCREEN">
         <item name="android:background">#ffffff</item>
+
     </style>
     <style name="TEXT">
-        <item name="android:textColor">#272727</item>
+        <item name="android:textColor">@color/Black_100</item>
     </style>
     <style name="BUTTON_BACK">
         <item name="android:backgroundTint">#f4f4f4</item>
@@ -36,6 +37,7 @@
     <style name="button_signin">
         <item name="android:backgroundTint">#f4f4f4</item>
         <item name="android:textColor">#272727</item>
+        <item name="iconTint">@color/Black_100</item>
 
     </style>
     <style name="editText">
@@ -62,6 +64,27 @@
         <item name="android:backgroundTint">#f4f4f4</item>
 
     </style>
+    <style name="bottom_nav" >
+        <item name="android:background">#ffffff</item>
+        <item name="itemIconTint">@drawable/bottom_nav_light_mode</item>
 
-
+    </style>
+    <style name="search_bar">
+        <item name="iconTint">@color/Black_100</item>
+        <item name="android:textColor">@color/Black_100</item>
+        <item name="android:backgroundTint">@color/Bg_Light_2</item>
+    </style>
+    <style name="text_sale_price">
+        <item name="android:textColor">@color/Black_50</item>
+    </style>
+    <style name="bg_product_card">
+        <item name="android:backgroundTint">@color/Bg_Light_2</item>
+    </style>
+    <style name="icon_favorite">
+        <item name="iconTint">@color/Black_100</item>
+        <item name="android:backgroundTint">#f2f2f3</item>
+    </style>
+    <style name="background_tint_mode">
+        <item name="android:backgroundTint">@color/Black_100</item>
+    </style>
 </resources>
