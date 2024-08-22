@@ -1,0 +1,74 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/size_overlay">
+    <RelativeLayout
+        android:id="@+id/title_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/btn_clear_overlay"
+            android:layout_width="39dp"
+            android:layout_height="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="26dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="19dp"
+            android:text="@string/clear"
+            android:textAppearance="@style/clear"
+            android:gravity="top" />
+
+        <TextView
+            android:id="@+id/overlay_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="14dp"
+            android:text="@string/overlay_title"
+            android:textAppearance="@style/overlay_title"
+            android:gravity="top"/>
+
+        <ImageButton
+            android:id="@+id/btn_close_overlay"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="34dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="17dp"
+            android:clipToOutline="true"
+            android:src="@drawable/x"
+            android:backgroundTint="@color/Bg_Light_1" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/button_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_container"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/overlay_sub_button"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/purple"
+            android:drawableEnd="@drawable/check"
+            android:gravity="start|center_vertical"
+            android:text="@string/subtitle" />
+
+        <Button
+            android:id="@+id/overlay_sub_button2"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/subtitle"
+            android:textColor="@color/Black_100"
+            android:backgroundTint="@color/Bg_Light_2"
+            android:gravity="start|center_vertical"/>
+    </LinearLayout>
+</RelativeLayout>
