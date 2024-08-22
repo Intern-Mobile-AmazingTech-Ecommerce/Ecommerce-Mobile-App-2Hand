@@ -17,6 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
+        <activity android:name=".Views.ProductPage.ProductPage"
+            android:exported="false"/>
         <activity
             android:name=".Views.Login.OnboardingActivity"
             android:exported="false" />
