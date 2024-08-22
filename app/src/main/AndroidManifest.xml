@@ -18,12 +18,8 @@
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
         <activity android:name=".Views.ProductPage.ProductPage"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:exported="false">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".Views.Login.OnboardingActivity"
@@ -42,8 +38,12 @@
             android:exported="false" />
         <activity
             android:name=".Views.SplashScreen.SplashScreenActivity"
-            android:exported="false">
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".Views.Login.returnlogin"

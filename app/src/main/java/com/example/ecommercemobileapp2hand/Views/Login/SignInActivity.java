@@ -3,7 +3,9 @@ package com.example.ecommercemobileapp2hand.Views.Login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,6 +37,8 @@ public class SignInActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private Button btnSignInGoogle;
     private Button btnSignInFacebook;
+    Button btnContinue;
+    TextView txtCreateAccount;
     private static final int REQ_GOOGLE_SIGN_IN = 1;
     private static final String EMAIL = "email";
     private static final String PUBLIC_PROFILE = "public_profile";
@@ -49,7 +53,8 @@ public class SignInActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        continueSignIn();
+        createAccount();
         //Facebook SDK và AppEventsLogger
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger logger = AppEventsLogger.newLogger(getApplicationContext());
@@ -72,7 +77,27 @@ public class SignInActivity extends AppCompatActivity {
             startActivityForResult(signInIntent, REQ_GOOGLE_SIGN_IN);
         });
     }
+    private void continueSignIn(){
+        btnContinue=(Button) findViewById(R.id.btnContinue);
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignInActivity.this,SignInPasswordActivity.class));
+            }
+        });
+    }
 
+    private void createAccount(){
+        txtCreateAccount=(TextView) findViewById(R.id.dont_have_a);
+        txtCreateAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
+                //Toast.makeText(SignInActivity.this,"Ngon",Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
     private void signInFacebook() {
         callbackManager = CallbackManager.Factory.create();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
