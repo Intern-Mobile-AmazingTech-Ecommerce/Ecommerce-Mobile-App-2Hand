@@ -6,7 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Views.Login.returnlogin">
+    tools:context=".Views.Login.returnlogin"
+    style="@style/SCREEN"
+
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="342dp"
@@ -15,9 +18,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+
+        >
 
         <ImageView
+
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -27,6 +33,7 @@
             app:srcCompat="@drawable/thu" />
 
         <TextView
+            style="@style/TEXT"
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

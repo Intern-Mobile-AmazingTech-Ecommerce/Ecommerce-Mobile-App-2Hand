@@ -48,7 +48,7 @@
             android:layout_height="56dp"
             android:hint="@string/email_address"
             android:inputType="textEmailAddress"
-            android:background="@drawable/frame_24"
+
             style="@style/editText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
