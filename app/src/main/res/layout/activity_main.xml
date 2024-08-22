@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.MainActivity"
+    style="@style/SCREEN"
   >
 
     <RelativeLayout
@@ -46,8 +47,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Men"
-            android:backgroundTint="#F4F4F4"
-            android:textColor="@color/Black_100"
+
+            style="@style/button_signin"
             android:textStyle="bold"
             android:textSize="14dp"
             app:icon="@drawable/arrowdown2"
