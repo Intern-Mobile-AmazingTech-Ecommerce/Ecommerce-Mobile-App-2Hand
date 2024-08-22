@@ -3,10 +3,15 @@ package com.example.ecommercemobileapp2hand.Views.Notifications;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.ecommercemobileapp2hand.R;
 
@@ -16,6 +21,9 @@ import com.example.ecommercemobileapp2hand.R;
  * create an instance of this fragment.
  */
 public class NotificationsFragment extends Fragment {
+    private TextView tv_Notv_No_Notification;
+    private Button btn_Explore;
+    private ImageView img_Bell;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +69,38 @@ public class NotificationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notifications, container, false);
+        View view = inflater.inflate(R.layout.fragment_notifications, container, false);
+        addControl(view);
+        addEvents();
+        return(view);
     }
+    private void addControl(View view){
+
+       tv_Notv_No_Notification = view.findViewById(R.id.tv_No_Notification);
+       btn_Explore= view.findViewById(R.id.btn_Exploro_Categories);
+       img_Bell = view.findViewById(R.id.img_Bell);
+
+    }
+    private void addEvents(){
+        btn_Explore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get FragmentManager
+                FragmentManager fragmentManager = getParentFragmentManager();
+
+                // Start FragmentTransaction
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                // Replace the current fragment with the new fragment
+                fragmentTransaction.replace(R.id.frameLayout, new NotificationDetailFragment());
+
+                // Add the transaction to the back stack so the user can navigate back
+                fragmentTransaction.addToBackStack(null);
+
+                // Commit the transaction
+                fragmentTransaction.commit();
+            }
+        });
+    }
+
 }
