@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.Login.SignInActivity"
-    android:background="@color/Bg_Light_1">
+    style="@style/SCREEN"
+    >
 
     <TextView
         android:id="@+id/tvSignIn"
@@ -48,7 +49,7 @@
             android:hint="@string/email_address"
             android:inputType="textEmailAddress"
             android:background="@drawable/frame_24"
-            style="@style/font_circular"
+            style="@style/editText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -93,8 +94,8 @@
         app:layout_constraintVertical_bias="0.0"
         android:drawableLeft="@drawable/google"
         android:drawablePadding="10dp"
-        android:backgroundTint="@color/Bg_Light_2"
-        android:textColor="@color/Black_100"/>
+        style="@style/button_signin"
+        />
 
     <Button
         android:id="@+id/btnSignInFacebook"
@@ -111,6 +112,13 @@
         app:layout_constraintVertical_bias="0.0"
         android:drawableLeft="@drawable/facebook"
         android:drawablePadding="10dp"
-        android:backgroundTint="@color/Bg_Light_2"
-        android:textColor="@color/Black_100"/>
+        style="@style/button_signin"
+        />
+    <Switch
+        android:id="@+id/switcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mode"
+
+        />
 </RelativeLayout>
