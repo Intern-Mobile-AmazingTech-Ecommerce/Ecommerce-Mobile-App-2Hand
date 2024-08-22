@@ -25,6 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Views.ProductPage.ProductPage"
+            android:exported="false"/>
         <activity
             android:name=".Views.Login.OnboardingActivity"
             android:exported="false" />
