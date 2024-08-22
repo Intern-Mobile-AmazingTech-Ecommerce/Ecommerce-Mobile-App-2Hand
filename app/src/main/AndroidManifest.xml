@@ -30,9 +30,6 @@
             android:name=".Views.Cart.EmptyCart"
             android:exported="false" />
         <activity
-            android:name=".Views.ProductPage.ProductPage"
-            android:exported="false"></activity>
-        <activity
             android:name=".Views.Login.OnboardingActivity"
             android:exported="false" />
         <activity

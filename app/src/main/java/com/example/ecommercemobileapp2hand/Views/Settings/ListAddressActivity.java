@@ -39,7 +39,7 @@ public class ListAddressActivity extends AppCompatActivity {
         listAddress=(ListView) findViewById(R.id.listAddress);
         arrayList.add(new String("469/32 Nguyễn Kiệm"));
         arrayList.add(new String("468/32 Nguyễn Kiệm"));
-        adapter=new ListAddressViewAdapter(getApplicationContext(),R.layout.custom_list_address,arrayList);
+        adapter=new ListAddressViewAdapter(ListAddressActivity.this,R.layout.custom_list_address,arrayList);
         listAddress.setAdapter(adapter);
         returnToSettings();
 

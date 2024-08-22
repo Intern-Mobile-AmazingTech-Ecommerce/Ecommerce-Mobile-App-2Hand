@@ -11,7 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="42dp"
         android:orientation="horizontal">
 
@@ -36,5 +36,6 @@
     <ListView
         android:id="@+id/listAddress"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="#00000000"/>
 </LinearLayout>

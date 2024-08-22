@@ -40,7 +40,8 @@ public class ListAddressViewAdapter extends ArrayAdapter {
         tvEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(new Intent(getContext(), AddAddressActivity.class));
+                context.startActivity(new Intent(getContext(),AddAddressActivity.class));
+                //context.startActivity(new Intent(getContext(), AddAddressActivity.class));
             }
         });
         return convertView;
