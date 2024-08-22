@@ -109,8 +109,8 @@ public class Product implements Serializable {
         lstPro.add(new Product(2, 2, -1, "Fleece Pullover Skate Hoodie Slina", "Hoodies Hoodies Hoodies Hoodies", "imgpro2", "null", "null", 140, 94));
         lstPro.add(new Product(3, 2, -1, "Fleece Pullover Hoodie", "Hoodies Hoodies Hoodies Hoodies", "imgpro3", "null", "null", 176, 110));
         lstPro.add(new Product(4, 2, -1, "Men's Ice-Dye Pullover Hoodie USA", "Hoodies Hoodies Hoodies Hoodies", "imgpro4", "null", "null", 100, 0));
-        lstPro.add(new Product(5, 2, -1, "Men's Skate Pullover Hoodie Rsn", "Hoodies Hoodies Hoodies Hoodies", "imgpro5", "null", "null", 204, 0));
-        lstPro.add(new Product(6, 2, -1, "Fleece Pullover Hoodie CMMA Nad", "Hoodies Hoodies Hoodies Hoodies", "imgpro6", "null", "null", 130, 78));
+        lstPro.add(new Product(5, 2, -1, "Men's Skate Pullover Hoodie Rsn", "Hoodies Hoodies Hoodies Hoodies", "imgpro4", "null", "null", 204, 0));
+        lstPro.add(new Product(6, 2, -1, "Fleece Pullover Hoodie CMMA Nad", "Hoodies Hoodies Hoodies Hoodies", "imgpro3", "null", "null", 130, 78));
 
         return lstPro;
     }

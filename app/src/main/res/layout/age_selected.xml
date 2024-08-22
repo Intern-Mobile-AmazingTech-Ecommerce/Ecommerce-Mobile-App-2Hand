@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    style="@style/bg_product_card">
 
     <TextView
         android:id="@+id/tv_selected"
@@ -9,7 +10,8 @@
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:padding="10dp"
-        android:layout_toStartOf="@id/img_drop"/>
+        android:layout_toStartOf="@id/img_drop"
+        style="@style/TEXT"/>
 
     <ImageView
         android:id="@+id/img_drop"
@@ -17,5 +19,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/arrowdown2"/>
+        android:background="@drawable/arrowdown2"
+        style="@style/background_tint_mode"/>
 </RelativeLayout>
