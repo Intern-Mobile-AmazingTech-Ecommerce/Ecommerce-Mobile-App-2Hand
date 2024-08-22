@@ -129,7 +129,8 @@ public class SignInActivity extends AppCompatActivity {
         txtCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(SignInActivity.this,SignUpActivity.class));
+                startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
+                //Toast.makeText(SignInActivity.this,"Ngon",Toast.LENGTH_SHORT).show();
             }
         });
     }
