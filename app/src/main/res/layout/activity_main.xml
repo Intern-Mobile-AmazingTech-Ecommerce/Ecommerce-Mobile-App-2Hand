@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.MainActivity"
+    style="@style/SCREEN"
   >
 
     <RelativeLayout
@@ -32,20 +33,19 @@
             android:src="@drawable/avt1"
             android:background="@drawable/shape"
             />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnObject"
+            style="@style/button_signin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Men"
-            android:backgroundTint="#F4F4F4"
-            android:textColor="@color/Black_100"
-            android:textStyle="bold"
             android:textSize="14dp"
+            android:textStyle="bold"
             app:icon="@drawable/arrowdown2"
             app:iconGravity="end"
-            app:iconTint="@color/Black_100"
-            />
+            app:iconTint="@color/Black_100" />
         <ImageButton
             android:id="@+id/btnBag"
             android:layout_width="40dp"

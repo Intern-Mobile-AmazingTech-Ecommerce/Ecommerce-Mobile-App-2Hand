@@ -5,7 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".Views.Homepage.CategoryProductActivity">
+    tools:context=".Views.Homepage.CategoryProductActivity"
+    style="@style/SCREEN"
+    >
 
     <LinearLayout
         android:id="@+id/linearlayout"
@@ -30,7 +32,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/arrowleft2" />
+                android:background="@drawable/arrowleft" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

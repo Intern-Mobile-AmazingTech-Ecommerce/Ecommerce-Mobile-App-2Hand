@@ -2,27 +2,39 @@ package com.example.ecommercemobileapp2hand.Views.Homepage;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Switch;
 
 import com.example.ecommercemobileapp2hand.Models.Category;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.CategoriesAdapter;
+import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriesActivity extends AppCompatActivity {
 
-
+    private ImageView btnBack;
     private RecyclerView recyclerViewCategories;
     private CategoriesAdapter categoriesAdapter;
     private List<Category> categoryList;
+    private Switch switcher;
+    private Boolean nightMode;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +47,40 @@ public class CategoriesActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        switcher=(Switch) findViewById(R.id.switcher);
+        sharedPreferences=getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        nightMode=sharedPreferences.getBoolean("night",false);
+        if(nightMode)
+        {
+            switcher.setChecked(true);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+        switcher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(nightMode){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    editor=sharedPreferences.edit();
+                    editor.putBoolean("night",false);
+                }
+                else
+                {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    editor=sharedPreferences.edit();
+                    editor.putBoolean("night",true);
+                }
+                editor.apply();
+            }
+        });
+        btnBack=(ImageView)findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), SignInActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 
     @Override
@@ -50,7 +96,7 @@ public class CategoriesActivity extends AppCompatActivity {
     }
     private void addEvent(){
         // Back button listener
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        //findViewById(R.id.btnBack).setOnClickListener(v -> finish());
     }
     private void loadRecycleViewCategories(){
         // Initialize category list

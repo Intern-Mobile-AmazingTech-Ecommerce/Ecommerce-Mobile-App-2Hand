@@ -4,44 +4,68 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginHorizontal="24dp"
-    android:orientation="vertical">
 
-    <RelativeLayout
+    android:orientation="vertical"
+    style="@style/SCREEN"
+
+    >
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="24dp"
+        >
 
-        <ImageView
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
 
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/circle"
-            android:padding="8dp"
-            android:src="@drawable/arrowleft2" />
-    </RelativeLayout>
+            <ImageView
+
+                android:id="@+id/btnBack"
+                style="@style/BUTTON_BACK"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+
+
+                android:padding="8dp"
+                />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/TEXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gabarito"
+            android:text="Shop by Categories"
+            android:textFontWeight="700"
+            android:textSize="24dp"
+            android:textStyle="normal" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp" />
+
+        <Switch
+            android:id="@+id/switcher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mode"
+
+            />
+    </LinearLayout>
+
     <!-- Back button -->
 
 
     <!-- Title -->
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/gabarito"
-        android:text="Shop by Categories"
-        android:textFontWeight="700"
-        android:textStyle="normal"
-        android:textSize="24dp" />
 
     <!-- RecyclerView for categories -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewCategories"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-  />
 
 </LinearLayout>

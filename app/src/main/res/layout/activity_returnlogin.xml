@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Views.Login.returnlogin">
+    tools:context=".Views.Login.returnlogin"
+    style="@style/SCREEN"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="342dp"
@@ -28,6 +30,7 @@
 
         <TextView
             android:id="@+id/textView"
+            style="@style/TEXT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -37,7 +40,10 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+
+            />
+
 
         <Button
             android:id="@+id/btnReturnLogin"
