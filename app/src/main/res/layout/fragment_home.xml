@@ -58,7 +58,7 @@
                     android:textStyle="normal"
                     style="@style/TEXT"
                     android:fontFamily="@font/gabarito"
-                    android:textFontWeight="450"
+                    android:textFontWeight="700"
                     />
 
                 <TextView
@@ -98,7 +98,7 @@
                     android:textStyle="normal"
                     style="@style/TEXT"
                     android:fontFamily="@font/gabarito"
-                    android:textFontWeight="450"
+                    android:textFontWeight="700"
                     />
 
                 <TextView
@@ -133,6 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:text="New In"
+                    android:textFontWeight="700"
                     android:lineHeight="19sp"
                     android:textStyle="normal"
                     android:textColor="@color/purple"
