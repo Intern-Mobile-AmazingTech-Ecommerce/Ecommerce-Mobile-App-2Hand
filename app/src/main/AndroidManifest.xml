@@ -18,11 +18,17 @@
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
         <activity
+            android:name=".Views.Settings.WishlistActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.SplashScreen.SplashScreenActivity"
+            android:exported="false" />
+        <activity
             android:name=".Views.Cart.EmptyCart"
             android:exported="false" />
         <activity
             android:name=".Views.ProductPage.ProductPage"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".Views.Login.OnboardingActivity"
             android:exported="false" />
@@ -39,7 +45,7 @@
             android:name=".Views.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".Views.SplashScreen.SplashScreenActivity"
+            android:name=".Views.Settings.AddCardActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.Settings.AddCardActivity"
+    style="@style/SCREEN"
+
+    >
+
+
+    <ImageView
+
+        android:id="@+id/btnBack"
+        style="@style/BUTTON_BACK"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+
+
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="63dp"
+        android:padding="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/wishlist_title"
+        style="@style/TEXT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="164dp"
+        android:layout_marginTop="74dp"
+        android:layout_marginEnd="168dp"
+        android:fontFamily="@font/gabarito"
+        android:text="@string/title_AddCard"
+        android:textFontWeight="700"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/card_number"
+        style="@style/item_wishlist"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="135dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="12dp"
+
+        android:hint="Card Number"
+        android:paddingStart="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/exp"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/CCV"
+        style="@style/item_wishlist"
+        android:layout_width="161dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="203dp"
+        android:hint="CCV"
+
+        android:paddingStart="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+
+        />
+
+    <EditText
+        android:id="@+id/exp"
+        style="@style/item_wishlist"
+        android:layout_width="161dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="203dp"
+        android:layout_marginEnd="21dp"
+        android:hint="Exp"
+
+        android:paddingStart="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+    <EditText
+        android:id="@+id/cardholder_name"
+        style="@style/item_wishlist"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="271dp"
+        android:layout_marginEnd="21dp"
+        android:hint="Cardholder Name"
+
+        android:paddingStart="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
+
+    <Button
+        app:cornerRadius="100dp"
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="34dp"
+        android:background="@drawable/button"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
