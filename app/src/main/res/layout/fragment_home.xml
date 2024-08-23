@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Views.Homepage.HomeFragment">
+    tools:context=".Views.Homepage.HomeFragment"
+    style="@style/SCREEN">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSearch"
