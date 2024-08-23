@@ -44,7 +44,7 @@
         android:fontFamily="@font/circularstdmedium500"
         android:lineHeight="19.2dp"
         android:text="TextView"
-        android:textColor="#27272780"
+        android:textColor="#8e8e8e"
         android:textFontWeight="450"
         android:textSize="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
