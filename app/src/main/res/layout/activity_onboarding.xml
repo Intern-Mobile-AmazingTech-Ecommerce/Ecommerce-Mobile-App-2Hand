@@ -7,8 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Views.Login.OnboardingActivity"
-    style="@style/SCREEN"
-    >
+    style="@style/SCREEN">
 
     <TextView
         style="@style/TEXT"

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    style="@style/SCREEN"
+    tools:context=".Views.Settings.AddAddressActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="42dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_return"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="27dp"
+            style="@style/BUTTON_BACK" />
+
+        <TextView
+            android:id="@+id/tvLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="109dp"
+            android:text="Add Address"
+            style="@style/setting_items_label"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edtStreetAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="12dp"
+        android:hint="Street Address"
+        android:inputType="text"
+        style="@style/address_param_box"/>
+
+    <EditText
+        android:id="@+id/edtCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="12dp"
+        android:hint="City"
+        android:inputType="text"
+        style="@style/address_param_box" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edtState"
+            android:layout_width="171dp"
+            android:layout_height="match_parent"
+            android:paddingRight="100dp"
+            android:layout_marginRight="20dp"
+            android:hint="State"
+            android:inputType="text"
+            style="@style/address_param_box"/>
+
+        <EditText
+            android:id="@+id/edtZipCode"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingRight="90dp"
+            android:hint="Zip Code"
+            android:inputType="text"
+            style="@style/address_param_box"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="400dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        style="@style/btn_continue"
+        android:backgroundTint="@color/purple"
+        android:text="Save" />
+
+</LinearLayout>
