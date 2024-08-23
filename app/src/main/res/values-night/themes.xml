@@ -78,4 +78,57 @@
     <style name="background_tint_mode">
         <item name="android:backgroundTint">@color/Bg_Light_2</item>
     </style>
+
+    <!--    Settings UI-->
+    <style name="user_info">
+        <item name="android:background">@drawable/frame_51_dark</item>
+    </style>
+    <style name="setting_items_label">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="fontFamily">@font/gabarito</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="user_name">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/gabarito</item>
+    </style>
+
+    <style name="user_email">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#8C8C8C</item>
+        <item name="fontFamily">@font/circularstdmedium500</item>
+    </style>
+
+    <style name="user_phonenumber">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#8C8C8C</item>
+        <item name="fontFamily">@font/circularstdmedium500</item>
+    </style>
+
+    <style name="setting_items">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:background">@drawable/frame_59_dark</item>
+        <item name="android:drawableEnd">@drawable/arrowright2_white</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="fontFamily">@font/circularstdmedium500</item>
+    </style>
+    <style name="address_item">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="fontFamily">@font/circularstdmedium500</item>
+    </style>
+    <style name="address_param_box">
+        <item name="android:paddingTop">19dp</item>
+        <item name="android:paddingBottom">17dp</item>
+        <item name="android:background">@drawable/frame_52_dark</item>
+        <item name="android:paddingStart">12dp</item>
+    </style>
 </resources>

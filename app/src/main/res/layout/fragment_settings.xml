@@ -19,7 +19,7 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/frame_51"
+        style="@style/user_info"
         android:clipToOutline="true"
         android:orientation="horizontal"
         android:layout_marginTop="32dp"
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="User name"
-                android:textAppearance="@style/user_name" />
+                style="@style/user_name" />
 
             <TextView
                 android:id="@+id/tvUserEmail"
@@ -112,7 +112,7 @@
         android:id="@+id/tvSignOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="155dp"
         android:text="Sign Out"
         android:textAppearance="@style/sign_out" />
