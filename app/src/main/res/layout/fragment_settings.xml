@@ -63,59 +63,59 @@
         android:layout_marginLeft="30dp"
         android:text="Edit"
         android:textAppearance="@style/edit" />
-</LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/options_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="23dp"
-        android:layout_marginBottom="29dp"
         android:orientation="vertical">
 
         <TextView
-        android:id="@+id/Address"
-        style="@style/setting_items"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Address" />
+            android:id="@+id/Address"
+            style="@style/setting_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Address" />
 
-    <TextView
-        android:id="@+id/Wishlist"
-        style="@style/setting_items"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Wishlist" />
+        <TextView
+            android:id="@+id/Wishlist"
+            style="@style/setting_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Wishlist" />
 
-    <TextView
-        android:id="@+id/Payment"
-        style="@style/setting_items"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Payment" />
+        <TextView
+            android:id="@+id/Payment"
+            style="@style/setting_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Payment" />
 
-    <TextView
-        android:id="@+id/Help"
-        style="@style/setting_items"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Help" />
+        <TextView
+            android:id="@+id/Help"
+            style="@style/setting_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Help" />
 
-    <TextView
-        android:id="@+id/Support"
-        style="@style/setting_items"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Support" />
+        <TextView
+            android:id="@+id/Support"
+            style="@style/setting_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Support" />
 
-    <TextView
-        android:id="@+id/tvSignOut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="155dp"
-        android:text="Sign Out"
-        android:textAppearance="@style/sign_out" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvSignOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical"
+            android:text="Sign Out"
+            android:textAppearance="@style/sign_out" />
+    </LinearLayout>
 
 </LinearLayout>
