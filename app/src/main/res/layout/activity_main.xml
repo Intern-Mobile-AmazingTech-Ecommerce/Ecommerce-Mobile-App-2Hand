@@ -6,15 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.MainActivity"
-    style="@style/SCREEN"
-  >
+    style="@style/SCREEN">
 
     <RelativeLayout
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginHorizontal="24dp"
-     >
+        android:layout_marginHorizontal="24dp">
         <TextView
             android:id="@+id/tvFragmentName"
             android:layout_width="wrap_content"
@@ -23,8 +21,7 @@
             android:text="hehe"
             android:textSize="16dp"
             android:textStyle="bold"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
