@@ -20,7 +20,6 @@ import com.example.ecommercemobileapp2hand.Views.MainActivity;
 public class SignInPasswordActivity extends AppCompatActivity {
 
     Button btnContinue_2;
-    ImageButton btnReturn;
     TextView txtResetPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +33,6 @@ public class SignInPasswordActivity extends AppCompatActivity {
         });
         signIn();
         resetPassword();
-        returnToSignIn();
     }
     private void signIn(){
         btnContinue_2=(Button) findViewById(R.id.btnContinue_2);
@@ -53,15 +51,6 @@ public class SignInPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SignInPasswordActivity.this, ForgotPasswordActivity.class));
-            }
-        });
-    }
-    private void returnToSignIn(){
-        btnReturn=(ImageButton) findViewById(R.id.btn_return);
-        btnReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
             }
         });
     }

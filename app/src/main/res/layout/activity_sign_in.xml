@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.Login.SignInActivity"
-    android:background="@color/Bg_Light_1">
+    style="@style/SCREEN"
+    >
 
     <TextView
         android:id="@+id/tvSignIn"
@@ -15,7 +16,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginStart="27dp"
-        android:layout_marginTop="123dp"
+        android:layout_marginTop="84dp"
         android:layout_marginEnd="264dp"
         android:gravity="top"
         android:lineSpacingExtra="-6sp"
@@ -32,40 +33,33 @@
         android:id="@+id/frame_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:layout_marginStart="23dp"
-        android:layout_marginTop="190dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="23dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_below="@id/tvSignIn">
 
-        <RelativeLayout
-            android:id="@+id/frame_2"
+        <EditText
+            android:id="@+id/email_address"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="@color/Bg_Light_2"
-            android:clipToOutline="true"
+            android:hint="@string/email_address"
+            android:inputType="textEmailAddress"
+
+            style="@style/editText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            android:paddingStart="12dp"/>
 
-            <EditText
-                android:id="@+id/email_address"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_marginLeft="12dp"
-                android:hint="@string/email_address"
-                android:inputType="textEmailAddress"
-                android:background="@android:color/transparent" />
-        </RelativeLayout>
         <RelativeLayout
             android:id="@+id/frame_3"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@id/frame_2"
+            android:layout_below="@id/email_address"
             android:layout_marginTop="16dp">
             <Button
                 android:id="@+id/btnContinue"
@@ -75,22 +69,27 @@
                 style="@style/btn_continue"
                 android:backgroundTint="@color/purple"/>
         </RelativeLayout>
+
         <TextView
             android:id="@+id/dont_have_a"
-            android:layout_width="183dp"
-            android:layout_height="15dp"
-            android:layout_marginTop="16dp"
+            style="@style/dont_have_a"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_below="@id/frame_3"
-            android:text="@string/dont_have_account"
-            style="@style/dont_have_a" />
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/circularstdmedium500"
+            android:lineHeight="15sp"
+            android:text="@string/dont_have_account" />
     </RelativeLayout>
     <Button
         android:id="@+id/btnSignInGoogle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="23dp"
-        android:layout_marginTop="413dp"
+        android:layout_marginTop="71dp"
         android:layout_marginEnd="23dp"
+        android:fontFamily="@font/circularstdmedium500"
+        android:textFontWeight="500"
         android:text="Continue With Google"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,16 +98,19 @@
         app:layout_constraintVertical_bias="0.0"
         android:drawableLeft="@drawable/google"
         android:drawablePadding="10dp"
-        android:backgroundTint="@color/Bg_Light_2"
-        android:textColor="@color/Black_100"/>
+        style="@style/button_signin"
+        android:layout_below="@id/frame_1"
+        />
 
     <Button
         android:id="@+id/btnSignInFacebook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="23dp"
-        android:layout_marginTop="474dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="23dp"
+        android:fontFamily="@font/circularstdmedium500"
+        android:textFontWeight="500"
         android:text="Continue With Facebook"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -117,6 +119,14 @@
         app:layout_constraintVertical_bias="0.0"
         android:drawableLeft="@drawable/facebook"
         android:drawablePadding="10dp"
-        android:backgroundTint="@color/Bg_Light_2"
-        android:textColor="@color/Black_100"/>
+        style="@style/button_signin"
+        android:layout_below="@id/btnSignInGoogle"
+        />
+    <Switch
+        android:id="@+id/switcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mode"
+
+        />
 </RelativeLayout>

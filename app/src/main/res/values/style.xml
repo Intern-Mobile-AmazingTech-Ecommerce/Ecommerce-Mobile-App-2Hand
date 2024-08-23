@@ -1,24 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="sign_in">
-        <item name="android:textSize">32sp</item>
-        <item name="android:letterSpacing">-0.01</item>
+
+   
+
+    <style name="font_circular_bold">
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">-0.03</item>
         <item name="android:textColor">#272727</item>
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="hint">
+    <style name="font_circular">
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">-0.03</item>
-        <item name="android:textColor">#80272727</item>
+        <item name="android:textColor">#272727</item>
     </style>
     <style name="btn_continue">
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">-0.03</item>
         <item name="android:textColor">#FFFFFF</item>
     </style>
-    <style name="dont_have_a">
-        <item name="android:textSize">12sp</item>
-        <item name="android:letterSpacing">-0.03</item>
+
+
+    <style name="clear">
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">#272727</item>
+    </style>
+
+    <style name="overlay_title">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#272727</item>
+    </style>
+
+    <style name="user_name">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#272727</item>
+        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/gabarito</item>
+    </style>
+
+    <style name="user_email">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#802727</item>
+        <item name="fontFamily">@font/circularstdmedium500</item>
+    </style>
+
+    <style name="edit">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#8E6CEF</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="sign_out">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#FA3636</item>
+        <item name="fontFamily">@font/gabarito</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

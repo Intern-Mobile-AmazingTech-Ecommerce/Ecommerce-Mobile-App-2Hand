@@ -6,28 +6,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Views.Login.SignUpActivity"
-    android:background="@color/Bg_Light_1">
+    style="@style/SCREEN"
 
-    <ImageButton
-        android:id="@+id/btn_return"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="63dp"
-        android:background="@drawable/frame_17"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/arrowleft2" />
+    >
+
+    <RelativeLayout
+        android:id="@+id/rlt"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginHorizontal="24dp">
+
+        <ImageButton
+            android:id="@+id/btn_return"
+            style="@style/BUTTON_BACK"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+
+
+            android:padding="12dp" />
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tvCreateAccount"
         style="@style/sign_in"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:layout_marginStart="27dp"
-        android:layout_marginTop="123dp"
+        android:layout_marginTop="20dp"
         android:gravity="top"
         android:lineSpacingExtra="-6sp"
         android:text="Create Account"
@@ -36,102 +43,85 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        android:layout_below="@+id/rlt"/>
 
     <RelativeLayout
         android:id="@+id/frame_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
         android:layout_marginStart="23dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="23dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_below="@id/tvCreateAccount">
 
-        <RelativeLayout
-            android:id="@+id/frame_2"
+        <EditText
+            android:id="@+id/firstname"
+            style="@style/editText"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginBottom="16dp"
-            android:background="@color/Bg_Light_2">
-
-            <EditText
-                android:id="@+id/firstname"
-                android:layout_width="342dp"
-                android:layout_height="56dp"
-                android:layout_marginLeft="12dp"
-                android:background="@android:color/transparent"
-                android:hint="Firstname" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/frame_3"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_below="@id/frame_2"
-            android:layout_marginBottom="16dp"
-            android:background="@color/Bg_Light_2">
-
-            <EditText
-                android:id="@+id/lastname"
-                android:layout_width="342dp"
-                android:layout_height="56dp"
-                android:layout_marginLeft="12dp"
-                android:background="@android:color/transparent"
-                android:hint="Lastname" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/frame_4"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_below="@id/frame_3"
-            android:layout_marginBottom="16dp"
-            android:background="@color/Bg_Light_2">
-
-            <EditText
-                android:id="@+id/email_address"
-                android:layout_width="342dp"
-                android:layout_height="56dp"
-                android:layout_marginLeft="12dp"
-                android:background="@android:color/transparent"
-                android:inputType="textEmailAddress"
-                android:hint="Email Address" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/frame_5"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_below="@id/frame_4"
-            android:layout_marginBottom="30dp"
-            android:background="@color/Bg_Light_2"
-            android:clipToOutline="true"
+            android:hint="First Name"
+            android:paddingStart="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="342dp"
-                android:layout_height="56dp"
-                android:layout_marginLeft="12dp"
-                android:inputType="textPassword"
-                android:background="@android:color/transparent"
-                android:hint="Password" />
-        </RelativeLayout>
+        <EditText
+            android:id="@+id/lastname"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="Last Name"
+
+            style="@style/editText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="12dp"
+            android:layout_below="@id/firstname"/>
+
+        <EditText
+            android:id="@+id/email_address"
+            style="@style/editText"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_below="@id/lastname"
+
+
+            android:layout_marginBottom="16dp"
+            android:hint="@string/email_address"
+            android:inputType="textEmailAddress"
+            android:paddingStart="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+
+            style="@style/editText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="12dp"
+            android:layout_below="@id/email_address"/>
 
         <RelativeLayout
             android:id="@+id/frame_6"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_below="@id/frame_5"
+            android:layout_below="@id/password"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="30dp"
             android:clipToOutline="true"
             app:layout_constraintEnd_toEndOf="parent"
@@ -149,9 +139,12 @@
 
         <TextView
             android:id="@+id/dont_have_a"
+            style="@style/TEXT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:lineHeight="15sp"
             android:layout_below="@id/frame_6"
+            android:fontFamily="@font/circularstdmedium500"
             android:text="@string/forgot_pass" />
     </RelativeLayout>
 

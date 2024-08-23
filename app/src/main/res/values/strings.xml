@@ -5,15 +5,18 @@
     <string name="email_address">Email Address</string>
     <string name="password">Password</string>
     <string name="btn_continue">Continue</string>
-    <string name="dont_have_account">Dont have an Account ? Create One</string>
-    <string name="forgot_pass">Forgot Password ? Reset</string>
+    <string name="dont_have_account">Dont have an Account ? <b>Create One</b></string>
+    <string name="forgot_pass">Forgot Password ? <b>Reset</b></string>
+    <string name="clear">Clear</string>
+    <string name="overlay_title">Overlay title</string>
+    <string name="subtitle">Subtitle</string>
 
     //google
     <string name="default_web_client_id">100988898087-b7dg3l4c94d6rvufbuam29cjj5kntgto.apps.googleusercontent.com</string>
 
     //facebook
-    <string name="facebook_app_id">1074320554029734</string>
-    <string name="fb_login_protocol_scheme">fb1074320554029734</string>
-    <string name="facebook_client_token">56789</string>
-
+    <string name="facebook_app_id">8502098026491690</string>
+    <string name="fb_login_protocol_scheme">fb8502098026491690</string>
+    <string name="facebook_client_token">05ff3d0b6dd2a949fac216a2a091798e</string>
+    <string name="facebook_app_secret">dbcfcf37342562d256c3b293fa75d554</string>
 </resources>

@@ -7,4 +7,9 @@
     <color name="Bg_Light_2">#F4F4F4</color>
     <color name="Black_100">#272727</color>
     <color name="Black_50">#27272780</color>
+    <color name="neutral_400">#959495</color>
+    <color name="Bg_Dark_2">#342F3F</color>
+    <color name="white_50">#80FFFFFF</color>
+
+
 </resources>

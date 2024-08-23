@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Views.Login.OnboardingActivity"
+    style="@style/SCREEN"
+    >
+
+    <TextView
+        style="@style/TEXT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tell us About yourself"
+        android:fontFamily="@font/gabarito"
+        android:textStyle="bold"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:textSize="24dp"
+        android:layout_marginTop="161dp"
+        />
+
+    <TextView
+        style="@style/TEXT"
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Who do you shop for ?"
+        android:textSize="16dp"
+        android:fontFamily="@font/circularstdmedium500"
+        android:layout_marginTop="49dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="22dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="20dp"
+        >
+
+        <Button
+            android:id="@+id/btn_men"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Men"
+            android:layout_marginRight="20dp"
+            android:backgroundTint="#8E6CEF"
+            style="@style/TEXT"
+            />
+
+        <Button
+            android:id="@+id/btn_women"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:text="Women"
+
+            style="@style/button_signin"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="How Old are you ?"
+        android:textSize="16dp"
+        android:fontFamily="@font/circularstdmedium500"
+        android:layout_marginTop="72dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"
+        style="@style/TEXT"
+        />
+
+    <Spinner
+        android:id="@+id/spi_age"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"
+        android:background="@android:color/transparent"
+        />
+
+    <Button
+        android:id="@+id/btn_finish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Finish"
+        android:backgroundTint="#8E6CEF"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="280dp"/>
+</LinearLayout>
