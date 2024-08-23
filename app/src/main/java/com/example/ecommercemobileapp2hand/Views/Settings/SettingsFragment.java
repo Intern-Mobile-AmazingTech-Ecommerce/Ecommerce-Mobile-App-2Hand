@@ -42,7 +42,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class SettingsFragment extends Fragment {
 
-    private TextView tvUserName, tvEmail, tvSignOut;
+    private TextView tvUserName, tvEmail,tvPhoneNumber, tvSignOut;
+    private TextView tvAddress,tvWishlist,tvPayment,tvHelp,tvSupport;
     private static final String TAG = "SettingsFragment";
 
     @Nullable
@@ -54,7 +55,12 @@ public class SettingsFragment extends Fragment {
         tvUserName = view.findViewById(R.id.tvUserName);
         tvEmail = view.findViewById(R.id.tvUserEmail);
         tvSignOut = view.findViewById(R.id.tvSignOut);
-
+        tvPhoneNumber=view.findViewById(R.id.tvUserPhoneNumber);
+        tvAddress=view.findViewById(R.id.Address);
+        tvWishlist=view.findViewById(R.id.Wishlist);
+        tvPayment=view.findViewById(R.id.Payment);
+        tvHelp=view.findViewById(R.id.Help);
+        tvSupport=view.findViewById(R.id.Support);
         // Google account is signed in
         GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (googleAccount != null) {
@@ -64,7 +70,7 @@ public class SettingsFragment extends Fragment {
             //Facebook account is signed in
         }
         tvSignOut.setOnClickListener(v -> signOut());
-
+        addressOnClick();
         return view;
     }
 
@@ -81,6 +87,14 @@ public class SettingsFragment extends Fragment {
             startActivity(new Intent(getActivity(), SignInActivity.class));
             requireActivity().finish();
             Toast.makeText(getActivity(), "Đã đăng xuất thành công", Toast.LENGTH_SHORT).show();
+        });
+    }
+    private void addressOnClick(){
+        tvAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ListAddressActivity.class));
+            }
         });
     }
 }

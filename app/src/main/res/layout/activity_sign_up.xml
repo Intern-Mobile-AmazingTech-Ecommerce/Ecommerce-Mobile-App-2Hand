@@ -76,7 +76,6 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:hint="Last Name"
-
             style="@style/editText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -91,8 +90,6 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_below="@id/lastname"
-
-
             android:layout_marginBottom="16dp"
             android:hint="@string/email_address"
             android:inputType="textEmailAddress"
