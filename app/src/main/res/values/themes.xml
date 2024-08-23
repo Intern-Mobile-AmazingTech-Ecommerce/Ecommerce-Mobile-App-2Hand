@@ -88,6 +88,7 @@
         <item name="android:backgroundTint">@color/Black_100</item>
     </style>
 
+
 <!--    Settings UI-->
     <style name="user_info">
         <item name="android:background">@drawable/frame_51</item>
@@ -140,4 +141,16 @@
         <item name="android:background">@drawable/frame_52</item>
         <item name="android:paddingStart">12dp</item>
     </style>
+
+    <style name="icon_hearth">
+        <item name="android:src">@drawable/black_heart</item>
+    </style>
+    <style name="icon_arrow_right">
+        <item name="android:src">@drawable/arrowright2</item>
+    </style>
+    <style name="item_wishlist">
+        <item name="android:background">@drawable/rounded_corners</item>
+    </style>
+
+
 </resources>
