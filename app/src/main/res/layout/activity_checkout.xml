@@ -41,52 +41,52 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="150px"
-
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_corners_background"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="5px"
-
-
-            android:layout_marginLeft="24px"
-            android:layout_marginRight="24px"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:padding="16dp"
             android:paddingStart="12dp"
-            android:paddingEnd="37dp"
+            android:paddingEnd="9dp"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/textView7"
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="TextView" />
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:fontFamily="@font/circularstdmedium500"
+                    android:text="Shipping Address"
+                    android:textColor="@color/gray"
+                    android:layout_marginBottom="10dp"
+                    />
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/circularstdmedium500"
+                    android:text="Add Shipping Address" />
+            </LinearLayout>
+
 
             <ImageView
                 android:id="@+id/imageView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="6dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:paddingBottom="8dp"
-
-                android:src="@drawable/notificationbing_red" />
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="12dp"
-                android:textSize="12dp"
-                android:fontFamily="@font/circularstdmedium500"
-
-                android:text="Gilbert, you placed and order check your order history for full details" />
+                android:layout_gravity="center_vertical"
+                tools:srcCompat="@drawable/arrowright2" />
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -94,38 +94,70 @@
             android:background="@drawable/rounded_corners_background"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-
-
-            android:layout_marginLeft="24px"
-            android:layout_marginRight="24px"
             android:padding="16dp"
             android:paddingStart="12dp"
-            android:paddingEnd="37dp"
+            android:paddingEnd="9dp"
             android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:fontFamily="@font/circularstdmedium500"
+                    android:text="Payment Method"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/gray"
+                    />
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:fontFamily="@font/circularstdmedium500"
+                    android:text="Add Payment Method" />
+            </LinearLayout>
+
 
             <ImageView
                 android:id="@+id/imageView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="6dp"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:paddingBottom="8dp"
-
-                android:src="@drawable/notificationbing" />
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="12dp"
-                android:textSize="12dp"
-                android:fontFamily="@font/circularstdmedium500"
-
-                android:text="Gilbert, Thank you for shopping with us we have canceled order #24568." />
+                android:layout_gravity="center_vertical"
+                tools:srcCompat="@drawable/arrowright2" />
         </LinearLayout>
 
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/white"
+            android:fontFamily="@font/circularstdmedium500"
+            android:lineHeight="19dp"
+            android:textSize="16dp"
+            android:text="$148"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/white"
+            android:fontFamily="@font/circularstdmedium500"
+            android:lineHeight="20dp"
+            android:textSize="16dp"
+            android:text="Place Order"/>
     </LinearLayout>
 
     <RelativeLayout
