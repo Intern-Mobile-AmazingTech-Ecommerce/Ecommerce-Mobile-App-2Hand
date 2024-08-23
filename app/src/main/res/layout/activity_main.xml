@@ -84,7 +84,6 @@
         app:menu="@menu/bottom_nav"
         app:labelVisibilityMode="unlabeled"
         style="@style/bottom_nav"
-
         />
 
 </RelativeLayout>
