@@ -19,4 +19,6 @@
     <string name="fb_login_protocol_scheme">fb8502098026491690</string>
     <string name="facebook_client_token">05ff3d0b6dd2a949fac216a2a091798e</string>
     <string name="facebook_app_secret">dbcfcf37342562d256c3b293fa75d554</string>
+    <string name="title_wishlsit">Wishlist</string>
+
 </resources>

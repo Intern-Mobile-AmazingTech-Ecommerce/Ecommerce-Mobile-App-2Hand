@@ -78,4 +78,16 @@
     <style name="background_tint_mode">
         <item name="android:backgroundTint">@color/Bg_Light_2</item>
     </style>
+
+    <style name="icon_hearth">
+        <item name="android:src">@drawable/white_heart</item>
+    </style>
+
+    <style name="icon_arrow_right">
+        <item name="android:src">@drawable/arrowright_white</item>
+    </style>
+    <style name="item_wishlist">
+        <item name="android:src">@drawable/rounded_corners_dark</item>
+    </style>
+
 </resources>
