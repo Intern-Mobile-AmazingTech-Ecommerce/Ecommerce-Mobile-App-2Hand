@@ -21,6 +21,9 @@
             android:name=".Views.Settings.WishlistActivity"
             android:exported="false" />
         <activity
+            android:name=".Views.SplashScreen.SplashScreenActivity"
+            android:exported="false" />
+        <activity
             android:name=".Views.Cart.EmptyCart"
             android:exported="false" />
         <activity
@@ -42,7 +45,7 @@
             android:name=".Views.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".Views.SplashScreen.SplashScreenActivity"
+            android:name=".Views.Settings.AddCardActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

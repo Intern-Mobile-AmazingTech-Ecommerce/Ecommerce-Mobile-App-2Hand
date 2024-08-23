@@ -20,5 +20,5 @@
     <string name="facebook_client_token">05ff3d0b6dd2a949fac216a2a091798e</string>
     <string name="facebook_app_secret">dbcfcf37342562d256c3b293fa75d554</string>
     <string name="title_wishlsit">Wishlist</string>
-
+    <string name="title_AddCard">Add Cart</string>
 </resources>
