@@ -65,13 +65,14 @@
         <activity
 
             android:name=".Views.Settings.AddCardActivity"
-            android:exported="false">
-
+            android:exported="false"/>
+        <activity
             android:name=".Views.SplashScreen.SplashScreenActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+        </intent-filter>
 
         </activity>
         <activity
@@ -86,9 +87,7 @@
 
 
 
-        <activity
-            android:name=".Views.Login.SignInActivity"
-            android:exported="false"/>
+
 
         <activity
             android:name="com.facebook.FacebookActivity"
