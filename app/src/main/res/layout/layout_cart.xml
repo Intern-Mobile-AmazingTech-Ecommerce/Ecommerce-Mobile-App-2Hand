@@ -11,7 +11,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="12dp"
-        android:id="@+id/imageView6"
+        android:id="@+id/imgCart"
         android:layout_width="64dp"
         android:layout_height="64dp"
         app:srcCompat="@drawable/ao1" />
@@ -32,7 +32,7 @@
                 android:textSize="12sp"
                 android:textFontWeight="450"
                 android:lineHeight="19dp"
-                android:id="@+id/textView18"
+                android:id="@+id/txt_NameCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Men's Harrington Jacket" />
@@ -42,7 +42,7 @@
                 android:textSize="12sp"
                 android:textFontWeight="700"
                 android:layout_alignParentEnd="true"
-                android:id="@+id/textView20"
+                android:id="@+id/txt_PriceCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="76dp"
@@ -56,7 +56,7 @@
             android:layout_marginTop="8dp">
 
             <TextView
-                android:id="@+id/textView17"
+                android:id="@+id/txt_SizeCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/circularstdmedium500"
@@ -68,7 +68,7 @@
                 android:fontFamily="@font/circularstdmedium500"
                 android:textFontWeight="450"
                 android:textSize="12sp"
-                android:id="@+id/textView19"
+                android:id="@+id/txt_ColorCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="58dp"
