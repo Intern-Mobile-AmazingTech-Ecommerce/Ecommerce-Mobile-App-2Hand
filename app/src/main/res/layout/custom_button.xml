@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="14dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    style="@style/SCREEN">
+
+    <Button
+        android:id="@+id/button_content"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="start|center_vertical"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/icon_check"
+        android:layout_width="51dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:src="@drawable/check" />
+</FrameLayout>
