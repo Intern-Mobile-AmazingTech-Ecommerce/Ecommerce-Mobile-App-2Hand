@@ -23,20 +23,11 @@
             android:exported="true" />
         <activity
             android:name=".Views.Settings.AddAddressActivity"
-                   android:exported="false"
-                  />
-         <activity
-            android:name=".Views.Orders.TrackOrderAcitivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".Views.Checkout.Checkout"
             android:exported="false" />
 
         <activity
             android:name=".Views.Settings.ListAddressActivity"
             android:exported="false" />
-
         <activity
             android:name=".Views.Settings.WishlistActivity"
             android:exported="false" />
