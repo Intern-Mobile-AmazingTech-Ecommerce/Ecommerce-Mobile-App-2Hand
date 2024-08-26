@@ -96,5 +96,11 @@ public class SettingsFragment extends Fragment {
                 startActivity(new Intent(getActivity(), ListAddressActivity.class));
             }
         });
+        tvWishlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), WishlistActivity.class));
+            }
+        });
     }
 }
