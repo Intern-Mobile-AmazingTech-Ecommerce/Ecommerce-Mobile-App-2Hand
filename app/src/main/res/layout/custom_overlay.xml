@@ -1,9 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/size_overlay"
-    style="@style/SCREEN"
-    >
+    android:background="@drawable/overlay"
+    style="@style/SCREEN">
     <RelativeLayout
         android:id="@+id/title_container"
         android:layout_width="match_parent"
@@ -27,12 +26,12 @@
             android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="14dp"
-            android:text="@string/overlay_title"
+            android:text="@string/Title"
             android:textAppearance="@style/overlay_title"
             android:gravity="top"/>
 
         <ImageButton
-            android:id="@+id/btn_close_overlay"
+            android:id="@+id/btn_close"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentRight="true"
@@ -45,29 +44,32 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/button_container"
+        android:id="@+id/overlay_sub_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_container"
+        android:layout_below="@+id/title_container"
         android:layout_marginTop="16dp"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
         <Button
-            android:id="@+id/overlay_sub_button"
+            android:id="@+id/overlay_button_1"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:backgroundTint="@color/purple"
             android:drawableEnd="@drawable/check"
             android:gravity="start|center_vertical"
             android:text="@string/subtitle" />
 
         <Button
-            android:id="@+id/overlay_sub_button2"
+            android:id="@+id/overlay_button_2"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:text="@string/subtitle"
             android:textColor="@color/Black_100"
             android:backgroundTint="@color/Bg_Light_2"

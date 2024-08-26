@@ -91,14 +91,16 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginBottom="26dp">
+
                     <RelativeLayout
+                        android:id="@+id/Size"
+                        style="@style/bg_product_card"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/btn_shape"
-                        style="@style/bg_product_card"
-                        android:id="@+id/btnSize">
+                        android:background="@drawable/btn_shape">
 
                         <TextView
+                            style="@style/TEXT"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
@@ -106,47 +108,48 @@
                             android:layout_marginLeft="16dp"
                             android:fontFamily="@font/circularstdmedium500"
                             android:text="Size"
-                            style="@style/TEXT"
-                            android:textSize="16dp"
                             android:textFontWeight="450"
-                            android:textStyle="normal"/>
+                            android:textSize="16dp"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/txtSize"
+                            style="@style/TEXT"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="18dp"
                             android:layout_marginEnd="28dp"
                             android:layout_marginRight="29dp"
                             android:layout_marginBottom="19dp"
-                            android:layout_toStartOf="@+id/imgArrowDown1"
 
+                            android:layout_toStartOf="@+id/btnSize"
                             android:fontFamily="@font/gabarito"
                             android:lineHeight="19sp"
                             android:text="S"
-                            style="@style/TEXT"
                             android:textFontWeight="700"
                             android:textSize="16dp" />
+
                         <ImageView
-                            android:id="@+id/imgArrowDown1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:id="@+id/btnSize"
                             style="@style/caret_down"
-                            android:clipToOutline="true"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
                             android:layout_marginRight="22dp"
-                            />
+                            android:clipToOutline="true" />
                     </RelativeLayout>
+
                     <RelativeLayout
+                        android:id="@+id/Color"
+                        style="@style/bg_product_card"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/btn_shape"
-                        style="@style/bg_product_card"
                         android:layout_marginTop="12dp"
-                        android:id="@+id/btnColor">
+                        android:background="@drawable/btn_shape">
 
                         <TextView
+                            style="@style/TEXT"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
@@ -154,33 +157,32 @@
                             android:layout_marginLeft="16dp"
                             android:fontFamily="@font/circularstdmedium500"
                             android:text="Color"
-                            style="@style/TEXT"
-                            android:textSize="16dp"
                             android:textFontWeight="450"
-                            android:textStyle="normal"/>
+                            android:textSize="16dp"
+                            android:textStyle="normal" />
 
-                        <View android:id="@+id/bgColor"
+                        <View
+                            android:id="@+id/bgColor"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:backgroundTint="#B3B68B"
-                            android:background="@drawable/shape"
-                            android:layout_toStartOf="@id/imgArrowDown"
-                            android:layout_marginRight="25dp"
                             android:layout_marginTop="20dp"
-
+                            android:layout_marginRight="25dp"
+                            android:layout_toStartOf="@id/btnColor"
+                            android:background="@drawable/shape"
+                            android:backgroundTint="#B3B68B"
                             />
-                        <ImageView
-                            android:id="@+id/imgArrowDown"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
 
-                            android:clipToOutline="true"
+                        <ImageView
+                            android:id="@+id/btnColor"
+                            style="@style/caret_down"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
                             android:layout_marginRight="22dp"
-                            style="@style/caret_down"
-                            />
+                            android:clipToOutline="true" />
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
