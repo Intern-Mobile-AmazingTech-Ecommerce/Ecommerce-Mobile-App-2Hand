@@ -84,9 +84,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".Views.Settings.AddAddressActivity"
-            android:exported="false"/>
+
 
         <activity
             android:name=".Views.Login.returnlogin"
