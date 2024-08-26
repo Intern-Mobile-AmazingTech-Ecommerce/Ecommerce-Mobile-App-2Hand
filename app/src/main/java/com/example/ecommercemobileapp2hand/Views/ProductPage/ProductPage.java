@@ -1,6 +1,8 @@
 package com.example.ecommercemobileapp2hand.Views.ProductPage;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -26,6 +28,7 @@ public class ProductPage extends AppCompatActivity {
     private ArrayList<Reviews> reviewsList;
     private RecycleReviewAdapter reviewAdapter;
     private RecyclerView recycleReviews;
+    private ImageView imgBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +40,7 @@ public class ProductPage extends AppCompatActivity {
             return insets;
         });
         addControl();
-
+        addEvent();
     }
 
     @Override
@@ -50,7 +53,17 @@ public class ProductPage extends AppCompatActivity {
     private void addControl(){
         recycleImgSlider = findViewById(R.id.recyclerProductImgSlider);
         recycleReviews = findViewById(R.id.recyclerRating);
+        imgBack = findViewById(R.id.imgBack);
 
+    }
+    public void addEvent()
+    {
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
     private void loadRecycleViewImgSlider(){
         imgList = new ArrayList<>();

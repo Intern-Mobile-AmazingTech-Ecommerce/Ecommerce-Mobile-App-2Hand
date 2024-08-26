@@ -52,7 +52,7 @@ public class OnboardingActivity extends AppCompatActivity {
         btnFinish=(Button) findViewById(R.id.btn_finish);
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 startActivity(new Intent(OnboardingActivity.this, MainActivity.class));
                 finish();
             }
