@@ -315,39 +315,41 @@
                         android:layout_height="wrap_content"
                         android:scrollbars="none"/>
                 </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/btnAddToBag"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="24dp"
+                    android:background="@drawable/shape"
+                    android:backgroundTint="@color/purple"
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:fontFamily="@font/circularstdmedium500"
+                        android:lineHeight="19dp"
+                        android:text="$148"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/circularstdmedium500"
+                        android:lineHeight="20dp"
+                        android:text="Add to Bag"
+                        android:textColor="@color/white"
+                        android:textSize="16dp" />
+                </RelativeLayout>
             </LinearLayout>
 
         </ScrollView>
-        <RelativeLayout
-            android:id="@+id/btnAddToBag"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape"
-            android:paddingVertical="16dp"
-            android:paddingHorizontal="24dp"
-            android:layout_alignParentBottom="true"
-            android:backgroundTint="@color/purple"
-            android:layout_marginVertical="24dp"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:textColor="@color/white"
-                android:fontFamily="@font/circularstdmedium500"
-                android:lineHeight="19dp"
-                android:textSize="16dp"
-                android:text="$148"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:textColor="@color/white"
-                android:fontFamily="@font/circularstdmedium500"
-                android:lineHeight="20dp"
-                android:textSize="16dp"
-                android:text="Add to Bag"/>
-        </RelativeLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.Cart.Cart">
+
+    <ImageButton
+        android:id="@+id/btnBack2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="63dp"
+        android:background="@drawable/frame_17" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="180dp"
+        android:layout_marginTop="74dp"
+        android:fontFamily="@font/gabarito"
+        android:text="Cart"
+        android:textFontWeight="700"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="284dp"
+        android:layout_marginTop="127dp"
+        android:fontFamily="@font/circularstdmedium500"
+        android:text="Remove All"
+        android:textFontWeight="450"
+        android:textSize="16sp" />
+
+    <ListView
+        android:layout_marginBottom="350dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="163dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="401dp"
+        android:layout_marginRight="24dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/circularstdmedium500"
+            android:text="TextView"
+            android:textColor="@color/Black_50"
+            android:textFontWeight="450"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/circularstdmedium500"
+            android:text="Shipping Cost"
+            android:textColor="@color/Black_50"
+            android:textFontWeight="450"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/circularstdmedium500"
+            android:text="Tax"
+            android:textColor="@color/Black_50"
+            android:textFontWeight="450"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/circularstdmedium500"
+            android:text="Total"
+            android:textColor="@color/Black_50"
+            android:textFontWeight="450"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/framelayout"
+        android:layout_marginBottom="140dp">
+
+        <ImageView
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:id="@+id/imageView5"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:srcCompat="@drawable/iconsax" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:textColor="@color/Black_50"
+            android:layout_marginTop="18dp"
+            android:layout_marginLeft="53dp"
+            android:fontFamily="@font/circularstdmedium500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12dp"
+            android:text="Enter Coupon Code" />
+
+        <ImageButton
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginRight="9dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button"
+            android:id="@+id/imageButton3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/arrowright2_white" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        >
+
+        <Button
+            android:backgroundTint="@color/purple"
+            android:layout_marginTop="14dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginBottom="14dp"
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Checkout" />
+    </FrameLayout>
+
+</RelativeLayout>
