@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- State khi Switch được bật (checked) -->
+    <item android:state_checked="true">
+        <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
+            <corners android:radius="15dp" />
+            <gradient android:angle="270" android:endColor="#ff0000" android:startColor="#ff0000" />
+            <size android:width="17dp" android:height="17dp" />
+
+        </shape>
+    </item>
+    <!-- State khi Switch không được bật (unchecked) -->
+    <item android:state_checked="false">
+        <shape android:dither="true" android:shape="rectangle" android:useLevel="false" android:visible="true">
+            <corners android:radius="15dp" />
+            <gradient android:angle="270" android:endColor="#ff0000" android:startColor="#ff0000" />
+            <size android:width="17dp" android:height="17dp" />
+
+        </shape>
+    </item>
+</selector>
