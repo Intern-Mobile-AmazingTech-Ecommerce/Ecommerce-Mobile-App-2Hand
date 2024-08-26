@@ -18,6 +18,7 @@
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">-0.03</item>
         <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/circularstdmedium500</item>
     </style>
 
 
@@ -50,5 +51,12 @@
         <item name="android:textColor">#FA3636</item>
         <item name="fontFamily">@font/gabarito</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MyRatingBar" parent="Widget.AppCompat.RatingBar">
+        <item name="android:progressDrawable">@drawable/my_ratingbar</item>
+        <item name="android:minWidth">16dip</item>
+        <item name="android:maxHeight">16dip</item>
+
     </style>
 </resources>

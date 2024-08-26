@@ -152,5 +152,41 @@
         <item name="android:background">@drawable/rounded_corners</item>
     </style>
 
+    <!--    Orders UI-->
+    <style name="chip_items">
+        <item name="android:textColor">@color/Black_100</item>
+        <item name="android:checkable">true</item>
+        <item name="chipBackgroundColor">#F4F4F4</item>
+        <item name="android:fontFamily">@font/circularstdmedium500</item>
+        <item name="chipCornerRadius">100dp</item>
+        <item name="chipStrokeWidth">0dp</item>
+    </style>
 
+    <style name="ordercard_tablelayout">
+        <item name="android:background">#F4F4F4</item>
+    </style>
+
+    <style name="img_start">
+        <item name="android:background">@drawable/receipt1</item>
+    </style>
+
+    <style name="ordercard_tvamount">
+        <item name="android:textColor">@color/Black_50</item>
+    </style>
+
+    <style name="img_end">
+        <item name="android:background">@drawable/arrowright2</item>
+    </style>
+
+    <!---Custom Variable-->
+
+    <style name="btn_favorite">
+        <item name="android:background">@drawable/circle</item>
+        <item name="android:backgroundTint">#f4f4f4</item>
+        <item name="android:src">@drawable/black_heart</item>
+
+    </style>
+    <style name="caret_down">
+        <item name="android:src">@drawable/arrowdown2</item>
+    </style>
 </resources>
