@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:layout_marginLeft="24dp"
+    android:layout_marginRight="24dp"
+    android:background="@drawable/framelayout">
+
+    <ImageView
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="12dp"
+        android:id="@+id/imageView6"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:srcCompat="@drawable/ao1" />
+
+    <LinearLayout
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:fontFamily="@font/circularstdmedium500"
+                android:textSize="12sp"
+                android:textFontWeight="450"
+                android:lineHeight="19dp"
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Men's Harrington Jacket" />
+
+            <TextView
+                android:fontFamily="@font/gabarito"
+                android:textSize="12sp"
+                android:textFontWeight="700"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/textView20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="76dp"
+                android:text="$148" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/circularstdmedium500"
+                android:text="Size - M"
+                android:textFontWeight="450"
+                android:textSize="12sp" />
+
+            <TextView
+                android:fontFamily="@font/circularstdmedium500"
+                android:textFontWeight="450"
+                android:textSize="12sp"
+                android:id="@+id/textView19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="58dp"
+                android:text="Color - Lemon" />
+
+            <ImageButton
+                app:srcCompat="@drawable/add"
+                android:id="@+id/imageButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="32dp"
+                android:background="@drawable/button"
+                android:layout_alignParentEnd="true"/>
+
+            <ImageButton
+                app:srcCompat="@drawable/minus"
+                android:id="@+id/imageButton2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/button"
+                />
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

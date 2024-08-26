@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="27dp"
         android:layout_marginTop="63dp"
-        android:background="@drawable/frame_17" />
+        android:background="@drawable/frame_17"
+        app:srcCompat="@drawable/arrowleft2"/>
 
     <TextView
         android:id="@+id/textView6"
@@ -37,12 +38,13 @@
         android:textSize="16sp" />
 
     <ListView
-        android:layout_marginBottom="350dp"
-        android:layout_marginLeft="24dp"
-        android:layout_marginRight="24dp"
-        android:layout_marginTop="163dp"
+        android:id="@+id/lv_cart"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="163dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="350dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
