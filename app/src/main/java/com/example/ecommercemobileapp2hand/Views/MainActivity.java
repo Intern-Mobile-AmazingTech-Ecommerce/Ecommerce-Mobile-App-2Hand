@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         addControl();
+        binding();
 
     }
 
@@ -86,9 +87,33 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    private void binding(){
+        Intent intent = getIntent();
+        bottomNavigationView = findViewById(R.id.bottom_nav);
+        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo"))) {
 
+            LoadFragment(new SettingsFragment());
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+            bottomNavigationView.setSelectedItemId(R.id.itemSettings);
+        }else if(intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))){
+            LoadFragment(new OrdersFragment());
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+            bottomNavigationView.setSelectedItemId(R.id.itemOrders);
+        }
+        else if(intent != null && "NotificationsFragment".equals(intent.getStringExtra("navigateTo"))){
+            LoadFragment(new OrdersFragment());
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+            bottomNavigationView.setSelectedItemId(R.id.itemNotifications);
+        }
+        else{
+            LoadFragment(new HomeFragment());
+        }
+    }
     private void addEvent(){
-        LoadFragment(new HomeFragment());
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
