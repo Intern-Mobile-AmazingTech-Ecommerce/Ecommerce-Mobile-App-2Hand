@@ -1,60 +1,60 @@
 package com.example.ecommercemobileapp2hand.Views.Orders;
 
+import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.example.ecommercemobileapp2hand.Models.Order;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Homepage.CategoriesActivity;
+import com.example.ecommercemobileapp2hand.Views.Orders.CustomAdapter.OrderCardAdapter;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link OrdersFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class OrdersFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    ChipGroup chipGroup;
+    RecyclerView recyOrders;
+    ArrayList<Order> lstorders;
+    OrderCardAdapter orderCardAdapter;
+    LinearLayout linear_order1, linear_order2;
+    ImageView img_empty_order;
+    Button btn_explore;
+    String checkstatus;
     public OrdersFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OrdersFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static OrdersFragment newInstance(String param1, String param2) {
+    public static OrdersFragment newInstance() {
         OrdersFragment fragment = new OrdersFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -62,5 +62,138 @@ public class OrdersFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_orders, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        chipGroup = view.findViewById(R.id.chipgroup);
+        recyOrders = view.findViewById(R.id.recyOrders);
+        img_empty_order = view.findViewById(R.id.img_empty_order);
+        linear_order1 = view.findViewById(R.id.linear_order1);
+        linear_order2 = view.findViewById(R.id.linear_order2);
+        btn_explore = view.findViewById(R.id.btn_explore);
+
+        lstorders = Order.initOrder();
+
+        if (lstorders.isEmpty())
+        {
+            linear_order1.setGravity(Gravity.CENTER);
+            chipGroup.setVisibility(View.GONE);
+            recyOrders.setVisibility(View.GONE);
+            linear_order2.setVisibility(View.VISIBLE);
+
+            btn_explore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), CategoriesActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+        else
+        {
+            ArrayList<String> oderstatus = new ArrayList<>();
+            oderstatus.add("Processing");
+            oderstatus.add("Shipped");
+            oderstatus.add("Delivered");
+            oderstatus.add("Returned");
+            oderstatus.add("Canceled");
+
+            createChips(oderstatus);
+        }
+    }
+    private void createChips(ArrayList<String> statuses)
+    {
+        Random random = new Random();
+
+        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        boolean isDarkMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
+
+        for (String status : statuses)
+        {
+            Chip chip = (Chip) LayoutInflater.from(getContext()).inflate(R.layout.custom_chip_item, chipGroup, false);
+            chip.setText(status);
+            chip.setId(random.nextInt());
+            chipGroup.addView(chip);
+
+            if (chip.getText().equals("Processing"))
+            {
+                chip.setChecked(true);
+                chip.setTextColor(Color.parseColor("#FFFFFF"));
+                chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
+                checkstatus = chip.getText().toString();
+
+                ArrayList<Order> filter = filterOrder(checkstatus);
+                orderCardAdapter = new OrderCardAdapter(filter, getContext(), checkstatus);
+                recyOrders.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+                recyOrders.setItemAnimator(new DefaultItemAnimator());
+
+                recyOrders.setAdapter(orderCardAdapter);
+            }
+
+            chip.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked)
+                    {
+                        chip.setTextColor(Color.parseColor("#FFFFFF"));
+                        chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
+                        checkstatus = chip.getText().toString();
+
+                        ArrayList<Order> filter = filterOrder(checkstatus);
+                        orderCardAdapter = new OrderCardAdapter(filter, getContext(), checkstatus);
+                        recyOrders.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+                        recyOrders.setItemAnimator(new DefaultItemAnimator());
+
+                        recyOrders.setAdapter(orderCardAdapter);
+                    }
+                    else
+                    {
+                        if (isDarkMode)
+                        {
+                            chip.setTextColor(Color.parseColor("#FFFFFF"));
+                            chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#342f3f")));
+                        }
+                        else
+                        {
+                            chip.setTextColor(Color.parseColor("#272727"));
+                            chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#F4F4F4")));
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    private ArrayList<Order> filterOrder(String stt)
+    {
+        ArrayList<Order> filter = new ArrayList<>();
+        for (Order order : lstorders)
+        {
+            if (stt.equals("Processing"))
+            {
+                if (!order.getOrder_status_name().equals("Delivered"))
+                {
+                    filter.add(order);
+                }
+            }
+            if (stt.equals("Shipped"))
+            {
+                if (order.getOrder_status_name().equals("Shipped"))
+                {
+                    filter.add(order);
+                }
+            }
+            if (stt.equals("Delivered"))
+            {
+                if (order.getOrder_status_name().equals("Delivered"))
+                {
+                    filter.add(order);
+                }
+            }
+        }
+        return filter;
     }
 }

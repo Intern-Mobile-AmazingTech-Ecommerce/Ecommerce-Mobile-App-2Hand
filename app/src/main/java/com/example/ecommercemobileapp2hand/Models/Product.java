@@ -8,6 +8,9 @@ public class Product implements Serializable {
     String product_name, description, thumbnail, size, color;
     long base_price, sale_price;
 
+    public Product() {
+    }
+
     public Product(int product_id, int product_category_id, int stock, String product_name, String description, String thumbnail, String size, String color, long base_price, long sale_price) {
         this.product_id = product_id;
         this.product_category_id = product_category_id;
