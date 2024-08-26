@@ -177,4 +177,16 @@
     <style name="img_end">
         <item name="android:background">@drawable/arrowright2</item>
     </style>
+
+    <!---Custom Variable-->
+
+    <style name="btn_favorite">
+        <item name="android:background">@drawable/circle</item>
+        <item name="android:backgroundTint">#f4f4f4</item>
+        <item name="android:src">@drawable/black_heart</item>
+
+    </style>
+    <style name="caret_down">
+        <item name="android:src">@drawable/arrowdown2</item>
+    </style>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.ProductPage.ProductPage;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -57,6 +60,13 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
             // Gạch ngang giá gốc
             holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }
+        holder.productCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProductPage.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -66,11 +76,13 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
+        private CardView productCard;
         private ImageView img_Product;
         private TextView tvProductName, tvSalePrice, tvPrice;
         private MaterialButton img_Heart;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            this.productCard = itemView.findViewById(R.id.cardProduct);
             this.img_Product = itemView.findViewById(R.id.img_Product);
             this.img_Heart = itemView.findViewById(R.id.img_Heart);
             this.tvProductName = itemView.findViewById(R.id.tvProductName);
