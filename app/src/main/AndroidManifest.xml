@@ -17,10 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
+
         <activity
-         
+            android:name=".Views.Orders.TrackOrderAcitivity"
+            android:exported="true" />
+
+        <activity
             android:name=".Views.Search.SearchActivity"
             android:exported="true" />
+
         <activity
             android:name=".Views.Settings.AddAddressActivity"
             android:exported="false" />
@@ -28,15 +33,19 @@
         <activity
             android:name=".Views.Settings.ListAddressActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.Settings.WishlistActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.ProductPage.ProductPage"
             android:exported="false" />
+
         <activity
             android:name=".Views.Cart.EmptyCart"
             android:exported="false" />
+
         <activity
             android:name=".Views.Login.SignInActivity"
             android:exported="false" />
@@ -73,8 +82,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
 
         <activity
             android:name=".Views.Login.returnlogin"
@@ -116,5 +123,4 @@
             android:name="com.facebook.sdk.ClientToken"
             android:value="@string/facebook_client_token" />
     </application>
-
 </manifest>
