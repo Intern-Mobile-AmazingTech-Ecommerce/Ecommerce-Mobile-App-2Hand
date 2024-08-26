@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.ecommercemobileapp2hand.R;
 
+import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
 import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFragment;
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         btnBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myintent = new Intent(MainActivity.this, EmptyCart.class);
+                Intent myintent = new Intent(MainActivity.this, Cart.class);
                 startActivity(myintent);
             }
         });
