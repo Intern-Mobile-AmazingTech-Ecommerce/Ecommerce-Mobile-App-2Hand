@@ -81,11 +81,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Views.Settings.AddAddressActivity"
-            android:exported="false" />
-
-        </activity>
 
 
 
