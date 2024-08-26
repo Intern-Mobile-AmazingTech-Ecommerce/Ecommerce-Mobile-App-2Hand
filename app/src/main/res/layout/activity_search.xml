@@ -1,0 +1,70 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+    style="@style/SCREEN"
+
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="24dp"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <ImageView
+
+                android:id="@+id/btnBack"
+                style="@style/BUTTON_BACK"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+
+
+                android:padding="12dp"
+                />
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchView"
+                android:layout_width="293dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="9dp"
+                android:layout_toEndOf="@+id/btnBack"
+                android:background="@drawable/search_view_bg"
+                app:closeIcon="@drawable/x"
+                app:iconifiedByDefault="false"
+                app:queryHint="Search"
+                app:searchIcon="@drawable/searchnormal1" />
+        </RelativeLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:scrollbars="none"
+
+            >
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyProductSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+        </ScrollView>
+
+    </LinearLayout>
+
+
+</LinearLayout>

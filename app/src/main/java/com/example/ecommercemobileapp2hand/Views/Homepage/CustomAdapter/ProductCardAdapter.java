@@ -20,6 +20,7 @@ import com.example.ecommercemobileapp2hand.Views.ProductPage.ProductPage;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.MyViewHolder> {
     ArrayList<Product> lstPro;
@@ -29,7 +30,11 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         this.lstPro = lstPro;
         this.context = context;
     }
-
+    public void setFilteredList(ArrayList<Product> filteredList)
+    {
+        this.lstPro = filteredList;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
