@@ -1,7 +1,10 @@
 package com.example.ecommercemobileapp2hand.Views.Search;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -12,10 +15,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Models.Category;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.CategoriesAdapter;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.ProductCardAdapter;
 
 import java.util.ArrayList;
@@ -28,12 +34,18 @@ public class SearchActivity extends AppCompatActivity {
     ArrayList<Product> lstPro;
     ProductCardAdapter proAdapter;
     RecyclerView recyViewSearchPro;
+    RecyclerView recyViewCateSearch;
+    LinearLayout linearLayoutSearch;
+    ScrollView scrollViewPro;
+    List<Category> categoryList;
+    CategoriesAdapter categoriesAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search);
         addControls();
+        load();
         addEvent();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -51,10 +63,27 @@ public class SearchActivity extends AppCompatActivity {
         lstPro = Product.initProduct();
         proAdapter = new ProductCardAdapter(lstPro,SearchActivity.this);
 
+        scrollViewPro = (ScrollView) findViewById(R.id.scrollViewProduct);
+        recyViewCateSearch = (RecyclerView) findViewById(R.id.recyclerViewCategoriesSearch);
+        linearLayoutSearch = (LinearLayout) findViewById(R.id.linearLayoutSearch);
         recyViewSearchPro.setLayoutManager(new GridLayoutManager(this,2));
         recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
         recyViewSearchPro.setAdapter(proAdapter);
+        loadRecycleViewCategories();
     }
+    private void loadRecycleViewCategories() {
+        categoryList = new ArrayList<>();
+        categoryList.add(new Category("Hoodies", R.drawable.ic_hoodies));
+        categoryList.add(new Category("Accessories", R.drawable.ic_accessories));
+        categoryList.add(new Category("Shorts", R.drawable.ic_shorts));
+        categoryList.add(new Category("Shoes", R.drawable.ic_shoes));
+        categoryList.add(new Category("Bags", R.drawable.ic_bags));
+        categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
+        recyViewCateSearch.setLayoutManager(layoutManager);
+        recyViewCateSearch.setAdapter(categoriesAdapter);
+    }
+
     void addEvent()
     {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -65,10 +94,18 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 filterLíst(newText);
                 return false;
             }
         });
+
+    }
+    void load()
+    {
+        recyViewCateSearch.setVisibility(View.VISIBLE);
+        recyViewSearchPro.setVisibility(View.GONE);
+        linearLayoutSearch.setVisibility(View.GONE);
     }
     void filterLíst(String text)
     {
@@ -80,11 +117,22 @@ public class SearchActivity extends AppCompatActivity {
                 filterList.add(pro);
             }
         }
-        if (filterList.isEmpty())
+        if (text.isEmpty())
         {
-            Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
+            recyViewCateSearch.setVisibility(View.VISIBLE);
+            recyViewSearchPro.setVisibility(View.GONE);
+            linearLayoutSearch.setVisibility(View.GONE);
+
+        } else if (filterList.isEmpty()) {
+            recyViewCateSearch.setVisibility(View.GONE);
+            recyViewSearchPro.setVisibility(View.GONE);
+            linearLayoutSearch.setVisibility(View.VISIBLE);
         }else {
+            recyViewCateSearch.setVisibility(View.GONE);
+            recyViewSearchPro.setVisibility(View.VISIBLE);
+            linearLayoutSearch.setVisibility(View.GONE);
             proAdapter.setFilteredList(filterList);
         }
+
     }
 }
