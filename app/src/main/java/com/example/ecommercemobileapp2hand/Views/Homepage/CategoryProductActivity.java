@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.Product;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.ProductCardAdapter;
 

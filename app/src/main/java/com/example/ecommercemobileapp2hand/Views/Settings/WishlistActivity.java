@@ -12,7 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.WishList;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.WishList;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Settings.CustomAdapters.WishListAdapter;
 

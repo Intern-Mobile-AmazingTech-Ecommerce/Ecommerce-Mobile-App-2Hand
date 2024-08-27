@@ -11,9 +11,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.Category;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Homepage.CategoriesActivity;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CategoryProductActivity;
 
 import java.util.List;

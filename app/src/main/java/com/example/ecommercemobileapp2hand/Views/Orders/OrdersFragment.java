@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +21,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.example.ecommercemobileapp2hand.Models.Order;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CategoriesActivity;
 import com.example.ecommercemobileapp2hand.Views.Orders.CustomAdapter.OrderCardAdapter;
@@ -32,7 +30,6 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class OrdersFragment extends Fragment {

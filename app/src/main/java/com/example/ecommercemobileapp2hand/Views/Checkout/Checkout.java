@@ -1,7 +1,13 @@
 package com.example.ecommercemobileapp2hand.Views.Checkout;
 
 import android.os.Bundle;
-
+import android.widget.LinearLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -22,5 +28,24 @@ public class Checkout extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        if (savedInstanceState == null) {
+            loadFragmentAddress(new CheckoutAddressFragment());
+            loadFragmentPayment(new CheckoutPaymentFragment());
+
+        }
+
+    }
+
+    private void loadFragmentAddress(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_Address, fragment);
+        fragmentTransaction.commit();
+    }
+    private void loadFragmentPayment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_Payment, fragment);
+        fragmentTransaction.commit();
     }
 }

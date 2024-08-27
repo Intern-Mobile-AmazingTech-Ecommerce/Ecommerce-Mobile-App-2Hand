@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Models;
+package com.example.ecommercemobileapp2hand.Models.FakeModels;
 
 import java.io.Serializable;
 import java.util.ArrayList;

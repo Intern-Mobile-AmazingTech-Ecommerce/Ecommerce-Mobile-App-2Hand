@@ -2,7 +2,6 @@ package com.example.ecommercemobileapp2hand.Views.ProductPage.Adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.media.Rating;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.Reviews;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Reviews;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 

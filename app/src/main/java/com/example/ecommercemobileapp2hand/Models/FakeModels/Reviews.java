@@ -1,7 +1,6 @@
-package com.example.ecommercemobileapp2hand.Models;
+package com.example.ecommercemobileapp2hand.Models.FakeModels;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Reviews {
     int reviewID;
