@@ -19,21 +19,25 @@
         tools:targetApi="34">
 
         <activity
-            android:name=".Views.Orders.TrackOrderAcitivity"
-            android:exported="true" />
+            android:name=".Views.Cart.Cart"
+            android:exported="false" />
 
         <activity
+            android:name=".Views.Orders.TrackOrderAcitivity"
+            android:exported="false" />
 
+        <activity
             android:name=".Views.Settings.PaymentActivity"
             android:exported="false" />
-        <activity
 
+        <activity
             android:name=".Views.Search.SearchActivity"
-            android:exported="true" />
+            android:exported="false" />
 
         <activity
             android:name=".Views.Settings.AddAddressActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.Settings.ListAddressActivity"
             android:exported="false" />
@@ -53,24 +57,31 @@
         <activity
             android:name=".Views.Login.SignInActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.Login.OnboardingActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.Login.ForgotPasswordActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.Login.SignUpActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.Login.SignInPasswordActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.MainActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.Settings.AddCardActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.SplashScreen.SplashScreenActivity"
             android:exported="true">
@@ -84,16 +95,20 @@
         <activity
             android:name=".Views.Login.returnlogin"
             android:exported="false" />
+
         <activity
             android:name=".Views.Homepage.CategoryProductActivity"
             android:exported="false" />
+
         <activity
             android:name=".Views.Homepage.CategoriesActivity"
             android:exported="false" />
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
+
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
