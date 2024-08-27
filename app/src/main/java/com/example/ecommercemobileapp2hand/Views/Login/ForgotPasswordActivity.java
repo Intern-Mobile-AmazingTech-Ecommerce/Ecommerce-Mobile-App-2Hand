@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
@@ -30,7 +31,25 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         });
         sendEmailReset();
         returnToSignInPassword();
+        initialUI();
     }
+
+    private void initialUI() {
+        Button btnContinue = findViewById(R.id.btnContinue_2);
+        EditText edtEmail = findViewById(R.id.email_address);
+        btnContinue.setOnClickListener(v -> {
+            String email = edtEmail.getText().toString().trim();
+            if (!isValidEmail(email)) {
+                ((EditText) findViewById(R.id.email_address)).setError("Email không hợp lệ");
+                return;
+            }
+        });
+    }
+
+    private boolean isValidEmail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
     private void sendEmailReset(){
         btnContinue_2=(Button) findViewById(R.id.btnContinue_2);
         btnContinue_2.setOnClickListener(new View.OnClickListener() {

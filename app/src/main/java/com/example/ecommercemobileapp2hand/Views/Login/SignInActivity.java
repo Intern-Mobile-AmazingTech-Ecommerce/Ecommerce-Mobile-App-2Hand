@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,23 +35,29 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 
 public class SignInActivity extends AppCompatActivity {
+
+    private static final int REQ_GOOGLE_SIGN_IN = 1;
+    private static final String TAG = "SignInActivity";
+
     private CallbackManager callbackManager;
     private Button btnSignInGoogle;
     private Button btnSignInFacebook;
-    Button btnContinue;
-    TextView txtCreateAccount;
-    private static final int REQ_GOOGLE_SIGN_IN = 1;
-    private static final String EMAIL = "email";
-    private static final String PUBLIC_PROFILE = "public_profile";
-    private static final String TAG = "SignInActivity";
+    private Button btnContinue;
+    private TextView txtCreateAccount;
     private Switch switcher;
-    private Boolean nightMode;
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
+    private Boolean nightMode;
+    private FirebaseAuth firebaseAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,46 +67,62 @@ public class SignInActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        continueSignIn();
-        createAccount();
-        //Facebook SDK và AppEventsLogger
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger logger = AppEventsLogger.newLogger(getApplicationContext());
 
-        signInGoogle();
-        signInFacebook();
-        eventSwitch();
+        firebaseAuth = FirebaseAuth.getInstance();
+        callbackManager = CallbackManager.Factory.create();
+
+        initialUI();
+        configureFacebookLogin();
+        configureGoogleLogin();
+        configureNightModeSwitch();
     }
-    void eventSwitch(){
-        switcher=(Switch) findViewById(R.id.switcher);
-        sharedPreferences=getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        nightMode=sharedPreferences.getBoolean("night",false);
-        if(nightMode)
-        {
-            switcher.setChecked(true);
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-        switcher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(nightMode){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    editor=sharedPreferences.edit();
-                    editor.putBoolean("night",false);
-                }
-                else
-                {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    editor=sharedPreferences.edit();
-                    editor.putBoolean("night",true);
-                }
-                editor.apply();
+
+    private void initialUI() {
+        btnContinue = findViewById(R.id.btnContinue);
+        btnContinue.setOnClickListener(v -> startActivity(new Intent(SignInActivity.this, SignInPasswordActivity.class)));
+        txtCreateAccount = findViewById(R.id.dont_have_a);
+        txtCreateAccount.setOnClickListener(v -> startActivity(new Intent(SignInActivity.this, SignUpActivity.class)));
+        btnSignInGoogle = findViewById(R.id.btnSignInGoogle);
+        btnSignInFacebook = findViewById(R.id.btnSignInFacebook);
+        EditText edtEmail = findViewById(R.id.email_address);
+        btnContinue.setOnClickListener(v -> {
+            String email = edtEmail.getText().toString().trim();
+            if (!isValidEmail(email)) {
+                ((EditText) findViewById(R.id.email_address)).setError("Email không hợp lệ");
+                return;
             }
+            startActivity(new Intent(SignInActivity.this, SignInPasswordActivity.class));
         });
     }
 
+    private boolean isValidEmail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
 
-    private void signInGoogle() {
+    private void configureFacebookLogin() {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                handleFacebookAccessToken(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(getApplicationContext(), "Đăng nhập bị huỷ", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                Log.e("SignInActivity", "Facebook login error", error);
+            }
+        });
+
+        Button btnSignInFacebook = findViewById(R.id.btnSignInFacebook);
+        btnSignInFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList("email", "public_profile")));
+    }
+
+    private void configureGoogleLogin() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -107,69 +130,63 @@ public class SignInActivity extends AppCompatActivity {
 
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        btnSignInGoogle = findViewById(R.id.btnSignInGoogle);
         btnSignInGoogle.setOnClickListener(v -> {
             Intent signInIntent = googleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, REQ_GOOGLE_SIGN_IN);
         });
     }
-    private void continueSignIn(){
-        btnContinue=(Button) findViewById(R.id.btnContinue);
-        btnContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(SignInActivity.this,SignInPasswordActivity.class));
-            }
-        });
-    }
 
-    private void createAccount(){
-        txtCreateAccount=(TextView) findViewById(R.id.dont_have_a);
-        txtCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(SignInActivity.this, SignUpActivity.class));
-                //Toast.makeText(SignInActivity.this,"Ngon",Toast.LENGTH_SHORT).show();
-            }
+    private void configureNightModeSwitch() {
+        switcher = findViewById(R.id.switcher);
+        sharedPreferences = getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        nightMode = sharedPreferences.getBoolean("night", false);
 
-        });
-    }
-    private void signInFacebook() {
-        callbackManager = CallbackManager.Factory.create();
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
-
-        if (isLoggedIn) {
-            startActivity(new Intent(SignInActivity.this, MainActivity.class));
-            finish();
-            return;
+        if (nightMode) {
+            switcher.setChecked(true);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
 
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                finish();
-                Toast.makeText(SignInActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onCancel() {
-                Toast.makeText(SignInActivity.this, "Đăng nhập bị hủy", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "facebook:onCancel");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Toast.makeText(SignInActivity.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "facebook:onError", error);
+        switcher.setOnClickListener(v -> {
+            if (nightMode) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                sharedPreferences.edit().putBoolean("night", false).apply();
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                sharedPreferences.edit().putBoolean("night", true).apply();
             }
         });
+    }
 
-        btnSignInFacebook = findViewById(R.id.btnSignInFacebook);
-        btnSignInFacebook.setOnClickListener(v -> {
-            LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList(EMAIL, PUBLIC_PROFILE));
+    private void handleFacebookAccessToken(AccessToken token) {
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    navigateToMainActivity();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_LONG).show();
+            }
         });
+    }
+
+    private void handleGoogleSignInResult(Task<GoogleSignInAccount> task) {
+        try {
+            GoogleSignInAccount account = task.getResult(ApiException.class);
+            if (account != null) {
+                navigateToMainActivity();
+                Toast.makeText(this, "Đăng nhập Google thành công", Toast.LENGTH_SHORT).show();
+            }
+        } catch (ApiException e) {
+            Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "Google sign-in failed", e);
+        }
+    }
+
+    private void navigateToMainActivity() {
+        startActivity(new Intent(SignInActivity.this, MainActivity.class));
+        finish();
     }
 
     @Override
@@ -179,22 +196,9 @@ public class SignInActivity extends AppCompatActivity {
         if (requestCode == REQ_GOOGLE_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleGoogleSignInResult(task);
-        } else {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    private void handleGoogleSignInResult(Task<GoogleSignInAccount> task) {
-        try {
-            GoogleSignInAccount account = task.getResult(ApiException.class);
-            if (account != null) {
-                startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                finish();
-                Toast.makeText(this, "Đăng nhập google thành công", Toast.LENGTH_SHORT).show();
-            }
-        } catch (ApiException e) {
-            Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
-            Log.w(TAG, "Google sign in failed", e);
+        if (FacebookSdk.isFacebookRequestCode(requestCode)) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 }
