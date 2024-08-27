@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class UserCards {
@@ -7,10 +8,10 @@ public class UserCards {
     private String user_id;
     private String user_card_number;
     private String user_card_ccv;
-    private Date user_card_exp;
+    private LocalDateTime user_card_exp;
     private String user_card_holder_name;
 
-    public UserCards(int user_cards_id, String user_id, String user_card_number, String user_card_ccv, Date user_card_exp, String user_card_holder_name) {
+    public UserCards(int user_cards_id, String user_id, String user_card_number, String user_card_ccv, LocalDateTime user_card_exp, String user_card_holder_name) {
         this.user_cards_id = user_cards_id;
         this.user_id = user_id;
         this.user_card_number = user_card_number;
@@ -51,11 +52,11 @@ public class UserCards {
         this.user_card_ccv = user_card_ccv;
     }
 
-    public Date getUser_card_exp() {
+    public LocalDateTime getUser_card_exp() {
         return user_card_exp;
     }
 
-    public void setUser_card_exp(Date user_card_exp) {
+    public void setUser_card_exp(LocalDateTime user_card_exp) {
         this.user_card_exp = user_card_exp;
     }
 

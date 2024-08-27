@@ -1,14 +1,15 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Notifications {
     private int notifications_id;
     private String notifications_content;
-    private Date created_at;
+    private LocalDateTime created_at;
     private String user_id;
 
-    public Notifications(int notifications_id, String notifications_content, Date created_at, String user_id) {
+    public Notifications(int notifications_id, String notifications_content, LocalDateTime created_at, String user_id) {
         this.notifications_id = notifications_id;
         this.notifications_content = notifications_content;
         this.created_at = created_at;
@@ -31,11 +32,11 @@ public class Notifications {
         this.notifications_content = notifications_content;
     }
 
-    public Date getCreated_at() {
+    public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 

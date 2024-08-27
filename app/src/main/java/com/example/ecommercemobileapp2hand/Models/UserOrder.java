@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class UserOrder {
@@ -7,9 +8,9 @@ public class UserOrder {
     private String user_id;
     private double total_price;
     private String order_status_id;
-    private Date created_at;
+    private LocalDateTime created_at;
 
-    public UserOrder(String user_order_id, String user_id, double total_price, String order_status_id, Date created_at) {
+    public UserOrder(String user_order_id, String user_id, double total_price, String order_status_id, LocalDateTime created_at) {
         this.user_order_id = user_order_id;
         this.user_id = user_id;
         this.total_price = total_price;
@@ -49,11 +50,11 @@ public class UserOrder {
         this.order_status_id = order_status_id;
     }
 
-    public Date getCreated_at() {
+    public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 }

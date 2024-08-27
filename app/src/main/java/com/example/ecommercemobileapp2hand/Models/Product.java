@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Models;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Product {
@@ -10,9 +11,9 @@ public class Product {
     private int product_category_id;
     private String thumbnail;
     private BigDecimal base_price;
-    private Date created_at;
+    private LocalDateTime created_at;
 
-    public Product(int product_id, String product_name, int product_category_id, int product_object_id, String thumbnail, BigDecimal base_price, Date created_at) {
+    public Product(int product_id, String product_name, int product_category_id, int product_object_id, String thumbnail, BigDecimal base_price, LocalDateTime created_at) {
         this.product_id = product_id;
         this.product_name = product_name;
         this.product_category_id = product_category_id;
@@ -70,11 +71,11 @@ public class Product {
         this.base_price = base_price;
     }
 
-    public Date getCreated_at() {
+    public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 }

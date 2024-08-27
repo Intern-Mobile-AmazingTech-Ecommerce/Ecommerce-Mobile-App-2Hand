@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ProductReview {
@@ -8,9 +9,9 @@ public class ProductReview {
     private int product_details_id;
     private String review_content;
     private int rating;
-    private Date created_at;
+    private LocalDateTime created_at;
 
-    public ProductReview(int product_review_id, String user_id, int product_details_id, String review_content, Date created_at, int rating) {
+    public ProductReview(int product_review_id, String user_id, int product_details_id, String review_content, LocalDateTime created_at, int rating) {
         this.product_review_id = product_review_id;
         this.user_id = user_id;
         this.product_details_id = product_details_id;
@@ -59,11 +60,11 @@ public class ProductReview {
         this.rating = rating;
     }
 
-    public Date getCreated_at() {
+    public LocalDateTime getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) {
+    public void setCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 }
