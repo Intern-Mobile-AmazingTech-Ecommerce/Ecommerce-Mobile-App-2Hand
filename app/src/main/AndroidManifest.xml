@@ -20,9 +20,6 @@
         <activity
             android:name=".Views.Search.SearchActivity"
             android:exported="true" />
-        <activity
-            android:name=".Views.Settings.AddAddressActivity"
-            android:exported="false" />
 
         <activity
             android:name=".Views.Settings.ListAddressActivity"
@@ -89,9 +86,6 @@
 
         <activity
             android:name=".Views.Homepage.CategoriesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Views.Login.SignInActivity"
             android:exported="false" />
         <activity
             android:name="com.facebook.FacebookActivity"

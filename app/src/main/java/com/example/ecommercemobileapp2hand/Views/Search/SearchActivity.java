@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -39,6 +40,8 @@ public class SearchActivity extends AppCompatActivity {
     ScrollView scrollViewPro;
     List<Category> categoryList;
     CategoriesAdapter categoriesAdapter;
+    TextView textViewTitle;
+    LinearLayout layoutFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +61,7 @@ public class SearchActivity extends AppCompatActivity {
         imgBack = (ImageView) findViewById(R.id.btnBack);
         searchView = (SearchView)  findViewById(R.id.searchView);
         searchView.clearFocus();
-
+        layoutFilter = (LinearLayout) findViewById(R.id.layoutFilter);
         recyViewSearchPro = (RecyclerView) findViewById(R.id.recyProductSearch);
         lstPro = Product.initProduct();
         proAdapter = new ProductCardAdapter(lstPro,SearchActivity.this);
@@ -66,6 +69,7 @@ public class SearchActivity extends AppCompatActivity {
         scrollViewPro = (ScrollView) findViewById(R.id.scrollViewProduct);
         recyViewCateSearch = (RecyclerView) findViewById(R.id.recyclerViewCategoriesSearch);
         linearLayoutSearch = (LinearLayout) findViewById(R.id.linearLayoutSearch);
+        textViewTitle = (TextView) findViewById(R.id.titleSearch);
         recyViewSearchPro.setLayoutManager(new GridLayoutManager(this,2));
         recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
         recyViewSearchPro.setAdapter(proAdapter);
@@ -106,6 +110,7 @@ public class SearchActivity extends AppCompatActivity {
         recyViewCateSearch.setVisibility(View.VISIBLE);
         recyViewSearchPro.setVisibility(View.GONE);
         linearLayoutSearch.setVisibility(View.GONE);
+        layoutFilter.setVisibility(View.GONE);
     }
     void filterLíst(String text)
     {
@@ -121,15 +126,20 @@ public class SearchActivity extends AppCompatActivity {
         {
             recyViewCateSearch.setVisibility(View.VISIBLE);
             recyViewSearchPro.setVisibility(View.GONE);
+            layoutFilter.setVisibility(View.GONE);
             linearLayoutSearch.setVisibility(View.GONE);
 
         } else if (filterList.isEmpty()) {
+            textViewTitle.setVisibility(View.GONE);
             recyViewCateSearch.setVisibility(View.GONE);
             recyViewSearchPro.setVisibility(View.GONE);
+            layoutFilter.setVisibility(View.GONE);
             linearLayoutSearch.setVisibility(View.VISIBLE);
         }else {
+            textViewTitle.setVisibility(View.GONE);
             recyViewCateSearch.setVisibility(View.GONE);
             recyViewSearchPro.setVisibility(View.VISIBLE);
+            layoutFilter.setVisibility(View.VISIBLE);
             linearLayoutSearch.setVisibility(View.GONE);
             proAdapter.setFilteredList(filterList);
         }
