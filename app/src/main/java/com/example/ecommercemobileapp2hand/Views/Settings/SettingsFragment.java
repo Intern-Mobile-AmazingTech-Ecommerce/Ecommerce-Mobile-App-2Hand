@@ -1,50 +1,33 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
-import com.facebook.AccessToken;
-import com.facebook.AuthenticationTokenClaims;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SettingsFragment extends Fragment {
-
-    private TextView tvUserName, tvEmail,tvPhoneNumber, tvSignOut;
-    private TextView tvAddress,tvWishlist,tvPayment,tvHelp,tvSupport;
+    private TextView tvUserName, tvEmail, tvPhoneNumber, tvSignOut;
+    private TextView tvAddress, tvWishlist, tvPayment, tvHelp, tvSupport;
     private static final String TAG = "SettingsFragment";
+    private FirebaseAuth firebaseAuth;
 
     @Nullable
     @Override
@@ -54,53 +37,85 @@ public class SettingsFragment extends Fragment {
 
         tvUserName = view.findViewById(R.id.tvUserName);
         tvEmail = view.findViewById(R.id.tvUserEmail);
+        tvPhoneNumber = view.findViewById(R.id.tvUserPhoneNumber);
         tvSignOut = view.findViewById(R.id.tvSignOut);
-        tvPhoneNumber=view.findViewById(R.id.tvUserPhoneNumber);
-        tvAddress=view.findViewById(R.id.Address);
-        tvWishlist=view.findViewById(R.id.Wishlist);
-        tvPayment=view.findViewById(R.id.Payment);
-        tvHelp=view.findViewById(R.id.Help);
-        tvSupport=view.findViewById(R.id.Support);
-        // Google account is signed in
+        tvAddress = view.findViewById(R.id.Address);
+        tvWishlist = view.findViewById(R.id.Wishlist);
+        tvPayment = view.findViewById(R.id.Payment);
+        tvHelp = view.findViewById(R.id.Help);
+        tvSupport = view.findViewById(R.id.Support);
+
+        firebaseAuth = FirebaseAuth.getInstance();
         GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (googleAccount != null) {
+            saveUserDataToSharedPreferences(googleAccount.getDisplayName(), googleAccount.getEmail(), null);
             tvUserName.setText(googleAccount.getDisplayName());
             tvEmail.setText(googleAccount.getEmail());
         } else {
-            //Facebook account is signed in
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                fetchUserDataFromFirebase();
+            }
         }
+        fetchUserDataFromSharedPreferences();
+
         tvSignOut.setOnClickListener(v -> signOut());
         addressOnClick();
         return view;
     }
 
+    private void fetchUserDataFromFirebase() {
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        if (user != null) {
+            String userName = user.getDisplayName();
+            String userEmail = user.getEmail();
+            String userPhone = user.getPhoneNumber();
+
+            saveUserDataToSharedPreferences(userName, userEmail, userPhone);
+        }
+    }
+
+    private void saveUserDataToSharedPreferences(String userName, String userEmail, String userPhone) {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("userName", userName);
+        editor.putString("userEmail", userEmail);
+        editor.putString("userPhone", userPhone);
+        editor.apply();
+    }
+
+    private void fetchUserDataFromSharedPreferences() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        String userName = sharedPreferences.getString("userName", "Chưa có tên");
+        String userEmail = sharedPreferences.getString("userEmail", "Chưa có email");
+        String userPhone = sharedPreferences.getString("userPhone", "Chưa có số điện thoại");
+
+        tvUserName.setText(userName);
+        tvEmail.setText(userEmail);
+        tvPhoneNumber.setText(userPhone);
+    }
+
     private void signOut() {
-        // Sign out Google
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
         googleSignInClient.signOut().addOnCompleteListener(task -> {
-            // Sign out Facebook
             LoginManager.getInstance().logOut();
-            // Clear user data
+            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
             startActivity(new Intent(getActivity(), SignInActivity.class));
             requireActivity().finish();
             Toast.makeText(getActivity(), "Đã đăng xuất thành công", Toast.LENGTH_SHORT).show();
         });
     }
-    private void addressOnClick(){
-        tvAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), ListAddressActivity.class));
-            }
-        });
-        tvWishlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), WishlistActivity.class));
-            }
-        });
+
+    private void addressOnClick() {
+        tvAddress.setOnClickListener(view -> startActivity(new Intent(getActivity(), ListAddressActivity.class)));
+        tvWishlist.setOnClickListener(v -> startActivity(new Intent(getActivity(), WishlistActivity.class)));
     }
 }

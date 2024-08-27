@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +20,7 @@ import com.example.ecommercemobileapp2hand.Views.MainActivity;
 
 public class SignInPasswordActivity extends AppCompatActivity {
 
-    Button btnContinue_2;
+    Button btnContinue;
     TextView txtResetPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,20 +32,31 @@ public class SignInPasswordActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        signIn();
+        initialUI();
         resetPassword();
     }
-    private void signIn(){
-        btnContinue_2=(Button) findViewById(R.id.btnContinue_2);
-        btnContinue_2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(SignInPasswordActivity.this, MainActivity.class));
-                finish(); //không quay lại SignInActivity khi nhấn nút back
-                Toast.makeText(SignInPasswordActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+
+    private void initialUI() {
+        btnContinue = findViewById(R.id.btnContinue_2);
+        EditText password = findViewById(R.id.password);
+
+        btnContinue.setOnClickListener(v -> {
+            String pass = password.getText().toString().trim();
+            if (!isValidPassword(pass)) {
+                ((EditText) findViewById(R.id.password)).setError("Mật khẩu phải có ít nhất 6 ký tự");
+                return;
+            } else {
+                Intent intent = new Intent(SignInPasswordActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
+
+
+    private boolean isValidPassword(String password) {
+        return password.length() >= 6;
+    }
+
     private void resetPassword(){
         txtResetPassword=(TextView) findViewById(R.id.dont_have_a);
         txtResetPassword.setOnClickListener(new View.OnClickListener() {
