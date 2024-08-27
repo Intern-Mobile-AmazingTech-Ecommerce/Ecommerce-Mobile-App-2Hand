@@ -1,7 +1,6 @@
 package com.example.ecommercemobileapp2hand.Models;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,19 +15,17 @@ import com.example.ecommercemobileapp2hand.R;
 
 import java.util.ArrayList;
 
-public class Adapter_Cart extends ArrayAdapter<Cartt> {
+public class Adapter_Cart extends ArrayAdapter<Cart> {
     Activity context;
     int IdLayout;
-    ArrayList<Cartt> myList;
-    //Tạo Constructor để gọi và truyền tham so
+    ArrayList<Cart> myList;
 
-    public Adapter_Cart(Activity context, int idLayout,ArrayList<Cartt> myList) {
+    public Adapter_Cart(Activity context, int idLayout,ArrayList<Cart> myList) {
         super(context,idLayout, myList);
         this.context = context;
         IdLayout = idLayout;
         this.myList = myList;
     }
-    //getW
 
     @NonNull
     @Override
@@ -38,22 +35,23 @@ public class Adapter_Cart extends ArrayAdapter<Cartt> {
         //
         convertView = myflacter.inflate(IdLayout, null);
         //
-        Cartt myCart = myList.get(position);
+        Cart myCart = myList.get(position);
         //
-        ImageView imgCart = convertView.findViewById(R.id.imgCart);
+        ImageView imgCart = convertView.findViewById(R.id.img_cart);
         imgCart.setImageResource(myCart.getImage());
         //
-        TextView txt_NameCart = convertView.findViewById(R.id.txt_NameCart);
+        TextView txt_NameCart = convertView.findViewById(R.id.name_cart);
         txt_NameCart.setText(myCart.getName());
-
-        TextView txt_SizeCart = convertView.findViewById(R.id.txt_SizeCart);
+        //
+        TextView txt_SizeCart = convertView.findViewById(R.id.size_cart);
         txt_SizeCart.setText(myCart.getSize());
-
-        TextView txt_PriceCart = convertView.findViewById(R.id.txt_PriceCart);
+        //
+        TextView txt_ColorCart = convertView.findViewById(R.id.color_cart);
+        txt_ColorCart.setText(myCart.getColor());
+        //
+        TextView txt_PriceCart = convertView.findViewById(R.id.price_cart);
         txt_PriceCart.setText(myCart.getPrice());
 
-        TextView txt_ColerCart = convertView.findViewById(R.id.txt_ColorCart);
-        txt_ColerCart.setText(myCart.getColor());
         return convertView;
     }
 }

@@ -1,19 +1,18 @@
 package com.example.ecommercemobileapp2hand.Models;
 
-
-public class Cartt{
+public class Cart {
     private int image;
-    private  String name;
+    private String name;
     private String size;
     private String color;
     private String price;
 
-    public String getPrice() {
-        return price;
+    public String getSize() {
+        return size;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public String getColor() {
@@ -24,20 +23,12 @@ public class Cartt{
         this.color = color;
     }
 
-    public String getSize() {
-        return size;
+    public String getPrice() {
+        return price;
     }
 
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public int getImage() {
@@ -48,8 +39,15 @@ public class Cartt{
         this.image = image;
     }
 
+    public String getName() {
+        return name;
+    }
 
-    public Cartt(int image, String name, String size, String color, String price) {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Cart(int image, String name, String size, String color, String price) {
         this.image = image;
         this.name = name;
         this.size = size;

@@ -2,96 +2,98 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:layout_marginLeft="24dp"
-    android:layout_marginRight="24dp"
+    android:layout_height="wrap_content"
     android:background="@drawable/framelayout">
 
     <ImageView
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="12dp"
-        android:id="@+id/imgCart"
+        android:id="@+id/img_cart"
         android:layout_width="64dp"
         android:layout_height="64dp"
+        android:layout_margin="8dp"
         app:srcCompat="@drawable/ao1" />
 
     <LinearLayout
-        android:padding="8dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="19dp"
-            android:layout_marginTop="8dp">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="18dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/name_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="700"
                 android:fontFamily="@font/circularstdmedium500"
-                android:textSize="12sp"
-                android:textFontWeight="450"
-                android:lineHeight="19dp"
-                android:id="@+id/txt_NameCart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Men's Harrington Jacket" />
-
-            <TextView
-                android:fontFamily="@font/gabarito"
-                android:textSize="12sp"
-                android:textFontWeight="700"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/txt_PriceCart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="76dp"
-                android:text="$148" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="24dp"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/txt_SizeCart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/circularstdmedium500"
-                android:text="Size - M"
+                android:lineHeight="160dp"
+                android:text="TextView"
                 android:textFontWeight="450"
                 android:textSize="12sp" />
 
             <TextView
-                android:fontFamily="@font/circularstdmedium500"
-                android:textFontWeight="450"
-                android:textSize="12sp"
-                android:id="@+id/txt_ColorCart"
+                android:id="@+id/price_cart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="58dp"
-                android:text="Color - Lemon" />
+                android:fontFamily="@font/gabarito"
+                android:gravity="right"
+                android:lineHeight="160dp"
+                android:text="TextView"
+                android:layout_marginRight="8dp"
+                android:textFontWeight="700"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="12dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/size_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/circularstdmedium500"
+                android:lineHeight="160dp"
+                android:text="TextView"
+                android:textFontWeight="450"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/color_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/circularstdmedium500"
+                android:lineHeight="160dp"
+                android:text="TextView"
+                android:textFontWeight="450"
+                android:textSize="12sp" />
 
             <ImageButton
-                app:srcCompat="@drawable/add"
-                android:id="@+id/imageButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginRight="32dp"
-                android:background="@drawable/button"
-                android:layout_alignParentEnd="true"/>
-
-            <ImageButton
-                app:srcCompat="@drawable/minus"
                 android:id="@+id/imageButton2"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
                 android:background="@drawable/button"
-                />
-        </RelativeLayout>
+                app:srcCompat="@drawable/add"
+                android:layout_marginRight="8dp"/>
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/button"
+                app:srcCompat="@drawable/minus"
+                android:layout_marginRight="8dp"/>
+        </LinearLayout>
 
     </LinearLayout>
 
