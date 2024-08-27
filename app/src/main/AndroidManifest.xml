@@ -31,10 +31,8 @@
             android:exported="false" />
         <activity
             android:name=".Views.Search.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Views.Settings.AddAddressActivity"
-            android:exported="false" />
+            android:exported="true" />
+
         <activity
             android:name=".Views.Settings.ListAddressActivity"
             android:exported="false" />
