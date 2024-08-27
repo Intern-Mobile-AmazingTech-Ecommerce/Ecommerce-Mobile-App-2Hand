@@ -2,7 +2,6 @@ package com.example.ecommercemobileapp2hand.Views.Settings;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,10 +12,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.Category;
 import com.example.ecommercemobileapp2hand.Models.WishList;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.CategoriesAdapter;
+import com.example.ecommercemobileapp2hand.Views.Settings.CustomAdapters.WishListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +49,17 @@ public class WishlistActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+
+                onBackPressed();
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
     private void loadRecycleViewCategories(){
         // Initialize category list
         wishList= new ArrayList<>();
@@ -62,7 +67,7 @@ public class WishlistActivity extends AppCompatActivity {
         wishList.add(new WishList("T-Shirts", 4));
 
 
-        wishListAdapter = new WishListAdapter(wishList);
+        wishListAdapter = new WishListAdapter(getApplicationContext(),wishList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
         rv_wishlist.setLayoutManager(layoutManager);
 

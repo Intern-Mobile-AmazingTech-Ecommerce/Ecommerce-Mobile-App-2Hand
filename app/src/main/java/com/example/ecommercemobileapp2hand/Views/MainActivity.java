@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Views;
 
 import static android.view.View.GONE;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.ecommercemobileapp2hand.R;
 
+import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFragment;
 import com.example.ecommercemobileapp2hand.Views.Orders.OrdersFragment;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         addControl();
+        binding();
 
     }
 
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         addEvent();
-
+        addCart();
     }
 
     private void addControl(){
@@ -75,8 +78,42 @@ public class MainActivity extends AppCompatActivity {
         btnObject = findViewById(R.id.btnObject);
 
     }
+    private void addCart(){
+        btnBag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myintent = new Intent(MainActivity.this, EmptyCart.class);
+                startActivity(myintent);
+            }
+        });
+    }
+    private void binding(){
+        Intent intent = getIntent();
+        bottomNavigationView = findViewById(R.id.bottom_nav);
+        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo"))) {
+
+            LoadFragment(new SettingsFragment());
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+            bottomNavigationView.setSelectedItemId(R.id.itemSettings);
+        }else if(intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))){
+            LoadFragment(new OrdersFragment());
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+            bottomNavigationView.setSelectedItemId(R.id.itemOrders);
+        }
+        else if(intent != null && "NotificationsFragment".equals(intent.getStringExtra("navigateTo"))){
+            LoadFragment(new OrdersFragment());
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+            bottomNavigationView.setSelectedItemId(R.id.itemNotifications);
+        }
+        else{
+            LoadFragment(new HomeFragment());
+        }
+    }
     private void addEvent(){
-        LoadFragment(new HomeFragment());
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

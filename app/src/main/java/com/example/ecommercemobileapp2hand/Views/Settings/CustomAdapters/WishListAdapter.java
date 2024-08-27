@@ -1,23 +1,29 @@
-package com.example.ecommercemobileapp2hand.Views.Settings;
+package com.example.ecommercemobileapp2hand.Views.Settings.CustomAdapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.WishList;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Settings.WishlistDetailFragment;
 
 import java.util.List;
 
 public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.WishlistViewHolder>{
     private List<WishList> wishlistItems;
-
-    public WishListAdapter(List<WishList> wishlistItems) {
+    private Context context;
+    public WishListAdapter(Context context,List<WishList> wishlistItems) {
         this.wishlistItems = wishlistItems;
+        this.context = context;
     }
 
     @Override
@@ -31,6 +37,13 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
         WishList item = wishlistItems.get(position);
         holder.tvNameWish.setText(item.getName());
         holder.tvQuantity.setText(item.getQuantity() + " Products");
+        holder.wishListItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, WishlistDetailFragment.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -44,13 +57,14 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
         TextView tvQuantity;
         ImageView iconHearth;
         ImageView iconArrowRight;
-
+        ConstraintLayout wishListItem;
         public WishlistViewHolder(View itemView) {
             super(itemView);
             tvNameWish = itemView.findViewById(R.id.tv_name_wish);
             tvQuantity = itemView.findViewById(R.id.tv_quantity);
             iconHearth = itemView.findViewById(R.id.icon_hearth);
             iconArrowRight = itemView.findViewById(R.id.icon_arrow_right);
+            wishListItem = itemView.findViewById(R.id.wishList_item);
         }
     }
 }

@@ -55,6 +55,7 @@
             android:textAlignment="center"
             android:textAllCaps="false"
             android:backgroundTint="@color/purple"
+            android:textColor="@color/white"
             android:fontFamily="@font/circularstdmedium500"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
