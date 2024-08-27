@@ -5,26 +5,16 @@ package com.example.ecommercemobileapp2hand.Views.Settings.CustomAdapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.Card;
-import com.example.ecommercemobileapp2hand.Models.WishList;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Card;
 import com.example.ecommercemobileapp2hand.R;
 
 import java.util.List;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
 

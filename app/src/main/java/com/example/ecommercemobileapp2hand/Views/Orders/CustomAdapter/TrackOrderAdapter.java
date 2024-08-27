@@ -3,7 +3,6 @@ package com.example.ecommercemobileapp2hand.Views.Orders.CustomAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.Order;
-import com.example.ecommercemobileapp2hand.Models.OrderStatus;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.OrderStatus;
 import com.example.ecommercemobileapp2hand.R;
 
 import java.util.ArrayList;

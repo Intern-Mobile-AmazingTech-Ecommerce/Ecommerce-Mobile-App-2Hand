@@ -8,7 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.Paypal;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Paypal;
 import com.example.ecommercemobileapp2hand.R;
 
 import java.util.List;

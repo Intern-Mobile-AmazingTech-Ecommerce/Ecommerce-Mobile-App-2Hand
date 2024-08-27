@@ -10,8 +10,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.Card;
-import com.example.ecommercemobileapp2hand.Models.Paypal;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Card;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Paypal;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Settings.CustomAdapters.CardAdapter;
 import com.example.ecommercemobileapp2hand.Views.Settings.CustomAdapters.PaypalAdapter;

@@ -9,6 +9,9 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
+import com.cloudinary.Cloudinary;
+import com.example.ecommercemobileapp2hand.Models.config.CloudinaryConfig;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
@@ -49,5 +52,12 @@ public class Util {
     public static String formatCurrency(int price) {
         DecimalFormat formatter = new DecimalFormat("###,###");
         return formatter.format(price);
+    }
+
+    public static String getCloudinaryImageUrl(String publicId) {
+        Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
+        String url = cloudinary.url()
+                .generate(publicId);
+        return url;
     }
 }

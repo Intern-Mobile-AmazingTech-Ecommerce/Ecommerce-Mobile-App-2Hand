@@ -9,8 +9,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.ecommercemobileapp2hand.Models.Adapter_Cart;
-import com.example.ecommercemobileapp2hand.Models.Cartt;
+import com.example.ecommercemobileapp2hand.Views.Cart.CustomAdapters.Adapter_Cart;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Cartt;
 import com.example.ecommercemobileapp2hand.R;
 
 import java.util.ArrayList;

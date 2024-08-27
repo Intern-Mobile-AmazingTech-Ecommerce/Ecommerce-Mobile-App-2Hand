@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Models;
+package com.example.ecommercemobileapp2hand.Models.FakeModels;
 
 public class Category {
     private String name;
