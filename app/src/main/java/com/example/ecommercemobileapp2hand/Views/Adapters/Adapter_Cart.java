@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.Cart.CustomAdapters;
+package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.app.Activity;
 import android.view.LayoutInflater;

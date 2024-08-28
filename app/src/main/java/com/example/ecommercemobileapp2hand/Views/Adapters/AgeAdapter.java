@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.Login.Onboarding;
+package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Age;
 
 import java.util.List;
 

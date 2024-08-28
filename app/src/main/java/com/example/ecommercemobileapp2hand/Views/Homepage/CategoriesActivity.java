@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.CategoriesAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

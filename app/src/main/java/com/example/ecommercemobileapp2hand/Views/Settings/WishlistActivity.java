@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.FakeModels.WishList;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Settings.CustomAdapters.WishListAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.WishListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

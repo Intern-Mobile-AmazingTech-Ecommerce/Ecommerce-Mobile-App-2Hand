@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.OrderStatus;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Orders.CustomAdapter.TrackOrderAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.TrackOrderAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;

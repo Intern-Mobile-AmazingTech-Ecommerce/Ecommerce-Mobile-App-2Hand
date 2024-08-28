@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.Orders.CustomAdapter;
+package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.content.Context;
 import android.content.res.Configuration;

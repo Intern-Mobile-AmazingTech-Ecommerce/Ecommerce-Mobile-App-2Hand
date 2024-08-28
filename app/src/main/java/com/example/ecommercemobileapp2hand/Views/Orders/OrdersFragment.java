@@ -25,7 +25,7 @@ import android.widget.LinearLayout;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CategoriesActivity;
-import com.example.ecommercemobileapp2hand.Views.Orders.CustomAdapter.OrderCardAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.OrderCardAdapter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 

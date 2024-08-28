@@ -13,8 +13,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Login.Onboarding.Age;
-import com.example.ecommercemobileapp2hand.Views.Login.Onboarding.AgeAdapter;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Age;
+import com.example.ecommercemobileapp2hand.Views.Adapters.AgeAdapter;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.Login.Onboarding;
+package com.example.ecommercemobileapp2hand.Models.FakeModels;
 
 public class Age {
     private String age;
