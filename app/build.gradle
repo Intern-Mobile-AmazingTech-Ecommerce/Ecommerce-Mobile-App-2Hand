@@ -71,4 +71,5 @@ dependencies {
     implementation 'com.cloudinary:cloudinary-android:2.8.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    
 }
