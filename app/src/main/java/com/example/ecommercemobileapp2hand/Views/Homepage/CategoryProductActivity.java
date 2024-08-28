@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.ProductCardAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
 
 import java.util.ArrayList;
 

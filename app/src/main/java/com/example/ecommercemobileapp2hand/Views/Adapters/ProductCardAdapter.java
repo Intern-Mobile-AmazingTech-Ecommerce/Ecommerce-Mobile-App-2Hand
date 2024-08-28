@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter;
+package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.content.Context;
 import android.content.Intent;

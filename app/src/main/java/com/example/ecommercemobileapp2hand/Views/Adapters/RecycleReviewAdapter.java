@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.ProductPage.Adapters;
+package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;

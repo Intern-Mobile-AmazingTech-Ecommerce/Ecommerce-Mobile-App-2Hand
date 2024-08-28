@@ -6,7 +6,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.CategoriesAdapter;
-import com.example.ecommercemobileapp2hand.Views.Homepage.CustomAdapter.ProductCardAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -22,8 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Reviews;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.ProductPage.Adapters.RecycleProductImageAdapter;
-import com.example.ecommercemobileapp2hand.Views.ProductPage.Adapters.RecycleReviewAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleProductImageAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleReviewAdapter;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
