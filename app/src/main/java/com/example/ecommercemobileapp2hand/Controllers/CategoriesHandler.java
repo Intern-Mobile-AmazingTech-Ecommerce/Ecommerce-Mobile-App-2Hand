@@ -15,7 +15,7 @@ public class CategoriesHandler {
 
     public static ArrayList<ProductCategory> getData(){
         ArrayList<ProductCategory> list = new ArrayList<>();
-        conn = dbConnect.connectionClass();;
+        conn = dbConnect.connectionClass();
         if(conn!=null){
             String query = "Select * from product_category";
             try{

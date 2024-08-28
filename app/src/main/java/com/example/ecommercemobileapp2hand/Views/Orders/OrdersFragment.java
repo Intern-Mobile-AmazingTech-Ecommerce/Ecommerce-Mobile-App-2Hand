@@ -22,7 +22,9 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.example.ecommercemobileapp2hand.Controllers.OrderStatusHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
+import com.example.ecommercemobileapp2hand.Models.OrderStatus;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CategoriesActivity;
 import com.example.ecommercemobileapp2hand.Views.Adapters.OrderCardAdapter;
@@ -72,6 +74,7 @@ public class OrdersFragment extends Fragment {
         linear_order2 = view.findViewById(R.id.linear_order2);
         btn_explore = view.findViewById(R.id.btn_explore);
 
+//        lstorders = new ArrayList<>();
         lstorders = Order.initOrder();
 
         if (lstorders.isEmpty())
@@ -91,27 +94,23 @@ public class OrdersFragment extends Fragment {
         }
         else
         {
-            ArrayList<String> oderstatus = new ArrayList<>();
-            oderstatus.add("Processing");
-            oderstatus.add("Shipped");
-            oderstatus.add("Delivered");
-            oderstatus.add("Returned");
-            oderstatus.add("Canceled");
+            ArrayList<OrderStatus> oderstatus = OrderStatusHandler.getData();
+
 
             createChips(oderstatus);
         }
     }
-    private void createChips(ArrayList<String> statuses)
+    private void createChips(ArrayList<OrderStatus> statuses)
     {
         Random random = new Random();
 
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         boolean isDarkMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
 
-        for (String status : statuses)
+        for (OrderStatus status : statuses)
         {
             Chip chip = (Chip) LayoutInflater.from(getContext()).inflate(R.layout.custom_chip_item, chipGroup, false);
-            chip.setText(status);
+            chip.setText(status.getOrder_status_name());
             chip.setId(random.nextInt());
             chipGroup.addView(chip);
 
