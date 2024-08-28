@@ -62,18 +62,20 @@
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Views.Settings.AddCardActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Views.SplashScreen.SplashScreenActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".Views.Settings.AddCardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.SplashScreen.SplashScreenActivity"
+            android:exported="false">
+
         </activity>
         <activity
             android:name=".Views.Login.returnlogin"
