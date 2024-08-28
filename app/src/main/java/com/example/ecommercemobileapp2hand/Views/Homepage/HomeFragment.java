@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
+import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
@@ -30,7 +32,7 @@ public class HomeFragment extends Fragment {
 
     private TextView tvSeeAll;
     private RecyclerView recyclerViewCategories;
-    private List<Category> categoryList;
+    private List<ProductCategory> categoryList;
     private CategoriesAdapter categoriesAdapter;
 
     private RecyclerView recyclerViewNewIn;
@@ -113,12 +115,7 @@ public class HomeFragment extends Fragment {
 
     private void loadCategoriesData(){
         categoryList = new ArrayList<>();
-        categoryList.add(new Category("Hoodies", R.drawable.hoodies));
-        categoryList.add(new Category("Accessories", R.drawable.ic_accessories));
-        categoryList.add(new Category("Shorts", R.drawable.category_shorts));
-        categoryList.add(new Category("Shoes", R.drawable.category_shoes));
-        categoryList.add(new Category("Bags", R.drawable.category_bag));
-
+        categoryList = CategoriesHandler.getData().subList(0,5);
         categoriesAdapter = new CategoriesAdapter(categoryList,getContext(),R.layout.custom_recycle_categories_homepage);
          RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false);
         recyclerViewCategories.setLayoutManager(layoutManager);

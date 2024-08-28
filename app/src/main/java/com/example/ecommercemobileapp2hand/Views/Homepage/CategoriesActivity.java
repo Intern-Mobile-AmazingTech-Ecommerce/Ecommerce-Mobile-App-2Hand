@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
+import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 
@@ -25,7 +27,7 @@ public class CategoriesActivity extends AppCompatActivity {
     private ImageView btnBack;
     private RecyclerView recyclerViewCategories;
     private CategoriesAdapter categoriesAdapter;
-    private List<Category> categoryList;
+    private List<ProductCategory> categoryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +60,14 @@ public class CategoriesActivity extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),HomeFragment.class));
+              finish();
             }
         });
     }
     private void loadRecycleViewCategories(){
         // Initialize category list
         categoryList = new ArrayList<>();
-        categoryList.add(new Category("Hoodies", R.drawable.ic_hoodies));
-        categoryList.add(new Category("Accessories", R.drawable.ic_accessories));
-        categoryList.add(new Category("Shorts", R.drawable.ic_shorts));
-        categoryList.add(new Category("Shoes", R.drawable.ic_shoes));
-        categoryList.add(new Category("Bags", R.drawable.ic_bags));
+        categoryList = CategoriesHandler.getData();
 
         categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);

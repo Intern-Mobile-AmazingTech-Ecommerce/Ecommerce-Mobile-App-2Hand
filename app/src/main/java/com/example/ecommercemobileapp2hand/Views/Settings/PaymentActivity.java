@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Card;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Paypal;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Settings.CustomAdapters.CardAdapter;
-import com.example.ecommercemobileapp2hand.Views.Settings.CustomAdapters.PaypalAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.CardAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.PaypalAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

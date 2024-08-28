@@ -15,10 +15,11 @@ import java.util.ArrayList;
 
 public class ProductReviewHandler {
     private static DBConnect dbConnect = new DBConnect();
-    private static Connection conn = dbConnect.connectionClass();
+    private static Connection conn;
 
     public static ArrayList<ProductReview> getData(){
         ArrayList<ProductReview> list = new ArrayList<>();
+        conn = dbConnect.connectionClass();
         if(conn!=null){
             String query = "Select * from product_review";
             try{

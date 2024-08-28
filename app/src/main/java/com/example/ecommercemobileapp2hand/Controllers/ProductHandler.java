@@ -14,9 +14,10 @@ import java.util.ArrayList;
 
 public class ProductHandler {
     private static DBConnect dbConnect = new DBConnect();
-    private static Connection conn = dbConnect.connectionClass();
+    private static Connection conn ;
 
     public static ArrayList<Product> getData(){
+        conn = dbConnect.connectionClass();
         ArrayList<Product> list = new ArrayList<>();
         if(conn!=null){
             String query = "Select * from product";

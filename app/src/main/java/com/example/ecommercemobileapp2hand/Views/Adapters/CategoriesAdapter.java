@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +13,20 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
+import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CategoryProductActivity;
+import com.example.ecommercemobileapp2hand.Views.Utils.Util;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
 
-    private List<Category> categories;
+    private List<ProductCategory> categories;
     private Context context;
     private int layout;
-    public CategoriesAdapter(List<Category> categories, Context context, int layout) {
+    public CategoriesAdapter(List<ProductCategory> categories, Context context, int layout) {
         this.categories = categories;
         this.context = context;
         this.layout = layout;
@@ -36,15 +40,16 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Category category = categories.get(position);
-        holder.textViewCategoryName.setText(category.getName());
-        holder.imageViewCategoryIcon.setImageResource(category.getIconResId());
-
+        ProductCategory category = categories.get(position);
+        holder.textViewCategoryName.setText(category.getProduct_category_name());
+        String imgUrl = Util.getCloudinaryImageUrl(category.getProduct_category_thumbnail());
+        Log.d("ImgURL",imgUrl);
+        Picasso.get().load(imgUrl).into(holder.imageViewCategoryIcon);
 
         holder.relative_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (category.getName().equals("Hoodies"))
+                if (category.getProduct_category_name().equals("Hoodies"))
                 {
                     Intent intent = new Intent(context, CategoryProductActivity.class);
                     context.startActivity(intent);

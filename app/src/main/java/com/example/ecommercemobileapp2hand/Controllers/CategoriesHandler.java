@@ -11,13 +11,15 @@ import java.util.ArrayList;
 
 public class CategoriesHandler {
     private static DBConnect dbConnect = new DBConnect();
-    private static Connection conn = dbConnect.connectionClass();
+    private static Connection conn ;
 
     public static ArrayList<ProductCategory> getData(){
         ArrayList<ProductCategory> list = new ArrayList<>();
+        conn = dbConnect.connectionClass();;
         if(conn!=null){
             String query = "Select * from product_category";
             try{
+
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(query);
                 while(rs.next()){

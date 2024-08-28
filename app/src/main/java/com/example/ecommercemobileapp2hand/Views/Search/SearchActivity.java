@@ -18,8 +18,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
+import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
@@ -37,7 +39,7 @@ public class SearchActivity extends AppCompatActivity {
     RecyclerView recyViewCateSearch;
     LinearLayout linearLayoutSearch;
     ScrollView scrollViewPro;
-    List<Category> categoryList;
+    List<ProductCategory> categoryList;
     CategoriesAdapter categoriesAdapter;
     TextView textViewTitle;
     LinearLayout layoutFilter;
@@ -76,11 +78,7 @@ public class SearchActivity extends AppCompatActivity {
     }
     private void loadRecycleViewCategories() {
         categoryList = new ArrayList<>();
-        categoryList.add(new Category("Hoodies", R.drawable.ic_hoodies));
-        categoryList.add(new Category("Accessories", R.drawable.ic_accessories));
-        categoryList.add(new Category("Shorts", R.drawable.ic_shorts));
-        categoryList.add(new Category("Shoes", R.drawable.ic_shoes));
-        categoryList.add(new Category("Bags", R.drawable.ic_bags));
+        categoryList = CategoriesHandler.getData();
         categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
         recyViewCateSearch.setLayoutManager(layoutManager);

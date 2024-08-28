@@ -8,6 +8,7 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
+import android.util.Log;
 
 import com.cloudinary.Cloudinary;
 import com.example.ecommercemobileapp2hand.Models.config.CloudinaryConfig;
@@ -58,6 +59,7 @@ public class Util {
         Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
         String url = cloudinary.url()
                 .generate(publicId);
+        url = url.replace("http://", "https://");
         return url;
     }
 }
