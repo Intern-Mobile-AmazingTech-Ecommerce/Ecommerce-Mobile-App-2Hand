@@ -10,6 +10,7 @@ public class UserOrder {
     private String order_status_id;
     private LocalDateTime created_at;
 
+    public UserOrder(){}
     public UserOrder(String user_order_id, String user_id, double total_price, String order_status_id, LocalDateTime created_at) {
         this.user_order_id = user_order_id;
         this.user_id = user_id;

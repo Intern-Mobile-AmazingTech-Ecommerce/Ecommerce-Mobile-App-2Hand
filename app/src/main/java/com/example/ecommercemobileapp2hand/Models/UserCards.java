@@ -11,6 +11,7 @@ public class UserCards {
     private LocalDateTime user_card_exp;
     private String user_card_holder_name;
 
+    public UserCards(){}
     public UserCards(int user_cards_id, String user_id, String user_card_number, String user_card_ccv, LocalDateTime user_card_exp, String user_card_holder_name) {
         this.user_cards_id = user_cards_id;
         this.user_id = user_id;

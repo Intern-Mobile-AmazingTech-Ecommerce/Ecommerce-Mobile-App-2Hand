@@ -8,7 +8,9 @@ public class Notifications {
     private String notifications_content;
     private LocalDateTime created_at;
     private String user_id;
+    public Notifications(){
 
+    }
     public Notifications(int notifications_id, String notifications_content, LocalDateTime created_at, String user_id) {
         this.notifications_id = notifications_id;
         this.notifications_content = notifications_content;

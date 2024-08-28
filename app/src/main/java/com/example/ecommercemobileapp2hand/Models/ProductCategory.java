@@ -12,7 +12,7 @@ public class ProductCategory {
         this.product_category_description = product_category_description;
         this.product_category_thumbnail = product_category_thumbnail;
     }
-
+    public ProductCategory(){}
     public int getProduct_category_id() {
         return product_category_id;
     }

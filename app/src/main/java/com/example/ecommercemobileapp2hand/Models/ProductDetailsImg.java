@@ -5,6 +5,7 @@ public class ProductDetailsImg {
     private int product_details_id;
     private String img_url;
 
+    private ProductDetailsImg(){}
     public ProductDetailsImg(int product_img_id, int product_details_id, String img_url) {
         this.product_img_id = product_img_id;
         this.product_details_id = product_details_id;

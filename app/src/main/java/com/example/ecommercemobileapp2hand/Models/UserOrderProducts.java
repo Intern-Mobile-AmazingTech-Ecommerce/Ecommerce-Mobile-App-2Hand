@@ -5,6 +5,7 @@ public class UserOrderProducts {
     private int product_details_id;
     private int amount;
 
+    public UserOrderProducts(){}
     public UserOrderProducts(String user_order_id, int amount, int product_details_id) {
         this.user_order_id = user_order_id;
         this.amount = amount;

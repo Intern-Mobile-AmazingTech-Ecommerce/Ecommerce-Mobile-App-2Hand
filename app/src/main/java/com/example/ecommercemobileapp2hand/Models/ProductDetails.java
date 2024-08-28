@@ -10,7 +10,7 @@ public class ProductDetails {
     private String description;
     private BigDecimal sale_price;
     private int stock;
-
+    public ProductDetails(){}
     public ProductDetails(int product_details_id, int product_id, int product_color_id, int size_id, String description, int stock, BigDecimal sale_price) {
         this.product_details_id = product_details_id;
         this.product_id = product_id;

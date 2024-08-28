@@ -4,6 +4,7 @@ public class ProductObject {
     private int product_object_id;
     private String object_name;
 
+    public ProductObject(){}
     public ProductObject(int product_object_id, String object_name) {
         this.product_object_id = product_object_id;
         this.object_name = object_name;

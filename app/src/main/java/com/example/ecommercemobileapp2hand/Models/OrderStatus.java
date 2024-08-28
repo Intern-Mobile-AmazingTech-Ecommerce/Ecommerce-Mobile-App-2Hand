@@ -3,7 +3,9 @@ package com.example.ecommercemobileapp2hand.Models;
 public class OrderStatus {
     private String order_status_id;
     private String order_status_name;
+    public OrderStatus(){
 
+    }
     public OrderStatus(String order_status_id, String order_status_name) {
         this.order_status_id = order_status_id;
         this.order_status_name = order_status_name;

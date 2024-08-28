@@ -3,7 +3,7 @@ package com.example.ecommercemobileapp2hand.Models;
 public class ProductColor {
     private int product_color_id;
     private String product_color_name;
-
+    public ProductColor(){}
     public ProductColor(int product_color_id, String product_color_name) {
         this.product_color_id = product_color_id;
         this.product_color_name = product_color_name;

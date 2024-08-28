@@ -34,4 +34,5 @@ public class Bag {
         this.user_id = user_id;
         this.product_details_id = product_details_id;
     }
+    public Bag(){}
 }

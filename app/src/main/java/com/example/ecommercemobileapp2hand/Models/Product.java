@@ -12,7 +12,7 @@ public class Product {
     private String thumbnail;
     private BigDecimal base_price;
     private LocalDateTime created_at;
-
+    public Product(){}
     public Product(int product_id, String product_name, int product_category_id, int product_object_id, String thumbnail, BigDecimal base_price, LocalDateTime created_at) {
         this.product_id = product_id;
         this.product_name = product_name;

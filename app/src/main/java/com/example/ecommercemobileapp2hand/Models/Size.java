@@ -4,6 +4,7 @@ public class Size {
     private int size_id;
     private String size_name;
 
+    public Size(){}
     public Size(int size_id, String size_name) {
         this.size_id = size_id;
         this.size_name = size_name;

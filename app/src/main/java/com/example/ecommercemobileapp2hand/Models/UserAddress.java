@@ -5,6 +5,7 @@ public class UserAddress {
     private String user_id;
     private String user_address_content;
 
+    public UserAddress(){}
     public UserAddress(int user_address_id, String user_id, String user_address_content) {
         this.user_address_id = user_address_id;
         this.user_id = user_id;

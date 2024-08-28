@@ -4,6 +4,7 @@ public class WishlistProduct {
     private int wishlist_id;
     private int product_details_id;
 
+    public WishlistProduct(){}
     public WishlistProduct(int wishlist_id, int product_details_id) {
         this.wishlist_id = wishlist_id;
         this.product_details_id = product_details_id;

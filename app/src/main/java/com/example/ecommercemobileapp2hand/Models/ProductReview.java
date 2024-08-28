@@ -11,6 +11,7 @@ public class ProductReview {
     private int rating;
     private LocalDateTime created_at;
 
+    public ProductReview(){}
     public ProductReview(int product_review_id, String user_id, int product_details_id, String review_content, LocalDateTime created_at, int rating) {
         this.product_review_id = product_review_id;
         this.user_id = user_id;
