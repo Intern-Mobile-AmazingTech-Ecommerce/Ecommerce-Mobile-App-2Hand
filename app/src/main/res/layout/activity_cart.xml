@@ -20,22 +20,25 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="180dp"
         android:layout_marginTop="74dp"
         android:fontFamily="@font/gabarito"
         android:text="Cart"
+
+        android:layout_centerHorizontal="true"
         android:textFontWeight="700"
         android:textSize="16sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="284dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="25dp"
         android:layout_marginTop="127dp"
         android:fontFamily="@font/circularstdmedium500"
         android:text="Remove All"
         android:textFontWeight="450"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        />
 
     <ListView
         android:id="@+id/lv_cart"
@@ -44,20 +47,26 @@
         android:layout_marginLeft="24dp"
         android:layout_marginTop="163dp"
         android:layout_marginRight="24dp"
-        android:layout_marginBottom="350dp" />
+        android:layout_marginBottom="350dp"
+        android:dividerHeight="8dp"
+        android:divider="@android:color/white"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="401dp"
+        android:layout_marginBottom="227dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginRight="24dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <TextView
                 android:id="@+id/textView7"
@@ -229,7 +238,7 @@
             android:layout_marginRight="24dp"
             android:layout_marginLeft="24dp"
             android:layout_marginBottom="14dp"
-            android:id="@+id/button2"
+            android:id="@+id/btnCheckout"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:text="Checkout" />

@@ -62,7 +62,9 @@
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
         <activity
             android:name=".Views.Settings.AddCardActivity"
             android:exported="false" />
