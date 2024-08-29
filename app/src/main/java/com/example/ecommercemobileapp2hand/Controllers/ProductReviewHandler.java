@@ -28,7 +28,7 @@ public class ProductReviewHandler {
                 while (rs.next()){
                     ProductReview product_rv = new ProductReview();
                     product_rv.setProduct_review_id(rs.getInt(1));
-                    product_rv.setUser_id(rs.getString(2));
+                    product_rv.setUser_id(rs.getInt(2));
                     product_rv.setProduct_details_id(rs.getInt(3));
                     product_rv.setReview_content(rs.getString(4));
                     product_rv.setRating(rs.getInt(5));

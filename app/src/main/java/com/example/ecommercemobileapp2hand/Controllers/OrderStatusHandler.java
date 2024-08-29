@@ -25,7 +25,7 @@ public class OrderStatusHandler {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(query);
                 while (rs.next()) {
-                    OrderStatus ord = new OrderStatus(rs.getString(1), rs.getString(2));
+                    OrderStatus ord = new OrderStatus(rs.getInt(1), rs.getString(2));
                     lst.add(ord);
                 }
             } catch (SQLException e) {

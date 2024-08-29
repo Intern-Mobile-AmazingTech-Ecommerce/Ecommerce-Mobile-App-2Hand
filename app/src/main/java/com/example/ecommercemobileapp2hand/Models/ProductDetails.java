@@ -6,20 +6,10 @@ public class ProductDetails {
     private int product_details_id;
     private int product_id;
     private int product_color_id;
-    private int size_id;
     private String description;
     private BigDecimal sale_price;
-    private int stock;
     public ProductDetails(){}
-    public ProductDetails(int product_details_id, int product_id, int product_color_id, int size_id, String description, int stock, BigDecimal sale_price) {
-        this.product_details_id = product_details_id;
-        this.product_id = product_id;
-        this.product_color_id = product_color_id;
-        this.size_id = size_id;
-        this.description = description;
-        this.stock = stock;
-        this.sale_price = sale_price;
-    }
+
 
     public int getProduct_details_id() {
         return product_details_id;
@@ -45,13 +35,7 @@ public class ProductDetails {
         this.product_color_id = product_color_id;
     }
 
-    public int getSize_id() {
-        return size_id;
-    }
 
-    public void setSize_id(int size_id) {
-        this.size_id = size_id;
-    }
 
     public String getDescription() {
         return description;
@@ -69,11 +53,12 @@ public class ProductDetails {
         this.sale_price = sale_price;
     }
 
-    public int getStock() {
-        return stock;
+    public ProductDetails(int product_details_id, int product_id, int product_color_id, String description, BigDecimal sale_price) {
+        this.product_details_id = product_details_id;
+        this.product_id = product_id;
+        this.product_color_id = product_color_id;
+        this.description = description;
+        this.sale_price = sale_price;
     }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
 }
