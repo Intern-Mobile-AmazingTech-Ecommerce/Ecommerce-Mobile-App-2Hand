@@ -67,7 +67,7 @@ public class WishlistActivity extends AppCompatActivity {
         wishList.add(new WishList("T-Shirts", 4));
 
 
-        wishListAdapter = new WishListAdapter(getApplicationContext(),wishList);
+        wishListAdapter = new WishListAdapter(WishlistActivity.this,wishList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
         rv_wishlist.setLayoutManager(layoutManager);
 

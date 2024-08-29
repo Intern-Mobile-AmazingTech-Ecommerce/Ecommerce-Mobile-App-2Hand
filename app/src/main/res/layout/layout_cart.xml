@@ -2,12 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="wrap_content"
     android:layout_marginLeft="24dp"
     android:layout_marginRight="24dp"
-    android:background="@drawable/framelayout">
+    style="@style/cart_enter_coupon">
 
     <ImageView
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="12dp"
         android:id="@+id/imgCart"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -28,29 +32,23 @@
             android:orientation="horizontal">
 
             <TextView
+                android:lineHeight="19dp"
                 android:id="@+id/txt_NameCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="700"
-                android:fontFamily="@font/circularstdmedium500"
-                android:lineHeight="160dp"
-                android:text="TextView"
-                android:textFontWeight="450"
-                android:textSize="12sp" />
+                android:layout_marginRight="90dp"
+                android:text="Men's Harrington Jacket"
+                style="@style/cart_item_detail"/>
 
             <TextView
+                android:layout_alignParentEnd="true"
                 android:id="@+id/txt_PriceCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/gabarito"
-                android:gravity="right"
-                android:lineHeight="160dp"
-                android:text="TextView"
-                android:layout_marginRight="8dp"
-                android:textFontWeight="700"
-                android:textSize="12sp" />
+                android:layout_marginLeft="16dp"
+                android:text="$148"
+                style="@style/cart_item_price"/>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -63,41 +61,34 @@
                 android:id="@+id/txt_SizeCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/circularstdmedium500"
-                android:lineHeight="160dp"
-                android:text="TextView"
-                android:textFontWeight="450"
-                android:textSize="12sp" />
+                android:text="Size - M"
+                style="@style/cart_item_detail"/>
 
             <TextView
                 android:id="@+id/txt_ColorCart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_weight="1"
-                android:fontFamily="@font/circularstdmedium500"
-                android:lineHeight="160dp"
-                android:text="TextView"
-                android:textFontWeight="450"
-                android:textSize="12sp" />
+                android:text="Color - Lemon"
+                style="@style/cart_item_detail"/>
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="8dp"
+                android:layout_alignParentEnd="true"
+                style="@style/cart_btn_add"/>
 
             <ImageButton
                 android:id="@+id/imageButton2"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:background="@drawable/button"
-                app:srcCompat="@drawable/add"
-                android:layout_marginRight="8dp"/>
-            <ImageButton
-                android:id="@+id/imageButton3"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@drawable/button"
-                app:srcCompat="@drawable/minus"
-                android:layout_marginRight="8dp"/>
+                android:layout_alignParentEnd="true"
+                style="@style/cart_btn_minus"
+                />
         </LinearLayout>
 
     </LinearLayout>
-
-
 </LinearLayout>
