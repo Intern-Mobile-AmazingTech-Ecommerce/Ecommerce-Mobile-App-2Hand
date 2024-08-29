@@ -133,6 +133,7 @@ public class HomeFragment extends Fragment {
     }
     private void loadNewInProductsData(){
         lstProNewIn = new ArrayList<>();
+
         lstProNewIn = ProductHandler.getDataByObjectName("Men");
         NewInAdapter = new ProductCardAdapter(lstProNewIn,getActivity());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
