@@ -2,9 +2,12 @@ package com.example.ecommercemobileapp2hand.Models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Product {
+
+
     private int product_id;
     private String product_name;
 
@@ -13,7 +16,7 @@ public class Product {
     private LocalDateTime created_at;
     private ProductObject productObject;
     private ProductCategory productCategory;
-
+    private ArrayList<ProductDetails> productDetailsArrayList;
     public Product() {
     }
 
@@ -25,6 +28,14 @@ public class Product {
         this.created_at = created_at;
         this.productObject = productObject;
         this.productCategory = productCategory;
+    }
+
+    public ArrayList<ProductDetails> getProductDetailsArrayList() {
+        return productDetailsArrayList;
+    }
+
+    public void setProductDetailsArrayList(ArrayList<ProductDetails> productDetailsArrayList) {
+        this.productDetailsArrayList = productDetailsArrayList;
     }
 
     public int getProduct_id() {

@@ -1,14 +1,22 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class ProductDetails {
+    @JsonProperty("product_details_id")
     private int product_details_id;
+    @JsonProperty("product_id")
     private int product_id;
+    @JsonProperty("product_color_id")
     private int product_color_id;
+    @JsonProperty("description")
     private String description;
+    @JsonProperty("sale_price")
     private BigDecimal sale_price;
+    @JsonProperty("details_created_at")
     private Timestamp createdAt;
     public ProductDetails(){}
 

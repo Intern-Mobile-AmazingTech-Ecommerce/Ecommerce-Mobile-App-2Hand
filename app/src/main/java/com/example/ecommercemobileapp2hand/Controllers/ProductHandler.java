@@ -2,9 +2,15 @@ package com.example.ecommercemobileapp2hand.Controllers;
 
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
+import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.ProductObject;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +23,7 @@ import java.util.ArrayList;
 public class ProductHandler {
     private static DBConnect dbConnect = new DBConnect();
     private static Connection conn ;
-
+    static ObjectMapper objectMapper = new ObjectMapper();
 //    public static ArrayList<Product> getData(){
 //        conn = dbConnect.connectionClass();
 //        ArrayList<Product> list = new ArrayList<>();
@@ -61,13 +67,11 @@ public class ProductHandler {
         conn = dbConnect.connectionClass();
         ArrayList<Product> list = new ArrayList<>();
         if(conn!=null){
-            String query = "select product.product_id,product.product_name,product.thumbnail,product.base_price,product.created_at, product_object.*, product_category.* from product\n" +
-                    "inner join product_object on product_object.product_object_id = product.product_object_id\n" +
-                    "inner join product_category on product_category.product_category_id = product.product_category_id\n" +
-                    "where product_object.object_name = '" + objName+"'";
+
             try{
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(query);
+                CallableStatement cstmt = conn.prepareCall("call GetProductDetails(?)");
+                cstmt.setString(1, "Men");
+                ResultSet rs = cstmt.executeQuery();
                 while(rs.next()){
                     Product p = new Product();
                     p.setProduct_id(rs.getInt(1));
@@ -94,12 +98,24 @@ public class ProductHandler {
                     category.setProduct_category_thumbnail(rs.getString(11));
                     p.setProductCategory(category);
 
+
+                    //Array Pro Details
+                    String productDetailsJson = rs.getString("product_details_array");
+                    ArrayList<ProductDetails> productDetails = objectMapper.readValue(
+                            productDetailsJson,
+                            new TypeReference< ArrayList<ProductDetails>>() {}
+                    );
+                    p.setProductDetailsArrayList(productDetails);
                     list.add(p);
 
                 }
             }catch (SQLException e){
                 throw new RuntimeException(e);
-            }finally {
+            } catch (JsonMappingException e) {
+                throw new RuntimeException(e);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            } finally {
                 try{
                     conn.close();
                 }catch (SQLException e){
