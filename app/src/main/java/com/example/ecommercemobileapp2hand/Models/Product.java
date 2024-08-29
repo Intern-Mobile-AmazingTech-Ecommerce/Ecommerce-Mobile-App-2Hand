@@ -7,20 +7,24 @@ import java.util.Date;
 public class Product {
     private int product_id;
     private String product_name;
-    private int product_object_id;
-    private int product_category_id;
+
     private String thumbnail;
     private BigDecimal base_price;
     private LocalDateTime created_at;
-    public Product(){}
-    public Product(int product_id, String product_name, int product_category_id, int product_object_id, String thumbnail, BigDecimal base_price, LocalDateTime created_at) {
+    private ProductObject productObject;
+    private ProductCategory productCategory;
+
+    public Product() {
+    }
+
+    public Product(int product_id, String product_name, String thumbnail, BigDecimal base_price, LocalDateTime created_at, ProductObject productObject, ProductCategory productCategory) {
         this.product_id = product_id;
         this.product_name = product_name;
-        this.product_category_id = product_category_id;
-        this.product_object_id = product_object_id;
         this.thumbnail = thumbnail;
         this.base_price = base_price;
         this.created_at = created_at;
+        this.productObject = productObject;
+        this.productCategory = productCategory;
     }
 
     public int getProduct_id() {
@@ -39,20 +43,20 @@ public class Product {
         this.product_name = product_name;
     }
 
-    public int getProduct_category_id() {
-        return product_category_id;
+    public ProductObject getProductObject() {
+        return productObject;
     }
 
-    public void setProduct_category_id(int product_category_id) {
-        this.product_category_id = product_category_id;
+    public void setProductObject(ProductObject productObject) {
+        this.productObject = productObject;
     }
 
-    public int getProduct_object_id() {
-        return product_object_id;
+    public ProductCategory getProductCategory() {
+        return productCategory;
     }
 
-    public void setProduct_object_id(int product_object_id) {
-        this.product_object_id = product_object_id;
+    public void setProductCategory(ProductCategory productCategory) {
+        this.productCategory = productCategory;
     }
 
     public String getThumbnail() {

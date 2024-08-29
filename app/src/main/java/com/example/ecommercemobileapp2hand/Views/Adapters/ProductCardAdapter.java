@@ -16,19 +16,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.ProductPage.ProductPage;
+import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 import com.google.android.material.button.MaterialButton;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.MyViewHolder> {
-    ArrayList<Product> lstPro;
+    ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstPro;
     Context context;
 
-    public ProductCardAdapter(ArrayList<Product> lstPro, Context context) {
+    public ProductCardAdapter(ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstPro, Context context) {
         this.lstPro = lstPro;
         this.context = context;
     }
-    public void setFilteredList(ArrayList<Product> filteredList)
+    public void setFilteredList(ArrayList<com.example.ecommercemobileapp2hand.Models.Product> filteredList)
     {
         this.lstPro = filteredList;
         notifyDataSetChanged();
@@ -42,27 +44,28 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Product pro = lstPro.get(position);
+        com.example.ecommercemobileapp2hand.Models.Product pro = lstPro.get(position);
 
-        int resourceid = holder.itemView.getContext().getResources().getIdentifier(pro.getThumbnail(), "drawable", holder.itemView.getContext().getPackageName());
-        holder.img_Product.setImageResource(resourceid);
+        String url = Util.getCloudinaryImageUrl(pro.getThumbnail());
+        Picasso.get().load(url).into(holder.img_Product);
 
-        holder.tvProductName.setText(pro.getProduct_name().substring(0, 22) + "...");
-
-        if (pro.getSale_price() == 0)
-        {
-            holder.tvPrice.setVisibility(View.GONE);
-            holder.tvSalePrice.setText("$" + String.valueOf(pro.getBase_price()) + ".00");
-        }
-        else
-        {
-            holder.tvSalePrice.setVisibility(View.VISIBLE);
-            holder.tvSalePrice.setText("$" + String.valueOf(pro.getSale_price()) + ".00");
-            holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()) + ".00");
-
-            // Gạch ngang giá gốc
-            holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
+//        holder.tvProductName.setText(pro.getProduct_name().substring(0, 22) + "...");
+        holder.tvProductName.setText(pro.getProduct_name());
+        holder.tvPrice.setText("$"+String.valueOf(pro.getBase_price()));
+//        if (pro.getSale_price() == 0)
+//        {
+//            holder.tvPrice.setVisibility(View.GONE);
+//            holder.tvSalePrice.setText("$" + String.valueOf(pro.getBase_price()) + ".00");
+//        }
+//        else
+//        {
+//            holder.tvSalePrice.setVisibility(View.VISIBLE);
+//            holder.tvSalePrice.setText("$" + String.valueOf(pro.getSale_price()) + ".00");
+//            holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()) + ".00");
+//
+//            // Gạch ngang giá gốc
+//            holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//        }
         holder.productCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

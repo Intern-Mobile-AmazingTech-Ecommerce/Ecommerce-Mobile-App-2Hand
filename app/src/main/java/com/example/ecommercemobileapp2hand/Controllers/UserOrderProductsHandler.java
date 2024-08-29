@@ -21,9 +21,10 @@ public class UserOrderProductsHandler {
                 ResultSet rs = stmt.executeQuery(query);
                 while (rs.next()) {
                     UserOrderProducts userOrderProducts = new UserOrderProducts();
-                    userOrderProducts.setUser_order_id(rs.getInt("user_order_id"));
-                    userOrderProducts.setProduct_details_id(rs.getInt("product_details_id"));
-                    userOrderProducts.setAmount(rs.getInt("amount"));
+
+                    userOrderProducts.setUser_order_id(rs.getInt(1));
+                    userOrderProducts.setProduct_details_size_id(rs.getInt(2));
+                    userOrderProducts.setAmount(rs.getInt(3));
                     userOrderProductsList.add(userOrderProducts);
                 }
             } catch (SQLException e) {
