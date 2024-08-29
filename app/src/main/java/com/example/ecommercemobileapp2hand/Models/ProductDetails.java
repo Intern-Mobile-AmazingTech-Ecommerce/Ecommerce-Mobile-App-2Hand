@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Models;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 public class ProductDetails {
     private int product_details_id;
@@ -8,8 +9,16 @@ public class ProductDetails {
     private int product_color_id;
     private String description;
     private BigDecimal sale_price;
+    private Timestamp createdAt;
     public ProductDetails(){}
 
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public int getProduct_details_id() {
         return product_details_id;
@@ -53,12 +62,12 @@ public class ProductDetails {
         this.sale_price = sale_price;
     }
 
-    public ProductDetails(int product_details_id, int product_id, int product_color_id, String description, BigDecimal sale_price) {
+    public ProductDetails(int product_details_id, int product_id, int product_color_id, String description, BigDecimal sale_price, Timestamp createdAt) {
         this.product_details_id = product_details_id;
         this.product_id = product_id;
         this.product_color_id = product_color_id;
         this.description = description;
         this.sale_price = sale_price;
+        this.createdAt = createdAt;
     }
-
 }
