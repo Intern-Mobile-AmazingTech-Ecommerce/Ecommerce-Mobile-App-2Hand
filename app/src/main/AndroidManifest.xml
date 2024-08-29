@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
+
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -42,6 +44,8 @@
         <activity
             android:name=".Views.ProductPage.ProductPage"
             android:exported="false" />
+        <activity android:name=".Views.Checkout.Checkout"
+            android:exported="false"/>
         <activity
             android:name=".Views.Cart.EmptyCart"
             android:exported="false" />
