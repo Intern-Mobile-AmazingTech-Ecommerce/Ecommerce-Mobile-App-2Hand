@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
             bottomNavigationView.setSelectedItemId(R.id.itemOrders);
         }
-        else if(intent != null && "NotificationsFragment".equals(intent.getStringExtra("navigateTo"))){
+        else if(intent != null && "NotificationsDetailFragment".equals(intent.getStringExtra("navigateTo"))){
             LoadFragment(new OrdersFragment());
 
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
