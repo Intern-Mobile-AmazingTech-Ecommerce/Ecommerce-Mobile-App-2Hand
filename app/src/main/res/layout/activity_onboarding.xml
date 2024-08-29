@@ -51,8 +51,8 @@
             android:layout_weight="1"
             android:text="Men"
             android:layout_marginRight="20dp"
-            android:backgroundTint="#8E6CEF"
             style="@style/TEXT"
+
             />
 
         <Button
@@ -62,8 +62,8 @@
             android:layout_weight="1"
 
             android:text="Women"
-
             style="@style/button_signin"
+
             />
     </LinearLayout>
 

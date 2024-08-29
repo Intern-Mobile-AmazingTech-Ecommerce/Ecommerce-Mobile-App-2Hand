@@ -1,6 +1,8 @@
 package com.example.ecommercemobileapp2hand.Views.Login;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +42,7 @@ public class OnboardingActivity extends AppCompatActivity {
             return insets;
         });
         btn_men=findViewById(R.id.btn_men);
+        btn_men.setBackgroundColor(Color.parseColor("#8E6CEF"));
         btn_women=findViewById(R.id.btn_women);
         spiAge= findViewById(R.id.spi_age);
         ageAdapter = new AgeAdapter(this,R.layout.age_selected,getList());
@@ -55,10 +58,27 @@ public class OnboardingActivity extends AppCompatActivity {
 //
 //            }
 //        });
+        // Lấy thông tin cấu hình của thiết bị
+        Configuration configuration = getResources().getConfiguration();
+
+        int currentNightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
         btn_men.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btn_men.setBackgroundColor(Color.parseColor("#8E6CEF"));
 
+                // Kiểm tra chế độ theme
+
+                if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+                    // Đang ở chế độ Dark Theme
+                    btn_women.setBackgroundColor(Color.parseColor("#342f3f"));
+
+                } else if (currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
+                    // Đang ở chế độ Light Theme
+                    btn_women.setBackgroundColor(Color.parseColor("#f4f4f4"));
+
+                }
                 gender="Men";
             }
         });
@@ -66,7 +86,17 @@ public class OnboardingActivity extends AppCompatActivity {
         btn_women.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btn_women.setBackgroundColor(Color.parseColor("#8E6CEF"));
 
+                if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+                    // Đang ở chế độ Dark Theme
+                    btn_men.setBackgroundColor(Color.parseColor("#342f3f"));
+
+                } else if (currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
+                    // Đang ở chế độ Light Theme
+                    btn_men.setBackgroundColor(Color.parseColor("#f4f4f4"));
+
+                }
                 gender="Women";
             }
         });
