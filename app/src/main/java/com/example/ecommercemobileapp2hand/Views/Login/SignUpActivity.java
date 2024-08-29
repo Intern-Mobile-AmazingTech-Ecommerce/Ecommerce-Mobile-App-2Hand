@@ -7,14 +7,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ecommercemobileapp2hand.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -93,13 +99,28 @@ public class SignUpActivity extends AppCompatActivity {
                     ((EditText) findViewById(R.id.password)).setError("Mật khẩu phải có ít nhất 6 ký tự");
                     return;
                 }
-
-                startActivity(new Intent(SignUpActivity.this, OnboardingActivity.class));
-                finish();
+                onClickSignUp();
             }
         });
     }
-
+    private void onClickSignUp(){
+        String strEmail = ((EditText) findViewById(R.id.email_address)).getText().toString().trim();
+        String strPass = ((EditText) findViewById(R.id.password)).getText().toString().trim();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.createUserWithEmailAndPassword(strEmail,strPass)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            Intent intent = new Intent(SignUpActivity.this, OnboardingActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }else {
+                            Toast.makeText(SignUpActivity.this, "Loi", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
     private void resetPassword() {
         txtResetPassword = findViewById(R.id.dont_have_a);
         txtResetPassword.setOnClickListener(new View.OnClickListener() {
