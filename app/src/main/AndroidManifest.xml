@@ -64,7 +64,9 @@
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
         <activity
             android:name=".Views.Settings.AddAddressActivity"
             android:exported="false" />

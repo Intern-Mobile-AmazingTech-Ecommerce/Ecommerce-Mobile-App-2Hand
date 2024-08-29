@@ -4,14 +4,14 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public class UserOrder {
-    private String user_order_id;
-    private String user_id;
+    private int user_order_id;
+    private int user_id;
     private double total_price;
     private String order_status_id;
     private LocalDateTime created_at;
 
     public UserOrder(){}
-    public UserOrder(String user_order_id, String user_id, double total_price, String order_status_id, LocalDateTime created_at) {
+    public UserOrder(int user_order_id, int user_id, double total_price, String order_status_id, LocalDateTime created_at) {
         this.user_order_id = user_order_id;
         this.user_id = user_id;
         this.total_price = total_price;
@@ -19,19 +19,19 @@ public class UserOrder {
         this.created_at = created_at;
     }
 
-    public String getUser_order_id() {
+    public int getUser_order_id() {
         return user_order_id;
     }
 
-    public void setUser_order_id(String user_order_id) {
+    public void setUser_order_id(int user_order_id) {
         this.user_order_id = user_order_id;
     }
 
-    public String getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(String user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 

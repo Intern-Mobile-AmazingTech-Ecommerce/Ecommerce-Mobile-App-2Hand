@@ -1,7 +1,7 @@
 package com.example.ecommercemobileapp2hand.Models;
 
 public class UserAccount {
-    private String user_id;
+    private int user_id;
     private String username;
     private String password;
     private String gender;
@@ -11,7 +11,7 @@ public class UserAccount {
     private String last_name;
 
     public UserAccount(){}
-    public UserAccount(String user_id, String username, String password, String gender, String email, String phone_number, String first_name, String last_name) {
+    public UserAccount(int user_id, String username, String password, String gender, String email, String phone_number, String first_name, String last_name) {
         this.user_id = user_id;
         this.username = username;
         this.password = password;
@@ -22,11 +22,11 @@ public class UserAccount {
         this.last_name = last_name;
     }
 
-    public String getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(String user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 

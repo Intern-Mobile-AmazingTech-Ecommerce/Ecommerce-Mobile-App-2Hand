@@ -5,14 +5,14 @@ import java.util.Date;
 
 public class UserCards {
     private int user_cards_id;
-    private String user_id;
+    private int user_id;
     private String user_card_number;
     private String user_card_ccv;
     private LocalDateTime user_card_exp;
     private String user_card_holder_name;
 
     public UserCards(){}
-    public UserCards(int user_cards_id, String user_id, String user_card_number, String user_card_ccv, LocalDateTime user_card_exp, String user_card_holder_name) {
+    public UserCards(int user_cards_id, int user_id, String user_card_number, String user_card_ccv, LocalDateTime user_card_exp, String user_card_holder_name) {
         this.user_cards_id = user_cards_id;
         this.user_id = user_id;
         this.user_card_number = user_card_number;
@@ -29,11 +29,11 @@ public class UserCards {
         this.user_cards_id = user_cards_id;
     }
 
-    public String getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(String user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 
