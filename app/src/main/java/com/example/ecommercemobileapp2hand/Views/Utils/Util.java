@@ -11,6 +11,7 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.example.ecommercemobileapp2hand.Models.config.CloudinaryConfig;
 
 import java.io.IOException;
@@ -54,10 +55,14 @@ public class Util {
         DecimalFormat formatter = new DecimalFormat("###,###");
         return formatter.format(price);
     }
-
-    public static String getCloudinaryImageUrl(String publicId) {
+    public static int dpToPx(Context context, int dp) {
+        return Math.round(dp * context.getResources().getDisplayMetrics().density);
+    }
+    public static String getCloudinaryImageUrl(Context context,String publicId,int w, int h) {
         Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
-        String url = cloudinary.url()
+        int widthDP = dpToPx(context,w);
+        int heightDP = dpToPx(context,h);
+        String url = cloudinary.url().transformation(new Transformation().width(widthDP).height(heightDP))
                 .generate(publicId);
         url = url.replace("http://", "https://");
         return url;
