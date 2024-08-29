@@ -19,8 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
+import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
-import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
+import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
@@ -33,7 +34,7 @@ public class SearchActivity extends AppCompatActivity {
 
     ImageView imgBack;
     SearchView searchView;
-    ArrayList<Product> lstPro;
+    ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstPro;
     ProductCardAdapter proAdapter;
     RecyclerView recyViewSearchPro;
     RecyclerView recyViewCateSearch;
@@ -64,7 +65,7 @@ public class SearchActivity extends AppCompatActivity {
         searchView.clearFocus();
         layoutFilter = (LinearLayout) findViewById(R.id.layoutFilter);
         recyViewSearchPro = (RecyclerView) findViewById(R.id.recyProductSearch);
-        lstPro = Product.initProduct();
+        lstPro = ProductHandler.getDataByObjectName("Men");
         proAdapter = new ProductCardAdapter(lstPro,SearchActivity.this);
 
         scrollViewPro = (ScrollView) findViewById(R.id.scrollViewProduct);
@@ -112,7 +113,7 @@ public class SearchActivity extends AppCompatActivity {
     void filterLíst(String text)
     {
         ArrayList <Product> filterList = new ArrayList<>();
-        for(Product pro : lstPro)
+        for(com.example.ecommercemobileapp2hand.Models.Product pro : lstPro)
         {
             if (pro.getProduct_name().toLowerCase().contains(text.toLowerCase()))
             {

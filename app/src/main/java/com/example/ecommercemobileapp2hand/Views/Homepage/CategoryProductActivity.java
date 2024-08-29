@@ -14,7 +14,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
+import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
+import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
 
@@ -46,7 +47,7 @@ public class CategoryProductActivity extends AppCompatActivity {
         tvCategoryName = findViewById(R.id.tvCategoryName);
         recyCategoryProduct = findViewById(R.id.recyCategoryProduct);
 
-        lstPro = Product.initProduct();
+        lstPro = ProductHandler.getDataByObjectName("Men");
 
         proAdapter = new ProductCardAdapter(lstPro, CategoryProductActivity.this);
 

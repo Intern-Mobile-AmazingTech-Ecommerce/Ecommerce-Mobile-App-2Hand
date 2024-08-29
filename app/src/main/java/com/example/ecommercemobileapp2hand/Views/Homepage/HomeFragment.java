@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
+import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
@@ -36,11 +37,11 @@ public class HomeFragment extends Fragment {
     private CategoriesAdapter categoriesAdapter;
 
     private RecyclerView recyclerViewNewIn;
-    private ArrayList<Product> lstProNewIn;
+    private ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstProNewIn;
     private ProductCardAdapter NewInAdapter;
     private TextView tvNewInSeeAll,tvTopSellingSeeAll;
     private RecyclerView recyclerViewTopSelling;
-    private ArrayList<Product> lstProTopSelling;
+    private ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstProTopSelling;
     private ProductCardAdapter TopSellingAdapter;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -124,7 +125,7 @@ public class HomeFragment extends Fragment {
     }
     private void loadTopSellingProductsData(){
         lstProTopSelling = new ArrayList<>();
-        lstProTopSelling = Product.initProduct();
+        lstProTopSelling = ProductHandler.getDataByObjectName("Men");
         TopSellingAdapter = new ProductCardAdapter(lstProTopSelling,getActivity());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         recyclerViewTopSelling.setLayoutManager(layoutManager);
@@ -132,7 +133,7 @@ public class HomeFragment extends Fragment {
     }
     private void loadNewInProductsData(){
         lstProNewIn = new ArrayList<>();
-        lstProNewIn = Product.initProduct();
+        lstProNewIn = ProductHandler.getDataByObjectName("Men");
         NewInAdapter = new ProductCardAdapter(lstProNewIn,getActivity());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         recyclerViewNewIn.setLayoutManager(layoutManager);
