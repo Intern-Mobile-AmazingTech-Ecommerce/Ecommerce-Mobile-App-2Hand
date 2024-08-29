@@ -18,6 +18,9 @@
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
         <activity
+            android:name=".Views.Settings.WishlistDetail"
+            android:exported="false" />
+        <activity
             android:name=".Views.TestConnect"
             android:exported="false" />
         <activity
@@ -32,7 +35,6 @@
         <activity
             android:name=".Views.Search.SearchActivity"
             android:exported="true" />
-
         <activity
             android:name=".Views.Settings.ListAddressActivity"
             android:exported="false" />
@@ -65,6 +67,9 @@
             android:exported="false" >
 
         </activity>
+        <activity
+            android:name=".Views.Settings.AddAddressActivity"
+            android:exported="false" />
         <activity
             android:name=".Views.Settings.AddCardActivity"
             android:exported="false" />

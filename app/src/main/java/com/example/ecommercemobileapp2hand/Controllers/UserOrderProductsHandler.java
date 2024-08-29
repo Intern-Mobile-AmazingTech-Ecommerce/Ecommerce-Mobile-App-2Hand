@@ -21,6 +21,7 @@ public class UserOrderProductsHandler {
                 ResultSet rs = stmt.executeQuery(query);
                 while (rs.next()) {
                     UserOrderProducts userOrderProducts = new UserOrderProducts();
+
                     userOrderProducts.setUser_order_id(rs.getInt(1));
                     userOrderProducts.setProduct_details_size_id(rs.getInt(2));
                     userOrderProducts.setAmount(rs.getInt(3));

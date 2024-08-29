@@ -78,8 +78,57 @@
     <style name="background_tint_mode">
         <item name="android:backgroundTint">@color/Bg_Light_2</item>
     </style>
-
-
+    <!--    Cart UI-->
+    <style name="empty_cart_text">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/circularstdmedium500</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+    <style name="cart_label">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/gabarito</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="cart_remove_all">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/circularstdmedium500</item>
+        <item name="android:fontWeight">450</item>
+    </style>
+    <style name="cart_fee">
+        <item name="android:gravity">right</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/circularstdmedium500</item>
+        <item name="android:fontWeight">450</item>
+    </style>
+    <style name="cart_item_detail">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:fontFamily">@font/circularstdmedium500</item>
+        <item name="android:fontWeight">450</item>
+    </style>
+    <style name="cart_item_price">
+        <item name="android:fontFamily">@font/gabarito</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textFontWeight">700</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+    <style name="cart_btn_add">
+        <item name="android:background">@drawable/button</item>
+        <item name="android:src">@drawable/add_dark</item>
+    </style>
+    <style name="cart_btn_minus">
+        <item name="android:background">@drawable/button</item>
+        <item name="android:src">@drawable/minus_dark</item>
+    </style>
+    <style name="cart_enter_coupon">
+        <item name="android:background">@drawable/framelayout_dark</item>
+    </style>
     <!--    Settings UI-->
     <style name="user_info">
         <item name="android:background">@drawable/frame_51_dark</item>

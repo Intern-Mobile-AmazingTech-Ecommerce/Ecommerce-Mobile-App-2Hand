@@ -29,9 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="27dp"
             android:text="Your Cart is Empty"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            style="@style/empty_cart_text" />
 
         <Button
             android:id="@+id/btnExplore_Categories_Cart"
@@ -46,13 +44,12 @@
     </LinearLayout>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="27dp"
         android:layout_marginTop="63dp"
-        android:background="@drawable/frame_17"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/btnBack1"
-        app:srcCompat="@drawable/arrowleft2" />
+        style="@style/BUTTON_BACK"/>
 </FrameLayout>

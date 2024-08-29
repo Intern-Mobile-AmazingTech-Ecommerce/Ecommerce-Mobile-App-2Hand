@@ -28,6 +28,7 @@ public class BagHandler {
                 ResultSet rs = stmt.executeQuery(query);
                 while (rs.next())
                 {
+
                     Bag bag = new Bag(rs.getInt(1), rs.getInt(2), rs.getInt(3),rs.getInt(4));
                     lst.add(bag);
                 }
