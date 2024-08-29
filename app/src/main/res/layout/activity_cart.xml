@@ -5,46 +5,44 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    style="@style/SCREEN"
     tools:context=".Views.Cart.Cart">
 
     <ImageButton
         android:id="@+id/btnBack2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_marginStart="27dp"
-        android:layout_marginTop="63dp"
-        android:background="@drawable/frame_17"
-        app:srcCompat="@drawable/arrowleft2"/>
+        android:layout_marginTop="24dp"
+        style="@style/BUTTON_BACK"/>
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="180dp"
-        android:layout_marginTop="74dp"
-        android:fontFamily="@font/gabarito"
+        android:layout_marginTop="34dp"
         android:text="Cart"
-        android:textFontWeight="700"
-        android:textSize="16sp" />
+        style="@style/cart_label"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="284dp"
-        android:layout_marginTop="127dp"
-        android:fontFamily="@font/circularstdmedium500"
+        android:layout_marginTop="93dp"
         android:text="Remove All"
-        android:textFontWeight="450"
-        android:textSize="16sp" />
+        style="@style/cart_remove_all"/>
 
     <ListView
         android:id="@+id/lv_cart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="163dp"
+        android:layout_marginTop="125dp"
         android:layout_marginRight="24dp"
-        android:layout_marginBottom="350dp" />
+        android:layout_marginBottom="350dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="8dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -65,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/circularstdmedium500"
                 android:text="Subtotal"
-                android:textColor="@color/Black_50"
+                android:textColor="#8C8C8C"
                 android:textFontWeight="450"
                 android:textSize="16sp" />
 
@@ -76,10 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="$200"
-                android:textColor="#272727"
-                android:fontFamily="@font/circularstdmedium500"
-                android:textSize="16sp"
-                android:textFontWeight="450"/>
+                style="@style/cart_fee"/>
         </LinearLayout>
 
         <LinearLayout
@@ -95,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/circularstdmedium500"
                 android:text="Shipping Cost"
-                android:textColor="@color/Black_50"
+                android:textColor="#8C8C8C"
                 android:textFontWeight="450"
                 android:textSize="16sp" />
 
@@ -104,12 +99,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="@font/circularstdmedium500"
-                android:gravity="right"
                 android:text="$8.00"
-                android:textColor="#272727"
-                android:textFontWeight="450"
-                android:textSize="16sp" />
+                style="@style/cart_fee" />
         </LinearLayout>
 
         <LinearLayout
@@ -125,21 +116,17 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/circularstdmedium500"
                 android:text="Tax"
-                android:textColor="@color/Black_50"
+                android:textColor="#8C8C8C"
                 android:textFontWeight="450"
                 android:textSize="16sp" />
 
             <TextView
-                android:gravity="right"
-                android:textColor="#272727"
-                android:fontFamily="@font/circularstdmedium500"
-                android:textSize="16sp"
-                android:textFontWeight="450"
                 android:id="@+id/textView16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="$0.00" />
+                android:text="$0.00"
+                style="@style/cart_fee"/>
         </LinearLayout>
 
         <LinearLayout
@@ -154,20 +141,16 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/circularstdmedium500"
                 android:text="Total"
-                android:textColor="@color/Black_50"
+                android:textColor="#8C8C8C"
                 android:textFontWeight="450"
                 android:textSize="16sp" />
 
             <TextView
-                android:textColor="#272727"
-                android:fontFamily="@font/gabarito"
-                android:textFontWeight="700"
-                android:textSize="16sp"
-                android:gravity="right"
                 android:id="@+id/textView17"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                style="@style/cart_fee"
                 android:text="$208" />
         </LinearLayout>
 
@@ -181,7 +164,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
-        android:background="@drawable/framelayout"
+        style="@style/cart_enter_coupon"
         android:layout_marginBottom="140dp">
 
         <ImageView
@@ -190,11 +173,12 @@
             android:id="@+id/imageView5"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:srcCompat="@drawable/iconsax" />
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/discountshape" />
 
         <TextView
             android:id="@+id/textView11"
-            android:textColor="@color/Black_50"
+            android:textColor="#8C8C8C"
             android:layout_marginTop="18dp"
             android:layout_marginLeft="53dp"
             android:fontFamily="@font/circularstdmedium500"

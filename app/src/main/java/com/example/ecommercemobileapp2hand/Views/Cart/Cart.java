@@ -1,6 +1,8 @@
 package com.example.ecommercemobileapp2hand.Views.Cart;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
@@ -25,6 +27,7 @@ public class Cart extends AppCompatActivity {
     ArrayList<Cartt> mylist;
     Adapter_Cart myadapter;
     ListView lv;
+    ImageButton btnback;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +38,23 @@ public class Cart extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        btnback=findViewById(R.id.btnBack2);
         lv = findViewById(R.id.lv_cart);
         mylist = new ArrayList<>();
         for(int i = 0; i< name.length; i++)
         {
-            mylist.add(new Cartt(image[i], name[i],size[i], price[i], color[i]));
+            mylist.add(new Cartt(image[i], name[i],size[i], color[i], price[i]));
         }
         myadapter = new Adapter_Cart(Cart.this , R.layout.layout_cart,mylist);
         lv.setAdapter(myadapter);
+        onReturnToMain();
+    }
+    private void onReturnToMain(){
+        btnback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 }
