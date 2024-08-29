@@ -35,7 +35,7 @@ public class NotificationsHandler {
                                 .toLocalDateTime();
                         notification.setCreated_at(localDateTime);
                     }
-                    notification.setUser_id(rs.getString("user_id"));
+                    notification.setUser_id(rs.getInt("user_id"));
                     notificationsList.add(notification);
                 }
             } catch (SQLException e) {
