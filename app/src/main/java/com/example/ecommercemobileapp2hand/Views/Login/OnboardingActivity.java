@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Age;
 import com.example.ecommercemobileapp2hand.Views.Adapters.AgeAdapter;
@@ -23,7 +25,10 @@ import java.util.List;
 public class OnboardingActivity extends AppCompatActivity {
     private Spinner spiAge;
     private AgeAdapter ageAdapter;
-    private Button btnFinish;
+    private Button btnFinish,btn_men,btn_women;
+    private String gender="Men";
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +39,8 @@ public class OnboardingActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        btn_men=findViewById(R.id.btn_men);
+        btn_women=findViewById(R.id.btn_women);
         spiAge= findViewById(R.id.spi_age);
         ageAdapter = new AgeAdapter(this,R.layout.age_selected,getList());
         spiAge.setAdapter(ageAdapter);
@@ -49,10 +55,35 @@ public class OnboardingActivity extends AppCompatActivity {
 //
 //            }
 //        });
+        btn_men.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                gender="Men";
+            }
+        });
+
+        btn_women.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                gender="Women";
+            }
+        });
         btnFinish=(Button) findViewById(R.id.btn_finish);
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = getIntent().getExtras();
+                if (bundle != null) {
+                    // Extract data from the bundle
+                    String firstName = bundle.getString("firstName");
+                    String lastName = bundle.getString("lastName");
+                    String email = bundle.getString("email");
+                    String password = bundle.getString("password");
+                    UserAccount userAccount=new UserAccount(-1,"",password,gender,email,"",firstName,lastName);
+                    //viet handler them user_account
+                }
                 startActivity(new Intent(OnboardingActivity.this, MainActivity.class));
                 finish();
             }

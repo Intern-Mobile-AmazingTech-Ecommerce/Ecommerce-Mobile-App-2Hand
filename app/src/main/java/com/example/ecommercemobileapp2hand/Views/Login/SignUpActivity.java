@@ -93,8 +93,14 @@ public class SignUpActivity extends AppCompatActivity {
                     ((EditText) findViewById(R.id.password)).setError("Mật khẩu phải có ít nhất 6 ký tự");
                     return;
                 }
-
-                startActivity(new Intent(SignUpActivity.this, OnboardingActivity.class));
+                Bundle bundle = new Bundle();
+                bundle.putString("firstName", firstName);
+                bundle.putString("lastName", lastName);
+                bundle.putString("email", email);
+                bundle.putString("password", password);
+                Intent intent = new Intent(SignUpActivity.this, OnboardingActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 finish();
             }
         });
