@@ -43,7 +43,6 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         ProductCategory category = categories.get(position);
         holder.textViewCategoryName.setText(category.getProduct_category_name());
         String imgUrl = Util.getCloudinaryImageUrl(category.getProduct_category_thumbnail());
-        Log.d("ImgURL",imgUrl);
         Picasso.get().load(imgUrl).into(holder.imageViewCategoryIcon);
 
         holder.relative_layout.setOnClickListener(new View.OnClickListener() {

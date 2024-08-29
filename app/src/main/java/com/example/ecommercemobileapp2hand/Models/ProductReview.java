@@ -5,14 +5,14 @@ import java.util.Date;
 
 public class ProductReview {
     private int product_review_id;
-    private String user_id;
+    private int user_id;
     private int product_details_id;
     private String review_content;
     private int rating;
     private LocalDateTime created_at;
 
     public ProductReview(){}
-    public ProductReview(int product_review_id, String user_id, int product_details_id, String review_content, LocalDateTime created_at, int rating) {
+    public ProductReview(int product_review_id, int user_id, int product_details_id, String review_content, LocalDateTime created_at, int rating) {
         this.product_review_id = product_review_id;
         this.user_id = user_id;
         this.product_details_id = product_details_id;
@@ -29,11 +29,11 @@ public class ProductReview {
         this.product_review_id = product_review_id;
     }
 
-    public String getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(String user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 

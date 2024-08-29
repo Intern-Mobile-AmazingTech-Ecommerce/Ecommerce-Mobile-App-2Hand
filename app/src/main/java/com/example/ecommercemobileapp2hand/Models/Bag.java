@@ -2,7 +2,7 @@ package com.example.ecommercemobileapp2hand.Models;
 
 public class Bag {
     private int bag_id;
-    private String user_id;
+    private int user_id;
     private int product_details_id;
 
     public int getBag_id() {
@@ -13,13 +13,7 @@ public class Bag {
         this.bag_id = bag_id;
     }
 
-    public String getUser_id() {
-        return user_id;
-    }
 
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
 
     public int getProduct_details_id() {
         return product_details_id;
@@ -29,7 +23,15 @@ public class Bag {
         this.product_details_id = product_details_id;
     }
 
-    public Bag(int bag_id, String user_id, int product_details_id) {
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
+    public Bag(int bag_id, int user_id, int product_details_id) {
         this.bag_id = bag_id;
         this.user_id = user_id;
         this.product_details_id = product_details_id;

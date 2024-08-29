@@ -2,11 +2,11 @@ package com.example.ecommercemobileapp2hand.Models;
 
 public class UserAddress {
     private int user_address_id;
-    private String user_id;
+    private int user_id;
     private String user_address_content;
 
     public UserAddress(){}
-    public UserAddress(int user_address_id, String user_id, String user_address_content) {
+    public UserAddress(int user_address_id, int user_id, String user_address_content) {
         this.user_address_id = user_address_id;
         this.user_id = user_id;
         this.user_address_content = user_address_content;
@@ -20,11 +20,11 @@ public class UserAddress {
         this.user_address_id = user_address_id;
     }
 
-    public String getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(String user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 

@@ -7,11 +7,11 @@ public class Notifications {
     private int notifications_id;
     private String notifications_content;
     private LocalDateTime created_at;
-    private String user_id;
+    private int user_id;
     public Notifications(){
 
     }
-    public Notifications(int notifications_id, String notifications_content, LocalDateTime created_at, String user_id) {
+    public Notifications(int notifications_id, String notifications_content, LocalDateTime created_at, int user_id) {
         this.notifications_id = notifications_id;
         this.notifications_content = notifications_content;
         this.created_at = created_at;
@@ -42,11 +42,11 @@ public class Notifications {
         this.created_at = created_at;
     }
 
-    public String getUser_id() {
+    public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(String user_id) {
+    public void setUser_id(int user_id) {
         this.user_id = user_id;
     }
 }
