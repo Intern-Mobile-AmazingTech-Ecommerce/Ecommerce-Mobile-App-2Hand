@@ -14,13 +14,16 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
+import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.ProductPage.ProductPage;
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Picasso;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.MyViewHolder> {
     ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstPro;
@@ -45,27 +48,27 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         com.example.ecommercemobileapp2hand.Models.Product pro = lstPro.get(position);
+        Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
+                .filter(detail -> detail.getSale_price() != null && detail.getSale_price().compareTo(BigDecimal.ZERO) > 0)
+                .findFirst();
 
-        String url = Util.getCloudinaryImageUrl(pro.getThumbnail());
+        String url = Util.getCloudinaryImageUrl(context,pro.getThumbnail(),159,220);
         Picasso.get().load(url).into(holder.img_Product);
-
-//        holder.tvProductName.setText(pro.getProduct_name().substring(0, 22) + "...");
         holder.tvProductName.setText(pro.getProduct_name());
-        holder.tvPrice.setText("$"+String.valueOf(pro.getBase_price()));
-//        if (pro.getSale_price() == 0)
-//        {
-//            holder.tvPrice.setVisibility(View.GONE);
-//            holder.tvSalePrice.setText("$" + String.valueOf(pro.getBase_price()) + ".00");
-//        }
-//        else
-//        {
-//            holder.tvSalePrice.setVisibility(View.VISIBLE);
-//            holder.tvSalePrice.setText("$" + String.valueOf(pro.getSale_price()) + ".00");
-//            holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()) + ".00");
-//
-//            // Gạch ngang giá gốc
-//            holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-//        }
+        holder.tvSalePrice.setVisibility(View.VISIBLE);
+        if(firstSaleDetails.isPresent()){
+            ProductDetails details = firstSaleDetails.get();
+            holder.tvSalePrice.setText("$" + String.valueOf(details.getSale_price()));
+            holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()));
+            // Gạch ngang giá gốc
+            holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }else {
+            holder.tvPrice.setVisibility(View.GONE);
+            holder.tvSalePrice.setText("$" + String.valueOf(pro.getBase_price()));
+        }
+
+
+
         holder.productCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

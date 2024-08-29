@@ -22,10 +22,10 @@
         <ImageView
             android:id="@+id/img_Product"
             style="@style/bg_product_card"
-            android:layout_width="match_parent"
+            android:layout_width="159dp"
             android:layout_height="220dp"
             android:scaleType="fitCenter"
-            app:layout_constraintTop_toTopOf="parent"
+
 
 
             />
