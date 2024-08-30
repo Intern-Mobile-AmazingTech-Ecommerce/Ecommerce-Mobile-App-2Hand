@@ -7,8 +7,6 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
-
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
+        <activity
+            android:name=".Views.Checkout.OrderPlaceSuccessfullyActivity"
+            android:exported="false" />
         <activity
             android:name=".Views.Settings.WishlistDetail"
             android:exported="false" />
@@ -46,8 +47,9 @@
         <activity
             android:name=".Views.ProductPage.ProductPage"
             android:exported="false" />
-        <activity android:name=".Views.Checkout.Checkout"
-            android:exported="false"/>
+        <activity
+            android:name=".Views.Checkout.Checkout"
+            android:exported="false" />
         <activity
             android:name=".Views.Cart.EmptyCart"
             android:exported="false" />
@@ -68,9 +70,7 @@
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"
-            android:exported="false" >
-
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".Views.Settings.AddAddressActivity"
             android:exported="false" />

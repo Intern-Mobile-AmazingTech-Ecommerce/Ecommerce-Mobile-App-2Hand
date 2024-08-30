@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Notifications;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
+import com.example.ecommercemobileapp2hand.Views.MainActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,21 +87,9 @@ public class NotificationsFragment extends Fragment {
     private void addEvents(){
         btn_Explore.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // Get FragmentManager
-                FragmentManager fragmentManager = getParentFragmentManager();
-
-                // Start FragmentTransaction
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                // Replace the current fragment with the new fragment
-                fragmentTransaction.replace(R.id.frameLayout, new NotificationDetailFragment());
-
-                // Add the transaction to the back stack so the user can navigate back
-                fragmentTransaction.addToBackStack(null);
-
-                // Commit the transaction
-                fragmentTransaction.commit();
+            public void onClick(View view) {
+                Intent myintent = new Intent(getActivity(), MainActivity.class);
+                startActivity(myintent);
             }
         });
     }
