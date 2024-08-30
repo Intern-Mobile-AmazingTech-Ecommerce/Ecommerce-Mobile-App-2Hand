@@ -68,7 +68,7 @@ public class WishlistActivity extends AppCompatActivity {
 
 
         wishListAdapter = new WishListAdapter(WishlistActivity.this,wishList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(WishlistActivity.this,RecyclerView.VERTICAL,false);
         rv_wishlist.setLayoutManager(layoutManager);
 
         rv_wishlist.setAdapter(wishListAdapter);

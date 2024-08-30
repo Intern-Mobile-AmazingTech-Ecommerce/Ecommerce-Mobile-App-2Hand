@@ -217,6 +217,7 @@
             android:layout_marginLeft="24dp"
             android:layout_marginBottom="14dp"
             android:id="@+id/btnCheckout"
+            android:textColor="#ffffff"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:text="Checkout" />
