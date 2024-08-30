@@ -5,14 +5,12 @@ import android.util.Log;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class DBConnect {
-    private Connection conn = null;
-    private String username, password, serverName, port, database;
-
+    Connection conn = null;
+    String username,password,  ip, port, database;
     public Connection connectionClass() {
-        serverName = "KHANH";
+        ip = "192.168.56.1";
         database = "Ecommerce2Hand";
         username = "sa";
         password = "123";
@@ -21,22 +19,16 @@ public class DBConnect {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String connectionStr = null;
+        String ConnectionStr = null;
         try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            connectionStr = "jdbc:sqlserver://" + serverName + ":" + port + ";databaseName=" + database;
-            conn = DriverManager.getConnection(connectionStr, username, password);
+            Class.forName("net.sourceforge.jtds.jdbc.Driver");
+            ConnectionStr = "jdbc:jtds:sqlserver://" + ip + ":" + port + ";databaseName=" + database + ";user=" + username + ";password=" + password + ";encrypt=true;trustServerCertificate=true;";
+            conn = DriverManager.getConnection(ConnectionStr);
+            System.out.println("Ket noi duoc roi ne");
 
-            Log.i("DBConnect", "Kết nối thành công");
-
-        } catch (ClassNotFoundException e) {
-            Log.e("DBConnect", "Driver không tìm thấy: " + e.getMessage());
-        } catch (SQLException e) {
-            Log.e("DBConnect", "Lỗi kết nối cơ sở dữ liệu: " + e.getMessage());
-        } catch (Exception e) {
-            Log.e("DBConnect", "Lỗi: " + e.getMessage());
+        } catch (Exception ex) {
+            Log.e("Error", ex.getMessage());
         }
         return conn;
     }
-
 }
