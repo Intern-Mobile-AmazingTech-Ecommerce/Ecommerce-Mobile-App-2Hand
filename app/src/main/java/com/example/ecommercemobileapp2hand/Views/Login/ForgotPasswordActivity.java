@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,7 +41,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             return insets;
         });
         initialUI();
-        sendEmailReset();
         returnToSignInPassword();
     }
 
@@ -53,25 +53,20 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 ((EditText) findViewById(R.id.email_address)).setError("Email không hợp lệ");
                 return;
             }
+            else {
+                ResetPassword();
+            }
         });
     }
-
     private boolean isValidEmail(String email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
-
-    private void sendEmailReset()
-    {
-        ResetPassword();
-    }
-
     private void ResetPassword(){
-        btnContinue_2 = findViewById(R.id.btnContinue_2);
-        String strEmail = "duongvankhuong197@gmail.com";
+        String strEmail = edtEmail.getText().toString();
+        //String strEmail = email;
+        //Log.d("ResetPassword: ", strEmail);
+        //String strEmail = "duongvankhuong197@gmail.com";
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        btnContinue_2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 auth.sendPasswordResetEmail(strEmail)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
@@ -85,9 +80,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                 }
                             }
                         });
-            }
-        });
-
     }
     private void returnToSignInPassword(){
         btnReturn=(ImageButton) findViewById(R.id.btn_return);
