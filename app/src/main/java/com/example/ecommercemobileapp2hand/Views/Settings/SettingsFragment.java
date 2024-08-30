@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
+import com.example.ecommercemobileapp2hand.Views.SplashScreen.SplashScreenActivity;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,6 +29,8 @@ public class SettingsFragment extends Fragment {
     private TextView tvAddress, tvWishlist, tvPayment, tvHelp, tvSupport;
     private static final String TAG = "SettingsFragment";
     private FirebaseAuth firebaseAuth;
+    private static final String PREFS_NAME = "user_prefs";
+
 
     @Nullable
     @Override
@@ -104,13 +107,13 @@ public class SettingsFragment extends Fragment {
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
         googleSignInClient.signOut().addOnCompleteListener(task -> {
             LoginManager.getInstance().logOut();
-            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.clear();
             editor.apply();
             startActivity(new Intent(getActivity(), SignInActivity.class));
             requireActivity().finish();
-            Toast.makeText(getActivity(), "Đã đăng xuất thành công", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
         });
     }
 
