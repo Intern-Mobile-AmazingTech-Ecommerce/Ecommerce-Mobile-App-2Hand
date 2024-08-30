@@ -44,4 +44,33 @@ public class OrderStatusHandler {
         }
        return lst;
     }
+
+    public static boolean CheckStatus(int id, String str)
+    {
+        try
+        {
+            conn = dbConnect.connectionClass();
+            String sql = "SELECT order_status_name FROM ORDER_STATUS WHERE order_status_id = " + id + "";
+            Statement st = conn.createStatement();
+            ResultSet rs =  st.executeQuery(sql);
+            if (rs.next() && rs.getString(1).equals(str))
+            {
+                st.close();
+                rs.close();
+                conn.close();
+                return true;
+            }
+            else
+            {
+                st.close();
+                rs.close();
+                conn.close();
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

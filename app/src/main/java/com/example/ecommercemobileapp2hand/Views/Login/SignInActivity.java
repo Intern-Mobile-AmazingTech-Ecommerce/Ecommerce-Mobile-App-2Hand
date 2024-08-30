@@ -19,6 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.facebook.AccessToken;
@@ -87,12 +88,16 @@ public class SignInActivity extends AppCompatActivity {
         EditText edtEmail = findViewById(R.id.email_address);
 
         btnContinue.setOnClickListener(v -> {
-            String email = edtEmail.getText().toString().trim();
+            String email = edtEmail.getText().toString();
             if (!isValidEmail(email)) {
                 edtEmail.setError("Email không hợp lệ");
                 return;
             }
-            startActivity(new Intent(SignInActivity.this, SignInPasswordActivity.class));
+            Intent intent = new Intent(SignInActivity.this, SignInPasswordActivity.class);
+            UserAccount userAccount = new UserAccount();
+            userAccount.setEmail(email);
+            intent.putExtra("UserAccount", userAccount);
+            startActivity(intent);
         });
 
         txtCreateAccount.setOnClickListener(v -> startActivity(new Intent(SignInActivity.this, SignUpActivity.class)));

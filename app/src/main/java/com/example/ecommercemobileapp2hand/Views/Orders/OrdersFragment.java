@@ -23,8 +23,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.ecommercemobileapp2hand.Controllers.OrderStatusHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserOrderHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
 import com.example.ecommercemobileapp2hand.Models.OrderStatus;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Homepage.CategoriesActivity;
 import com.example.ecommercemobileapp2hand.Views.Adapters.OrderCardAdapter;
@@ -37,12 +41,14 @@ import java.util.Random;
 public class OrdersFragment extends Fragment {
     ChipGroup chipGroup;
     RecyclerView recyOrders;
-    ArrayList<Order> lstorders;
+    ArrayList<UserOrder> lstorders;
     OrderCardAdapter orderCardAdapter;
     LinearLayout linear_order1, linear_order2;
     ImageView img_empty_order;
     Button btn_explore;
     String checkstatus;
+    private UserAccount userAccount;
+    private ArrayList<OrderStatus> oderstatus;
     public OrdersFragment() {
     }
 
@@ -67,6 +73,12 @@ public class OrdersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (getArguments() != null)
+        {
+            userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
+        }
+        oderstatus = OrderStatusHandler.getData();
+
         chipGroup = view.findViewById(R.id.chipgroup);
         recyOrders = view.findViewById(R.id.recyOrders);
         img_empty_order = view.findViewById(R.id.img_empty_order);
@@ -75,7 +87,8 @@ public class OrdersFragment extends Fragment {
         btn_explore = view.findViewById(R.id.btn_explore);
 
 //        lstorders = new ArrayList<>();
-        lstorders = Order.initOrder();
+//        lstorders = Order.initOrder();
+        lstorders = UserOrderHandler.getOrder(userAccount.getUser_id());
 
         if (lstorders.isEmpty())
         {
@@ -95,7 +108,6 @@ public class OrdersFragment extends Fragment {
         else
         {
             ArrayList<OrderStatus> oderstatus = OrderStatusHandler.getData();
-
 
             createChips(oderstatus);
         }
@@ -121,7 +133,16 @@ public class OrdersFragment extends Fragment {
                 chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
                 checkstatus = chip.getText().toString();
 
-                ArrayList<Order> filter = filterOrder(checkstatus);
+                ArrayList<UserOrder> filter = new ArrayList<>();
+                for (OrderStatus ordstt : oderstatus)
+                {
+                    if (ordstt.getOrder_status_name().equals(checkstatus))
+                    {
+                        filter = filterOrder(ordstt);
+                        break;
+                    }
+                }
+
                 orderCardAdapter = new OrderCardAdapter(filter, getContext(), checkstatus);
                 recyOrders.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
                 recyOrders.setItemAnimator(new DefaultItemAnimator());
@@ -138,7 +159,15 @@ public class OrdersFragment extends Fragment {
                         chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
                         checkstatus = chip.getText().toString();
 
-                        ArrayList<Order> filter = filterOrder(checkstatus);
+                        ArrayList<UserOrder> filter = new ArrayList<>();
+                        for (OrderStatus ordstt : oderstatus)
+                        {
+                            if (ordstt.getOrder_status_name().equals(checkstatus))
+                            {
+                                filter = filterOrder(ordstt);
+                                break;
+                            }
+                        }
                         orderCardAdapter = new OrderCardAdapter(filter, getContext(), checkstatus);
                         recyOrders.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
                         recyOrders.setItemAnimator(new DefaultItemAnimator());
@@ -163,28 +192,28 @@ public class OrdersFragment extends Fragment {
         }
     }
 
-    private ArrayList<Order> filterOrder(String stt)
+    private ArrayList<UserOrder> filterOrder(OrderStatus ord)
     {
-        ArrayList<Order> filter = new ArrayList<>();
-        for (Order order : lstorders)
+        ArrayList<UserOrder> filter = new ArrayList<>();
+        for (UserOrder order : lstorders)
         {
-            if (stt.equals("Processing"))
+            if (ord.getOrder_status_name().equals("Processing"))
             {
-                if (!order.getOrder_status_name().equals("Delivered"))
+                if (!OrderStatusHandler.CheckStatus(order.getOrder_status_id(), "Delivered"))
                 {
                     filter.add(order);
                 }
             }
-            if (stt.equals("Shipped"))
+            if (ord.getOrder_status_name().equals("Shipped"))
             {
-                if (order.getOrder_status_name().equals("Shipped"))
+                if (OrderStatusHandler.CheckStatus(order.getOrder_status_id(), ord.getOrder_status_name()))
                 {
                     filter.add(order);
                 }
             }
-            if (stt.equals("Delivered"))
+            if (ord.getOrder_status_name().equals("Delivered"))
             {
-                if (order.getOrder_status_name().equals("Delivered"))
+                if (OrderStatusHandler.CheckStatus(order.getOrder_status_id(), ord.getOrder_status_name()))
                 {
                     filter.add(order);
                 }

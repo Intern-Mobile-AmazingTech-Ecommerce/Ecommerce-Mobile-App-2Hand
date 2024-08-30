@@ -121,7 +121,7 @@ public class OnboardingActivity extends AppCompatActivity {
                     String lastName = bundle.getString("lastName");
                     String email = bundle.getString("email");
                     String password = bundle.getString("password");
-                    UserAccount userAccount=new UserAccount(-1,"",password,gender,email,"",firstName,lastName);
+                    UserAccount userAccount=new UserAccount(-1,"",password,gender,email,"",firstName,lastName, "");
                     //viet handler them user_account
                 }
                 startActivity(new Intent(OnboardingActivity.this, MainActivity.class));

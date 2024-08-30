@@ -1,8 +1,9 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class UserAccount {
+public class UserAccount implements Serializable {
     private int user_id;
     private String username;
     private String password;
@@ -11,6 +12,15 @@ public class UserAccount {
     private String phone_number;
     private String first_name;
     private String last_name;
+    private String img_url;
+
+    public String getImg_url() {
+        return img_url;
+    }
+
+    public void setImg_url(String img_url) {
+        this.img_url = img_url;
+    }
 
     private Bag bag_user;
     private ArrayList<Wishlist> lstWL;
@@ -68,7 +78,8 @@ public class UserAccount {
     }
 
     public UserAccount(){}
-    public UserAccount(int user_id, String username, String password, String gender, String email, String phone_number, String first_name, String last_name) {
+
+    public UserAccount(int user_id, String username, String password, String gender, String email, String phone_number, String first_name, String last_name, String img_url) {
         this.user_id = user_id;
         this.username = username;
         this.password = password;
@@ -77,6 +88,7 @@ public class UserAccount {
         this.phone_number = phone_number;
         this.first_name = first_name;
         this.last_name = last_name;
+        this.img_url = img_url;
     }
 
     public int getUser_id() {
