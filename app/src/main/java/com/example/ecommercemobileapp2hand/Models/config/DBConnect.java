@@ -10,13 +10,10 @@ public class DBConnect {
     Connection conn = null;
     String username,password,  ip, port, database;
     public Connection connectionClass() {
-
-
-        ip = "192.168.1.21";
-
+        ip = "10.0.2.2";
         database = "Ecommerce2Hand";
         username = "sa";
-        password = "123";
+        password = "123456";
         port = "1433";
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
