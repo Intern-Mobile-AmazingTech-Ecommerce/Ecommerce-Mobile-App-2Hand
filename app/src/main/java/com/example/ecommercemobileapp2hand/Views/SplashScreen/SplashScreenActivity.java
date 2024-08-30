@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Views.SplashScreen;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -12,8 +13,13 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
+import com.example.ecommercemobileapp2hand.Views.MainActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class SplashScreenActivity extends AppCompatActivity {
+
+    private static final String PREFS_NAME = "user_prefs";
+    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +31,22 @@ public class SplashScreenActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(getApplicationContext(), SignInActivity.class);
-                startActivity(intent);
-                finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        new Handler().postDelayed(() -> {
+            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            boolean isLoggedIn = sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
+
+            if (isLoggedIn) {
+                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+            } else {
+                startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
             }
-        },2000);
+            finish();
+        }, 1000);
     }
 }
+

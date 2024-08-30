@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
@@ -27,7 +26,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -56,8 +54,10 @@ public class SignInActivity extends AppCompatActivity {
     private TextView txtCreateAccount;
     private Switch switcher;
     private SharedPreferences sharedPreferences;
-    private Boolean nightMode;
+    private boolean nightMode;
     private FirebaseAuth firebaseAuth;
+    private static final String PREFS_NAME = "user_prefs";
+    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,28 +73,29 @@ public class SignInActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         callbackManager = CallbackManager.Factory.create();
 
-        initialUI();
+        initializeUI();
         configureFacebookLogin();
         configureGoogleLogin();
         configureNightModeSwitch();
     }
 
-    private void initialUI() {
+    private void initializeUI() {
         btnContinue = findViewById(R.id.btnContinue);
-        btnContinue.setOnClickListener(v -> startActivity(new Intent(SignInActivity.this, SignInPasswordActivity.class)));
         txtCreateAccount = findViewById(R.id.dont_have_a);
-        txtCreateAccount.setOnClickListener(v -> startActivity(new Intent(SignInActivity.this, SignUpActivity.class)));
         btnSignInGoogle = findViewById(R.id.btnSignInGoogle);
         btnSignInFacebook = findViewById(R.id.btnSignInFacebook);
         EditText edtEmail = findViewById(R.id.email_address);
+
         btnContinue.setOnClickListener(v -> {
             String email = edtEmail.getText().toString().trim();
             if (!isValidEmail(email)) {
-                ((EditText) findViewById(R.id.email_address)).setError("Email không hợp lệ");
+                edtEmail.setError("Email không hợp lệ");
                 return;
             }
             startActivity(new Intent(SignInActivity.this, SignInPasswordActivity.class));
         });
+
+        txtCreateAccount.setOnClickListener(v -> startActivity(new Intent(SignInActivity.this, SignUpActivity.class)));
     }
 
     private boolean isValidEmail(String email) {
@@ -116,12 +117,12 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onError(FacebookException error) {
                 Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
-                Log.e("SignInActivity", "Facebook login error", error);
+                Log.e(TAG, "Facebook login error", error);
             }
         });
 
-        Button btnSignInFacebook = findViewById(R.id.btnSignInFacebook);
-        btnSignInFacebook.setOnClickListener(v -> LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList("email", "public_profile")));
+        btnSignInFacebook.setOnClickListener(v ->
+                LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList("email", "public_profile")));
     }
 
     private void configureGoogleLogin() {
@@ -149,13 +150,9 @@ public class SignInActivity extends AppCompatActivity {
         }
 
         switcher.setOnClickListener(v -> {
-            if (nightMode) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                sharedPreferences.edit().putBoolean("night", false).apply();
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                sharedPreferences.edit().putBoolean("night", true).apply();
-            }
+            nightMode = !nightMode;
+            AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+            sharedPreferences.edit().putBoolean("night", nightMode).apply();
         });
     }
 
@@ -165,10 +162,12 @@ public class SignInActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+                    Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                     navigateToMainActivity();
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "Facebook login error", task.getException());
             }
         });
     }
@@ -178,7 +177,7 @@ public class SignInActivity extends AppCompatActivity {
             GoogleSignInAccount account = task.getResult(ApiException.class);
             if (account != null) {
                 navigateToMainActivity();
-                Toast.makeText(this, "Đăng nhập Google thành công", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
             }
         } catch (ApiException e) {
             Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
@@ -187,6 +186,10 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void navigateToMainActivity() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_IS_LOGGED_IN, true);
+        editor.apply();
         startActivity(new Intent(SignInActivity.this, MainActivity.class));
         finish();
     }
@@ -198,8 +201,7 @@ public class SignInActivity extends AppCompatActivity {
         if (requestCode == REQ_GOOGLE_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleGoogleSignInResult(task);
-        }
-        if (FacebookSdk.isFacebookRequestCode(requestCode)) {
+        } else if (FacebookSdk.isFacebookRequestCode(requestCode)) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
