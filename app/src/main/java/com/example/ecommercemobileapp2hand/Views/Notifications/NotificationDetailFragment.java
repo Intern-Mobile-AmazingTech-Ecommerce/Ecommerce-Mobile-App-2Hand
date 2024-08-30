@@ -89,7 +89,7 @@ public class NotificationDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // Làm mới dữ liệu khi fragment quay lại
+
         fetchNotifications();
     }
     @Override

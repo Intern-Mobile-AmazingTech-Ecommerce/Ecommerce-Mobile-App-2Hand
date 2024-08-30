@@ -64,9 +64,7 @@ public class CheckoutAddressFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_checkout_address, container, false);
-
         addControls(view);
         return view;
     }
@@ -83,13 +81,10 @@ public class CheckoutAddressFragment extends Fragment {
         img_address_arrowright.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create the new fragment
                 Fragment newFragment = new CheckoutAddressOnFragment();
-
-                // Replace the current fragment with the new fragment
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_Address, newFragment); // R.id.fragment_container is the ID of your container in the activity
-                transaction.addToBackStack(null); // Add this transaction to the back stack
+                transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
