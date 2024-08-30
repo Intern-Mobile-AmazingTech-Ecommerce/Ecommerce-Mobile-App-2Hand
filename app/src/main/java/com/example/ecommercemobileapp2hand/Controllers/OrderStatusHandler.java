@@ -24,9 +24,13 @@ public class OrderStatusHandler {
             {
                 Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(query);
-                while (rs.next()) {
-                    OrderStatus ord = new OrderStatus(rs.getInt(1), rs.getString(2));
-                    lst.add(ord);
+                while (rs.next())
+                {
+                    if (!rs.getString(2).equals("Order Placed") && !rs.getString(2).equals("Order Confirmed"))
+                    {
+                        OrderStatus ord = new OrderStatus(rs.getInt(1), rs.getString(2));
+                        lst.add(ord);
+                    }
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
