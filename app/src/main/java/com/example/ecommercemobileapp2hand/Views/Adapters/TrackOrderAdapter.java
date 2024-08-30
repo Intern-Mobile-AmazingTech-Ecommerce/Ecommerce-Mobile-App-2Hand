@@ -12,18 +12,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
-import com.example.ecommercemobileapp2hand.Models.FakeModels.OrderStatus;
+import com.example.ecommercemobileapp2hand.Models.OrderStatus;
+import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class TrackOrderAdapter extends RecyclerView.Adapter<TrackOrderAdapter.MyViewHolder> {
     ArrayList<OrderStatus> lst_ordstt;
     Context context;
-    Order order;
+    UserOrder order;
 
-    public TrackOrderAdapter(ArrayList<OrderStatus> lst_ordstt, Context context, Order order) {
+    public TrackOrderAdapter(ArrayList<OrderStatus> lst_ordstt, Context context, UserOrder order) {
         this.lst_ordstt = lst_ordstt;
         this.context = context;
         this.order = order;
@@ -40,12 +41,15 @@ public class TrackOrderAdapter extends RecyclerView.Adapter<TrackOrderAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         OrderStatus orderStatus = lst_ordstt.get(position);
 
-        if (orderStatus.isCompleted())
+        if (orderStatus.getOrder_status_id()  <= order.getOrder_status_id())
         {
             holder.img_checkstattus.setImageResource(R.drawable.check_line);
             holder.img_checkstattus.setBackgroundResource(R.drawable.circle_completed);
             holder.tv_orderstatus.setText(orderStatus.getOrder_status_name());
-            holder.tv_created.setText(order.getCreated_at());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM");
+            String formattedDate = order.getCreated_at().format(formatter);
+            holder.tv_created.setText(formattedDate);
         }
         else
         {
@@ -64,7 +68,10 @@ public class TrackOrderAdapter extends RecyclerView.Adapter<TrackOrderAdapter.My
             holder.img_checkstattus.setImageResource(R.drawable.check_line);
             holder.img_checkstattus.setBackgroundResource(R.drawable.circle_incompleted);
             holder.tv_orderstatus.setText(orderStatus.getOrder_status_name());
-            holder.tv_created.setText(order.getCreated_at());
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM");
+            String formattedDate = order.getCreated_at().format(formatter);
+            holder.tv_created.setText(formattedDate);
         }
     }
 

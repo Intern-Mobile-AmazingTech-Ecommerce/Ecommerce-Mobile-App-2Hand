@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
-import com.example.ecommercemobileapp2hand.Models.FakeModels.OrderStatus;
+import com.example.ecommercemobileapp2hand.Controllers.OrderStatusHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserOrderProductsHandler;
+import com.example.ecommercemobileapp2hand.Models.OrderStatus;
+import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.TrackOrderAdapter;
 
@@ -29,7 +32,7 @@ public class TrackOrderAcitivity extends AppCompatActivity {
     RecyclerView recy_status;
     TextView tv_orderid, tv_amount_order, tv_viewall, tv_shippingdetails;
     ArrayList<OrderStatus> orderStatuses;
-    Order order;
+    UserOrder order;
     TrackOrderAdapter trackOrderAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +58,14 @@ public class TrackOrderAcitivity extends AppCompatActivity {
         tv_shippingdetails = findViewById(R.id.tv_shippingdetails);
 
         tv_orderid.setText(tv_orderid.getText() + "#" + order.getUser_order_id());
-        tv_amount_order.setText(String.valueOf(order.getAmount()) + " items");
+        tv_amount_order.setText(String.valueOf(UserOrderProductsHandler.getAmountItems(order.getUser_order_id()) + " items"));
 
-        tv_shippingdetails.setText(order.getShipping_details());
+        tv_shippingdetails.setText(UserAddressHandler.getAddress(order.getUser_order_id()));
 
-        orderStatuses = OrderStatus.initOrderStatus();
+        orderStatuses = OrderStatusHandler.getData1();
+        Collections.reverse(orderStatuses);
 
-        ArrayList<OrderStatus> filter = filterStatus();
-        trackOrderAdapter = new TrackOrderAdapter(filter, TrackOrderAcitivity.this, order);
+        trackOrderAdapter = new TrackOrderAdapter(orderStatuses, TrackOrderAcitivity.this, order);
 
         recy_status.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recy_status.setItemAnimator(new DefaultItemAnimator());
@@ -81,42 +84,6 @@ public class TrackOrderAcitivity extends AppCompatActivity {
     void getIt()
     {
         Intent intent = getIntent();
-        order = (Order) intent.getSerializableExtra("order");
-    }
-    private ArrayList<OrderStatus> filterStatus()
-    {
-        ArrayList<OrderStatus> filter = new ArrayList<>();
-        for (OrderStatus orderStatus : orderStatuses)
-        {
-            if (order.getOrder_status_id() == orderStatus.getOrder_status_id())
-            {
-                orderStatus.setCompleted(true);
-                filter.add(orderStatus);
-                break;
-            }
-            else
-            {
-                orderStatus.setCompleted(true);
-                filter.add(orderStatus);
-            }
-        }
-
-        if (filter.size() < 4)
-        {
-            for (OrderStatus orderStatus : orderStatuses)
-            {
-                if (!filter.contains(orderStatus))
-                {
-                    filter.add(orderStatus);
-                    if (orderStatus.getOrder_status_name().equals("Delivered"))
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        Collections.reverse(filter);
-        return filter;
+        order = (UserOrder) intent.getSerializableExtra("order");
     }
 }

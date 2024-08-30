@@ -22,60 +22,60 @@ public class UserAccount implements Serializable {
         this.img_url = img_url;
     }
 
-    private Bag bag_user;
-    private ArrayList<Wishlist> lstWL;
-    private ArrayList<Notifications> lstNoti;
-    private ArrayList<UserCards> lstCard;
-    private ArrayList<UserOrder> lstOrder;
-    private ArrayList<UserAddress> lstAddress;
-
-    public Bag getBag_user() {
-        return bag_user;
-    }
-
-    public void setBag_user(Bag bag_user) {
-        this.bag_user = bag_user;
-    }
-
-    public ArrayList<Wishlist> getLstWL() {
-        return lstWL;
-    }
-
-    public void setLstWL(ArrayList<Wishlist> lstWL) {
-        this.lstWL = lstWL;
-    }
-
-    public ArrayList<Notifications> getLstNoti() {
-        return lstNoti;
-    }
-
-    public void setLstNoti(ArrayList<Notifications> lstNoti) {
-        this.lstNoti = lstNoti;
-    }
-
-    public ArrayList<UserCards> getLstCard() {
-        return lstCard;
-    }
-
-    public void setLstCard(ArrayList<UserCards> lstCard) {
-        this.lstCard = lstCard;
-    }
-
-    public ArrayList<UserOrder> getLstOrder() {
-        return lstOrder;
-    }
-
-    public void setLstOrder(ArrayList<UserOrder> lstOrder) {
-        this.lstOrder = lstOrder;
-    }
-
-    public ArrayList<UserAddress> getLstAddress() {
-        return lstAddress;
-    }
-
-    public void setLstAddress(ArrayList<UserAddress> lstAddress) {
-        this.lstAddress = lstAddress;
-    }
+//    private Bag bag_user;
+//    private ArrayList<Wishlist> lstWL;
+//    private ArrayList<Notifications> lstNoti;
+//    private ArrayList<UserCards> lstCard;
+//    private ArrayList<UserOrder> lstOrder;
+//    private ArrayList<UserAddress> lstAddress;
+//
+//    public Bag getBag_user() {
+//        return bag_user;
+//    }
+//
+//    public void setBag_user(Bag bag_user) {
+//        this.bag_user = bag_user;
+//    }
+//
+//    public ArrayList<Wishlist> getLstWL() {
+//        return lstWL;
+//    }
+//
+//    public void setLstWL(ArrayList<Wishlist> lstWL) {
+//        this.lstWL = lstWL;
+//    }
+//
+//    public ArrayList<Notifications> getLstNoti() {
+//        return lstNoti;
+//    }
+//
+//    public void setLstNoti(ArrayList<Notifications> lstNoti) {
+//        this.lstNoti = lstNoti;
+//    }
+//
+//    public ArrayList<UserCards> getLstCard() {
+//        return lstCard;
+//    }
+//
+//    public void setLstCard(ArrayList<UserCards> lstCard) {
+//        this.lstCard = lstCard;
+//    }
+//
+//    public ArrayList<UserOrder> getLstOrder() {
+//        return lstOrder;
+//    }
+//
+//    public void setLstOrder(ArrayList<UserOrder> lstOrder) {
+//        this.lstOrder = lstOrder;
+//    }
+//
+//    public ArrayList<UserAddress> getLstAddress() {
+//        return lstAddress;
+//    }
+//
+//    public void setLstAddress(ArrayList<UserAddress> lstAddress) {
+//        this.lstAddress = lstAddress;
+//    }
 
     public UserAccount(){}
 
