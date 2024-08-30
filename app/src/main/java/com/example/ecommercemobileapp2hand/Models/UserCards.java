@@ -1,71 +1,70 @@
 package com.example.ecommercemobileapp2hand.Models;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.sql.Date;
+
 
 public class UserCards {
-    private int user_cards_id;
-    private int user_id;
-    private String user_card_number;
-    private String user_card_ccv;
-    private LocalDateTime user_card_exp;
-    private String user_card_holder_name;
+    private int userCardsId;
+    private int userId;
+    private String cardNumber;
+    private String ccv;
+    private Date expirationDate;
+    private String cardHolderName;
 
-    public UserCards(){}
-    public UserCards(int user_cards_id, int user_id, String user_card_number, String user_card_ccv, LocalDateTime user_card_exp, String user_card_holder_name) {
-        this.user_cards_id = user_cards_id;
-        this.user_id = user_id;
-        this.user_card_number = user_card_number;
-        this.user_card_ccv = user_card_ccv;
-        this.user_card_exp = user_card_exp;
-        this.user_card_holder_name = user_card_holder_name;
+    public UserCards(int userCardsId, int userId, String cardNumber, String ccv, Date expirationDate, String cardHolderName) {
+        this.userCardsId = userCardsId;
+        this.userId = userId;
+        this.cardNumber = cardNumber;
+        this.ccv = ccv;
+        this.expirationDate = expirationDate;
+        this.cardHolderName = cardHolderName;
     }
 
-    public int getUser_cards_id() {
-        return user_cards_id;
+    public int getUserCardsId() {
+        return userCardsId;
     }
 
-    public void setUser_cards_id(int user_cards_id) {
-        this.user_cards_id = user_cards_id;
+    public void setUserCardsId(int userCardsId) {
+        this.userCardsId = userCardsId;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public String getUser_card_number() {
-        return user_card_number;
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public void setUser_card_number(String user_card_number) {
-        this.user_card_number = user_card_number;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
-    public String getUser_card_ccv() {
-        return user_card_ccv;
+    public String getCcv() {
+        return ccv;
     }
 
-    public void setUser_card_ccv(String user_card_ccv) {
-        this.user_card_ccv = user_card_ccv;
+    public void setCcv(String ccv) {
+        this.ccv = ccv;
     }
 
-    public LocalDateTime getUser_card_exp() {
-        return user_card_exp;
+    public Date getExpirationDate() {
+        return expirationDate;
     }
 
-    public void setUser_card_exp(LocalDateTime user_card_exp) {
-        this.user_card_exp = user_card_exp;
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 
-    public String getUser_card_holder_name() {
-        return user_card_holder_name;
+    public String getCardHolderName() {
+        return cardHolderName;
     }
 
-    public void setUser_card_holder_name(String user_card_holder_name) {
-        this.user_card_holder_name = user_card_holder_name;
+    public void setCardHolderName(String cardHolderName) {
+        this.cardHolderName = cardHolderName;
     }
 }

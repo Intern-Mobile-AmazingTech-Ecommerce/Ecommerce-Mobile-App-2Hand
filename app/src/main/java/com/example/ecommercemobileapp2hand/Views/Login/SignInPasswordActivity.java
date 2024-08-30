@@ -62,7 +62,8 @@ public class SignInPasswordActivity extends AppCompatActivity {
         txtResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(SignInPasswordActivity.this, ForgotPasswordActivity.class));
+                Intent myintent = new Intent(SignInPasswordActivity.this, ForgotPasswordActivity.class);
+                startActivity(myintent);
             }
         });
     }

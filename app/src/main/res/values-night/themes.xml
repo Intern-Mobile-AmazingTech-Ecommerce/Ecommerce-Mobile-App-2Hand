@@ -228,4 +228,13 @@
     <style name="caret_down">
         <item name="android:src">@drawable/arrowdown_white</item>
     </style>
+    <style name="img_Notification">
+        <item name="android:background">@drawable/notificationdark</item>
+    </style>
+    <style name="img_Notification_red">
+        <item name="android:background">@drawable/notificationbingreddark</item>
+    </style>
+    <style name="icon_notification_backgound">
+        <item name="android:background">@drawable/rounded_corners_background_dark</item>
+    </style>
 </resources>
