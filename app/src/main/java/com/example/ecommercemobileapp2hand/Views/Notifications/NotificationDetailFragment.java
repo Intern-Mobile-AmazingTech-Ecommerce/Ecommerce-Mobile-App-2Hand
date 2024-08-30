@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -89,9 +91,24 @@ public class NotificationDetailFragment extends Fragment {
         new Thread(() -> {
             notificationsList = NotificationsHandler.getNotifications();
             getActivity().runOnUiThread(() -> {
-                adapter = new NotificationsAdapter(notificationsList);
-                recyclerViewNotifications.setAdapter(adapter);
+                if (notificationsList == null || notificationsList.isEmpty()) {
+                    // Nếu không có thông báo, chuyển đến NotificationsFragment
+                    navigateToNoNotifications();
+                } else {
+                    // Nếu có thông báo, hiển thị danh sách
+                    adapter = new NotificationsAdapter(notificationsList);
+                    recyclerViewNotifications.setAdapter(adapter);
+                }
             });
         }).start();
     }
+
+    private void navigateToNoNotifications() {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, new NotificationsFragment());
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
 }

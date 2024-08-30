@@ -27,6 +27,7 @@ import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
 import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
+import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationDetailFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFragment;
 import com.example.ecommercemobileapp2hand.Views.Orders.OrdersFragment;
 import com.example.ecommercemobileapp2hand.Views.Settings.SettingsFragment;
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
             bottomNavigationView.setSelectedItemId(R.id.itemOrders);
         }
-        else if(intent != null && "NotificationsFragment".equals(intent.getStringExtra("navigateTo"))){
+        else if(intent != null && "NotificationsDetailFragment".equals(intent.getStringExtra("navigateTo"))){
             LoadFragment(new OrdersFragment());
 
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     btnObject.setVisibility(GONE);
                     btnAvt.setVisibility(GONE);
                     btnBag.setVisibility(GONE);
-                    LoadFragment(new NotificationsFragment());
+                    LoadFragment(new NotificationDetailFragment());
                     tvFragmentName.setText("Notifications");
                     tvFragmentName.setVisibility(View.VISIBLE);
                     return true;

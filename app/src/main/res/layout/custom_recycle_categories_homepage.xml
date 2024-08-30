@@ -18,7 +18,7 @@
             app:cornerRadius="56dp"
             android:src="@drawable/hoodies"
 
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
 
             />
     </androidx.cardview.widget.CardView>

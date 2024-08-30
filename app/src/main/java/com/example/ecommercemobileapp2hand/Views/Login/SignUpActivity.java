@@ -100,6 +100,16 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
                 onClickSignUp();
+                Bundle bundle = new Bundle();
+                bundle.putString("firstName", firstName);
+                bundle.putString("lastName", lastName);
+                bundle.putString("email", email);
+                bundle.putString("password", password);
+                Intent intent = new Intent(SignUpActivity.this, OnboardingActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                finish();
+
             }
         });
     }

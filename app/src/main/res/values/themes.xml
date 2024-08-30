@@ -81,8 +81,8 @@
         <item name="android:backgroundTint">@color/Bg_Light_2</item>
     </style>
     <style name="icon_favorite">
-        <item name="iconTint">@color/Black_100</item>
-        <item name="android:backgroundTint">#f2f2f3</item>
+        <item name="iconTint">@color/black</item>
+        <item name="android:backgroundTint">#00000000</item>
     </style>
     <style name="background_tint_mode">
         <item name="android:backgroundTint">@color/Black_100</item>
