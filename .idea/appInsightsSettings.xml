@@ -9,9 +9,9 @@
               <option name="connection">
                 <ConnectionSetting>
                   <option name="appId" value="com.example.ecommercemobileapp2hand" />
-                  <option name="mobileSdkAppId" value="1:136378383669:android:481a77fbc5f3481d8fa07c" />
-                  <option name="projectId" value="login-4fa62" />
-                  <option name="projectNumber" value="136378383669" />
+                  <option name="mobileSdkAppId" value="1:259657920225:android:7c8cb02876c556d66ad1a0" />
+                  <option name="projectId" value="ecommerce-app-2af9f" />
+                  <option name="projectNumber" value="259657920225" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
