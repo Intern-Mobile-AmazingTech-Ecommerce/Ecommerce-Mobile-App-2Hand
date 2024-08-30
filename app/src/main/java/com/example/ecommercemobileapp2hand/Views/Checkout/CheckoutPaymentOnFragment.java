@@ -83,8 +83,6 @@ public class CheckoutPaymentOnFragment extends Fragment {
         img_payment_arrowright = view.findViewById(R.id.img_payment_arrowright);
         tvPayment = view.findViewById(R.id.tvPayment);
         paymentSwitch = view.findViewById(R.id.paymentSwitch);
-
-        // Set initial text
         tvPayment.setText("**** 1234");
     }
     private  void addEvents(){
@@ -101,7 +99,6 @@ public class CheckoutPaymentOnFragment extends Fragment {
         });
         paymentSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                // Show full number
                 tvPayment.setText("1234 5678 9012 3456");
             } else {
                 tvPayment.setText("**** 1234");

@@ -65,7 +65,6 @@ public class CheckoutAddressOnFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_checkout_address_on, container, false);
-
         addControls(view);
         return view;
     }
@@ -78,7 +77,6 @@ public class CheckoutAddressOnFragment extends Fragment {
         img_address_arrowright = view.findViewById(R.id.img_address_arrowright);
     }
     private  void addEvents(){
-
         img_address_arrowright.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
