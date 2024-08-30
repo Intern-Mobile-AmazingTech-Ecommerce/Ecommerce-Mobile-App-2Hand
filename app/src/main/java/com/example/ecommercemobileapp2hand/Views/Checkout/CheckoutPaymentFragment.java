@@ -77,16 +77,13 @@ public class CheckoutPaymentFragment extends Fragment {
         img_payment_arrowright = view.findViewById(R.id.img_payment_arrowright);
     }
     private  void addEvents(){
-        // Set a click listener on the ImageView
         img_payment_arrowright.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create the new fragment
                 Fragment newFragment = new CheckoutPaymentOnFragment();
-
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_Payment, newFragment); // R.id.fragment_container is the ID of your container in the activity
-                transaction.addToBackStack(null); // Add this transaction to the back stack
+                transaction.addToBackStack(null);
                 transaction.commit();
             }
         });

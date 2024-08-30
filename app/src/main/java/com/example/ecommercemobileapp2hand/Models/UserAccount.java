@@ -1,5 +1,7 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import java.util.ArrayList;
+
 public class UserAccount {
     private int user_id;
     private String username;
@@ -9,6 +11,61 @@ public class UserAccount {
     private String phone_number;
     private String first_name;
     private String last_name;
+
+    private Bag bag_user;
+    private ArrayList<Wishlist> lstWL;
+    private ArrayList<Notifications> lstNoti;
+    private ArrayList<UserCards> lstCard;
+    private ArrayList<UserOrder> lstOrder;
+    private ArrayList<UserAddress> lstAddress;
+
+    public Bag getBag_user() {
+        return bag_user;
+    }
+
+    public void setBag_user(Bag bag_user) {
+        this.bag_user = bag_user;
+    }
+
+    public ArrayList<Wishlist> getLstWL() {
+        return lstWL;
+    }
+
+    public void setLstWL(ArrayList<Wishlist> lstWL) {
+        this.lstWL = lstWL;
+    }
+
+    public ArrayList<Notifications> getLstNoti() {
+        return lstNoti;
+    }
+
+    public void setLstNoti(ArrayList<Notifications> lstNoti) {
+        this.lstNoti = lstNoti;
+    }
+
+    public ArrayList<UserCards> getLstCard() {
+        return lstCard;
+    }
+
+    public void setLstCard(ArrayList<UserCards> lstCard) {
+        this.lstCard = lstCard;
+    }
+
+    public ArrayList<UserOrder> getLstOrder() {
+        return lstOrder;
+    }
+
+    public void setLstOrder(ArrayList<UserOrder> lstOrder) {
+        this.lstOrder = lstOrder;
+    }
+
+    public ArrayList<UserAddress> getLstAddress() {
+        return lstAddress;
+    }
+
+    public void setLstAddress(ArrayList<UserAddress> lstAddress) {
+        this.lstAddress = lstAddress;
+    }
 
     public UserAccount(){}
     public UserAccount(int user_id, String username, String password, String gender, String email, String phone_number, String first_name, String last_name) {

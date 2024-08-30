@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Views.Checkout;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import androidx.fragment.app.Fragment;
@@ -24,24 +25,33 @@ public class Checkout extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_checkout);
-
+        addControl();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        imgBack = findViewById(R.id.imgBack);
-
-        // Set the back button to handle click event
-        imgBack.setOnClickListener(v -> onBackPressed());
         if (savedInstanceState == null) {
             loadFragmentAddress(new CheckoutAddressFragment());
             loadFragmentPayment(new CheckoutPaymentFragment());
 
         }
+    }
+    private void addControl(){
+        imgBack = findViewById(R.id.imgBack);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        addEvent();
 
     }
+    private void addEvent(){
+        // Set the back button to handle click event
+        imgBack.setOnClickListener(v -> onBackPressed());
 
+    }
     private void loadFragmentAddress(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
