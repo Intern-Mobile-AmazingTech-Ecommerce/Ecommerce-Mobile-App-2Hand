@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.WishList;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Settings.ListAddressActivity;
+import com.example.ecommercemobileapp2hand.Views.Settings.WishlistDetail;
 import com.example.ecommercemobileapp2hand.Views.Settings.WishlistDetailFragment;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
         holder.wishListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, WishlistDetailFragment.class);
+                Intent intent = new Intent(context, WishlistDetail.class);
                 context.startActivity(intent);
             }
         });
