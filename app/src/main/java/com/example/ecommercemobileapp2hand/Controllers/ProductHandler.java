@@ -69,8 +69,8 @@ public class ProductHandler {
         if(conn!=null){
 
             try{
-                CallableStatement cstmt = conn.prepareCall("call GetProductDetails(?)");
-                cstmt.setString(1, "Men");
+                CallableStatement cstmt = conn.prepareCall("call GetProductDetailsByObjectName(?)");
+                cstmt.setString(1, objName);
                 ResultSet rs = cstmt.executeQuery();
                 while(rs.next()){
                     Product p = new Product();
@@ -78,7 +78,8 @@ public class ProductHandler {
                     p.setProduct_name(rs.getString(2));
                     p.setThumbnail(rs.getString(3));
                     p.setBase_price(rs.getBigDecimal(4));
-                    Timestamp timestamp = rs.getTimestamp(5);
+                    p.setSold(rs.getBigDecimal(5));
+                    Timestamp timestamp = rs.getTimestamp(6);
                     if (timestamp != null) {
                         LocalDateTime localDateTime = timestamp.toInstant()
                                 .atZone(ZoneId.systemDefault())
@@ -87,15 +88,15 @@ public class ProductHandler {
                     }
                     //Object
                     ProductObject obj = new ProductObject();
-                    obj.setProduct_object_id(6);
-                    obj.setObject_name(rs.getString(7));
+                    obj.setProduct_object_id(7);
+                    obj.setObject_name(rs.getString(8));
                     p.setProductObject(obj);
                     //Category
                     ProductCategory category = new ProductCategory();
-                    category.setProduct_category_id(rs.getInt(8));
-                    category.setProduct_category_name(rs.getString(9));
-                    category.setProduct_category_description(rs.getString(10));
-                    category.setProduct_category_thumbnail(rs.getString(11));
+                    category.setProduct_category_id(rs.getInt(9));
+                    category.setProduct_category_name(rs.getString(10));
+                    category.setProduct_category_description(rs.getString(11));
+                    category.setProduct_category_thumbnail(rs.getString(12));
                     p.setProductCategory(category);
 
 
@@ -105,6 +106,73 @@ public class ProductHandler {
                             productDetailsJson,
                             new TypeReference< ArrayList<ProductDetails>>() {}
                     );
+
+                    p.setProductDetailsArrayList(productDetails);
+                    list.add(p);
+
+                }
+            }catch (SQLException e){
+                throw new RuntimeException(e);
+            } catch (JsonMappingException e) {
+                throw new RuntimeException(e);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try{
+                    conn.close();
+                }catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
+    }
+
+    public static ArrayList<Product> getDataByObjectNameAndCategoryID(String objName,int catID){
+        conn = dbConnect.connectionClass();
+        ArrayList<Product> list = new ArrayList<>();
+        if(conn!=null){
+
+            try{
+                CallableStatement cstmt = conn.prepareCall("call GetProductDetailsByObjectNameAndCategoryID(?,?)");
+                cstmt.setString(1, objName);
+                cstmt.setInt(2, catID);
+                ResultSet rs = cstmt.executeQuery();
+                while(rs.next()){
+                    Product p = new Product();
+                    p.setProduct_id(rs.getInt(1));
+                    p.setProduct_name(rs.getString(2));
+                    p.setThumbnail(rs.getString(3));
+                    p.setBase_price(rs.getBigDecimal(4));
+                    p.setSold(rs.getBigDecimal(5));
+                    Timestamp timestamp = rs.getTimestamp(6);
+                    if (timestamp != null) {
+                        LocalDateTime localDateTime = timestamp.toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime();
+                        p.setCreated_at(localDateTime);
+                    }
+                    //Object
+                    ProductObject obj = new ProductObject();
+                    obj.setProduct_object_id(7);
+                    obj.setObject_name(rs.getString(8));
+                    p.setProductObject(obj);
+                    //Category
+                    ProductCategory category = new ProductCategory();
+                    category.setProduct_category_id(rs.getInt(9));
+                    category.setProduct_category_name(rs.getString(10));
+                    category.setProduct_category_description(rs.getString(11));
+                    category.setProduct_category_thumbnail(rs.getString(12));
+                    p.setProductCategory(category);
+
+
+                    //Array Pro Details
+                    String productDetailsJson = rs.getString("product_details_array");
+                    ArrayList<ProductDetails> productDetails = objectMapper.readValue(
+                            productDetailsJson,
+                            new TypeReference< ArrayList<ProductDetails>>() {}
+                    );
+
                     p.setProductDetailsArrayList(productDetails);
                     list.add(p);
 

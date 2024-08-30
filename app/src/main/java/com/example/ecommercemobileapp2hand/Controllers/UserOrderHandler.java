@@ -35,7 +35,7 @@ public class UserOrderHandler {
                     {
                         createdAt = rs.getTimestamp(5).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                     }
-                    UserOrder ord = new UserOrder(rs.getInt(1), rs.getInt(2), rs.getDouble(3), rs.getString(4), createdAt);
+                    UserOrder ord = new UserOrder(rs.getInt(1), rs.getInt(2), rs.getBigDecimal(3), rs.getString(4), createdAt);
                     lst.add(ord);
                 }
             } catch (SQLException e) {

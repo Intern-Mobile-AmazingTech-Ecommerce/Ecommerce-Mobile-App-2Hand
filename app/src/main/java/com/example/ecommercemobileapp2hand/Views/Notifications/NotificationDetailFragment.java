@@ -30,6 +30,7 @@ public class NotificationDetailFragment extends Fragment {
     private RecyclerView recyclerViewNotifications;
     private NotificationsAdapter adapter;
     private List<Notifications> notificationsList;
+    private int currentUserId ;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,7 +54,7 @@ public class NotificationDetailFragment extends Fragment {
      * @return A new instance of fragment NotificationDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NotificationDetailFragment newInstance(String param1, String param2) {
+    public static NotificationDetailFragment newInstance(String param1, String param2 ) {
         NotificationDetailFragment fragment = new NotificationDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
@@ -68,6 +69,7 @@ public class NotificationDetailFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
@@ -76,33 +78,44 @@ public class NotificationDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notification_detail, container, false);
-
         recyclerViewNotifications = view.findViewById(R.id.recycler_view_notifications);
         recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        // Initialize adapter with empty list initially
         adapter = new NotificationsAdapter(new ArrayList<>());
         recyclerViewNotifications.setAdapter(adapter);
         fetchNotifications();
 
         return view;
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        fetchNotifications();
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+
+        NotificationsHandler.markAllNotificationsAsViewed();
+    }
     private void fetchNotifications() {
         new Thread(() -> {
             notificationsList = NotificationsHandler.getNotifications();
             getActivity().runOnUiThread(() -> {
                 if (notificationsList == null || notificationsList.isEmpty()) {
-                    // Nếu không có thông báo, chuyển đến NotificationsFragment
                     navigateToNoNotifications();
                 } else {
-                    // Nếu có thông báo, hiển thị danh sách
-                    adapter = new NotificationsAdapter(notificationsList);
-                    recyclerViewNotifications.setAdapter(adapter);
+                    if (adapter == null) {
+                        adapter = new NotificationsAdapter(notificationsList);
+                        recyclerViewNotifications.setAdapter(adapter);
+                    } else {
+                        adapter.setNotificationsList(notificationsList);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             });
         }).start();
     }
-
     private void navigateToNoNotifications() {
         FragmentManager fragmentManager = getParentFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

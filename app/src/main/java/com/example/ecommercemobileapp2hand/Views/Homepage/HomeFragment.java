@@ -15,14 +15,23 @@ import android.widget.TextView;
 import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
 import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
-import com.example.ecommercemobileapp2hand.Models.FakeModels.Product;
+import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
 
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,6 +41,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private TextView tvSeeAll;
+    private ArrayList<Product> lstPro;
     private RecyclerView recyclerViewCategories;
     private List<ProductCategory> categoryList;
     private CategoriesAdapter categoriesAdapter;
@@ -103,6 +113,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void addControl(View view){
+
+        //GenerateListPro
+        lstPro = new ArrayList<>();
+        lstPro = ProductHandler.getDataByObjectName("Men");
+
         recyclerViewCategories = view.findViewById(R.id.recyclerViewCategories);
         tvSeeAll = view.findViewById(R.id.tvSeeAll);
 
@@ -116,7 +131,12 @@ public class HomeFragment extends Fragment {
 
     private void loadCategoriesData(){
         categoryList = new ArrayList<>();
-        categoryList = CategoriesHandler.getData().subList(0,5);
+        if(categoryList.size() > 5){
+            categoryList = CategoriesHandler.getData().subList(0,5);
+        }else {
+            categoryList = CategoriesHandler.getData();
+        }
+
         categoriesAdapter = new CategoriesAdapter(categoryList,getContext(),R.layout.custom_recycle_categories_homepage);
          RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false);
         recyclerViewCategories.setLayoutManager(layoutManager);
@@ -125,20 +145,45 @@ public class HomeFragment extends Fragment {
     }
     private void loadTopSellingProductsData(){
         lstProTopSelling = new ArrayList<>();
-        lstProTopSelling = ProductHandler.getDataByObjectName("Men");
-        TopSellingAdapter = new ProductCardAdapter(lstProTopSelling,getActivity());
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-        recyclerViewTopSelling.setLayoutManager(layoutManager);
-        recyclerViewTopSelling.setAdapter(TopSellingAdapter);
+        if(lstPro.size() > 0){
+            BigDecimal minSold = new BigDecimal(0);
+            lstProTopSelling = (ArrayList<Product>) lstPro.stream().filter(product -> product.getSold().compareTo(minSold) > 0).sorted(Comparator.comparing(Product::getSold).reversed()).collect(Collectors.toList());
+            if(lstProTopSelling.size() > 5){
+                ArrayList<Product> subTopSellingList = lstProTopSelling.subList(0,5).stream().collect(Collectors.toCollection(ArrayList::new));
+                TopSellingAdapter = new ProductCardAdapter(subTopSellingList,getActivity());
+
+            }else {
+                TopSellingAdapter = new ProductCardAdapter(lstProTopSelling,getActivity());
+            }
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+            recyclerViewTopSelling.setLayoutManager(layoutManager);
+            recyclerViewTopSelling.setAdapter(TopSellingAdapter);
+        }
+
     }
     private void loadNewInProductsData(){
         lstProNewIn = new ArrayList<>();
+        if (lstPro.size()>0){
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime sevenDaysAgo = now.minus(7, ChronoUnit.DAYS);
+            lstProNewIn = lstPro.stream()
+                    .filter(product -> {
+                        LocalDateTime createdAt = product.getCreated_at();
+                        return createdAt.isAfter(sevenDaysAgo);
+                    })
+                    .collect(Collectors.toCollection(ArrayList::new));
+            if(lstProNewIn.size()>5){
+                ArrayList<Product> subNewInProductList = lstProNewIn.subList(0,5).stream().collect(Collectors.toCollection(ArrayList::new));
+                NewInAdapter = new ProductCardAdapter(subNewInProductList,getActivity());
+            }else {
+                NewInAdapter = new ProductCardAdapter(lstProNewIn,getActivity());
+            }
 
-        lstProNewIn = ProductHandler.getDataByObjectName("Men");
-        NewInAdapter = new ProductCardAdapter(lstProNewIn,getActivity());
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-        recyclerViewNewIn.setLayoutManager(layoutManager);
-        recyclerViewNewIn.setAdapter(NewInAdapter);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+            recyclerViewNewIn.setLayoutManager(layoutManager);
+            recyclerViewNewIn.setAdapter(NewInAdapter);
+        }
+
     }
     private void addEvent(){
         tvSeeAll.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +192,28 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getContext(), CategoriesActivity.class);
                 startActivity(intent);
 
+            }
+        });
+
+        tvTopSellingSeeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CategoryProductActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("TopSellingList",lstProTopSelling);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
+        tvNewInSeeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CategoryProductActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("NewInList",lstProNewIn);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }

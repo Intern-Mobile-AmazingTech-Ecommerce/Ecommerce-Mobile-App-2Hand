@@ -33,13 +33,22 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Notifications notification = notificationsList.get(position);
         holder.textViewNotificationContent.setText(notification.getNotifications_content());
-        // Bạn có thể tùy chỉnh thêm theo nhu cầu, ví dụ thay đổi icon theo loại thông báo
-        holder.imageViewNotification.setImageResource(R.drawable.notificationbing);
+        if (notification.isViewed()) {
+            // Nếu thông báo đã được đọc, hiển thị hình ảnh cho thông báo đã đọc
+            holder.imageViewNotification.setImageResource(R.drawable.notificationbing);
+        } else {
+            // Nếu thông báo chưa được đọc, hiển thị hình ảnh mặc định
+            holder.imageViewNotification.setImageResource(R.drawable.notificationbing_red);
+        }
     }
 
     @Override
     public int getItemCount() {
         return notificationsList.size();
+    }
+
+    public void setNotificationsList(List<Notifications> notificationsList) {
+        this.notificationsList = notificationsList;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

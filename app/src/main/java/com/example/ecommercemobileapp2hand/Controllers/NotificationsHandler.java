@@ -23,7 +23,7 @@ public class NotificationsHandler {
             // Open a new connection
             conn = new DBConnect().connectionClass();
             if (conn != null) {
-                String query = "SELECT * FROM notifications";
+                String query = "SELECT * FROM notifications ORDER BY notifications_id DESC";
                 stmt = conn.createStatement();
                 rs = stmt.executeQuery(query);
                 while (rs.next()) {
@@ -39,6 +39,7 @@ public class NotificationsHandler {
                         notification.setCreated_at(localDateTime);
                     }
                     notification.setUser_id(rs.getInt("user_id"));
+                    notification.setViewed(rs.getBoolean("viewed"));
                     notificationsList.add(notification);
                 }
             }
@@ -55,6 +56,28 @@ public class NotificationsHandler {
             }
         }
         return notificationsList;
+    }
+    public static void markAllNotificationsAsViewed() {
+        Connection conn = null;
+        Statement stmt = null;
+
+        try {
+            conn = new DBConnect().connectionClass();
+            if (conn != null) {
+                String query = "UPDATE notifications SET viewed = 1  WHERE viewed = 0";
+                stmt = conn.createStatement();
+                stmt.executeUpdate(query);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 

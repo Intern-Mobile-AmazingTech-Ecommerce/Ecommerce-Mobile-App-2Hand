@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.example.ecommercemobileapp2hand.Views.Homepage.CategoryProductActivit
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
@@ -44,15 +46,14 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
         holder.textViewCategoryName.setText(category.getProduct_category_name());
         String imgUrl = Util.getCloudinaryImageUrl(context,category.getProduct_category_thumbnail(),592,592);
         Picasso.get().load(imgUrl).into(holder.imageViewCategoryIcon);
-
         holder.relative_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (category.getProduct_category_name().equals("Hoodies"))
-                {
-                    Intent intent = new Intent(context, CategoryProductActivity.class);
-                    context.startActivity(intent);
-                }
+                Intent intent = new Intent(context, CategoryProductActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("Category", category);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             }
         });
     }
