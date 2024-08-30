@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Views.Login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -104,6 +105,15 @@ public class OnboardingActivity extends AppCompatActivity {
         btnFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //tao sharedreferences luu gia tri gender
+                SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("gender_key", gender);
+                editor.apply();
+
+
+
+                //khoi tao doi tuong
                 Bundle bundle = getIntent().getExtras();
                 if (bundle != null) {
                     // Extract data from the bundle
