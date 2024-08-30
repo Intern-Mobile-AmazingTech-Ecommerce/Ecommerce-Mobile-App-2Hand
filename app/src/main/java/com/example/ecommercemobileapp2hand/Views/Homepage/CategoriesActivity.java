@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Views.Homepage;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -29,6 +30,8 @@ public class CategoriesActivity extends AppCompatActivity {
     private CategoriesAdapter categoriesAdapter;
     private List<ProductCategory> categoryList;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +53,11 @@ public class CategoriesActivity extends AppCompatActivity {
         addEvent();
 
     }
+
+
     private void addControl(){
         recyclerViewCategories = findViewById(R.id.recyclerViewCategories);
         recyclerViewCategories.setLayoutManager(new LinearLayoutManager(this));
-
         btnBack = findViewById(R.id.btnBack);
     }
     private void addEvent(){
@@ -68,7 +72,6 @@ public class CategoriesActivity extends AppCompatActivity {
         // Initialize category list
         categoryList = new ArrayList<>();
         categoryList = CategoriesHandler.getData();
-
         categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
         recyclerViewCategories.setLayoutManager(layoutManager);

@@ -1,6 +1,13 @@
 package com.example.ecommercemobileapp2hand.Models;
 
-public class ProductCategory {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import java.io.Serializable;
+
+public class ProductCategory implements Parcelable {
     private int product_category_id;
     private String product_category_name;
     private String product_category_description;
@@ -13,6 +20,26 @@ public class ProductCategory {
         this.product_category_thumbnail = product_category_thumbnail;
     }
     public ProductCategory(){}
+
+    protected ProductCategory(Parcel in) {
+        product_category_id = in.readInt();
+        product_category_name = in.readString();
+        product_category_description = in.readString();
+        product_category_thumbnail = in.readString();
+    }
+
+    public static final Creator<ProductCategory> CREATOR = new Creator<ProductCategory>() {
+        @Override
+        public ProductCategory createFromParcel(Parcel in) {
+            return new ProductCategory(in);
+        }
+
+        @Override
+        public ProductCategory[] newArray(int size) {
+            return new ProductCategory[size];
+        }
+    };
+
     public int getProduct_category_id() {
         return product_category_id;
     }
@@ -43,5 +70,18 @@ public class ProductCategory {
 
     public void setProduct_category_thumbnail(String product_category_thumbnail) {
         this.product_category_thumbnail = product_category_thumbnail;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(product_category_id);
+        dest.writeString(product_category_name);
+        dest.writeString(product_category_description);
+        dest.writeString(product_category_thumbnail);
     }
 }

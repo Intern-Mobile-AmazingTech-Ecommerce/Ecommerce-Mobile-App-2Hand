@@ -22,7 +22,7 @@
         <ImageView
             android:id="@+id/img_Product"
             style="@style/bg_product_card"
-            android:layout_width="159dp"
+            android:layout_width="161dp"
             android:layout_height="220dp"
             android:scaleType="fitCenter"
 
