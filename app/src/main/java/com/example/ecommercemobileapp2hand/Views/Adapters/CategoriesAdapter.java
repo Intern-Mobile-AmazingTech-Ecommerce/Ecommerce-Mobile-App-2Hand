@@ -42,7 +42,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         ProductCategory category = categories.get(position);
         holder.textViewCategoryName.setText(category.getProduct_category_name());
-        String imgUrl = Util.getCloudinaryImageUrl(category.getProduct_category_thumbnail());
+        String imgUrl = Util.getCloudinaryImageUrl(context,category.getProduct_category_thumbnail(),592,592);
         Picasso.get().load(imgUrl).into(holder.imageViewCategoryIcon);
 
         holder.relative_layout.setOnClickListener(new View.OnClickListener() {
