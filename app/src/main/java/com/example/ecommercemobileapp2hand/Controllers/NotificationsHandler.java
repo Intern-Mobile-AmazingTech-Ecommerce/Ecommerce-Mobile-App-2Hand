@@ -57,6 +57,18 @@ public class NotificationsHandler {
         }
         return notificationsList;
     }
+    public static ArrayList<Notifications> initNotificationList1() {
+        ArrayList<Notifications> notifications = new ArrayList<>();
+
+        notifications.add(new Notifications(1, "New message received", LocalDateTime.now(), 123, false));
+        notifications.add(new Notifications(2, "Your order has been shipped", LocalDateTime.now().minusHours(1), 124, true));
+        notifications.add(new Notifications(3, "Friend request accepted", LocalDateTime.now().minusDays(1), 125, false));
+        notifications.add(new Notifications(4, "Password changed successfully", LocalDateTime.now().minusDays(2), 126, true));
+        return notifications;
+    }
+    public static ArrayList<Notifications> initNotificationList2() {
+        return new ArrayList<>();
+    }
     public static void markAllNotificationsAsViewed() {
         Connection conn = null;
         Statement stmt = null;
