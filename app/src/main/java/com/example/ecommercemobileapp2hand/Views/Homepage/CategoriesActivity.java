@@ -19,6 +19,7 @@ import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
+import com.example.ecommercemobileapp2hand.Views.App;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class CategoriesActivity extends AppCompatActivity {
     private ImageView btnBack;
     private RecyclerView recyclerViewCategories;
     private CategoriesAdapter categoriesAdapter;
-    private List<ProductCategory> categoryList;
+    private ArrayList<ProductCategory> categoryList;
 
 
 
@@ -71,7 +72,7 @@ public class CategoriesActivity extends AppCompatActivity {
     private void loadRecycleViewCategories(){
         // Initialize category list
         categoryList = new ArrayList<>();
-        categoryList = CategoriesHandler.getData();
+        categoryList = (ArrayList<ProductCategory>) App.getCache().getIfPresent("categories");
         categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
         recyclerViewCategories.setLayoutManager(layoutManager);

@@ -21,14 +21,15 @@ import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
 
-    private List<ProductCategory> categories;
+    private ArrayList<ProductCategory> categories;
     private Context context;
     private int layout;
-    public CategoriesAdapter(List<ProductCategory> categories, Context context, int layout) {
+    public CategoriesAdapter(ArrayList<ProductCategory> categories, Context context, int layout) {
         this.categories = categories;
         this.context = context;
         this.layout = layout;

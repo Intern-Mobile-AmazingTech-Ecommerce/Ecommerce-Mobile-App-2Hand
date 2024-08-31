@@ -40,7 +40,7 @@ public class SearchActivity extends AppCompatActivity {
     RecyclerView recyViewCateSearch;
     LinearLayout linearLayoutSearch;
     ScrollView scrollViewPro;
-    List<ProductCategory> categoryList;
+    ArrayList<ProductCategory> categoryList;
     CategoriesAdapter categoriesAdapter;
     TextView textViewTitle;
     LinearLayout layoutFilter;

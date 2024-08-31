@@ -15,7 +15,6 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true">
         <ImageView
-
             android:id="@+id/imgBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -23,7 +22,7 @@
             android:layout_centerVertical="true"
             android:background="@drawable/circle"
             android:padding="12dp"
-            android:src="@drawable/arrowleft2" />
+           style="@style/BUTTON_BACK" />
 
         <TextView
             android:id="@+id/tvActivityTitle"
@@ -31,7 +30,6 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Checkout"
-            android:textColor="@color/black"
             style="@style/TEXT"
             android:textStyle="bold"
             android:fontFamily="@font/circularstdmedium500" />
