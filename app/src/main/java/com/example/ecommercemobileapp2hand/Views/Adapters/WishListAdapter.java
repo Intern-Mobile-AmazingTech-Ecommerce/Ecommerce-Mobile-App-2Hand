@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.FakeModels.WishList;
+import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Settings.ListAddressActivity;
 import com.example.ecommercemobileapp2hand.Views.Settings.WishlistDetail;
@@ -20,9 +21,9 @@ import com.example.ecommercemobileapp2hand.Views.Settings.WishlistDetailFragment
 import java.util.List;
 
 public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.WishlistViewHolder>{
-    private List<WishList> wishlistItems;
+    private List<Wishlist> wishlistItems;
     private Context context;
-    public WishListAdapter(Context context,List<WishList> wishlistItems) {
+    public WishListAdapter(Context context,List<Wishlist> wishlistItems) {
         this.wishlistItems = wishlistItems;
         this.context = context;
     }
@@ -35,13 +36,14 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
 
     @Override
     public void onBindViewHolder(WishlistViewHolder holder, int position) {
-        WishList item = wishlistItems.get(position);
-        holder.tvNameWish.setText(item.getName());
-        holder.tvQuantity.setText(item.getQuantity() + " Products");
+        Wishlist item = wishlistItems.get(position);
+        holder.tvNameWish.setText(item.getWishlist_name());
+        holder.tvQuantity.setText(item.getWishlist_quantity() + " Products");
         holder.wishListItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, WishlistDetail.class);
+                intent.putExtra("wishlistID",item.getWishlist_id());
                 context.startActivity(intent);
             }
         });
