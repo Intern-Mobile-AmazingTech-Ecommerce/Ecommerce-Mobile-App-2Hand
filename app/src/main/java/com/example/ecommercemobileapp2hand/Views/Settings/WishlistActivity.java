@@ -12,7 +12,9 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.WishList;
+import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.WishListAdapter;
 
@@ -23,7 +25,7 @@ public class WishlistActivity extends AppCompatActivity {
     RecyclerView rv_wishlist;
     ImageView btnBack;
     private WishListAdapter wishListAdapter;
-    private List<WishList> wishList;
+    private List<Wishlist> wishList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +64,9 @@ public class WishlistActivity extends AppCompatActivity {
 
     private void loadRecycleViewCategories(){
         // Initialize category list
-        wishList= new ArrayList<>();
-        wishList.add(new WishList("My Favorite", 12));
-        wishList.add(new WishList("T-Shirts", 4));
+        wishList= WishlistHandler.getWishListByUserID(1);
+//        wishList.add(new WishList("My Favorite", 12));
+//        wishList.add(new WishList("T-Shirts", 4));
 
 
         wishListAdapter = new WishListAdapter(WishlistActivity.this,wishList);
