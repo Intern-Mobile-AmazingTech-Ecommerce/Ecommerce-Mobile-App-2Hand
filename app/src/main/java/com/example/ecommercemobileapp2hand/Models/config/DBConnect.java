@@ -10,10 +10,7 @@ public class DBConnect {
     Connection conn = null;
     String username,password,  ip, port, database;
     public Connection connectionClass() {
-
-        ip = "10.0.2.2";
-
-
+        ip="192.168.1.7";
         database = "Ecommerce2Hand";
         username = "sa";
         password = "123456";

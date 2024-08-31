@@ -11,18 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserOrderProductsHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
+import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Orders.TrackOrderAcitivity;
 
 import java.util.ArrayList;
 
 public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyViewHoler> {
-    ArrayList<Order> lstorders;
+    ArrayList<UserOrder> lstorders;
     Context context;
     String checkstatus;
 
-    public OrderCardAdapter(ArrayList<Order> lstorders, Context context, String checkstatus) {
+    public OrderCardAdapter(ArrayList<UserOrder> lstorders, Context context, String checkstatus) {
         this.lstorders = lstorders;
         this.context = context;
         this.checkstatus = checkstatus;
@@ -37,10 +39,10 @@ public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHoler holder, int position) {
-        Order order = lstorders.get(position);
+        UserOrder order = lstorders.get(position);
 
         holder.tv_id_order.setText("#" + order.getUser_order_id());
-        holder.tv_amount_detail_order.setText(String.valueOf(order.getAmount()) + " items");
+        holder.tv_amount_detail_order.setText(UserOrderProductsHandler.getAmountItems(order.getUser_order_id()) + " items");
 
         holder.cardview_order.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +69,7 @@ public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyVi
         }
     }
 
-    private void DetailTrackOrder(Order ord)
+    private void DetailTrackOrder(UserOrder ord)
     {
         Intent intent = new Intent(context, TrackOrderAcitivity.class);
         intent.putExtra("order", ord);

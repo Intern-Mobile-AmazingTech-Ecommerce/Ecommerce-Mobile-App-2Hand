@@ -15,6 +15,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 
@@ -22,6 +24,8 @@ public class SignInPasswordActivity extends AppCompatActivity {
 
     Button btnContinue;
     TextView txtResetPassword;
+    EditText edtpassword;
+    UserAccount userAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,39 +36,64 @@ public class SignInPasswordActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        initialUI();
-        resetPassword();
+        getIt();
+        addControl();
+
     }
 
-    private void initialUI() {
-        btnContinue = findViewById(R.id.btnContinue_2);
-        EditText password = findViewById(R.id.password);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        addEvent();
+    }
 
-        btnContinue.setOnClickListener(v -> {
-            String pass = password.getText().toString().trim();
-            if (!isValidPassword(pass)) {
-                ((EditText) findViewById(R.id.password)).setError("Mật khẩu phải có ít nhất 6 ký tự");
-                return;
-            } else {
-                Intent intent = new Intent(SignInPasswordActivity.this, MainActivity.class);
-                startActivity(intent);
+    private void addControl() {
+        btnContinue = findViewById(R.id.btnContinue_2);
+        edtpassword = findViewById(R.id.password);
+        txtResetPassword = findViewById(R.id.dont_have_a);
+    }
+
+    private void addEvent()
+    {
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isValidPassword(edtpassword.getText().toString()))
+                {
+                    ((EditText) findViewById(R.id.password)).setError("Mật khẩu phải có ít nhất 6 ký tự");
+                }
+                else
+                {
+                    UserAccount userAccount2 = UserAccountHandler.getUserAccount(userAccount.getEmail(), edtpassword.getText().toString());
+                    if (userAccount2 != null)
+                    {
+                        Intent intent = new Intent(SignInPasswordActivity.this, MainActivity.class);
+                        userAccount.setPassword(edtpassword.getText().toString());
+                        intent.putExtra("UserAccount", userAccount2);
+                        startActivity(intent);
+                    }
+                    else
+                    {
+                        Toast.makeText(SignInPasswordActivity.this, "Email hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
-    }
-
-
-    private boolean isValidPassword(String password) {
-        return password.length() >= 6;
-    }
-
-    private void resetPassword(){
-        txtResetPassword=(TextView) findViewById(R.id.dont_have_a);
         txtResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 Intent myintent = new Intent(SignInPasswordActivity.this, ForgotPasswordActivity.class);
                 startActivity(myintent);
             }
         });
+    }
+    private boolean isValidPassword(String password) {
+        return password.length() >= 6;
+    }
+
+    private void getIt()
+    {
+        Intent intent = getIntent();
+        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
     }
 }

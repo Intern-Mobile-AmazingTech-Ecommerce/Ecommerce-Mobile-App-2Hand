@@ -39,4 +39,34 @@ public class UserOrderProductsHandler {
         }
         return userOrderProductsList;
     }
+
+    public static int getAmountItems(int id)
+    {
+        try
+        {
+            conn = dbConnect.connectionClass();
+            String sql = "SELECT COUNT(*) FROM USER_ORDER_PRODUCTS WHERE USER_ORDER_PRODUCTS.user_order_id = " + id + "";
+            Statement st = conn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            if (rs.next())
+            {
+                int amount = rs.getInt(1);
+                st.close();
+                rs.close();
+                conn.close();
+                return amount;
+            }
+            else
+            {
+                st.close();
+                rs.close();
+                conn.close();
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }

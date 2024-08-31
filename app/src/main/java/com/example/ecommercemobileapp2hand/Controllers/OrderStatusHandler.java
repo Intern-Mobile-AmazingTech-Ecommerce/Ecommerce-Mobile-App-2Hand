@@ -44,4 +44,64 @@ public class OrderStatusHandler {
         }
        return lst;
     }
+
+    public static ArrayList<OrderStatus> getData1()
+    {
+        ArrayList<OrderStatus> lst = new ArrayList<>();
+        conn = dbConnect.connectionClass();
+        if(conn!=null) {
+            String query = "Select * from order_status";
+            try
+            {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(query);
+                while (rs.next())
+                {
+                    if (!rs.getString(2).equals("Processing") && !rs.getString(2).equals("Returned") && !rs.getString(2).equals("Canceled"))
+                    {
+                        OrderStatus ord = new OrderStatus(rs.getInt(1), rs.getString(2));
+                        lst.add(ord);
+                    }
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return lst;
+    }
+
+    public static boolean CheckStatus(int id, String str)
+    {
+        try
+        {
+            conn = dbConnect.connectionClass();
+            String sql = "SELECT order_status_name FROM ORDER_STATUS WHERE order_status_id = " + id + "";
+            Statement st = conn.createStatement();
+            ResultSet rs =  st.executeQuery(sql);
+            if (rs.next() && rs.getString(1).equals(str))
+            {
+                st.close();
+                rs.close();
+                conn.close();
+                return true;
+            }
+            else
+            {
+                st.close();
+                rs.close();
+                conn.close();
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

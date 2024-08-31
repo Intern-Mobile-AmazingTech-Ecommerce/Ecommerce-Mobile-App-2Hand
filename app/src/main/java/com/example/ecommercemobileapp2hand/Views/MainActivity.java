@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 
 import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btnAvt,btnBag;
     private MaterialButton btnObject;
     private ArrayList<String> listObj;
+    private UserAccount userAccount;
 
 
     @Override
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        getIt();
         addControl();
         binding();
 
@@ -159,10 +162,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void LoadFragment(Fragment fragment){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("UserAccount", userAccount);
+
+        fragment.setArguments(bundle);
+
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.frameLayout,fragment);
         ft.addToBackStack(null);
         ft.commit();
+    }
+
+    private void getIt()
+    {
+        Intent intent = getIntent();
+        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
     }
 }

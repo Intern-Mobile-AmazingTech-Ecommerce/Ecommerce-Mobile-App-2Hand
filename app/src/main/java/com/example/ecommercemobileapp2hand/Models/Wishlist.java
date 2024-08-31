@@ -4,12 +4,14 @@ public class Wishlist {
     private int wishlist_id;
     private int user_id;
     private String wishlist_name;
+    private int wishlist_quantity;
 
     public Wishlist(){}
-    public Wishlist(int wishlist_id, int user_id, String wishlist_name) {
+    public Wishlist(int wishlist_id, int user_id, String wishlist_name,int wishlist_quantity) {
         this.wishlist_id = wishlist_id;
         this.user_id = user_id;
         this.wishlist_name = wishlist_name;
+        this.wishlist_quantity=wishlist_quantity;
     }
 
     public int getWishlist_id() {
@@ -34,5 +36,13 @@ public class Wishlist {
 
     public void setWishlist_name(String wishlist_name) {
         this.wishlist_name = wishlist_name;
+    }
+
+    public int getWishlist_quantity() {
+        return wishlist_quantity;
+    }
+
+    public void setWishlist_quantity(int wishlist_quantity) {
+        this.wishlist_quantity = wishlist_quantity;
     }
 }

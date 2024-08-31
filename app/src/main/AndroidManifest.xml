@@ -19,6 +19,9 @@
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
         <activity
+            android:name=".Views.Notifications.NotificationsActivity"
+            android:exported="true" />
+        <activity
             android:name=".Views.Checkout.OrderPlaceSuccessfullyActivity"
             android:exported="false" />
         <activity
@@ -71,7 +74,7 @@
             android:exported="false" />
         <activity
             android:name=".Views.MainActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".Views.Settings.AddAddressActivity"
             android:exported="false" />
