@@ -3,6 +3,7 @@ package com.example.ecommercemobileapp2hand.Views.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +79,12 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ProductPage.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("lstDetails",pro);
+                if(firstSaleDetails.isPresent()){
+                    bundle.putParcelable("currentSale",firstSaleDetails.get());
+                }
+                intent.putExtras(bundle);
                 context.startActivity(intent);
             }
         });

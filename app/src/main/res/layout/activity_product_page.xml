@@ -77,14 +77,30 @@
                         android:layout_marginBottom="15dp"
                         android:textFontWeight="700"
                         style="@style/TEXT"/>
-                    <TextView
-                        android:id="@+id/tvPrice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="$148"
-                        android:fontFamily="@font/gabarito"
-                        android:textFontWeight="700"
-                        android:textColor="@color/purple"/>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/tvPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$148"
+                            android:fontFamily="@font/gabarito"
+                            android:textFontWeight="700"
+                            android:textColor="@color/purple"/>
+                        <TextView
+                            android:id="@+id/tvOldPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/tvPrice"
+                            android:textSize="12dp"
+                            android:fontFamily="@font/circularstdmedium500"
+                            android:textColor="@color/neutral_400"
+                            android:lineHeight="15dp"
+                            android:layout_marginStart="8dp"
+                            android:text="$100.97"/>
+                    </RelativeLayout>
+
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -93,7 +109,7 @@
                     android:layout_marginBottom="26dp">
 
                     <RelativeLayout
-                        android:id="@+id/Size"
+                        android:id="@+id/btnSize"
                         style="@style/bg_product_card"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -122,7 +138,7 @@
                             android:layout_marginRight="29dp"
                             android:layout_marginBottom="19dp"
 
-                            android:layout_toStartOf="@+id/btnSize"
+                            android:layout_toStartOf="@+id/caret_down_Size"
                             android:fontFamily="@font/gabarito"
                             android:lineHeight="19sp"
                             android:text="S"
@@ -130,7 +146,7 @@
                             android:textSize="16dp" />
 
                         <ImageView
-                            android:id="@+id/btnSize"
+                            android:id="@+id/caret_down_Size"
                             style="@style/caret_down"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
@@ -141,7 +157,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:id="@+id/Color"
+                        android:id="@+id/btnColor"
                         style="@style/bg_product_card"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -167,13 +183,13 @@
                             android:layout_height="16dp"
                             android:layout_marginTop="20dp"
                             android:layout_marginRight="25dp"
-                            android:layout_toStartOf="@id/btnColor"
+                            android:layout_toStartOf="@id/caret_down_Color"
                             android:background="@drawable/shape"
                             android:backgroundTint="#B3B68B"
                             />
 
                         <ImageView
-                            android:id="@+id/btnColor"
+                            android:id="@+id/caret_down_Color"
                             style="@style/caret_down"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
@@ -247,6 +263,7 @@
                     </RelativeLayout>
                 </LinearLayout>
                 <TextView
+                    android:id="@+id/tvDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Built for life and made to last, this full-zip corduroy jacket is part of our Nike Life collection. The spacious fit gives you plenty of room to layer underneath, while the soft corduroy keeps it casual and timeless."
@@ -318,40 +335,41 @@
                         android:scrollbars="none"/>
                 </LinearLayout>
 
-                <RelativeLayout
-                    android:id="@+id/btnAddToBag"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="24dp"
-                    android:background="@drawable/shape"
-                    android:backgroundTint="@color/purple"
-                    android:paddingHorizontal="24dp"
-                    android:paddingVertical="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:fontFamily="@font/circularstdmedium500"
-                        android:lineHeight="19dp"
-                        android:text="$148"
-                        android:textColor="@color/white"
-                        android:textSize="16dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:fontFamily="@font/circularstdmedium500"
-                        android:lineHeight="20dp"
-                        android:text="Add to Bag"
-                        android:textColor="@color/white"
-                        android:textSize="16dp" />
-                </RelativeLayout>
             </LinearLayout>
 
         </ScrollView>
+        <RelativeLayout
+            android:id="@+id/btnAddToBag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="24dp"
+            android:background="@drawable/shape"
+            android:backgroundTint="@color/purple"
+            android:paddingHorizontal="24dp"
+            android:layout_alignParentBottom="true"
+            android:paddingVertical="16dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:fontFamily="@font/circularstdmedium500"
+                android:lineHeight="19dp"
+                android:text="$148"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="@font/circularstdmedium500"
+                android:lineHeight="20dp"
+                android:text="Add to Bag"
+                android:textColor="@color/white"
+                android:textSize="16dp" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

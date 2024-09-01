@@ -1,19 +1,25 @@
 package com.example.ecommercemobileapp2hand.Views.ProductPage;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,6 +27,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Reviews;
+import com.example.ecommercemobileapp2hand.Models.Product;
+import com.example.ecommercemobileapp2hand.Models.ProductDetails;
+import com.example.ecommercemobileapp2hand.Models.ProductDetailsImg;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleProductImageAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleReviewAdapter;
@@ -30,14 +39,19 @@ import java.util.ArrayList;
 
 public class ProductPage extends AppCompatActivity {
 
+    private Product product;
+    private ProductDetails currentDetails;
     private RecyclerView recycleImgSlider;
     private RecycleProductImageAdapter imgSliderApdater;
-    private ArrayList<String> imgList;
+    private ArrayList<ProductDetailsImg> imgList;
     private ArrayList<Reviews> reviewsList;
     private RecycleReviewAdapter reviewAdapter;
     private RecyclerView recycleReviews;
-    ImageView btnColor, btnSize;
+    RelativeLayout btnColor, btnSize;
     private ImageView imgBack;
+    private TextView tvProductName, tvPrice, tvOldPrice, tvDescription;
+    private View bgColor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,22 +63,67 @@ public class ProductPage extends AppCompatActivity {
             return insets;
         });
         addControl();
-        addEvent();
+        getBundleIntent();
+
+    }
+
+    private void getBundleIntent() {
+        Intent intent = getIntent();
+        if (intent.getParcelableExtra("lstDetails") != null) {
+            product = intent.getParcelableExtra("lstDetails");
+        }
+        if (intent.getParcelableExtra("currentSale") != null) {
+            currentDetails = intent.getParcelableExtra("currentSale");
+        } else {
+            currentDetails = product.getProductDetailsArrayList().get(0);
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        loadRecycleViewImgSlider();
         loadListViewReviews();
+        addEvent();
+        bindingData(currentDetails);
     }
 
-    private void addControl(){
+    @SuppressLint("ResourceType")
+    private void bindingData(ProductDetails curr) {
+        loadRecycleViewImgSlider(curr);
+        tvProductName.setText(product.getProduct_name());
+        if (curr.getSale_price() != null) {
+            tvOldPrice.setVisibility(View.VISIBLE);
+            tvOldPrice.setText("$" + product.getBase_price().toString());
+            tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            tvPrice.setText("$" + curr.getSale_price().toString());
+        } else {
+            tvOldPrice.setVisibility(View.GONE);
+            tvPrice.setText(product.getBase_price().toString());
+
+        }
+        String colorName = curr.getProductColor().getProduct_color_name().toLowerCase();
+        int color;
+        if (colorName == "dark blue") {
+            color = Color.parseColor("#00008B");
+        } else {
+            color = Color.parseColor(colorName);
+        }
+        bgColor.setBackgroundTintList(ColorStateList.valueOf(color));
+        tvDescription.setText(curr.getDescription());
+    }
+
+    private void addControl() {
+
+        tvProductName = findViewById(R.id.tvProductName);
+        tvPrice = findViewById(R.id.tvPrice);
+        tvOldPrice = findViewById(R.id.tvOldPrice);
+        tvDescription = findViewById(R.id.tvDescription);
         recycleImgSlider = findViewById(R.id.recyclerProductImgSlider);
         recycleReviews = findViewById(R.id.recyclerRating);
         btnColor = findViewById(R.id.btnColor);
         btnSize = findViewById(R.id.btnSize);
-
+        bgColor = findViewById(R.id.bgColor);
         if (btnColor != null) {
             btnColor.setOnClickListener(v -> showColorOverlay("Color"));
         }
@@ -74,8 +133,8 @@ public class ProductPage extends AppCompatActivity {
             btnSize.setOnClickListener(v -> showSizeOverlay("Size"));
         }
     }
-    public void addEvent()
-    {
+
+    public void addEvent() {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,24 +144,21 @@ public class ProductPage extends AppCompatActivity {
         });
     }
 
-    private void loadRecycleViewImgSlider(){
-        imgList = new ArrayList<>();
-        imgList.add("harringtonjacket1.png");
-        imgList.add("harringtonjacket2.png");
-        imgList.add("harringtonjacket1.png");
-        imgList.add("harringtonjacket2.png");
-        imgSliderApdater = new RecycleProductImageAdapter(imgList,getApplicationContext());
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false);
+    private void loadRecycleViewImgSlider(ProductDetails productDetails) {
+        imgList = productDetails.getImgDetailsArrayList();
+        imgSliderApdater = new RecycleProductImageAdapter(imgList, getApplicationContext());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         recycleImgSlider.setLayoutManager(layoutManager);
         recycleImgSlider.setAdapter(imgSliderApdater);
     }
-    private void loadListViewReviews(){
+
+    private void loadListViewReviews() {
         reviewsList = new ArrayList<>();
-        reviewsList.add(new Reviews(1,"Alex Morgan","AlexMorgan.png",3,"Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
-        reviewsList.add(new Reviews(2,"Alex Morgan","AlexMorgan.png",3,"Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
-        reviewsList.add(new Reviews(3,"Alex Morgan","AlexMorgan.png",3,"Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
-        reviewAdapter = new RecycleReviewAdapter(reviewsList,this);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+        reviewsList.add(new Reviews(1, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
+        reviewsList.add(new Reviews(2, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
+        reviewsList.add(new Reviews(3, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
+        reviewAdapter = new RecycleReviewAdapter(reviewsList, this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recycleReviews.setLayoutManager(layoutManager);
         recycleReviews.setAdapter(reviewAdapter);
     }
@@ -136,7 +192,6 @@ public class ProductPage extends AppCompatActivity {
 
             View colorView = buttonView.findViewById(R.id.color);
             colorView.setBackgroundTintList(ColorStateList.valueOf(colorValues[i]));
-
             button.setOnClickListener(v -> {
                 // update các button chưa chọn
                 for (int j = 0; j < linearLayout.getChildCount(); j++) {

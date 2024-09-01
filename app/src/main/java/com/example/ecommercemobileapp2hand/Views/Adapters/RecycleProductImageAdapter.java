@@ -10,17 +10,20 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Models.ProductDetails;
+import com.example.ecommercemobileapp2hand.Models.ProductDetailsImg;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class RecycleProductImageAdapter extends RecyclerView.Adapter<RecycleProductImageAdapter.MyViewHolder> {
 
-    private ArrayList<String> imgLists;
+    private ArrayList<ProductDetailsImg> imgLists;
     private Context context;
 
-    public RecycleProductImageAdapter(ArrayList<String> imgLists, Context context) {
+    public RecycleProductImageAdapter(ArrayList<ProductDetailsImg> imgLists, Context context) {
         this.imgLists = imgLists;
         this.context = context;
     }
@@ -35,9 +38,9 @@ public class RecycleProductImageAdapter extends RecyclerView.Adapter<RecycleProd
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String img = imgLists.get(position);
-        Bitmap bitmap = Util.convertStringToBitmapFromAccess(context,img);
-        holder.imgProduct.setImageBitmap(bitmap);
+        ProductDetailsImg img = imgLists.get(position);
+        String url = Util.getCloudinaryImageUrl(context,img.getImg_url(),592,592);
+        Picasso.get().load(url).into(holder.imgProduct);
     }
 
     @Override

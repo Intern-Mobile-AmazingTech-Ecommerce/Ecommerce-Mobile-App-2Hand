@@ -106,7 +106,6 @@ public class ProductHandler {
                             productDetailsJson,
                             new TypeReference< ArrayList<ProductDetails>>() {}
                     );
-
                     p.setProductDetailsArrayList(productDetails);
                     list.add(p);
 

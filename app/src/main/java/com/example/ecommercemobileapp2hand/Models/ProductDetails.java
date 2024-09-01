@@ -26,18 +26,28 @@ public class ProductDetails implements Parcelable {
     private Timestamp createdAt;
     @JsonProperty("product_details_img_array")
     private ArrayList<ProductDetailsImg> imgDetailsArrayList;
-
+    @JsonProperty("product_details_size_array")
+    private ArrayList<ProductDetailsSize> sizeArrayList;
     public ProductDetails() {
     }
 
-    public ProductDetails(int product_details_id, int product_id, ProductColor productColor, String description, BigDecimal sale_price, Timestamp createdAt, ArrayList<ProductDetailsImg> imgDetailsArrayList) {
+    public ProductDetails(int product_details_id, int product_id, ProductColor productColor, String description, Timestamp createdAt, BigDecimal sale_price, ArrayList<ProductDetailsImg> imgDetailsArrayList, ArrayList<ProductDetailsSize> sizeArrayList) {
         this.product_details_id = product_details_id;
         this.product_id = product_id;
         this.productColor = productColor;
         this.description = description;
-        this.sale_price = sale_price;
         this.createdAt = createdAt;
+        this.sale_price = sale_price;
         this.imgDetailsArrayList = imgDetailsArrayList;
+        this.sizeArrayList = sizeArrayList;
+    }
+
+    public ArrayList<ProductDetailsSize> getSizeArrayList() {
+        return sizeArrayList;
+    }
+
+    public void setSizeArrayList(ArrayList<ProductDetailsSize> sizeArrayList) {
+        this.sizeArrayList = sizeArrayList;
     }
 
     @JsonProperty("product_color_id")
@@ -55,6 +65,7 @@ public class ProductDetails implements Parcelable {
         }
         this.productColor.setProduct_color_name(productColorName);
     }
+
     public ProductColor getProductColor() {
         return productColor;
     }
