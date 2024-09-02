@@ -17,37 +17,4 @@ public class UserOrderHandler {
     private static DBConnect dbConnect = new DBConnect();
     private static Connection conn;
 
-    public static ArrayList<UserOrder> getOrder(int id)
-    {
-        ArrayList<UserOrder> lst = new ArrayList<>();
-        conn = dbConnect.connectionClass();
-        if(conn!=null) {
-            String query = "SELECT * FROM USER_ORDER WHERE USER_ID = " + id + "";
-            try
-            {
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(query);
-                while (rs.next()) {
-
-                    LocalDateTime createdAt = null;
-
-                    if(rs.getTimestamp(6) != null)
-                    {
-                        createdAt = rs.getTimestamp(6).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-                    }
-                    UserOrder ord = new UserOrder(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getBigDecimal(4), rs.getInt(5), createdAt);
-                    lst.add(ord);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return lst;
-    }
 }

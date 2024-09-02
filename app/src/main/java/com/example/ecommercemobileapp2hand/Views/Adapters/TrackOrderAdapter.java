@@ -3,6 +3,7 @@ package com.example.ecommercemobileapp2hand.Views.Adapters;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,12 @@ import com.example.ecommercemobileapp2hand.Models.OrderStatus;
 import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class TrackOrderAdapter extends RecyclerView.Adapter<TrackOrderAdapter.MyViewHolder> {
     ArrayList<OrderStatus> lst_ordstt;
@@ -41,14 +46,23 @@ public class TrackOrderAdapter extends RecyclerView.Adapter<TrackOrderAdapter.My
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         OrderStatus orderStatus = lst_ordstt.get(position);
 
+        String dateStr = order.getCreated_at();
+        SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ENGLISH);
+        SimpleDateFormat displayFormat = new SimpleDateFormat("dd MMMM", Locale.ENGLISH);
+        String formattedDate = "";
+
+        try {
+            Date date = sqlDateFormat.parse(dateStr);
+            formattedDate = displayFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         if (orderStatus.getOrder_status_id()  <= order.getOrder_status_id())
         {
             holder.img_checkstattus.setImageResource(R.drawable.check_line);
             holder.img_checkstattus.setBackgroundResource(R.drawable.circle_completed);
             holder.tv_orderstatus.setText(orderStatus.getOrder_status_name());
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM");
-            String formattedDate = order.getCreated_at().format(formatter);
             holder.tv_created.setText(formattedDate);
         }
         else
@@ -69,8 +83,6 @@ public class TrackOrderAdapter extends RecyclerView.Adapter<TrackOrderAdapter.My
             holder.img_checkstattus.setBackgroundResource(R.drawable.circle_incompleted);
             holder.tv_orderstatus.setText(orderStatus.getOrder_status_name());
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM");
-            String formattedDate = order.getCreated_at().format(formatter);
             holder.tv_created.setText(formattedDate);
         }
     }

@@ -19,6 +19,8 @@ import com.example.ecommercemobileapp2hand.Controllers.OrderStatusHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserOrderProductsHandler;
 import com.example.ecommercemobileapp2hand.Models.OrderStatus;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.TrackOrderAdapter;
@@ -33,6 +35,7 @@ public class TrackOrderAcitivity extends AppCompatActivity {
     TextView tv_orderid, tv_amount_order, tv_viewall, tv_shippingdetails;
     ArrayList<OrderStatus> orderStatuses;
     UserOrder order;
+    UserAccount userAccount;
     TrackOrderAdapter trackOrderAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +63,15 @@ public class TrackOrderAcitivity extends AppCompatActivity {
         tv_orderid.setText(tv_orderid.getText() + "#" + order.getUser_order_id());
         tv_amount_order.setText(String.valueOf(UserOrderProductsHandler.getAmountItems(order.getUser_order_id()) + " items"));
 
-        tv_shippingdetails.setText(UserAddressHandler.getAddress(order.getUser_order_id()));
+        String s1 = "";
+        for (UserAddress address : userAccount.getLstAddress())
+        {
+            if (address.getUser_address_id() == order.getUser_address_id())
+            {
+                s1 += address.getUser_address_street() + " " + address.getUser_address_city() + ", " + address.getUser_address_state() + " " + address.getUser_address_zipcode() + "\n" + userAccount.getPhone_number();
+            }
+        }
+        tv_shippingdetails.setText(s1);
 
         orderStatuses = OrderStatusHandler.getData1();
         Collections.reverse(orderStatuses);
@@ -84,6 +95,7 @@ public class TrackOrderAcitivity extends AppCompatActivity {
     void getIt()
     {
         Intent intent = getIntent();
+        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
         order = (UserOrder) intent.getSerializableExtra("order");
     }
 }

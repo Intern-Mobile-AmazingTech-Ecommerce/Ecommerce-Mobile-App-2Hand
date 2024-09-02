@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.UserOrderProductsHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Orders.TrackOrderAcitivity;
@@ -22,12 +23,12 @@ import java.util.ArrayList;
 public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyViewHoler> {
     ArrayList<UserOrder> lstorders;
     Context context;
-    String checkstatus;
+    UserAccount userAccount;
 
-    public OrderCardAdapter(ArrayList<UserOrder> lstorders, Context context, String checkstatus) {
+    public OrderCardAdapter(ArrayList<UserOrder> lstorders, Context context, UserAccount userAccount) {
         this.lstorders = lstorders;
         this.context = context;
-        this.checkstatus = checkstatus;
+        this.userAccount = userAccount;
     }
 
     @NonNull
@@ -72,6 +73,7 @@ public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyVi
     private void DetailTrackOrder(UserOrder ord)
     {
         Intent intent = new Intent(context, TrackOrderAcitivity.class);
+        intent.putExtra("UserAccount", userAccount);
         intent.putExtra("order", ord);
         context.startActivity(intent);
     }

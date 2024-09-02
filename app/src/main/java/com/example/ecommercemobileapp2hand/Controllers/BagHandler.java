@@ -16,32 +16,32 @@ public class BagHandler {
     private static DBConnect dbConnect = new DBConnect();
     private static Connection conn;
 
-    public static ArrayList<Bag> getData()
-    {
-        ArrayList<Bag> lst = new ArrayList<>();
-        conn = dbConnect.connectionClass();
-        if(conn!=null) {
-            String query = "Select * from bag";
-            try
-            {
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(query);
-                while (rs.next())
-                {
-
-                    Bag bag = new Bag(rs.getInt(1), rs.getInt(2), rs.getInt(3),rs.getInt(4));
-                    lst.add(bag);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return lst;
-    }
+//    public static ArrayList<Bag> getData()
+//    {
+//        ArrayList<Bag> lst = new ArrayList<>();
+//        conn = dbConnect.connectionClass();
+//        if(conn!=null) {
+//            String query = "Select * from bag";
+//            try
+//            {
+//                Statement stmt = conn.createStatement();
+//                ResultSet rs = stmt.executeQuery(query);
+//                while (rs.next())
+//                {
+//
+//                    Bag bag = new Bag(rs.getInt(1), rs.getInt(2), rs.getInt(3),rs.getInt(4));
+//                    lst.add(bag);
+//                }
+//            } catch (SQLException e) {
+//                throw new RuntimeException(e);
+//            } finally {
+//                try {
+//                    conn.close();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return lst;
+//    }
 }

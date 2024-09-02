@@ -19,6 +19,9 @@
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
         <activity
+            android:name=".Views.Orders.OrderDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".Views.Notifications.NotificationsActivity"
             android:exported="true" />
         <activity

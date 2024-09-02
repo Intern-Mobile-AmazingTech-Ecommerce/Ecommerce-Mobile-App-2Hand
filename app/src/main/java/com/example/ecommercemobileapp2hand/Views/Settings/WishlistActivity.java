@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.WishList;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.WishListAdapter;
@@ -26,6 +28,7 @@ public class WishlistActivity extends AppCompatActivity {
     ImageView btnBack;
     private WishListAdapter wishListAdapter;
     private List<Wishlist> wishList;
+    private UserAccount userAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class WishlistActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        getIt();
         addControl();
         addEvent();
         loadRecycleViewCategories();
@@ -63,16 +67,15 @@ public class WishlistActivity extends AppCompatActivity {
     }
 
     private void loadRecycleViewCategories(){
-        // Initialize category list
-        wishList= WishlistHandler.getWishListByUserID(1);
-//        wishList.add(new WishList("My Favorite", 12));
-//        wishList.add(new WishList("T-Shirts", 4));
-
-
-        wishListAdapter = new WishListAdapter(WishlistActivity.this,wishList);
+        wishListAdapter = new WishListAdapter(WishlistActivity.this, userAccount.getLstWL(), userAccount);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(WishlistActivity.this,RecyclerView.VERTICAL,false);
         rv_wishlist.setLayoutManager(layoutManager);
 
         rv_wishlist.setAdapter(wishListAdapter);
+    }
+    private void getIt()
+    {
+        Intent intent = getIntent();
+        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
     }
 }

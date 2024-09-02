@@ -1,32 +1,26 @@
 package com.example.ecommercemobileapp2hand.Models;
 
-public class Bag {
+import java.io.Serializable;
+
+public class Bag implements Serializable {
     private int bag_id;
-    private int user_id;
     private int product_details_size_id;
     private int amount;
     public int getBag_id() {
         return bag_id;
     }
 
-    public void setBag_id(int bag_id) {
-        this.bag_id = bag_id;
+    public Bag() {
     }
 
-
-    public Bag(int bag_id, int product_details_size_id, int user_id,int amount) {
+    public Bag(int bag_id, int product_details_size_id, int amount) {
         this.bag_id = bag_id;
         this.product_details_size_id = product_details_size_id;
-        this.user_id = user_id;
         this.amount = amount;
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setBag_id(int bag_id) {
+        this.bag_id = bag_id;
     }
 
     public int getProduct_details_size_id() {
@@ -37,14 +31,11 @@ public class Bag {
         this.product_details_size_id = product_details_size_id;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
-
-
-    public Bag(){}
 }
