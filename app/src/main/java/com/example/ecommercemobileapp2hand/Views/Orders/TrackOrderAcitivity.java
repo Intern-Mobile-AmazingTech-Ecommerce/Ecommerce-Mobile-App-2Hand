@@ -91,6 +91,14 @@ public class TrackOrderAcitivity extends AppCompatActivity {
                 finish();
             }
         });
+        tv_viewall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TrackOrderAcitivity.this, OrderDetailsActivity.class);
+                intent.putExtra("Order", order);
+                startActivity(intent);
+            }
+        });
     }
     void getIt()
     {
