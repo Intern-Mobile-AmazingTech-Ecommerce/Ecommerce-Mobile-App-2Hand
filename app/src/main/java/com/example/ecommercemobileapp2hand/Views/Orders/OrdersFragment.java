@@ -77,6 +77,7 @@ public class OrdersFragment extends Fragment {
         {
             userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
         }
+
         oderstatus = OrderStatusHandler.getData();
 
         chipGroup = view.findViewById(R.id.chipgroup);
@@ -86,9 +87,7 @@ public class OrdersFragment extends Fragment {
         linear_order2 = view.findViewById(R.id.linear_order2);
         btn_explore = view.findViewById(R.id.btn_explore);
 
-//        lstorders = new ArrayList<>();
-//        lstorders = Order.initOrder();
-        lstorders = UserOrderHandler.getOrder(userAccount.getUser_id());
+        lstorders = userAccount.getLstOrder();
 
         if (lstorders.isEmpty())
         {
@@ -143,7 +142,7 @@ public class OrdersFragment extends Fragment {
                     }
                 }
 
-                orderCardAdapter = new OrderCardAdapter(filter, getContext(), checkstatus);
+                orderCardAdapter = new OrderCardAdapter(filter, getContext(), userAccount);
                 recyOrders.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
                 recyOrders.setItemAnimator(new DefaultItemAnimator());
 
@@ -168,7 +167,7 @@ public class OrdersFragment extends Fragment {
                                 break;
                             }
                         }
-                        orderCardAdapter = new OrderCardAdapter(filter, getContext(), checkstatus);
+                        orderCardAdapter = new OrderCardAdapter(filter, getContext(), userAccount);
                         recyOrders.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
                         recyOrders.setItemAnimator(new DefaultItemAnimator());
 

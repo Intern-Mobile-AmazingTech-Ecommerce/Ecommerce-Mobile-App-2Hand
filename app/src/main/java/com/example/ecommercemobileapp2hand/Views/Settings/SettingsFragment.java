@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
 import com.example.ecommercemobileapp2hand.Views.SplashScreen.SplashScreenActivity;
@@ -31,12 +33,19 @@ public class SettingsFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private static final String PREFS_NAME = "user_prefs";
 
+    private UserAccount userAccount;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        if (getArguments() != null)
+        {
+            userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
+        }
 
         tvUserName = view.findViewById(R.id.tvUserName);
         tvEmail = view.findViewById(R.id.tvUserEmail);
@@ -63,7 +72,7 @@ public class SettingsFragment extends Fragment {
         fetchUserDataFromSharedPreferences();
 
         tvSignOut.setOnClickListener(v -> signOut());
-        addressOnClick();
+        addEvent();
         return view;
     }
 
@@ -117,8 +126,29 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    private void addressOnClick() {
-        tvAddress.setOnClickListener(view -> startActivity(new Intent(getActivity(), ListAddressActivity.class)));
-        tvWishlist.setOnClickListener(v -> startActivity(new Intent(getActivity(), WishlistActivity.class)));
+    private void addEvent()
+    {
+        tvAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ListAddressActivity.class);
+                startActivity(intent);
+            }
+        });
+        tvWishlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), WishlistActivity.class);
+                intent.putExtra("UserAccount", userAccount);
+                startActivity(intent);
+            }
+        });
+        tvPayment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PaymentActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }

@@ -60,8 +60,16 @@ public class Util {
     }
     public static String getCloudinaryImageUrl(Context context,String publicId,int w, int h) {
         Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
-        int widthDP = dpToPx(context,w);
-        int heightDP = dpToPx(context,h);
+        // Kiểm tra nếu w hoặc h bằng -1, bỏ qua bước đặt kích thước
+        if (w == -1 || h == -1) {
+            String url = cloudinary.url().generate(publicId);
+            url = url.replace("http://", "https://");
+            return url;
+        }
+
+        // Nếu không, tiếp tục với quy trình hiện tại
+        int widthDP = dpToPx(context, w);
+        int heightDP = dpToPx(context, h);
         String url = cloudinary.url().transformation(new Transformation().width(widthDP).height(heightDP))
                 .generate(publicId);
         url = url.replace("http://", "https://");

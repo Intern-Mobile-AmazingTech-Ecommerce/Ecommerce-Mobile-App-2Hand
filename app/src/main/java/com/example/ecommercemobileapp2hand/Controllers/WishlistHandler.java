@@ -103,7 +103,6 @@ public class WishlistHandler {
                     wishlist.setWishlist_id(rs.getInt(1));
                     wishlist.setWishlist_name(rs.getString(2));
                     wishlist.setWishlist_quantity((rs.getInt(3)));
-                    wishlist.setUser_id(userID);
                     list.add(wishlist);
                 }
 

@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.FakeModels.WishList;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Settings.WishlistDetail;
@@ -21,9 +22,11 @@ import java.util.List;
 public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.WishlistViewHolder>{
     private List<Wishlist> wishlistItems;
     private Context context;
-    public WishListAdapter(Context context,List<Wishlist> wishlistItems) {
+    private UserAccount userAccount;
+    public WishListAdapter(Context context,List<Wishlist> wishlistItems, UserAccount userAccount) {
         this.wishlistItems = wishlistItems;
         this.context = context;
+        this.userAccount = userAccount;
     }
 
     @Override
@@ -41,6 +44,7 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, WishlistDetail.class);
+                intent.putExtra("UserAccount", userAccount);
                 intent.putExtra("wishlistID",item.getWishlist_id());
                 context.startActivity(intent);
             }

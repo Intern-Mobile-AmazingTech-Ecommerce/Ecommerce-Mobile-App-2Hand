@@ -17,6 +17,7 @@ import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
@@ -60,6 +61,8 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerViewTopSelling;
     private ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstProTopSelling;
     private ProductCardAdapter TopSellingAdapter;
+
+    private UserAccount userAccount;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -111,6 +114,10 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         try {
+            if (getArguments() != null)
+            {
+                userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
+            }
             addControl(view);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);

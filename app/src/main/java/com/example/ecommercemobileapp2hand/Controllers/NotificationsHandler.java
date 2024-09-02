@@ -30,15 +30,7 @@ public class NotificationsHandler {
                     Notifications notification = new Notifications();
                     notification.setNotifications_id(rs.getInt("notifications_id"));
                     notification.setNotifications_content(rs.getString("notifications_content"));
-                    // Convert Timestamp to LocalDateTime
-                    Timestamp timestamp = rs.getTimestamp("created_at");
-                    if (timestamp != null) {
-                        LocalDateTime localDateTime = timestamp.toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime();
-                        notification.setCreated_at(localDateTime);
-                    }
-                    notification.setUser_id(rs.getInt("user_id"));
+                    notification.setCreated_at(rs.getString("created_at"));
                     notification.setViewed(rs.getBoolean("viewed"));
                     notificationsList.add(notification);
                 }
@@ -57,15 +49,7 @@ public class NotificationsHandler {
         }
         return notificationsList;
     }
-    public static ArrayList<Notifications> initNotificationList1() {
-        ArrayList<Notifications> notifications = new ArrayList<>();
 
-        notifications.add(new Notifications(1, "New message received", LocalDateTime.now(), 123, false));
-        notifications.add(new Notifications(2, "Your order has been shipped", LocalDateTime.now().minusHours(1), 124, true));
-        notifications.add(new Notifications(3, "Friend request accepted", LocalDateTime.now().minusDays(1), 125, false));
-        notifications.add(new Notifications(4, "Password changed successfully", LocalDateTime.now().minusDays(2), 126, true));
-        return notifications;
-    }
     public static ArrayList<Notifications> initNotificationList2() {
         return new ArrayList<>();
     }

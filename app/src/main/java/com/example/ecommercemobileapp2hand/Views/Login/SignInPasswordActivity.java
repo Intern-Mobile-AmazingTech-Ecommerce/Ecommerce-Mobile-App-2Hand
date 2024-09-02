@@ -64,12 +64,11 @@ public class SignInPasswordActivity extends AppCompatActivity {
                 }
                 else
                 {
-                    UserAccount userAccount2 = UserAccountHandler.getUserAccount(userAccount.getEmail(), edtpassword.getText().toString());
-                    if (userAccount2 != null)
+                    UserAccount userAccount1 = UserAccountHandler.getUserAccountById(UserAccountHandler.getUserAccount(userAccount.getEmail(), edtpassword.getText().toString()));
+                    if (userAccount1 != null)
                     {
                         Intent intent = new Intent(SignInPasswordActivity.this, MainActivity.class);
-                        userAccount.setPassword(edtpassword.getText().toString());
-                        intent.putExtra("UserAccount", userAccount2);
+                        intent.putExtra("UserAccount", userAccount1);
                         startActivity(intent);
                     }
                     else

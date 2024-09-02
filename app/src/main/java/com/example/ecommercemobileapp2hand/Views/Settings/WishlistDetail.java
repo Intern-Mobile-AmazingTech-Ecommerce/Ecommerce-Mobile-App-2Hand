@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
 import com.example.ecommercemobileapp2hand.Models.Product;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleProductImageAdapter;
@@ -30,6 +31,7 @@ public class WishlistDetail extends AppCompatActivity {
     ImageButton btn_back;
     TextView txtWishListLabel;
     int wishList_ID;
+    private UserAccount userAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +42,7 @@ public class WishlistDetail extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Intent intent=getIntent();
-        wishList_ID=intent.getIntExtra("wishlistID",0);
+        getIt();
         addControls();
         getData();
         addEvents();
@@ -66,5 +67,11 @@ public class WishlistDetail extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(WishlistDetail.this,2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+    }
+    private void getIt()
+    {
+        Intent intent=getIntent();
+        wishList_ID = intent.getIntExtra("wishlistID",0);
+        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
     }
 }

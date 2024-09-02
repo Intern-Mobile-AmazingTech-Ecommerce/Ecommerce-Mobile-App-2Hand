@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
@@ -27,6 +28,7 @@ public class NotificationsFragment extends Fragment {
     private TextView tv_Notv_No_Notification;
     private Button btn_Explore;
     private ImageView img_Bell;
+    private UserAccount userAccount;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -73,6 +75,12 @@ public class NotificationsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_notifications, container, false);
+
+        if (getArguments() != null)
+        {
+            userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
+        }
+
         addControl(view);
         addEvents();
         return(view);

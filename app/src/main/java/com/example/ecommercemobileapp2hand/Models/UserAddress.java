@@ -1,9 +1,10 @@
 package com.example.ecommercemobileapp2hand.Models;
 
-public class UserAddress {
+import java.io.Serializable;
+
+public class UserAddress implements Serializable {
 
     private int user_address_id;
-    private int user_id;
     private String user_address_street;
     private String user_address_city;
     private String user_address_state;
@@ -12,9 +13,8 @@ public class UserAddress {
     public UserAddress() {
     }
 
-    public UserAddress(int user_address_id, int user_id, String user_address_street, String user_address_city, String user_address_state, String user_address_zipcode) {
+    public UserAddress(int user_address_id, String user_address_street, String user_address_city, String user_address_state, String user_address_zipcode) {
         this.user_address_id = user_address_id;
-        this.user_id = user_id;
         this.user_address_street = user_address_street;
         this.user_address_city = user_address_city;
         this.user_address_state = user_address_state;
@@ -27,14 +27,6 @@ public class UserAddress {
 
     public void setUser_address_id(int user_address_id) {
         this.user_address_id = user_address_id;
-    }
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
     }
 
     public String getUser_address_street() {

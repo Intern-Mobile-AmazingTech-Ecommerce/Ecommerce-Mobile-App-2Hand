@@ -15,41 +15,6 @@ public class UserAddressHandler {
     private static DBConnect dbConnect = new DBConnect();
     private static Connection conn;
 
-    public static List<UserAddress> getUserAddressesByUserId(int userId) {
-        List<UserAddress> userAddresses = new ArrayList<>();
-        String sql = "SELECT * FROM user_address WHERE user_id = ?";
-        conn = dbConnect.connectionClass();
-        try {
-            try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setInt(1, userId);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        UserAddress userAddress = new UserAddress(
-                                resultSet.getInt("user_address_id"),
-                                resultSet.getInt("user_id"),
-                                resultSet.getString("user_address_street"),
-                                resultSet.getString("user_address_city"),
-                                resultSet.getString("user_address_state"),
-                                resultSet.getString("user_address_zipcode")
-                        );
-                        userAddresses.add(userAddress);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return userAddresses;
-    }
-
     public static String getAddress(int id)
     {
         try

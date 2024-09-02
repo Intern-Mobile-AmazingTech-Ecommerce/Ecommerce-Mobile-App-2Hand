@@ -1,30 +1,24 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import net.sourceforge.jtds.jdbc.DateTime;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-public class Notifications {
+public class Notifications implements Serializable {
     private int notifications_id;
     private String notifications_content;
-    private LocalDateTime created_at;
-    private int user_id;
+    private String created_at;
     private boolean viewed;
     public Notifications(){
 
     }
-    public Notifications(int notifications_id, String notifications_content, LocalDateTime created_at, int user_id,boolean viewed) {
+
+    public Notifications(int notifications_id, String notifications_content, String created_at, boolean viewed) {
         this.notifications_id = notifications_id;
         this.notifications_content = notifications_content;
         this.created_at = created_at;
-        this.user_id = user_id;
-        this.viewed= viewed;
-    }
-
-    public boolean isViewed() {
-        return viewed;
-    }
-
-    public void setViewed(boolean viewed) {
         this.viewed = viewed;
     }
 
@@ -44,19 +38,19 @@ public class Notifications {
         this.notifications_content = notifications_content;
     }
 
-    public LocalDateTime getCreated_at() {
+    public String getCreated_at() {
         return created_at;
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at = created_at;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public boolean isViewed() {
+        return viewed;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setViewed(boolean viewed) {
+        this.viewed = viewed;
     }
 }
