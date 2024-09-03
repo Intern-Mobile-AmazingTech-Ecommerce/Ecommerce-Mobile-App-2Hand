@@ -237,4 +237,7 @@
     <style name="icon_notification_backgound">
         <item name="android:background">@drawable/rounded_corners_background_dark</item>
     </style>
+    <style name="btn_close">
+        <item name="android:src">@drawable/baseline_close_24_white</item>
+    </style>
 </resources>

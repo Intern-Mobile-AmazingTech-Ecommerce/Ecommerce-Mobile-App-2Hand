@@ -106,7 +106,7 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //tao sharedreferences luu gia tri gender
-                SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                SharedPreferences sharedPreferences = getSharedPreferences("my_userID", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("gender_key", gender);
                 editor.apply();

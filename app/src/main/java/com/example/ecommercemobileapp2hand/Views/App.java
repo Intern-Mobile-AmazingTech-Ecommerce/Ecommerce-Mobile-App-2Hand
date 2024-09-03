@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
+import java.util.PrimitiveIterator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -34,7 +35,6 @@ public class App extends Application {
     public static ScheduledExecutorService getScheduledExecutorService() {
         return scheduledExecutorService;
     }
-
     private void scheduleCacheCleanup() {
         scheduledExecutorService.scheduleWithFixedDelay(() -> {
             cache.invalidateAll();
@@ -60,4 +60,5 @@ public class App extends Application {
         boolean nightMode = sharedPreferences.getBoolean("night", false);
         AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
     }
+
 }

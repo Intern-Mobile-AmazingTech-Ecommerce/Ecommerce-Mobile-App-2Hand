@@ -72,8 +72,9 @@ public class CategoryProductActivity extends AppCompatActivity {
         newInList = new ArrayList<>();
         if(intent.getParcelableExtra("Category")!=null){
             Category =intent.getParcelableExtra("Category");
-            genderTextView = intent.getStringExtra("Gender");
-        }else if(intent.getParcelableArrayListExtra("TopSellingList")!=null){
+//            genderTextView = intent.getStringExtra("Gender");
+        }else
+            if(intent.getParcelableArrayListExtra("TopSellingList")!=null){
 
             topSellingList = intent.getParcelableArrayListExtra("TopSellingList");
         }else if(intent.getParcelableArrayListExtra("NewInList")!=null){
@@ -93,7 +94,7 @@ public class CategoryProductActivity extends AppCompatActivity {
     private void loadRecycleCategoryProduct() {
 
         if(Category!=null){
-            lstPro = ProductHandler.getDataByObjectNameAndCategoryID(genderTextView, Category.getProduct_category_id());
+            lstPro = ProductHandler.getDataByObjectNameAndCategoryID("Men", Category.getProduct_category_id());
             proAdapter = new ProductCardAdapter(lstPro, CategoryProductActivity.this);
             tvCategoryName.setText(Category.getProduct_category_name()+" ("+lstPro.size()+")");
         }else if(topSellingList.size() > 0){

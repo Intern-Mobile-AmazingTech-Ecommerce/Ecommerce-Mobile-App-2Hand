@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    style="@style/SCREEN"
+    android:background="@drawable/rounded_border_popup_menu"
+    android:paddingBottom="20dp"
+   >
     <RelativeLayout
         android:id="@+id/title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/SCREEN"
-        android:paddingBottom="10dp">
+        android:padding="14dp">
 
         <TextView
             android:id="@+id/overlay_title"
@@ -19,6 +22,8 @@
             android:text="@string/Title"
             android:textAppearance="@style/overlay_title"
             android:gravity="top"
+            android:textStyle="bold"
+            android:backgroundTint="#00000000"
             style="@style/TEXT"/>
 
         <ImageButton
@@ -30,16 +35,16 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="17dp"
             android:clipToOutline="true"
-            android:src="@drawable/x"
-            android:backgroundTint="@color/Bg_Light_1"
-            style="@style/SCREEN"/>
+            style="@style/btn_close"
+            android:backgroundTint="#00000000"
+            />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recy_gender"
-        style="@style/SCREEN"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_container" />
+        android:layout_below="@id/title_container"
+        android:paddingHorizontal="24dp"/>
 
 </RelativeLayout>

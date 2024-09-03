@@ -215,7 +215,7 @@
     </style>
 
     <style name="ordercard_tablelayout">
-        <item name="android:background">#F4F4F4</item>
+        <item name="android:background">#00000000</item>
     </style>
 
     <style name="img_start">
@@ -250,6 +250,8 @@
     <style name="icon_notification_backgound">
         <item name="android:background">@drawable/rounded_corners_background</item>
     </style>
-
+    <style name="btn_close">
+        <item name="android:src">@drawable/baseline_close_24_black</item>
+    </style>
 
 </resources>

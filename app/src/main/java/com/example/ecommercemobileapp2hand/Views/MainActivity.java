@@ -3,7 +3,9 @@ package com.example.ecommercemobileapp2hand.Views;
 import static android.view.View.GONE;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +52,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static App app = new App();
+    private String gender;
     private BottomNavigationView bottomNavigationView;
     private RelativeLayout actionBar;
     private FrameLayout frameLayout;
@@ -58,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private MaterialButton btnObject;
     private ArrayList<String> listObj;
     private UserAccount userAccount;
-
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +78,12 @@ public class MainActivity extends AppCompatActivity {
         getIt();
         addControl();
         binding();
-
     }
-
+    private void getIt()
+    {
+        Intent intent = getIntent();
+        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
+    }
     @Override
     protected void onResume() {
         super.onResume();
@@ -91,8 +99,13 @@ public class MainActivity extends AppCompatActivity {
         btnAvt = findViewById(R.id.btnAvt);
         btnBag = findViewById(R.id.btnBag);
         btnObject = findViewById(R.id.btnObject);
-
-        btnObject.setText(userAccount.getGender());
+        sharedPreferences = getSharedPreferences("my_userID", MODE_PRIVATE);
+        gender = sharedPreferences.getString("gender_key","");
+        if (gender.isEmpty()){
+            gender = "Men";
+        }
+        btnObject.setText(gender);
+//        btnObject.setText(userAccount.getGender());
 
     }
     private void addCart(){
@@ -182,10 +195,6 @@ public class MainActivity extends AppCompatActivity {
     private void LoadFragment(Fragment fragment){
         Bundle bundle = new Bundle();
         bundle.putSerializable("UserAccount", userAccount);
-
-        if (fragment instanceof HomeFragment) {
-            bundle.putString("UserGender", btnObject.getText().toString());
-        }
         fragment.setArguments(bundle);
 
         FragmentManager fm = getSupportFragmentManager();
@@ -193,12 +202,6 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.frameLayout,fragment);
         ft.addToBackStack(null);
         ft.commit();
-    }
-
-    private void getIt()
-    {
-        Intent intent = getIntent();
-        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
     }
 
     private void showGenderOverlay(String type) {
@@ -222,21 +225,24 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recy_gender = dialogView.findViewById(R.id.recy_gender);
 
-        String[] gender = {"Men", "Women"};
-        ArrayList<String> lstGender = new ArrayList<>(Arrays.asList(gender));
+        String[] genderArr = {"Men", "Women"};
+        ArrayList<String> lstGender = new ArrayList<>(Arrays.asList(genderArr));
 
         genderAdapter = new GenderAdapter(lstGender, MainActivity.this, btnObject.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
             @Override
             public void onGenderSelected(String selectedGender) {
-                btnObject.setText(selectedGender);  // Cập nhật text của btnObject
+                btnObject.setText(selectedGender);
 
-                // Cập nhật HomeFragment nếu nó đang hiển thị
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
-                if (homeFragment != null && homeFragment.isVisible()) {
-                    homeFragment.updateGender(selectedGender);
+                sharedPreferences = getSharedPreferences("my_userID",MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("gender_key", selectedGender);
+                Boolean isSaved = editor.commit();
+
+//                FragmentManager fragmentManager = getSupportFragmentManager();
+//                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
+                if (isSaved) {
+                   LoadFragment(new HomeFragment());
                 }
-
                 bottomSheetDialog.dismiss();
             }
         });

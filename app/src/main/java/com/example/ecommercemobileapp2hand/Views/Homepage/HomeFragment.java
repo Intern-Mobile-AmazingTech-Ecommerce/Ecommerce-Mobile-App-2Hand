@@ -1,12 +1,16 @@
 package com.example.ecommercemobileapp2hand.Views.Homepage;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +52,7 @@ import com.google.common.cache.CacheBuilder;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-
+    private String gender;
     private TextView tvSeeAll;
     private ArrayList<Product> lstPro;
     private RecyclerView recyclerViewCategories;
@@ -66,6 +70,8 @@ public class HomeFragment extends Fragment {
     private String genderTextView;
     private UserAccount userAccount;
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -106,8 +112,9 @@ public class HomeFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-    }
 
+
+    }
 
 
     @Override
@@ -115,24 +122,30 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        try {
-            if (getArguments() != null)
-            {
-                userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
-                genderTextView = getArguments().getString("UserGender");
-            }
+
+//            if (getArguments() != null)
+//            {
+//                userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
+//                genderTextView = getArguments().getString("UserGender");
+//            }
             addControl(view);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
 
         return view;
     }
-
+    private void getGenderKey(){
+        sharedPreferences = getActivity().getSharedPreferences("my_userID",Context.MODE_PRIVATE);
+        gender = sharedPreferences.getString("gender_key","");
+        if(gender.isEmpty()){
+            gender = "Men";
+        }
+        Log.d("Gender",gender);
+    }
     @Override
     public void onResume() {
         super.onResume();
         try {
+            getGenderKey();
+            loadListPro(gender);
             loadCategoriesData();
             loadTopSellingProductsData();
             loadNewInProductsData();
@@ -141,17 +154,17 @@ public class HomeFragment extends Fragment {
         }
         addEvent();
     }
-
-    private void addControl(View view) throws ExecutionException {
-
-
+    private void loadListPro(String gen) throws ExecutionException {
+        App.getCache().invalidate("lstPro");
         //GenerateListPro
         lstPro = (ArrayList<Product>) App.getCache().get("lstPro", new Callable<ArrayList<Product>>() {
             @Override
             public ArrayList<Product> call() throws Exception {
-               return ProductHandler.getDataByObjectName(genderTextView);
+                return ProductHandler.getDataByObjectName(gen);
             }
         });
+    }
+    private void addControl(View view) {
 
         recyclerViewCategories = view.findViewById(R.id.recyclerViewCategories);
         tvSeeAll = view.findViewById(R.id.tvSeeAll);
@@ -166,7 +179,6 @@ public class HomeFragment extends Fragment {
 
     private void loadCategoriesData() throws ExecutionException {
         App.getCache().invalidate("categories");
-
         ArrayList<ProductCategory> categoryList = (ArrayList<ProductCategory>) App.getCache().get("categories", new Callable<ArrayList<ProductCategory>>() {
             @Override
             public ArrayList<ProductCategory> call() throws Exception {
@@ -174,7 +186,7 @@ public class HomeFragment extends Fragment {
                 return categories.size() > 5 ? new ArrayList<>(categories.subList(0, 5)) : categories;
             }
         });
-        categoriesAdapter = new CategoriesAdapter(categoryList, getContext(), R.layout.custom_recycle_categories_homepage, genderTextView);
+        categoriesAdapter = new CategoriesAdapter(categoryList, getContext(), R.layout.custom_recycle_categories_homepage);
         recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
         recyclerViewCategories.setAdapter(categoriesAdapter);
 
@@ -183,7 +195,6 @@ public class HomeFragment extends Fragment {
 
     private void loadTopSellingProductsData() throws ExecutionException {
         App.getCache().invalidate("TopSelling");
-
         lstProTopSelling = (ArrayList<Product>) App.getCache().get("TopSelling", new Callable<ArrayList<Product>>() {
             @Override
             public ArrayList<Product> call() throws Exception {
@@ -205,7 +216,6 @@ public class HomeFragment extends Fragment {
     }
     private void loadNewInProductsData() throws ExecutionException {
         App.getCache().invalidate("NewIn");
-
         lstProNewIn = (ArrayList<Product>) App.getCache().get("NewIn", new Callable<ArrayList<Product>>() {
             @Override
             public ArrayList<Product> call() throws Exception {
@@ -236,12 +246,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), CategoriesActivity.class);
-                intent.putExtra("Gender", genderTextView);
+//                intent.putExtra("Gender", genderTextView);
                 startActivity(intent);
 
             }
         });
-
         tvTopSellingSeeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,21 +273,5 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-    public void updateGender(String gender) {
-        if (genderTextView != null) {
-            this.genderTextView = gender;
 
-            try {
-                // GenerateListPro
-                lstPro = ProductHandler.getDataByObjectName(genderTextView);
-                App.getCache().put("lstPro", lstPro);
-
-                loadCategoriesData();
-                loadTopSellingProductsData();
-                loadNewInProductsData();
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
 }

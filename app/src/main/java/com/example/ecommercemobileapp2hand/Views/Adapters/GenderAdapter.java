@@ -1,11 +1,14 @@
 package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,19 +47,18 @@ public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.MyViewHold
         String g = lstGender.get(position);
 
         holder.tvGender.setText(g);
-
         if (g.equals(checkGender))
         {
             holder.imgCheck.setVisibility(View.VISIBLE);
             holder.imgCheck.setImageResource(R.drawable.check_line);
             holder.imgCheck.setBackgroundResource(R.drawable.circle_completed);
-
             holder.tvGender.setText(g);
+            holder.tvGender.setTextColor(Color.WHITE);
+            holder.linear_gender.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
         }
         else
         {
             holder.imgCheck.setVisibility(View.GONE);
-
             holder.tvGender.setText(g);
         }
         holder.linear_gender.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +78,7 @@ public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.MyViewHold
 
     class MyViewHolder extends RecyclerView.ViewHolder
     {
-        private LinearLayout linear_gender;
+        private RelativeLayout linear_gender;
         private TextView tvGender;
         private ImageView imgCheck;
         public MyViewHolder(@NonNull View itemView) {

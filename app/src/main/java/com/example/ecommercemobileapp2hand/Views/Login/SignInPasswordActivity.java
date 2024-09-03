@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Views.Login;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,10 +23,12 @@ import com.example.ecommercemobileapp2hand.Views.MainActivity;
 
 public class SignInPasswordActivity extends AppCompatActivity {
 
-    Button btnContinue;
-    TextView txtResetPassword;
-    EditText edtpassword;
-    UserAccount userAccount;
+    private Button btnContinue;
+    private TextView txtResetPassword;
+    private EditText edtpassword;
+    private UserAccount userAccount;
+    private static final String PREFS_NAME = "user_prefs";
+    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +72,12 @@ public class SignInPasswordActivity extends AppCompatActivity {
                     {
                         Intent intent = new Intent(SignInPasswordActivity.this, MainActivity.class);
                         intent.putExtra("UserAccount", userAccount1);
+                        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean(KEY_IS_LOGGED_IN, true);
+                        editor.apply();
                         startActivity(intent);
+                        finish();
                     }
                     else
                     {

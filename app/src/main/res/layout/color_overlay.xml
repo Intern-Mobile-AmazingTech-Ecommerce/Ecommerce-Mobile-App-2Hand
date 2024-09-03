@@ -1,14 +1,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/overlay"
-    style="@style/SCREEN">
+    android:background="@drawable/rounded_border_popup_menu"
+
+    >
     <RelativeLayout
         android:id="@+id/title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="14dp"
         style="@style/SCREEN"
-        android:layout_marginBottom="16dp">
+        >
 
         <TextView
             android:id="@+id/overlay_title"
@@ -31,9 +33,8 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="17dp"
             android:clipToOutline="true"
-            android:src="@drawable/x"
-            android:backgroundTint="@color/Bg_Light_1"
-            style="@style/SCREEN"/>
+            android:backgroundTint="@color/TRANSPARENT"
+            style="@style/btn_close"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -42,6 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_container"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
     </LinearLayout>
 </RelativeLayout>
