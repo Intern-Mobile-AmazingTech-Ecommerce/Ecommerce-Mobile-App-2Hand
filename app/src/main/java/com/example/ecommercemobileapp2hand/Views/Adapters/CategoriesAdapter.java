@@ -29,10 +29,12 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     private ArrayList<ProductCategory> categories;
     private Context context;
     private int layout;
-    public CategoriesAdapter(ArrayList<ProductCategory> categories, Context context, int layout) {
+    private String genderTextView;
+    public CategoriesAdapter(ArrayList<ProductCategory> categories, Context context, int layout, String genderTextView) {
         this.categories = categories;
         this.context = context;
         this.layout = layout;
+        this.genderTextView = genderTextView;
     }
 
     @Override
@@ -51,6 +53,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CategoryProductActivity.class);
+                intent.putExtra("Gender", genderTextView);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("Category", category);
                 intent.putExtras(bundle);

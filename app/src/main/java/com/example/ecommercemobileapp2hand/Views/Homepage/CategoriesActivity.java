@@ -30,6 +30,7 @@ public class CategoriesActivity extends AppCompatActivity {
     private RecyclerView recyclerViewCategories;
     private CategoriesAdapter categoriesAdapter;
     private ArrayList<ProductCategory> categoryList;
+    private String genderTextView;
 
 
 
@@ -37,6 +38,7 @@ public class CategoriesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
+        getIt();
         addControl();
         EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -73,10 +75,15 @@ public class CategoriesActivity extends AppCompatActivity {
         // Initialize category list
         categoryList = new ArrayList<>();
         categoryList = (ArrayList<ProductCategory>) App.getCache().getIfPresent("categories");
-        categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
+        categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category, genderTextView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
         recyclerViewCategories.setLayoutManager(layoutManager);
 
         recyclerViewCategories.setAdapter(categoriesAdapter);
+    }
+    private void getIt()
+    {
+        Intent intent = getIntent();
+        genderTextView = intent.getStringExtra("Gender");
     }
 }
