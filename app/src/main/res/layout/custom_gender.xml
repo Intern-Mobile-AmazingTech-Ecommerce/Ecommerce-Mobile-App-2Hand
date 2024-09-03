@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linear_gender"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="3"
+    style="@style/ordercard_tablelayout"
+    android:layout_marginBottom="16dp"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tvGender"
+        style="@style/TEXT"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:fontFamily="@font/circularstdmedium500"
+        android:text="TextView"
+        android:textSize="25dp" />
+
+    <ImageView
+        android:id="@+id/imgCheck"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0" />
+</LinearLayout>

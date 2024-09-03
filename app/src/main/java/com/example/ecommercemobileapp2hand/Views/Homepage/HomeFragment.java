@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstProTopSelling;
     private ProductCardAdapter TopSellingAdapter;
 
+    private String genderTextView;
     private UserAccount userAccount;
 
 
@@ -117,6 +119,7 @@ public class HomeFragment extends Fragment {
             if (getArguments() != null)
             {
                 userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
+                genderTextView = getArguments().getString("UserGender");
             }
             addControl(view);
         } catch (ExecutionException e) {
@@ -146,7 +149,7 @@ public class HomeFragment extends Fragment {
         lstPro = (ArrayList<Product>) App.getCache().get("lstPro", new Callable<ArrayList<Product>>() {
             @Override
             public ArrayList<Product> call() throws Exception {
-               return ProductHandler.getDataByObjectName("Men");
+               return ProductHandler.getDataByObjectName(genderTextView);
             }
         });
 
@@ -162,6 +165,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadCategoriesData() throws ExecutionException {
+        App.getCache().invalidate("categories");
+
         ArrayList<ProductCategory> categoryList = (ArrayList<ProductCategory>) App.getCache().get("categories", new Callable<ArrayList<ProductCategory>>() {
             @Override
             public ArrayList<ProductCategory> call() throws Exception {
@@ -169,7 +174,7 @@ public class HomeFragment extends Fragment {
                 return categories.size() > 5 ? new ArrayList<>(categories.subList(0, 5)) : categories;
             }
         });
-        categoriesAdapter = new CategoriesAdapter(categoryList, getContext(), R.layout.custom_recycle_categories_homepage);
+        categoriesAdapter = new CategoriesAdapter(categoryList, getContext(), R.layout.custom_recycle_categories_homepage, genderTextView);
         recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
         recyclerViewCategories.setAdapter(categoriesAdapter);
 
@@ -177,6 +182,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadTopSellingProductsData() throws ExecutionException {
+        App.getCache().invalidate("TopSelling");
+
         lstProTopSelling = (ArrayList<Product>) App.getCache().get("TopSelling", new Callable<ArrayList<Product>>() {
             @Override
             public ArrayList<Product> call() throws Exception {
@@ -197,6 +204,8 @@ public class HomeFragment extends Fragment {
 
     }
     private void loadNewInProductsData() throws ExecutionException {
+        App.getCache().invalidate("NewIn");
+
         lstProNewIn = (ArrayList<Product>) App.getCache().get("NewIn", new Callable<ArrayList<Product>>() {
             @Override
             public ArrayList<Product> call() throws Exception {
@@ -227,6 +236,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), CategoriesActivity.class);
+                intent.putExtra("Gender", genderTextView);
                 startActivity(intent);
 
             }
@@ -253,5 +263,22 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+    public void updateGender(String gender) {
+        if (genderTextView != null) {
+            this.genderTextView = gender;
+
+            try {
+                // GenerateListPro
+                lstPro = ProductHandler.getDataByObjectName(genderTextView);
+                App.getCache().put("lstPro", lstPro);
+
+                loadCategoriesData();
+                loadTopSellingProductsData();
+                loadNewInProductsData();
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

@@ -4,10 +4,14 @@ import static android.view.View.GONE;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,10 +25,14 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 
+import com.example.ecommercemobileapp2hand.Views.Adapters.GenderAdapter;
 import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
 import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
@@ -33,9 +41,11 @@ import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFrag
 import com.example.ecommercemobileapp2hand.Views.Orders.OrdersFragment;
 import com.example.ecommercemobileapp2hand.Views.Settings.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -81,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
         btnAvt = findViewById(R.id.btnAvt);
         btnBag = findViewById(R.id.btnBag);
         btnObject = findViewById(R.id.btnObject);
+
+        btnObject.setText(userAccount.getGender());
 
     }
     private void addCart(){
@@ -159,12 +171,21 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        btnObject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGenderOverlay("Gender");
+            }
+        });
     }
 
     private void LoadFragment(Fragment fragment){
         Bundle bundle = new Bundle();
         bundle.putSerializable("UserAccount", userAccount);
 
+        if (fragment instanceof HomeFragment) {
+            bundle.putString("UserGender", btnObject.getText().toString());
+        }
         fragment.setArguments(bundle);
 
         FragmentManager fm = getSupportFragmentManager();
@@ -178,5 +199,53 @@ public class MainActivity extends AppCompatActivity {
     {
         Intent intent = getIntent();
         userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
+    }
+
+    private void showGenderOverlay(String type) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.gender_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
+        overlayTitle.setText(type);
+
+        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        GenderAdapter genderAdapter;
+
+        RecyclerView recy_gender = dialogView.findViewById(R.id.recy_gender);
+
+        String[] gender = {"Men", "Women"};
+        ArrayList<String> lstGender = new ArrayList<>(Arrays.asList(gender));
+
+        genderAdapter = new GenderAdapter(lstGender, MainActivity.this, btnObject.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
+            @Override
+            public void onGenderSelected(String selectedGender) {
+                btnObject.setText(selectedGender);  // Cập nhật text của btnObject
+
+                // Cập nhật HomeFragment nếu nó đang hiển thị
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
+                if (homeFragment != null && homeFragment.isVisible()) {
+                    homeFragment.updateGender(selectedGender);
+                }
+
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        recy_gender.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recy_gender.setItemAnimator(new DefaultItemAnimator());
+
+        recy_gender.setAdapter(genderAdapter);
+
+        bottomSheetDialog.show();
     }
 }

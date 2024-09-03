@@ -1,0 +1,89 @@
+package com.example.ecommercemobileapp2hand.Views.Adapters;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.ecommercemobileapp2hand.R;
+
+import java.util.ArrayList;
+
+public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.MyViewHolder>{
+    ArrayList<String> lstGender;
+    Context context;
+    String checkGender;
+    OnGenderSelectedListener listener;
+
+    public interface OnGenderSelectedListener {
+        void onGenderSelected(String selectedGender);
+    }
+
+    public GenderAdapter(ArrayList<String> lstGender, Context context, String checkGender, OnGenderSelectedListener listener) {
+        this.lstGender = lstGender;
+        this.context = context;
+        this.checkGender = checkGender;
+        this.listener = listener;
+    }
+
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View viewholder = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_gender, parent, false);
+        return new GenderAdapter.MyViewHolder(viewholder);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        String g = lstGender.get(position);
+
+        holder.tvGender.setText(g);
+
+        if (g.equals(checkGender))
+        {
+            holder.imgCheck.setVisibility(View.VISIBLE);
+            holder.imgCheck.setImageResource(R.drawable.check_line);
+            holder.imgCheck.setBackgroundResource(R.drawable.circle_completed);
+
+            holder.tvGender.setText(g);
+        }
+        else
+        {
+            holder.imgCheck.setVisibility(View.GONE);
+
+            holder.tvGender.setText(g);
+        }
+        holder.linear_gender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkGender = g;  // Cập nhật giới tính được chọn
+                listener.onGenderSelected(g);  // Gọi callback để thông báo sự thay đổi
+                notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return lstGender.size();
+    }
+
+    class MyViewHolder extends RecyclerView.ViewHolder
+    {
+        private LinearLayout linear_gender;
+        private TextView tvGender;
+        private ImageView imgCheck;
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            this.linear_gender = itemView.findViewById(R.id.linear_gender);
+            this.tvGender = itemView.findViewById(R.id.tvGender);
+            this.imgCheck = itemView.findViewById(R.id.imgCheck);
+        }
+    }
+}

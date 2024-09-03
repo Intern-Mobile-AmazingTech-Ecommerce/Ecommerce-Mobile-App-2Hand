@@ -80,7 +80,7 @@ public class SearchActivity extends AppCompatActivity {
     private void loadRecycleViewCategories() {
         categoryList = new ArrayList<>();
         categoryList = CategoriesHandler.getData();
-        categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
+        categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category, "Men");
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
         recyViewCateSearch.setLayoutManager(layoutManager);
         recyViewCateSearch.setAdapter(categoriesAdapter);
