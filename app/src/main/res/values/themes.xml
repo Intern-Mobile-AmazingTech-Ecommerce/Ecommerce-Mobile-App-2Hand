@@ -257,4 +257,9 @@
         <item name="android:src">@drawable/baseline_close_24_black</item>
     </style>
 
+    <style name="filterBtn">
+        <item name="backgroundTint">@color/Bg_Light_2</item>
+        <item name="android:textColor">@color/Black_100</item>
+        <item name="android:drawableTint">@color/Black_100</item>
+    </style>
 </resources>

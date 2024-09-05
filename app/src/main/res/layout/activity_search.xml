@@ -53,80 +53,88 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <LinearLayout
-                android:id="@+id/layoutFilter"
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
+                android:scrollbars="horizontal"
                 >
+                <LinearLayout
+                    android:id="@+id/layoutFilter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    >
 
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/filter"
-                    android:layout_width="43dp"
-                    android:layout_height="27dp"
-                    android:drawablePadding="4dp"
-                    android:paddingHorizontal="8dp"
-                    android:text="2"
-                    android:textColor="@color/white"
-                    android:background="@drawable/frame_40"
-                    android:drawableStart="@drawable/filter"
-                    android:layout_marginEnd="5dp"
-                    />
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/OnSale"
-                    android:layout_width="59dp"
-                    android:layout_height="27dp"
-                    android:text="On Sale"
-                    android:textAllCaps="false"
-                    android:textSize="12sp"
-                    android:lineHeight="19sp"
-                    android:fontFamily="@font/circularstdmedium500"
-                    android:textColor="@color/Black_100"
-                    android:background="@drawable/frame_42"
-                    android:layout_marginEnd="5dp"
-                    />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/filter"
+                        android:layout_width="43dp"
+                        android:layout_height="27dp"
+                        android:drawablePadding="4dp"
+                        android:paddingHorizontal="8dp"
+                        android:text="2"
+                        android:textColor="@color/white"
+                        android:background="@drawable/frame_40"
+                        android:drawableStart="@drawable/filter"
+                        android:layout_marginEnd="5dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnDeals"
+                        android:layout_width="59dp"
+                        android:layout_height="27dp"
+                        android:text="On Sale"
+                        android:textAllCaps="false"
+                        android:textSize="12sp"
+                        android:lineHeight="19sp"
+                        android:fontFamily="@font/circularstdmedium500"
+                        android:background="@drawable/frame_42"
+                        android:layout_marginEnd="5dp"
+                        style="@style/filterBtn"
+                        />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/Price"
-                    android:layout_width="64dp"
-                    android:layout_height="27dp"
-                    android:background="@drawable/frame_44"
-                    android:paddingHorizontal="8dp"
-                    android:drawableEnd="@drawable/arrowdown_white"
-                    android:fontFamily="@font/circularstdmedium500"
-                    android:lineHeight="19sp"
-                    android:text="Price"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:layout_marginEnd="5dp"/>
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/SortBy"
-                    android:layout_width="78dp"
-                    android:layout_height="27dp"
-                    android:paddingHorizontal="8dp"
-                    android:textAllCaps="false"
-                    android:text="Sort by"
-                    android:textColor="@color/Black_100"
-                    android:background="@drawable/frame_41"
-                    android:drawableEnd="@drawable/arrowdown2"
-                    android:layout_marginEnd="5dp"
-                    />
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/Men"
-                    android:layout_width="64dp"
-                    android:layout_height="27dp"
-                    android:background="@drawable/frame_44"
-                    android:paddingHorizontal="8dp"
-                    android:drawableEnd="@drawable/arrowdown_white"
-                    android:fontFamily="@font/circularstdmedium500"
-                    android:lineHeight="19sp"
-                    android:text="Men"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnPrice"
+                        android:layout_width="64dp"
+                        android:layout_height="27dp"
+                        android:background="@drawable/frame_44"
+                        android:paddingHorizontal="8dp"
+                        android:drawableEnd="@drawable/arrowdown_white"
+                        android:fontFamily="@font/circularstdmedium500"
+                        android:lineHeight="19sp"
+                        android:text="Price"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:layout_marginEnd="5dp"/>
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnSortBy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="27dp"
+                        android:paddingHorizontal="8dp"
+                        android:textAllCaps="false"
+                        android:text="Sort by"
+                        android:background="@drawable/frame_41"
+                        style="@style/filterBtn"
+                        android:drawableEnd="@drawable/arrowdown2"
+                        android:layout_marginEnd="5dp"
+                        />
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnGender"
+                        android:layout_width="wrap_content"
+                        android:layout_height="27dp"
+                        android:background="@drawable/frame_44"
+                        android:paddingHorizontal="8dp"
+                        android:drawableEnd="@drawable/arrowdown_white"
+                        android:fontFamily="@font/circularstdmedium500"
+                        android:lineHeight="19sp"
+                        android:text="Women"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        />
+                </LinearLayout>
+            </ScrollView>
+
             <TextView
                 android:id="@+id/tvResult"
                 android:layout_width="match_parent"

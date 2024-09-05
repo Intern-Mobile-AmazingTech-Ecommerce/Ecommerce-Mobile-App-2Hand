@@ -68,10 +68,9 @@ public class SortByAdapter extends RecyclerView.Adapter<SortByAdapter.MyViewHole
         void onSortBySelected(String selectedSortBy);
     }
 
-    public SortByAdapter(ArrayList<String> lstSortBy, Context context, String checkSortBy, OnSortBySelectedListener listenerl) {
+    public SortByAdapter(ArrayList<String> lstSortBy, Context context, OnSortBySelectedListener listener) {
         this.lstSortBy = lstSortBy;
         this.context = context;
-        this.checkSortBy = checkSortBy;
         this.listener = listener;
     }
 

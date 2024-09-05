@@ -1,14 +1,19 @@
 package com.example.ecommercemobileapp2hand.Views.Search;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -25,27 +30,34 @@ import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.GenderAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.SortByAdapter;
 import com.example.ecommercemobileapp2hand.Views.App;
+import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
+import com.example.ecommercemobileapp2hand.Views.MainActivity;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SearchActivity extends AppCompatActivity {
 
-    ImageView imgBack;
-    SearchView searchView;
-    ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstPro;
-    ProductCardAdapter proAdapter;
-    RecyclerView recyViewSearchPro;
-    RecyclerView recyViewCateSearch;
-    LinearLayout linearLayoutSearch;
-    ScrollView scrollViewPro;
-    ArrayList<ProductCategory> categoryList;
-    CategoriesAdapter categoriesAdapter;
-    TextView textViewTitle,tvResult;
-    LinearLayout categoryContainer,productContainer,layoutFilter;
+    private ImageView imgBack;
+    private SearchView searchView;
+    private ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstPro;
+    private ProductCardAdapter proAdapter;
+    private RecyclerView recyViewSearchPro;
+    private RecyclerView recyViewCateSearch;
+    private LinearLayout linearLayoutSearch;
+    private ScrollView scrollViewPro;
+    private ArrayList<ProductCategory> categoryList;
+    private CategoriesAdapter categoriesAdapter;
+    private TextView textViewTitle,tvResult;
+    private LinearLayout categoryContainer,productContainer,layoutFilter;
+    private AppCompatButton filter,btnDeals,btnGender,btnSortBy,btnPrice;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,11 +97,16 @@ public class SearchActivity extends AppCompatActivity {
         recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
         recyViewSearchPro.setAdapter(proAdapter);
         tvResult = findViewById(R.id.tvResult);
-
-
         //Container
         categoryContainer = findViewById(R.id.categoryContainer);
         productContainer = findViewById(R.id.productContainer);
+
+        //filter btn
+        filter = findViewById(R.id.filter);
+        btnSortBy = findViewById(R.id.btnSortBy);
+        btnPrice = findViewById(R.id.btnPrice);
+        btnGender = findViewById(R.id.btnGender);
+        btnDeals = findViewById(R.id.btnDeals);
     }
 
     private void loadRecycleViewCategories() {
@@ -122,7 +139,30 @@ public class SearchActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        btnSortBy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortByOverlay("Sort by");
+            }
+        });
+        btnGender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortByOverlay("Gender");
+            }
+        });
+        btnDeals.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortByOverlay("Deals");
+            }
+        });
+        btnPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortByOverlay("Price");
+            }
+        });
     }
     void filterLíst(String text)
     {
@@ -148,5 +188,56 @@ public class SearchActivity extends AppCompatActivity {
             tvResult.setText(""+filterList.size()+" Result Found");
         }
 
+    }
+
+    private void showSortByOverlay(String type) {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.sortby_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
+        overlayTitle.setText(type);
+
+        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+
+        RecyclerView recyleSortBy = dialogView.findViewById(R.id.recy_overlay);
+        SortByAdapter sortByAdapter = getSortByAdapter(type);
+        recyleSortBy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyleSortBy.setItemAnimator(new DefaultItemAnimator());
+
+        recyleSortBy.setAdapter(sortByAdapter);
+        bottomSheetDialog.show();
+    }
+    private @NonNull SortByAdapter getSortByAdapter(String type) {
+        ArrayList<String> sortByArr =  new ArrayList<>();
+        if(type.contains("Sort by")){
+            sortByArr.add(0,"Recommended");
+            sortByArr.add(1,"Newest");
+            sortByArr.add(2,"Lowest-Highest Price");
+            sortByArr.add(3,"Highest-Lowest Price");
+        }else if(type.contains("Gender")){
+            sortByArr.add(0,"Men");
+            sortByArr.add(1,"Women");
+        }else if(type.contains("Deals")){
+            sortByArr.add(0,"On sale");
+        }else{
+            sortByArr.add(0,"Min");
+            sortByArr.add(1,"Max");
+        }
+
+        SortByAdapter sortByAdapter = new SortByAdapter(sortByArr, getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
+            @Override
+            public void onSortBySelected(String selectedSortBy) {
+                //Add filter function
+            }
+        });
+        return sortByAdapter;
     }
 }

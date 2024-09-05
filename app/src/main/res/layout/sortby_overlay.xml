@@ -5,20 +5,29 @@
     style="@style/SCREEN"
     android:background="@drawable/rounded_border_popup_menu"
     android:paddingBottom="20dp"
-   >
+    >
     <RelativeLayout
         android:id="@+id/title_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="14dp">
-
+        android:paddingVertical="14dp"
+        android:paddingHorizontal="24dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:text="Clear"
+            android:layout_centerVertical="true"
+            android:textSize="16dp"
+            android:fontFamily="@font/circularstdmedium500"
+            style="@style/TEXT"/>
         <TextView
             android:id="@+id/overlay_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/Title"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:text="Sort By"
             android:textAppearance="@style/overlay_title"
             android:gravity="top"
             android:textStyle="bold"
@@ -29,7 +38,7 @@
             android:id="@+id/btn_close"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginRight="10dp"
+
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:clipToOutline="true"
@@ -39,7 +48,7 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recy_gender"
+        android:id="@+id/recy_overlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_container"
