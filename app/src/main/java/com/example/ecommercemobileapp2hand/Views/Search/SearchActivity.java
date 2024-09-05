@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Views.Search;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -58,6 +59,7 @@ public class SearchActivity extends AppCompatActivity {
     private TextView textViewTitle,tvResult;
     private LinearLayout categoryContainer,productContainer,layoutFilter;
     private AppCompatButton filter,btnDeals,btnGender,btnSortBy,btnPrice;
+    private String genderFilter = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,8 +130,8 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-                filterLíst(newText);
+                Log.d("SearchQuery", "Current query: " + newText);
+                filterList(newText,"");
                 return false;
             }
         });
@@ -164,10 +166,14 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
     }
-    void filterLíst(String text)
+    void filterList(String text,String genderFilter)
     {
         ArrayList <Product> filterList = new ArrayList<>();
-        filterList = lstPro.stream().filter(product -> product.getProduct_name().toLowerCase().contains(text.toLowerCase())).collect(Collectors.toCollection(ArrayList::new));
+        filterList = lstPro.stream()
+                .filter(product -> product.getProduct_name().toLowerCase().contains(text.toLowerCase()))
+                .filter(product -> genderFilter.isEmpty() || product.getProductObject().getObject_name().equalsIgnoreCase(genderFilter))
+                .collect(Collectors.toCollection(ArrayList::new));
+
         if (text.isEmpty())
         {
             categoryContainer.setVisibility(View.VISIBLE);
@@ -236,6 +242,14 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onSortBySelected(String selectedSortBy) {
                 //Add filter function
+
+                if (selectedSortBy.equalsIgnoreCase("Men")) {
+                    genderFilter = "Men";
+                } else if (selectedSortBy.equalsIgnoreCase("Women")) {
+                    genderFilter = "Women";
+                }
+                filterList(searchView.getQuery().toString(), genderFilter);
+
             }
         });
         return sortByAdapter;
