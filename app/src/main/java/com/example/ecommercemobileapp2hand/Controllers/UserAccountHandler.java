@@ -1,7 +1,6 @@
 package com.example.ecommercemobileapp2hand.Controllers;
 
-import android.content.Context;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.example.ecommercemobileapp2hand.Models.Notifications;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
@@ -24,98 +23,162 @@ public class UserAccountHandler {
     private static DBConnect dbConnect = new DBConnect();
     private static Connection conn;
 
-    public static UserAccount getUserAccountById(int userId) {
-        UserAccount userAccount = null;
+    public static void saveUserAccount(String email, String displayName, String provider) {
         conn = dbConnect.connectionClass();
-        String sql = "{call GetDetailsUserAccount(?)}";
+        if (conn == null) {
+            return;
+        }
+
+        PreparedStatement pstmt = null;
         try {
-            try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setInt(1, userId);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        // Khởi tạo UserAccount với dữ liệu từ resultSet
-                        userAccount = new UserAccount(
-                                resultSet.getInt("user_id"),
-                                resultSet.getString("username"),
-                                resultSet.getString("password"),
-                                resultSet.getString("gender"),
-                                resultSet.getString("email"),
-                                resultSet.getString("phone_number"),
-                                resultSet.getString("first_name"),
-                                resultSet.getString("last_name"),
-                                resultSet.getString("img_url")
-                        );
+            String[] nameParts = displayName.split(" ", 2);
+            String firstName = nameParts.length > 0 ? nameParts[0] : "";
+            String lastName = nameParts.length > 1 ? nameParts[1] : "";
 
-                        // Lấy dữ liệu từ JSON để phân tích các thuộc tính danh sách
-                        String wishlistJson = resultSet.getString("wishlist_array");
-                        String notificationsJson = resultSet.getString("notifications_array");
-                        String cardsJson = resultSet.getString("cards_array");
-                        String ordersJson = resultSet.getString("order_array");
-                        String addressesJson = resultSet.getString("address_array");
+            String dummyPassword = "dummy_password";
 
-                        // Phân tích JSON thành các danh sách tương ứng
-                        userAccount.setLstWL(parseJson(wishlistJson, Wishlist.class));
-                        userAccount.setLstNoti(parseJson(notificationsJson, Notifications.class));
-                        userAccount.setLstCard(parseJson(cardsJson, UserCards.class));
-                        userAccount.setLstOrder(parseJson(ordersJson, UserOrder.class));
-                        userAccount.setLstAddress(parseJson(addressesJson, UserAddress.class));
-                    }
+            String query = "MERGE INTO user_account AS target " +
+                    "USING (SELECT ? AS email) AS source " +
+                    "ON (target.email = source.email) " +
+                    "WHEN MATCHED THEN " +
+                    "    UPDATE SET username = ?, first_name = ?, last_name = ?, gender = 'Unspecified', phone_number = NULL " +
+                    "WHEN NOT MATCHED THEN " +
+                    "    INSERT (username, password, gender, email, phone_number, first_name, last_name) " +
+                    "    VALUES (?, ?, 'Unspecified', ?, NULL, ?, ?)";
+
+            pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, email);
+            pstmt.setString(2, displayName);
+            pstmt.setString(3, firstName);
+            pstmt.setString(4, lastName);
+            pstmt.setString(5, dummyPassword);
+            pstmt.setString(6, email);
+            pstmt.setString(7, firstName);
+            pstmt.setString(8, lastName);
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void saveUserToDB(String firstName, String lastName, String email, String password) {
+        DBConnect dbConnect = new DBConnect();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        String username = firstName + lastName + (int) (Math.random() * 1000);
+
+        try {
+            conn = dbConnect.connectionClass();
+
+            if (conn != null) {
+                String insertQuery = "INSERT INTO user_account (username, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)";
+                pstmt = conn.prepareStatement(insertQuery);
+                pstmt.setString(1, username);
+                pstmt.setString(2, firstName);
+                pstmt.setString(3, lastName);
+                pstmt.setString(4, email);
+                pstmt.setString(5, password);
+
+                pstmt.executeUpdate();
+                Log.d("DB_INSERT", "Dữ liệu đã được lưu vào cơ sở dữ liệu");
+            } else {
+                Log.e("DB_INSERT", "Kết nối cơ sở dữ liệu thất bại");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.e("DB_INSERT", "Lỗi khi lưu vào cơ sở dữ liệu: " + e.getMessage());
+        } finally {
+            try {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    public static void updateUserDetails(String email, String gender) {
+        DBConnect dbConnect = new DBConnect();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = dbConnect.connectionClass();
+
+            if (conn != null) {
+                String updateQuery = "UPDATE user_account SET gender = ? WHERE email = ?";
+                pstmt = conn.prepareStatement(updateQuery);
+                pstmt.setString(1, gender);
+                pstmt.setString(2, email);
+
+                int rowsUpdated = pstmt.executeUpdate();
+                if (rowsUpdated > 0) {
+                    Log.d("DB_UPDATE", "Dữ liệu đã được update");
+                } else {
+                    Log.e("DB_UPDATE", "Không tìm thấy người dùng với email: " + email);
                 }
+            } else {
+                Log.e("DB_UPDATE", "Kết nối thất bại");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return userAccount;
-    }
-
-    private static <T> ArrayList<T> parseJson(String json, Class<T> clazz) {
-        ArrayList<T> list = new ArrayList<>();
-        if (json != null && !json.isEmpty()) {
             try {
-                Gson gson = new Gson();
-                Type listType = TypeToken.getParameterized(ArrayList.class, clazz).getType();
-                list = gson.fromJson(json, listType);
-            } catch (Exception e) {
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return list;
     }
 
-    public static int getUserAccount (String email, String pass)
-    {
-        try
-        {
-            conn = dbConnect.connectionClass();
-            String sql = "SELECT user_id FROM USER_ACCOUNT WHERE EMAIL = ? AND PASSWORD = ?";
-            PreparedStatement pst = conn.prepareStatement(sql);
-            pst.setString(1,email);
-            pst.setString(2, pass);
-            ResultSet rs = pst.executeQuery();
-            if (rs.next())
-            {
-                int id = rs.getInt(1);
-                rs.close();
-                pst.close();
-                conn.close();
-                return id;
-            }
-            rs.close();
-            pst.close();
-            conn.close();
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-        }
-        return -1;
-    }
+
+    //    private void updateUserDetails(String gender, String ageRange) {
+//        DBConnect dbConnect = new DBConnect();
+//        Connection conn = null;
+//        PreparedStatement pstmt = null;
+//
+//        String email = getIntent().getStringExtra("email");
+//
+//        try {
+//            conn = dbConnect.connectionClass();
+//
+//            if (conn != null) {
+//                String updateQuery = "UPDATE user_account SET gender = ?, age_range = ? WHERE email = ?";
+//                pstmt = conn.prepareStatement(updateQuery);
+//                pstmt.setString(1, gender);
+//                pstmt.setString(2, ageRange);
+//                pstmt.setString(3, email);
+//
+//                int rowsUpdated = pstmt.executeUpdate();
+//                if (rowsUpdated > 0) {
+//                    Log.d("DB_UPDATE", "Dữ liệu đã được cập nhật");
+//                } else {
+//                    Log.e("DB_UPDATE", "Không tìm thấy người dùng với email: " + email);
+//                }
+//            } else {
+//                Log.e("DB_UPDATE", "Kết nối thất bại");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (pstmt != null) pstmt.close();
+//                if (conn != null) conn.close();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
 }

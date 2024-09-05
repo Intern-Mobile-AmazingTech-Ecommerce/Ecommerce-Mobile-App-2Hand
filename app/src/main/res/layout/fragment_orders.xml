@@ -26,6 +26,16 @@
             app:singleSelection="true"/>
     </HorizontalScrollView>
 
+    <TextView
+        android:id="@+id/txt_empty_order"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Danh sách đơn hàng trống"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyOrders"
         android:layout_width="match_parent"
@@ -39,7 +49,6 @@
         android:orientation="vertical"
         android:gravity="center"
         android:visibility="gone">
-
         <ImageView
             android:id="@+id/img_empty_order"
             android:layout_width="wrap_content"
@@ -66,5 +75,4 @@
             android:backgroundTint="@color/purple"
             android:text="Explore Categories" />
     </LinearLayout>
-
 </LinearLayout>

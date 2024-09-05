@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.FakeModels.WishList;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
@@ -44,7 +43,7 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, WishlistDetail.class);
-                intent.putExtra("UserAccount", userAccount);
+                intent.putExtra("UserAccount", (CharSequence) userAccount);
                 intent.putExtra("wishlistID",item.getWishlist_id());
                 context.startActivity(intent);
             }

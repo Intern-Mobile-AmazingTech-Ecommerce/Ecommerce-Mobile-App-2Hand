@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.OrderStatusHandler;
-import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserOrderProductsHandler;
 import com.example.ecommercemobileapp2hand.Models.OrderStatus;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
@@ -64,13 +63,13 @@ public class TrackOrderAcitivity extends AppCompatActivity {
         tv_amount_order.setText(String.valueOf(UserOrderProductsHandler.getAmountItems(order.getUser_order_id()) + " items"));
 
         String s1 = "";
-        for (UserAddress address : userAccount.getLstAddress())
-        {
-            if (address.getUser_address_id() == order.getUser_address_id())
-            {
-                s1 += address.getUser_address_street() + " " + address.getUser_address_city() + ", " + address.getUser_address_state() + " " + address.getUser_address_zipcode() + "\n" + userAccount.getPhone_number();
-            }
-        }
+//        for (UserAddress address : userAccount.getLstAddress())
+//        {
+//            if (address.getUser_address_id() == order.getUser_address_id())
+//            {
+//                s1 += address.getUser_address_street() + " " + address.getUser_address_city() + ", " + address.getUser_address_state() + " " + address.getUser_address_zipcode() + "\n" + userAccount.getPhone_number();
+//            }
+//        }
         tv_shippingdetails.setText(s1);
 
         orderStatuses = OrderStatusHandler.getData1();

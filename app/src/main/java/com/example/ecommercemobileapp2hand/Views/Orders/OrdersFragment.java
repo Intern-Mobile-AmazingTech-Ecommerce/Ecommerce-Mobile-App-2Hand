@@ -23,9 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.ecommercemobileapp2hand.Controllers.OrderStatusHandler;
-import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
-import com.example.ecommercemobileapp2hand.Controllers.UserOrderHandler;
-import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
 import com.example.ecommercemobileapp2hand.Models.OrderStatus;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserOrder;
@@ -87,7 +84,7 @@ public class OrdersFragment extends Fragment {
         linear_order2 = view.findViewById(R.id.linear_order2);
         btn_explore = view.findViewById(R.id.btn_explore);
 
-        lstorders = userAccount.getLstOrder();
+        //lstorders = userAccount.getLstOrder();
 
         if (lstorders.isEmpty())
         {

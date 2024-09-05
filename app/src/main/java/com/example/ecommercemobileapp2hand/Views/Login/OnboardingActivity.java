@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -16,21 +17,26 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Age;
 import com.example.ecommercemobileapp2hand.Views.Adapters.AgeAdapter;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OnboardingActivity extends AppCompatActivity {
     private Spinner spiAge;
     private AgeAdapter ageAdapter;
-    private Button btnFinish,btn_men,btn_women;
-    private String gender="Men";
-
+    private Button btnFinish, btn_men, btn_women;
+    private String gender = "Men";
+    private String ageRange = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,103 +48,69 @@ public class OnboardingActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        btn_men=findViewById(R.id.btn_men);
-        btn_men.setBackgroundColor(Color.parseColor("#8E6CEF"));
-        btn_women=findViewById(R.id.btn_women);
-        spiAge= findViewById(R.id.spi_age);
-        ageAdapter = new AgeAdapter(this,R.layout.age_selected,getList());
-        spiAge.setAdapter(ageAdapter);
-//        spiAge.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(MainActivity.this,ageAdapter.getItem(position).getAge(),Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
-        // Lấy thông tin cấu hình của thiết bị
-        Configuration configuration = getResources().getConfiguration();
 
+        btn_men = findViewById(R.id.btn_men);
+        btn_women = findViewById(R.id.btn_women);
+        btnFinish = findViewById(R.id.btn_finish);
+        spiAge = findViewById(R.id.spi_age);
+
+        btn_men.setBackgroundColor(Color.parseColor("#8E6CEF"));
+
+        ageAdapter = new AgeAdapter(this, R.layout.age_selected, getList());
+        spiAge.setAdapter(ageAdapter);
+
+        Configuration configuration = getResources().getConfiguration();
         int currentNightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-        btn_men.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn_men.setBackgroundColor(Color.parseColor("#8E6CEF"));
-
-                // Kiểm tra chế độ theme
-
-                if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
-                    // Đang ở chế độ Dark Theme
-                    btn_women.setBackgroundColor(Color.parseColor("#342f3f"));
-
-                } else if (currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
-                    // Đang ở chế độ Light Theme
-                    btn_women.setBackgroundColor(Color.parseColor("#f4f4f4"));
-
-                }
-                gender="Men";
-            }
+        btn_men.setOnClickListener(v -> {
+            gender = "Men";
+            btn_men.setBackgroundColor(Color.parseColor("#8E6CEF"));
+            updateButtonColor(btn_women, currentNightMode);
         });
 
-        btn_women.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn_women.setBackgroundColor(Color.parseColor("#8E6CEF"));
-
-                if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
-                    // Đang ở chế độ Dark Theme
-                    btn_men.setBackgroundColor(Color.parseColor("#342f3f"));
-
-                } else if (currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
-                    // Đang ở chế độ Light Theme
-                    btn_men.setBackgroundColor(Color.parseColor("#f4f4f4"));
-
-                }
-                gender="Women";
-            }
+        btn_women.setOnClickListener(v -> {
+            gender = "Women";
+            btn_women.setBackgroundColor(Color.parseColor("#8E6CEF"));
+            updateButtonColor(btn_men, currentNightMode);
         });
-        btnFinish=(Button) findViewById(R.id.btn_finish);
-        btnFinish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //tao sharedreferences luu gia tri gender
-                SharedPreferences sharedPreferences = getSharedPreferences("my_userID", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("gender_key", gender);
-                editor.apply();
 
+        btnFinish.setOnClickListener(v -> {
+            int selectedPosition = spiAge.getSelectedItemPosition();
+            ageRange = ageAdapter.getItem(selectedPosition).getAge();
 
-
-                //khoi tao doi tuong
-                Bundle bundle = getIntent().getExtras();
-                if (bundle != null) {
-                    // Extract data from the bundle
-                    String firstName = bundle.getString("firstName");
-                    String lastName = bundle.getString("lastName");
-                    String email = bundle.getString("email");
-                    String password = bundle.getString("password");
-                    UserAccount userAccount=new UserAccount(-1,"",password,gender,email,"",firstName,lastName, "");
-                    //viet handler them user_account
-                }
-                startActivity(new Intent(OnboardingActivity.this, MainActivity.class));
-                finish();
+            if (selectedPosition == 0) {
+                Toast.makeText(OnboardingActivity.this, "Vui lòng chọn độ tuổi", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            SharedPreferences sharedPreferences = getSharedPreferences("my_userID", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("gender_key", gender);
+            editor.putString("age_range_key", ageRange);
+            editor.apply();
+
+            UserAccountHandler.updateUserDetails(getIntent().getStringExtra("email"), gender);
+
+            startActivity(new Intent(OnboardingActivity.this, MainActivity.class));
+            finish();
         });
     }
 
-
-    private List<Age> getList()
-    {
-        List<Age> list= new ArrayList<>();
-        list.add(new Age("Age range"));
+    private List<Age> getList() {
+        List<Age> list = new ArrayList<>();
+        list.add(new Age("Age Range"));
         list.add(new Age("6->10"));
         list.add(new Age("11->15"));
         list.add(new Age("16->20"));
         list.add(new Age("21->30"));
         return list;
+    }
+
+    private void updateButtonColor(Button button, int currentNightMode) {
+        if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+            button.setBackgroundColor(Color.parseColor("#342f3f"));
+        } else {
+            button.setBackgroundColor(Color.parseColor("#f4f4f4"));
+        }
     }
 }
