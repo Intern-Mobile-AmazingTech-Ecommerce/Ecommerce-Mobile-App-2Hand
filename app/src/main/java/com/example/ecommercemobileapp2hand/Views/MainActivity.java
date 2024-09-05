@@ -205,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
 
         TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
         overlayTitle.setText(type);
-
         ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -19,11 +19,17 @@ import java.util.ArrayList;
 
 public class SortByAdapter extends RecyclerView.Adapter<SortByAdapter.MyViewHoler>
 {
-    ArrayList<String> lstSortBy;
-    Context context;
-    String checkSortBy;
-    OnSortBySelectedListener listener;
+    private ArrayList<String> lstSortBy;
+    private Context context;
+    private String checkSortBy;
+    private OnSortBySelectedListener listener;
 
+    public SortByAdapter(ArrayList<String> lstSortBy, Context context, OnSortBySelectedListener listener, String checkSortBy) {
+        this.lstSortBy = lstSortBy;
+        this.context = context;
+        this.listener = listener;
+        this.checkSortBy = checkSortBy;
+    }
     @NonNull
     @Override
     public SortByAdapter.MyViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,7 +46,6 @@ public class SortByAdapter extends RecyclerView.Adapter<SortByAdapter.MyViewHole
         {
             holder.imgCheck.setVisibility(View.VISIBLE);
             holder.imgCheck.setImageResource(R.drawable.check_line);
-            holder.imgCheck.setBackgroundResource(R.drawable.circle_completed);
             holder.tvSortBy.setText(g);
             holder.tvSortBy.setTextColor(Color.WHITE);
             holder.linear_sortBy.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
@@ -68,11 +73,6 @@ public class SortByAdapter extends RecyclerView.Adapter<SortByAdapter.MyViewHole
         void onSortBySelected(String selectedSortBy);
     }
 
-    public SortByAdapter(ArrayList<String> lstSortBy, Context context, OnSortBySelectedListener listener) {
-        this.lstSortBy = lstSortBy;
-        this.context = context;
-        this.listener = listener;
-    }
 
 
     public class MyViewHoler extends RecyclerView.ViewHolder

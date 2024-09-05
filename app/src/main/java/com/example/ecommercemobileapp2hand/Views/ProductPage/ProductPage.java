@@ -106,9 +106,9 @@ public class ProductPage extends AppCompatActivity {
             tvPrice.setText(product.getBase_price().toString());
 
         }
-        String colorName = curr.getProductColor().getProduct_color_name().toLowerCase();
+        String colorName = curr.getProductColor().getProduct_color_name().toLowerCase().trim();
         int color;
-        if (colorName == "dark blue") {
+        if (colorName.contains("dark blue")) {
             color = Color.parseColor("#00008B");
         } else {
             color = Color.parseColor(colorName);
@@ -132,7 +132,6 @@ public class ProductPage extends AppCompatActivity {
             btnColor.setOnClickListener(v -> showColorOverlay("Color"));
         }
         imgBack = findViewById(R.id.imgBack);
-
         if (btnSize != null) {
             btnSize.setOnClickListener(v -> showSizeOverlay("Size"));
         }
@@ -166,63 +165,30 @@ public class ProductPage extends AppCompatActivity {
         recycleReviews.setLayoutManager(layoutManager);
         recycleReviews.setAdapter(reviewAdapter);
     }
-
     private void showColorOverlay(String type) {
-//        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-//        LayoutInflater inflater = this.getLayoutInflater();
-//        View dialogView = inflater.inflate(R.layout.color_overlay, null);
-//        bottomSheetDialog.setContentView(dialogView);
-//        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
-//        overlayTitle.setText(type);
-//        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
-//        btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
-//
-//        RecyclerView recyclerColor = dialogView.findViewById(R.id.recyclerColor);
-//        RecylerColorAdapter  recylerColorAdapter = new RecylerColorAdapter(colorList,bottomSheetDialog.getContext(),);
-////        String[] colors = {"Red", "Yellow", "Blue", "Black"};
-////        int[] colorValues = {Color.parseColor("#FA3636"), Color.parseColor("#F4BD2F"), Color.parseColor("#4468E5"), Color.parseColor("#272727")};
-////
-////        //array để lưu các button
-////        Button[] buttons = new Button[colors.length];
-////        for (int i = 0; i < colors.length; i++) {
-////            //view cho các button
-////            View buttonView = inflater.inflate(R.layout.color_button, null);
-////            Button button = buttonView.findViewById(R.id.button_content);
-////            ImageView iconCheck = buttonView.findViewById(R.id.icon_check);
-////            button.setText(colors[i]);
-////            iconCheck.setVisibility(View.GONE); // ẩn check
-////            View colorView = buttonView.findViewById(R.id.color);
-////            colorView.setBackgroundTintList(ColorStateList.valueOf(colorValues[i]));
-////            button.setOnClickListener(v -> {
-////                // update các button chưa chọn
-////                for (int j = 0; j < linearLayout.getChildCount(); j++) {
-////                    View child = linearLayout.getChildAt(j);
-////                    Button btn = child.findViewById(R.id.button_content);
-////                    ImageView checkIcon = child.findViewById(R.id.icon_check);
-////                    checkIcon.setVisibility(View.GONE);
-////                }
-////
-////                // update button được chọn
-////                button.setBackgroundColor(getResources().getColor(R.color.purple));
-////                button.setTextColor(getResources().getColor(R.color.white));
-////                iconCheck.setVisibility(View.VISIBLE);
-////            });
-////
-////            // Thêm button vào LinearLayout
-////            linearLayout.addView(buttonView);
-////            buttons[i] = button;
-////        }
-////
-////        //button đầu là dèault
-////        if (linearLayout.getChildCount() > 0) {
-////            View defaultButtonView = linearLayout.getChildAt(0);
-////            Button defaultButton = defaultButtonView.findViewById(R.id.button_content);
-////            ImageView defaultIconCheck = defaultButtonView.findViewById(R.id.icon_check);
-////            defaultButton.setBackgroundColor(getResources().getColor(R.color.purple));
-////            defaultButton.setTextColor(getResources().getColor(R.color.white));
-////            defaultIconCheck.setVisibility(View.VISIBLE);
-////        }
-//        bottomSheetDialog.show();
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.color_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
+        overlayTitle.setText(type);
+        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
+        RecyclerView recyclerColor = dialogView.findViewById(R.id.recyclerColor);
+        RecylerColorAdapter  recylerColorAdapter = new RecylerColorAdapter(colorList, ProductPage.this, currentDetails.getProductColor().getProduct_color_name(), new RecylerColorAdapter.OnColorsSelectedListener() {
+            @Override
+            public void onColorSelected(String colorName) {
+                currentDetails = product.getProductDetailsArrayList().stream()
+                        .filter(productDetails -> productDetails.getProductColor().getProduct_color_name().equalsIgnoreCase(colorName)) // Lọc theo tên màu
+                        .findFirst()
+                        .orElse(null);
+                 bindingData(currentDetails);
+                 bottomSheetDialog.dismiss();
+            }
+        });
+        recyclerColor.setLayoutManager(new LinearLayoutManager(bottomSheetDialog.getContext(),RecyclerView.VERTICAL,false));
+        recyclerColor.setAdapter(recylerColorAdapter);
+        bottomSheetDialog.show();
     }
 
     private void showSizeOverlay(String type) {

@@ -45,6 +45,7 @@ import com.google.android.material.button.MaterialButton;
 public class HomeFragment extends Fragment {
     private String gender;
     private TextView tvSeeAll;
+    private ArrayList<Product> allPro;
     private ArrayList<Product> lstPro;
     private RecyclerView recyclerViewCategories;
     private ArrayList<ProductCategory> categoryList;
@@ -146,6 +147,12 @@ public class HomeFragment extends Fragment {
         addEvent();
     }
     private void loadListPro(String gen) throws ExecutionException {
+        allPro = (ArrayList<Product>) App.getCache().get("allPro", new Callable<ArrayList<Product>>() {
+            @Override
+            public ArrayList<Product> call() throws Exception {
+                return ProductHandler.getData();
+            }
+        });
         //GenerateListPro
         lstPro = (ArrayList<Product>) App.getCache().get("lstPro", new Callable<ArrayList<Product>>() {
             @Override

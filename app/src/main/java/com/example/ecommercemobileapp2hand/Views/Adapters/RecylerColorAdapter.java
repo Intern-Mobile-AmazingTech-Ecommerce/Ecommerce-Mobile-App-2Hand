@@ -43,13 +43,18 @@ public class RecylerColorAdapter extends RecyclerView.Adapter<RecylerColorAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ProductColor color = productColors.get(position);
         holder.btnColor.setText(color.getProduct_color_name());
-        String colorName = color.getProduct_color_name().toLowerCase();
-        int colorValue;
-        if (colorName == "dark blue") {
-            colorValue = Color.parseColor("#00008B");
-        } else {
-            colorValue = Color.parseColor(colorName);
+        String colorName = color.getProduct_color_name().toLowerCase().trim();
+        int colorValue = -999;
+        try{
+            if (colorName.contains("dark blue")) {
+                colorValue = Color.parseColor("#00008B");
+            } else {
+                colorValue = Color.parseColor(colorName);
+            }
+        }catch (IllegalAccessError e){
+            colorValue = Color.parseColor("white");
         }
+
         holder.color.setBackgroundTintList(ColorStateList.valueOf(colorValue));
         if(color.getProduct_color_name().contains(checkColor)){
             holder.btnColor.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
@@ -81,7 +86,7 @@ public class RecylerColorAdapter extends RecyclerView.Adapter<RecylerColorAdapte
             super(itemView);
             btnColor = itemView.findViewById(R.id.button_content);
             color = itemView.findViewById(R.id.color);
-            checked = itemView.findViewById(R.id.imgCheck);
+            checked = itemView.findViewById(R.id.icon_check);
         }
     }
 

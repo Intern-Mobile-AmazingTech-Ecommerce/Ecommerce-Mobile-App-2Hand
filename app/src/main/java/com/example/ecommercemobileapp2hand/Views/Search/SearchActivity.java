@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Search;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -88,7 +89,7 @@ public class SearchActivity extends AppCompatActivity {
         searchView.clearFocus();
         layoutFilter = (LinearLayout) findViewById(R.id.layoutFilter);
         recyViewSearchPro = (RecyclerView) findViewById(R.id.recyProductSearch);
-        lstPro = (ArrayList<Product>) App.getCache().getIfPresent("lstPro");
+        lstPro = (ArrayList<Product>) App.getCache().getIfPresent("allPro");
         proAdapter = new ProductCardAdapter(lstPro,SearchActivity.this);
 
         scrollViewPro = (ScrollView) findViewById(R.id.scrollViewProduct);
@@ -214,14 +215,14 @@ public class SearchActivity extends AppCompatActivity {
         });
 
         RecyclerView recyleSortBy = dialogView.findViewById(R.id.recy_overlay);
-        SortByAdapter sortByAdapter = getSortByAdapter(type);
+        SortByAdapter sortByAdapter = getSortByAdapter(type,bottomSheetDialog);
         recyleSortBy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyleSortBy.setItemAnimator(new DefaultItemAnimator());
 
         recyleSortBy.setAdapter(sortByAdapter);
         bottomSheetDialog.show();
     }
-    private @NonNull SortByAdapter getSortByAdapter(String type) {
+    private @NonNull SortByAdapter getSortByAdapter(String type, BottomSheetDialog dialog) {
         ArrayList<String> sortByArr =  new ArrayList<>();
         if(type.contains("Sort by")){
             sortByArr.add(0,"Recommended");
@@ -238,20 +239,23 @@ public class SearchActivity extends AppCompatActivity {
             sortByArr.add(1,"Max");
         }
 
-        SortByAdapter sortByAdapter = new SortByAdapter(sortByArr, getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
+        SortByAdapter sortByAdapter = new SortByAdapter(sortByArr ,getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
             @Override
             public void onSortBySelected(String selectedSortBy) {
                 //Add filter function
-
-                if (selectedSortBy.equalsIgnoreCase("Men")) {
-                    genderFilter = "Men";
-                } else if (selectedSortBy.equalsIgnoreCase("Women")) {
-                    genderFilter = "Women";
+                if(type.contains("Gender")){
+                    if (selectedSortBy.equalsIgnoreCase("Men")) {
+                        genderFilter = "Men";
+                    } else if (selectedSortBy.equalsIgnoreCase("Women")) {
+                        genderFilter = "Women";
+                    }
+                    filterList(searchView.getQuery().toString(), genderFilter);
+                    btnGender.setText(genderFilter);
+                    dialog.dismiss();
                 }
-                filterList(searchView.getQuery().toString(), genderFilter);
 
             }
-        });
+        },genderFilter);
         return sortByAdapter;
     }
 }
