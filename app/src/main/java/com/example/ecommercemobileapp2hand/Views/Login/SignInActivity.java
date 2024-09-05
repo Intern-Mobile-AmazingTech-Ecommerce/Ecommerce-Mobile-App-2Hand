@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -19,7 +18,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.facebook.AccessToken;
@@ -36,7 +35,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -48,13 +46,14 @@ public class SignInActivity extends AppCompatActivity {
     private static final int REQ_GOOGLE_SIGN_IN = 1;
     private static final String TAG = "SignInActivity";
 
-    private CallbackManager callbackManager;
-    private Button btnSignInGoogle;
-    private Button btnSignInFacebook;
-    private Button btnContinue;
-    private TextView txtCreateAccount;
-    private Switch switcher;
-    private SharedPreferences sharedPreferences;
+    CallbackManager callbackManager;
+    Button btnSignInGoogle;
+    Button btnSignInFacebook;
+    Button btnContinue;
+    TextView txtCreateAccount;
+    EditText edtEmail;
+    Switch switcher;
+    SharedPreferences sharedPreferences;
     private boolean nightMode;
     private FirebaseAuth firebaseAuth;
     private static final String PREFS_NAME = "user_prefs";
@@ -73,20 +72,27 @@ public class SignInActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         callbackManager = CallbackManager.Factory.create();
-
-        initializeUI();
-        configureFacebookLogin();
-        configureGoogleLogin();
-        configureNightModeSwitch();
     }
 
-    private void initializeUI() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        addControls();
+        addEvents();
+        facebookLoginMethod();
+        googleLoginMethod();
+        nightModeSwitch();
+    }
+
+    private void addControls() {
         btnContinue = findViewById(R.id.btnContinue);
         txtCreateAccount = findViewById(R.id.dont_have_a);
         btnSignInGoogle = findViewById(R.id.btnSignInGoogle);
         btnSignInFacebook = findViewById(R.id.btnSignInFacebook);
-        EditText edtEmail = findViewById(R.id.email_address);
+        edtEmail = findViewById(R.id.email_address);
+    }
 
+    private void addEvents() {
         btnContinue.setOnClickListener(v -> {
             String email = edtEmail.getText().toString();
             if (!isValidEmail(email)) {
@@ -94,9 +100,7 @@ public class SignInActivity extends AppCompatActivity {
                 return;
             }
             Intent intent = new Intent(SignInActivity.this, SignInPasswordActivity.class);
-            UserAccount userAccount = new UserAccount();
-            userAccount.setEmail(email);
-            intent.putExtra("UserAccount", userAccount);
+            intent.putExtra("Email", email);
             startActivity(intent);
         });
 
@@ -107,7 +111,11 @@ public class SignInActivity extends AppCompatActivity {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private void configureFacebookLogin() {
+    private boolean isFieldNotEmpty(String field) {
+        return !field.isEmpty();
+    }
+
+    private void facebookLoginMethod() {
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -130,7 +138,7 @@ public class SignInActivity extends AppCompatActivity {
                 LoginManager.getInstance().logInWithReadPermissions(SignInActivity.this, Arrays.asList("email", "public_profile")));
     }
 
-    private void configureGoogleLogin() {
+    private void googleLoginMethod() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -144,7 +152,7 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    private void configureNightModeSwitch() {
+    private void nightModeSwitch() {
         switcher = findViewById(R.id.switcher);
         sharedPreferences = getSharedPreferences("MODE", Context.MODE_PRIVATE);
         nightMode = sharedPreferences.getBoolean("night", false);
@@ -167,8 +175,11 @@ public class SignInActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+                    String email = user.getEmail();
+                    String displayName = user.getDisplayName();
+                    UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
                     Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                    navigateToMainActivity();
+                    navToMainActivity();
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_LONG).show();
@@ -181,7 +192,10 @@ public class SignInActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
             if (account != null) {
-                navigateToMainActivity();
+                String email = account.getEmail();
+                String displayName = account.getDisplayName();
+                UserAccountHandler.saveUserAccount(email, displayName, "Google");
+                navToMainActivity();
                 Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
             }
         } catch (ApiException e) {
@@ -190,7 +204,8 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    private void navigateToMainActivity() {
+
+    private void navToMainActivity() {
         SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(KEY_IS_LOGGED_IN, true);

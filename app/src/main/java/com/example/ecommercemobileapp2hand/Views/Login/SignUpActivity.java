@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Views.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,17 +17,29 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SignUpActivity extends AppCompatActivity {
 
     Button btnContinue;
     ImageButton btnReturn;
     TextView txtResetPassword;
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,17 +51,16 @@ public class SignUpActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        auth = FirebaseAuth.getInstance();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         createAccount();
         returnToSignIn();
         resetPassword();
-    }
-
-    private boolean isValidFirstName(String firstName) {
-        return !firstName.isEmpty();
-    }
-
-    private boolean isValidLastName(String lastName) {
-        return !lastName.isEmpty();
     }
 
     private boolean isValidEmail(String email) {
@@ -59,15 +71,16 @@ public class SignUpActivity extends AppCompatActivity {
         return password.length() >= 6;
     }
 
-    private void returnToSignIn() {
-        btnReturn = findViewById(R.id.btn_return);
-        btnReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
-                finish();
-            }
-        });
+    private boolean isFieldNotEmpty(String field) {
+        return !field.isEmpty();
+    }
+
+    private boolean isAlphabet(String text) {
+        return text.matches("[a-zA-Z]+");
+    }
+
+    private boolean isValidName(String text) {
+        return text.length() >= 2;
     }
 
     private void createAccount() {
@@ -80,13 +93,38 @@ public class SignUpActivity extends AppCompatActivity {
                 String email = ((EditText) findViewById(R.id.email_address)).getText().toString();
                 String password = ((EditText) findViewById(R.id.password)).getText().toString();
 
-                if (!isValidFirstName(firstName)) {
+                if (!isFieldNotEmpty(firstName)) {
                     ((EditText) findViewById(R.id.firstname)).setError("Không được để trống");
                     return;
                 }
 
-                if (!isValidLastName(lastName)) {
+                if (!isAlphabet(firstName)) {
+                    ((EditText) findViewById(R.id.firstname)).setError("Không hợp lệ");
+                    return;
+                }
+
+                if (!isValidName(firstName)) {
+                    ((EditText) findViewById(R.id.firstname)).setError("Phải có ít nhất 2 kí tự");
+                    return;
+                }
+
+                if (!isFieldNotEmpty(lastName)) {
                     ((EditText) findViewById(R.id.lastname)).setError("Không được để trống");
+                    return;
+                }
+
+                if (!isAlphabet(lastName)) {
+                    ((EditText) findViewById(R.id.lastname)).setError("Không hợp lệ");
+                    return;
+                }
+
+                if (!isValidName(lastName)) {
+                    ((EditText) findViewById(R.id.lastname)).setError("Phải có ít nhất 2 kí tự");
+                    return;
+                }
+
+                if (!isFieldNotEmpty(email)) {
+                    ((EditText) findViewById(R.id.email_address)).setError("Email không được để trống");
                     return;
                 }
 
@@ -95,48 +133,70 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (!isFieldNotEmpty(password)) {
+                    ((EditText) findViewById(R.id.password)).setError("Mật khẩu không được để trống");
+                    return;
+                }
+
                 if (!isValidPassword(password)) {
                     ((EditText) findViewById(R.id.password)).setError("Mật khẩu phải có ít nhất 6 ký tự");
                     return;
                 }
-                onClickSignUp();
-                Bundle bundle = new Bundle();
-                bundle.putString("firstName", firstName);
-                bundle.putString("lastName", lastName);
-                bundle.putString("email", email);
-                bundle.putString("password", password);
-                Intent intent = new Intent(SignUpActivity.this, OnboardingActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                finish();
+
+                auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    UserAccountHandler.saveUserToDB(firstName, lastName, email, encryptPassword(password));
+                                    Intent intent = new Intent(SignUpActivity.this, OnboardingActivity.class);
+                                    intent.putExtra("email", email);
+                                    startActivity(intent);
+                                    finish();
+                                    Toast.makeText(SignUpActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(SignUpActivity.this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
 
             }
         });
     }
-    private void onClickSignUp(){
-        String strEmail = ((EditText) findViewById(R.id.email_address)).getText().toString().trim();
-        String strPass = ((EditText) findViewById(R.id.password)).getText().toString().trim();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        auth.createUserWithEmailAndPassword(strEmail,strPass)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Intent intent = new Intent(SignUpActivity.this, OnboardingActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }else {
-                            Toast.makeText(SignUpActivity.this, "Loi", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+
+    private String encryptPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes());
+            byte[] byteData = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : byteData) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+
     private void resetPassword() {
         txtResetPassword = findViewById(R.id.dont_have_a);
         txtResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SignUpActivity.this, ForgotPasswordActivity.class));
+            }
+        });
+    }
+
+    private void returnToSignIn() {
+        btnReturn = findViewById(R.id.btn_return);
+        btnReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SignUpActivity.this, SignInActivity.class));
+                finish();
             }
         });
     }

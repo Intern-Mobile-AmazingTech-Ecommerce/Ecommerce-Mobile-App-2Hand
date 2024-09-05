@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +17,6 @@ import android.widget.TextView;
 
 import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
 import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
-import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
@@ -28,27 +25,18 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
 import com.example.ecommercemobileapp2hand.Views.App;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.math.BigDecimal;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.example.ecommercemobileapp2hand.Views.Search.SearchActivity;
 import com.google.android.material.button.MaterialButton;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to

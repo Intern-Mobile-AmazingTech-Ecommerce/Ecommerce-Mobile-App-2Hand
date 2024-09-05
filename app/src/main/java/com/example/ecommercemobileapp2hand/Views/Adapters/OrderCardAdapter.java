@@ -12,7 +12,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.UserOrderProductsHandler;
-import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
@@ -73,7 +72,7 @@ public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyVi
     private void DetailTrackOrder(UserOrder ord)
     {
         Intent intent = new Intent(context, TrackOrderAcitivity.class);
-        intent.putExtra("UserAccount", userAccount);
+        intent.putExtra("UserAccount", (CharSequence) userAccount);
         intent.putExtra("order", ord);
         context.startActivity(intent);
     }

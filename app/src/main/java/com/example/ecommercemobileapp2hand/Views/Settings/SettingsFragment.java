@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
-import com.example.ecommercemobileapp2hand.Views.SplashScreen.SplashScreenActivity;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -25,6 +26,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SettingsFragment extends Fragment {
     private TextView tvUserName, tvEmail, tvPhoneNumber, tvSignOut;
@@ -35,27 +41,17 @@ public class SettingsFragment extends Fragment {
 
     private UserAccount userAccount;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        if (getArguments() != null)
-        {
+        if (getArguments() != null) {
             userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
         }
 
-        tvUserName = view.findViewById(R.id.tvUserName);
-        tvEmail = view.findViewById(R.id.tvUserEmail);
-        tvPhoneNumber = view.findViewById(R.id.tvUserPhoneNumber);
-        tvSignOut = view.findViewById(R.id.tvSignOut);
-        tvAddress = view.findViewById(R.id.Address);
-        tvWishlist = view.findViewById(R.id.Wishlist);
-        tvPayment = view.findViewById(R.id.Payment);
-        tvHelp = view.findViewById(R.id.Help);
-        tvSupport = view.findViewById(R.id.Support);
+        addControls(view);
 
         firebaseAuth = FirebaseAuth.getInstance();
         GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(getActivity());
@@ -69,11 +65,25 @@ public class SettingsFragment extends Fragment {
                 fetchUserDataFromFirebase();
             }
         }
-        fetchUserDataFromSharedPreferences();
 
-        tvSignOut.setOnClickListener(v -> signOut());
+        fetchUserDataFromSharedPreferences();
+        fetchUserDataFromDatabase();
+
         addEvent();
         return view;
+    }
+
+
+    private void addControls(View view) {
+        tvUserName = view.findViewById(R.id.tvUserName);
+        tvEmail = view.findViewById(R.id.tvUserEmail);
+        tvPhoneNumber = view.findViewById(R.id.tvUserPhoneNumber);
+        tvSignOut = view.findViewById(R.id.tvSignOut);
+        tvAddress = view.findViewById(R.id.Address);
+        tvWishlist = view.findViewById(R.id.Wishlist);
+        tvPayment = view.findViewById(R.id.Payment);
+        tvHelp = view.findViewById(R.id.Help);
+        tvSupport = view.findViewById(R.id.Support);
     }
 
     private void fetchUserDataFromFirebase() {
@@ -109,6 +119,52 @@ public class SettingsFragment extends Fragment {
         tvPhoneNumber.setText(userPhone);
     }
 
+    private void fetchUserDataFromDatabase() {
+        DBConnect dbConnect = new DBConnect();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        String email = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                .getString("userEmail", null);
+
+        try {
+            conn = dbConnect.connectionClass();
+
+            if (conn != null) {
+                String query = "SELECT first_name, last_name, phone_number FROM user_account WHERE email = ?";
+                pstmt = conn.prepareStatement(query);
+                pstmt.setString(1, email);
+                rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    String firstName = rs.getString("first_name");
+                    String lastName = rs.getString("last_name");
+                    String phoneNumber = rs.getString("phone_number");
+
+                    String fullName = firstName + " " + lastName;
+                    tvUserName.setText(fullName);
+                    tvPhoneNumber.setText(phoneNumber != null ? phoneNumber : "Chưa có số điện thoại");
+                } else {
+                    Log.e(TAG, "Không tìm thấy người dùng với email: " + email);
+                }
+            } else {
+                Log.e(TAG, "Kết nối cơ sở dữ liệu thất bại");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Lỗi khi truy vấn cơ sở dữ liệu: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void signOut() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -126,29 +182,20 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    private void addEvent()
-    {
-        tvAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ListAddressActivity.class);
-                startActivity(intent);
-            }
+    private void addEvent() {
+        tvSignOut.setOnClickListener(v -> signOut());
+        tvAddress.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ListAddressActivity.class);
+            startActivity(intent);
         });
-        tvWishlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), WishlistActivity.class);
-                intent.putExtra("UserAccount", userAccount);
-                startActivity(intent);
-            }
+        tvWishlist.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), WishlistActivity.class);
+            intent.putExtra("UserAccount", userAccount.getUserId());
+            startActivity(intent);
         });
-        tvPayment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), PaymentActivity.class);
-                startActivity(intent);
-            }
+        tvPayment.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), PaymentActivity.class);
+            startActivity(intent);
         });
     }
 }

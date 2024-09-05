@@ -13,14 +13,11 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
-import com.example.ecommercemobileapp2hand.Models.FakeModels.WishList;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.WishListAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WishlistActivity extends AppCompatActivity {
@@ -67,7 +64,7 @@ public class WishlistActivity extends AppCompatActivity {
     }
 
     private void loadRecycleViewCategories(){
-        wishListAdapter = new WishListAdapter(WishlistActivity.this, userAccount.getLstWL(), userAccount);
+       // wishListAdapter = new WishListAdapter(WishlistActivity.this, userAccount.getLstWL(), userAccount);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(WishlistActivity.this,RecyclerView.VERTICAL,false);
         rv_wishlist.setLayoutManager(layoutManager);
 

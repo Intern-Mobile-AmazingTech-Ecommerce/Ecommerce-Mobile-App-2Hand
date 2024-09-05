@@ -5,17 +5,12 @@ import static android.view.View.GONE;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -36,19 +31,17 @@ import com.example.ecommercemobileapp2hand.R;
 
 import com.example.ecommercemobileapp2hand.Views.Adapters.GenderAdapter;
 import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
-import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationDetailFragment;
-import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFragment;
 import com.example.ecommercemobileapp2hand.Views.Orders.OrdersFragment;
 import com.example.ecommercemobileapp2hand.Views.Settings.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -194,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void LoadFragment(Fragment fragment){
         Bundle bundle = new Bundle();
-        bundle.putSerializable("UserAccount", userAccount);
+        bundle.putSerializable("UserAccount", (Serializable) userAccount);
         fragment.setArguments(bundle);
 
         FragmentManager fm = getSupportFragmentManager();
