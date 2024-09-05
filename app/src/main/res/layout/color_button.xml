@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/SCREEN"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="14dp"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    style="@style/SCREEN">
+    android:paddingBottom="14dp">
 
     <Button
         android:id="@+id/button_content"
+        style="@style/bg_product_card"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:gravity="start|center_vertical"
+        android:text="hehe"
         android:textSize="16sp" />
-
     <View
         android:id="@+id/color"
         android:layout_width="16dp"
@@ -21,6 +20,7 @@
         android:layout_gravity="end|center_vertical"
         android:layout_marginEnd="60dp"
         android:background="@drawable/shape" />
+
     <ImageView
         android:id="@+id/icon_check"
         android:layout_width="51dp"

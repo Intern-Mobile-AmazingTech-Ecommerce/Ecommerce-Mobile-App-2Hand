@@ -225,12 +225,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onGenderSelected(String selectedGender) {
                 btnObject.setText(selectedGender);
-
                 sharedPreferences = getSharedPreferences("my_userID",MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("gender_key", selectedGender);
                 Boolean isSaved = editor.commit();
-
 //                FragmentManager fragmentManager = getSupportFragmentManager();
 //                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
                 if (isSaved) {

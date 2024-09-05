@@ -46,7 +46,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
     private void initialUI() {
         btnContinue_2 = findViewById(R.id.btnContinue_2);
-        edtEmail = findViewById(R.id.email_address);
+        edtEmail = findViewById(R.id.edt_email_address);
         btnContinue_2.setOnClickListener(v -> {
             String email = edtEmail.getText().toString().trim();
             if (!isValidEmail(email)) {

@@ -82,6 +82,7 @@
     </style>
     <style name="bg_product_card">
         <item name="android:backgroundTint">@color/Bg_Light_2</item>
+        <item name="android:textColor">@color/Black_100</item>
     </style>
     <style name="icon_favorite">
         <item name="iconTint">@color/black</item>
