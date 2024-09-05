@@ -26,9 +26,11 @@ import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
+import com.example.ecommercemobileapp2hand.Views.App;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -42,22 +44,29 @@ public class SearchActivity extends AppCompatActivity {
     ScrollView scrollViewPro;
     ArrayList<ProductCategory> categoryList;
     CategoriesAdapter categoriesAdapter;
-    TextView textViewTitle;
-    LinearLayout layoutFilter;
+    TextView textViewTitle,tvResult;
+    LinearLayout categoryContainer,productContainer,layoutFilter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search);
         addControls();
-        load();
-        addEvent();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        addEvent();
+        loadRecycleViewCategories();
+    }
+
     void addControls()
     {
         imgBack = (ImageView) findViewById(R.id.btnBack);
@@ -65,7 +74,7 @@ public class SearchActivity extends AppCompatActivity {
         searchView.clearFocus();
         layoutFilter = (LinearLayout) findViewById(R.id.layoutFilter);
         recyViewSearchPro = (RecyclerView) findViewById(R.id.recyProductSearch);
-        lstPro = ProductHandler.getDataByObjectName("Men");
+        lstPro = (ArrayList<Product>) App.getCache().getIfPresent("lstPro");
         proAdapter = new ProductCardAdapter(lstPro,SearchActivity.this);
 
         scrollViewPro = (ScrollView) findViewById(R.id.scrollViewProduct);
@@ -75,8 +84,14 @@ public class SearchActivity extends AppCompatActivity {
         recyViewSearchPro.setLayoutManager(new GridLayoutManager(this,2));
         recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
         recyViewSearchPro.setAdapter(proAdapter);
-        loadRecycleViewCategories();
+        tvResult = findViewById(R.id.tvResult);
+
+
+        //Container
+        categoryContainer = findViewById(R.id.categoryContainer);
+        productContainer = findViewById(R.id.productContainer);
     }
+
     private void loadRecycleViewCategories() {
         categoryList = new ArrayList<>();
         categoryList = CategoriesHandler.getData();
@@ -101,45 +116,36 @@ public class SearchActivity extends AppCompatActivity {
                 return false;
             }
         });
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
-    }
-    void load()
-    {
-        recyViewCateSearch.setVisibility(View.VISIBLE);
-        recyViewSearchPro.setVisibility(View.GONE);
-        linearLayoutSearch.setVisibility(View.GONE);
-        layoutFilter.setVisibility(View.GONE);
     }
     void filterLíst(String text)
     {
         ArrayList <Product> filterList = new ArrayList<>();
-        for(com.example.ecommercemobileapp2hand.Models.Product pro : lstPro)
-        {
-            if (pro.getProduct_name().toLowerCase().contains(text.toLowerCase()))
-            {
-                filterList.add(pro);
-            }
-        }
+        filterList = lstPro.stream().filter(product -> product.getProduct_name().toLowerCase().contains(text.toLowerCase())).collect(Collectors.toCollection(ArrayList::new));
         if (text.isEmpty())
         {
-            recyViewCateSearch.setVisibility(View.VISIBLE);
-            recyViewSearchPro.setVisibility(View.GONE);
-            layoutFilter.setVisibility(View.GONE);
+            categoryContainer.setVisibility(View.VISIBLE);
             linearLayoutSearch.setVisibility(View.GONE);
+            productContainer.setVisibility(View.GONE);
 
         } else if (filterList.isEmpty()) {
-            textViewTitle.setVisibility(View.GONE);
-            recyViewCateSearch.setVisibility(View.GONE);
-            recyViewSearchPro.setVisibility(View.GONE);
-            layoutFilter.setVisibility(View.GONE);
             linearLayoutSearch.setVisibility(View.VISIBLE);
+            categoryContainer.setVisibility(View.GONE);
+            productContainer.setVisibility(View.GONE);
         }else {
-            textViewTitle.setVisibility(View.GONE);
-            recyViewCateSearch.setVisibility(View.GONE);
-            recyViewSearchPro.setVisibility(View.VISIBLE);
-            layoutFilter.setVisibility(View.VISIBLE);
+
+            productContainer.setVisibility(View.VISIBLE);
+            categoryContainer.setVisibility(View.GONE);
             linearLayoutSearch.setVisibility(View.GONE);
             proAdapter.setFilteredList(filterList);
+            recyViewSearchPro.setLayoutManager(new GridLayoutManager(this,2));
+            tvResult.setText(""+filterList.size()+" Result Found");
         }
 
     }

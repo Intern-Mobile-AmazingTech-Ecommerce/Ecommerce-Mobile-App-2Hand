@@ -73,6 +73,9 @@
         <item name="iconTint">@color/Black_100</item>
         <item name="android:textColor">@color/Black_100</item>
         <item name="android:backgroundTint">@color/Bg_Light_2</item>
+        <item name="searchIcon">@drawable/searchnormal1</item>
+        <item name="android:closeIcon">@drawable/x</item>
+        <item name="android:textColorHint">@color/Black_100</item>
     </style>
     <style name="text_sale_price">
         <item name="android:textColor">@color/Black_50</item>

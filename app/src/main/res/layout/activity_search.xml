@@ -1,16 +1,15 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    android:orientation="vertical"
     style="@style/SCREEN"
 
     >
 
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="24dp"
@@ -40,157 +39,194 @@
                 android:layout_marginStart="9dp"
                 android:layout_toEndOf="@+id/btnBack"
                 android:background="@drawable/search_view_bg"
-                app:closeIcon="@drawable/x"
                 app:iconifiedByDefault="false"
                 app:queryHint="Search"
-                app:searchIcon="@drawable/searchnormal1" />
+                style="@style/search_bar"
+
+
+                />
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/layoutFilter"
+            android:visibility="gone"
+            android:id="@+id/productContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/layoutFilter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                >
 
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/filter"
-                android:layout_width="43dp"
-                android:layout_height="27dp"
-                android:drawablePadding="4dp"
-                android:paddingHorizontal="8dp"
-                android:text="2"
-                android:textColor="@color/white"
-                android:background="@drawable/frame_40"
-                android:drawableStart="@drawable/filter"
-                />
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/OnSale"
-                android:layout_width="59dp"
-                android:layout_height="27dp"
-                android:text="On Sale"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:lineHeight="19sp"
-                android:fontFamily="@font/circularstdmedium500"
-                android:textColor="@color/Black_100"
-                android:background="@drawable/frame_42"
-                />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/filter"
+                    android:layout_width="43dp"
+                    android:layout_height="27dp"
+                    android:drawablePadding="4dp"
+                    android:paddingHorizontal="8dp"
+                    android:text="2"
+                    android:textColor="@color/white"
+                    android:background="@drawable/frame_40"
+                    android:drawableStart="@drawable/filter"
+                    android:layout_marginEnd="5dp"
+                    />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/OnSale"
+                    android:layout_width="59dp"
+                    android:layout_height="27dp"
+                    android:text="On Sale"
+                    android:textAllCaps="false"
+                    android:textSize="12sp"
+                    android:lineHeight="19sp"
+                    android:fontFamily="@font/circularstdmedium500"
+                    android:textColor="@color/Black_100"
+                    android:background="@drawable/frame_42"
+                    android:layout_marginEnd="5dp"
+                    />
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/Price"
-                android:layout_width="64dp"
-                android:layout_height="27dp"
-                android:background="@drawable/frame_44"
-                android:paddingHorizontal="8dp"
-                android:drawableEnd="@drawable/arrowdown_white"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/Price"
+                    android:layout_width="64dp"
+                    android:layout_height="27dp"
+                    android:background="@drawable/frame_44"
+                    android:paddingHorizontal="8dp"
+                    android:drawableEnd="@drawable/arrowdown_white"
+                    android:fontFamily="@font/circularstdmedium500"
+                    android:lineHeight="19sp"
+                    android:text="Price"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="5dp"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/SortBy"
+                    android:layout_width="78dp"
+                    android:layout_height="27dp"
+                    android:paddingHorizontal="8dp"
+                    android:textAllCaps="false"
+                    android:text="Sort by"
+                    android:textColor="@color/Black_100"
+                    android:background="@drawable/frame_41"
+                    android:drawableEnd="@drawable/arrowdown2"
+                    android:layout_marginEnd="5dp"
+                    />
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/Men"
+                    android:layout_width="64dp"
+                    android:layout_height="27dp"
+                    android:background="@drawable/frame_44"
+                    android:paddingHorizontal="8dp"
+                    android:drawableEnd="@drawable/arrowdown_white"
+                    android:fontFamily="@font/circularstdmedium500"
+                    android:lineHeight="19sp"
+                    android:text="Men"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/tvResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="53 Result Found"
+                style="@style/TEXT"
                 android:fontFamily="@font/circularstdmedium500"
-                android:lineHeight="19sp"
-                android:text="Price"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/SortBy"
-                android:layout_width="78dp"
-                android:layout_height="27dp"
-                android:paddingHorizontal="8dp"
-                android:textAllCaps="false"
-                android:text="Sort by"
-                android:textColor="@color/Black_100"
-                android:background="@drawable/frame_41"
-                android:drawableEnd="@drawable/arrowdown2"
+                android:textSize="12dp"
                 />
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/Men"
-                android:layout_width="64dp"
-                android:layout_height="27dp"
-                android:background="@drawable/frame_44"
-                android:paddingHorizontal="8dp"
-                android:drawableEnd="@drawable/arrowdown_white"
-                android:fontFamily="@font/circularstdmedium500"
-                android:lineHeight="19sp"
-                android:text="Men"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
+            <ScrollView
+                android:id="@+id/scrollViewProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:scrollbars="none"
+                >
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyProductSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="14dp"/>
+
+            </ScrollView>
+
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/titleSearch"
-
-            style="@style/TEXT"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/gabarito"
-            android:text="Shop by Categories"
-            android:textFontWeight="700"
-            android:textSize="24dp"
-            android:textStyle="normal" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewCategoriesSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp" />
 
         <LinearLayout
-            android:id="@+id/linearLayoutSearch"
+            android:visibility="visible"
+            android:id="@+id/categoryContainer"
             android:layout_width="match_parent"
-            android:layout_height="290dp"
-            android:layout_marginTop="147dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/search1" />
-
             <TextView
-                android:layout_width="339dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp"
-                android:fontFamily="@font/circularstdmedium500"
-                android:gravity="center_horizontal"
-                android:lineHeight="30sp"
-                android:text="Sorry, we couldn't find any matching result for your Search."
-                android:textColor="#272727"
-                android:textSize="24sp" />
+                android:id="@+id/titleSearch"
 
-            <Button
-                android:id="@+id/btnReturnLogin"
-                android:layout_width="185dp"
-                android:layout_height="52dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="@color/purple"
-                android:fontFamily="@font/circularstdmedium500"
-                android:text="Explore Categories"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.502"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                style="@style/TEXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gabarito"
+                android:text="Shop by Categories"
+                android:textFontWeight="700"
+                android:textSize="24dp"
+                android:textStyle="normal" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewCategoriesSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp" />
         </LinearLayout>
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/linearLayoutSearch"
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:layout_marginTop="147dp"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/search1" />
+
+        <TextView
+            android:layout_width="339dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/circularstdmedium500"
+            android:gravity="center_horizontal"
+            android:lineHeight="30sp"
+            android:text="Sorry, we couldn't find any matching result for your Search."
+            android:textSize="24sp"
+            style="@style/TEXT"/>
+
+        <Button
+            android:id="@+id/btnReturnLogin"
+            android:layout_width="185dp"
+            android:layout_height="52dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/purple"
+            android:fontFamily="@font/circularstdmedium500"
+            android:text="Explore Categories"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
     </LinearLayout>
 
-    <ScrollView
-        android:id="@+id/scrollViewProduct"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:scrollbars="none"
-
-        >
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyProductSearch"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </ScrollView>
 
 
-</LinearLayout>
+</RelativeLayout>

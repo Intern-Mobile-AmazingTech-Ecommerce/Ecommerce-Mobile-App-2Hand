@@ -44,6 +44,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import com.example.ecommercemobileapp2hand.Views.Search.SearchActivity;
+import com.google.android.material.button.MaterialButton;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 /**
@@ -71,7 +74,7 @@ public class HomeFragment extends Fragment {
     private UserAccount userAccount;
 
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
+    private MaterialButton btnSearch;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -155,7 +158,6 @@ public class HomeFragment extends Fragment {
         addEvent();
     }
     private void loadListPro(String gen) throws ExecutionException {
-        App.getCache().invalidate("lstPro");
         //GenerateListPro
         lstPro = (ArrayList<Product>) App.getCache().get("lstPro", new Callable<ArrayList<Product>>() {
             @Override
@@ -174,11 +176,11 @@ public class HomeFragment extends Fragment {
 
         tvNewInSeeAll = view.findViewById(R.id.tvNewInSeeAll);
         tvTopSellingSeeAll = view.findViewById(R.id.tvTopSellingSeeAll);
-
+        btnSearch = view.findViewById(R.id.btnSearch);
     }
 
     private void loadCategoriesData() throws ExecutionException {
-        App.getCache().invalidate("categories");
+
         ArrayList<ProductCategory> categoryList = (ArrayList<ProductCategory>) App.getCache().get("categories", new Callable<ArrayList<ProductCategory>>() {
             @Override
             public ArrayList<ProductCategory> call() throws Exception {
@@ -194,7 +196,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadTopSellingProductsData() throws ExecutionException {
-        App.getCache().invalidate("TopSelling");
+
         lstProTopSelling = (ArrayList<Product>) App.getCache().get("TopSelling", new Callable<ArrayList<Product>>() {
             @Override
             public ArrayList<Product> call() throws Exception {
@@ -215,15 +217,15 @@ public class HomeFragment extends Fragment {
 
     }
     private void loadNewInProductsData() throws ExecutionException {
-        App.getCache().invalidate("NewIn");
+
         lstProNewIn = (ArrayList<Product>) App.getCache().get("NewIn", new Callable<ArrayList<Product>>() {
             @Override
             public ArrayList<Product> call() throws Exception {
                 if (lstPro.size() > 0) {
                     LocalDateTime now = LocalDateTime.now();
-                    LocalDateTime sevenDaysAgo = now.minus(7, ChronoUnit.DAYS);
+                    LocalDateTime thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS);
                     return lstPro.stream()
-                            .filter(product -> product.getCreated_at().isAfter(sevenDaysAgo))
+                            .filter(product -> product.getCreated_at().isAfter(thirtyDaysAgo))
                             .collect(Collectors.toCollection(ArrayList::new));
                 }
                 return new ArrayList<>();
@@ -269,6 +271,13 @@ public class HomeFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("NewInList", lstProNewIn);
                 intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
                 startActivity(intent);
             }
         });

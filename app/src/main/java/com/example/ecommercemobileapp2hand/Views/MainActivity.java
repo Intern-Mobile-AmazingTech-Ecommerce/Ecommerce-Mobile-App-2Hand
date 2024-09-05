@@ -241,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
 //                FragmentManager fragmentManager = getSupportFragmentManager();
 //                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
                 if (isSaved) {
+                    App.getCache().invalidateAll();
                    LoadFragment(new HomeFragment());
                 }
                 bottomSheetDialog.dismiss();
