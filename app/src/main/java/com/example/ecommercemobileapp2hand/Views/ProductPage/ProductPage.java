@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,12 +33,17 @@ import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductColor;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsImg;
+import com.example.ecommercemobileapp2hand.Models.ProductDetailsSize;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleProductImageAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleReviewAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleSizeAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecylerColorAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.SortByAdapter;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -44,6 +51,7 @@ public class ProductPage extends AppCompatActivity {
 
     private Product product;
     private ProductDetails currentDetails;
+    private ProductDetailsSize currentSize;
     private RecyclerView recycleImgSlider;
     private RecycleProductImageAdapter imgSliderApdater;
     private ArrayList<ProductDetailsImg> imgList;
@@ -51,11 +59,13 @@ public class ProductPage extends AppCompatActivity {
     private ArrayList<ProductColor> colorList;
     private RecycleReviewAdapter reviewAdapter;
     private RecyclerView recycleReviews;
-    RelativeLayout btnColor, btnSize;
-    private ImageView imgBack;
-    private TextView tvProductName, tvPrice, tvOldPrice, tvDescription;
+    private RelativeLayout btnColor, btnSize;
+    private ImageView imgBack, btnIncrease, btnDecrease;
+    private TextView tvProductName, tvPrice, tvOldPrice, tvDescription, tvSize, tvQuantity,tvTotalPrice;
     private View bgColor;
-
+    private int quantity = 1;
+    private BigDecimal totalPrice;
+    private RelativeLayout btnAddToBag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +91,7 @@ public class ProductPage extends AppCompatActivity {
         } else {
             currentDetails = product.getProductDetailsArrayList().get(0);
         }
+        currentSize = currentDetails.getSizeArrayList().get(0);
         colorList = product.getProductDetailsArrayList().stream().map(productDetails -> productDetails.getProductColor()).distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -115,6 +126,17 @@ public class ProductPage extends AppCompatActivity {
         }
         bgColor.setBackgroundTintList(ColorStateList.valueOf(color));
         tvDescription.setText(curr.getDescription());
+
+        quantity = 1;
+        tvQuantity.setText(String.valueOf(quantity));
+
+        if(curr.getSale_price()!=null){
+            tvTotalPrice.setText(String.valueOf(currentDetails.getSale_price().toString()));
+            totalPrice = currentDetails.getSale_price();
+        }else {
+            tvTotalPrice.setText(String.valueOf(product.getBase_price().toString()));
+            totalPrice = product.getBase_price();
+        }
     }
 
     private void addControl() {
@@ -123,6 +145,7 @@ public class ProductPage extends AppCompatActivity {
         tvPrice = findViewById(R.id.tvPrice);
         tvOldPrice = findViewById(R.id.tvOldPrice);
         tvDescription = findViewById(R.id.tvDescription);
+        tvSize = findViewById(R.id.txtSize);
         recycleImgSlider = findViewById(R.id.recyclerProductImgSlider);
         recycleReviews = findViewById(R.id.recyclerRating);
         btnColor = findViewById(R.id.btnColor);
@@ -135,6 +158,16 @@ public class ProductPage extends AppCompatActivity {
         if (btnSize != null) {
             btnSize.setOnClickListener(v -> showSizeOverlay("Size"));
         }
+
+
+        //Quantity
+        btnIncrease = findViewById(R.id.btnIncreaseQuantity);
+        btnDecrease = findViewById(R.id.btnDecreaseQuantity);
+        tvQuantity = findViewById(R.id.txtQuantityValue);
+
+        //btnAddToBag
+        btnAddToBag = findViewById(R.id.btnAddToBag);
+        tvTotalPrice = findViewById(R.id.tvTotalPrice);
     }
 
     public void addEvent() {
@@ -143,6 +176,30 @@ public class ProductPage extends AppCompatActivity {
             public void onClick(View v) {
 
                 finish();
+            }
+        });
+
+        btnIncrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                quantity+=1;
+                tvQuantity.setText(String.valueOf(quantity));
+                totalPrice = totalPrice.multiply(BigDecimal.valueOf(quantity));
+                tvTotalPrice.setText(totalPrice.toString());
+            }
+        });
+        btnDecrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (quantity != 1) {
+                    quantity-=1;
+                    tvQuantity.setText(String.valueOf(quantity));
+                    totalPrice = totalPrice.multiply(BigDecimal.valueOf(quantity));
+                    tvTotalPrice.setText(totalPrice.toString());
+
+                }
+
+
             }
         });
     }
@@ -165,6 +222,7 @@ public class ProductPage extends AppCompatActivity {
         recycleReviews.setLayoutManager(layoutManager);
         recycleReviews.setAdapter(reviewAdapter);
     }
+
     private void showColorOverlay(String type) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -175,90 +233,52 @@ public class ProductPage extends AppCompatActivity {
         ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
         btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
         RecyclerView recyclerColor = dialogView.findViewById(R.id.recyclerColor);
-        RecylerColorAdapter  recylerColorAdapter = new RecylerColorAdapter(colorList, ProductPage.this, currentDetails.getProductColor().getProduct_color_name(), new RecylerColorAdapter.OnColorsSelectedListener() {
+        RecylerColorAdapter recylerColorAdapter = new RecylerColorAdapter(colorList, ProductPage.this, currentDetails.getProductColor().getProduct_color_name(), new RecylerColorAdapter.OnColorsSelectedListener() {
             @Override
             public void onColorSelected(String colorName) {
                 currentDetails = product.getProductDetailsArrayList().stream()
                         .filter(productDetails -> productDetails.getProductColor().getProduct_color_name().equalsIgnoreCase(colorName)) // Lọc theo tên màu
                         .findFirst()
                         .orElse(null);
-                 bindingData(currentDetails);
-                 bottomSheetDialog.dismiss();
+                bindingData(currentDetails);
+                bottomSheetDialog.dismiss();
             }
         });
-        recyclerColor.setLayoutManager(new LinearLayoutManager(bottomSheetDialog.getContext(),RecyclerView.VERTICAL,false));
+        recyclerColor.setLayoutManager(new LinearLayoutManager(bottomSheetDialog.getContext(), RecyclerView.VERTICAL, false));
         recyclerColor.setAdapter(recylerColorAdapter);
         bottomSheetDialog.show();
     }
 
     private void showSizeOverlay(String type) {
-//        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-//        LayoutInflater inflater = this.getLayoutInflater();
-//        View dialogView = inflater.inflate(R.layout.size_overlay, null);
-//        bottomSheetDialog.setContentView(dialogView);
-//
-//        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
-//        overlayTitle.setText(type);
-//
-//        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
-//        btnClose.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                bottomSheetDialog.dismiss();
-//            }
-//        });
-//
-//        LinearLayout linearLayout = dialogView.findViewById(R.id.overlay_sub_button);
-//        String[] sizes = {"S", "M", "L", "XL", "2XL"};
-//
-//        Button[] buttons = new Button[sizes.length];
-//        for (int i = 0; i < sizes.length; i++) {
-//            View buttonView = inflater.inflate(R.layout.custom_button, null);
-//            Button button = buttonView.findViewById(R.id.button_content);
-//            ImageView iconCheck = buttonView.findViewById(R.id.icon_check);
-//            button.setText(sizes[i]);
-//            button.setBackgroundColor(getResources().getColor(R.color.Bg_Light_2));
-//            button.setTextColor(getResources().getColor(R.color.black));
-//            iconCheck.setVisibility(View.GONE);
-//
-//            button.setOnClickListener(v -> {
-//                for (int j = 0; j < linearLayout.getChildCount(); j++) {
-//                    View child = linearLayout.getChildAt(j);
-//                    Button btn = child.findViewById(R.id.button_content);
-//                    ImageView checkIcon = child.findViewById(R.id.icon_check);
-//
-//                    btn.setBackgroundColor(getResources().getColor(R.color.Bg_Light_2));
-//                    btn.setTextColor(getResources().getColor(R.color.black));
-//                    checkIcon.setVisibility(View.GONE);
-//                }
-//                button.setBackgroundColor(getResources().getColor(R.color.purple));
-//                button.setTextColor(getResources().getColor(R.color.white));
-//                iconCheck.setVisibility(View.VISIBLE);
-//            });
-//            linearLayout.addView(buttonView);
-//            buttons[i] = button;
-//        }
-//
-//        if (linearLayout.getChildCount() > 0) {
-//            View defaultButtonView = linearLayout.getChildAt(0);
-//            Button defaultButton = defaultButtonView.findViewById(R.id.button_content);
-//            ImageView defaultIconCheck = defaultButtonView.findViewById(R.id.icon_check);
-//            defaultButton.setBackgroundColor(getResources().getColor(R.color.purple));
-//            defaultButton.setTextColor(getResources().getColor(R.color.white));
-//            defaultIconCheck.setVisibility(View.VISIBLE);
-//        }
-//        bottomSheetDialog.show();
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.size_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
+        overlayTitle.setText(type);
+
+        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        RecyclerView recyclerSize = dialogView.findViewById(R.id.recy_size);
+        RecycleSizeAdapter recycleSizeAdapter = new RecycleSizeAdapter(currentDetails.getSizeArrayList(), ProductPage.this, new RecycleSizeAdapter.OnSizeSelectedListener() {
+            @Override
+            public void onSizeSelected(ProductDetailsSize size) {
+                currentSize = size;
+                tvSize.setText(currentSize.getSize().getSize_name());
+                bottomSheetDialog.dismiss();
+            }
+        }, currentSize);
+        recyclerSize.setLayoutManager(new LinearLayoutManager(bottomSheetDialog.getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerSize.setAdapter(recycleSizeAdapter);
+        bottomSheetDialog.show();
+
     }
 
-    private void addButtons(LinearLayout linearLayout, String[] options, BottomSheetDialog bottomSheetDialog) {
-        for (String option : options) {
-            Button button = new Button(this);
-            button.setText(option);
-            button.setOnClickListener(v -> {
-                Toast.makeText(ProductPage.this, "Selected: " + option, Toast.LENGTH_SHORT).show();
-            });
-            linearLayout.addView(button);
-        }
-    }
 
 }

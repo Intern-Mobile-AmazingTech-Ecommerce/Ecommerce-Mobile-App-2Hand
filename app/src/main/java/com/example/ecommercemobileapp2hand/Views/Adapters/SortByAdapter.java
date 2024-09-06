@@ -46,12 +46,10 @@ public class SortByAdapter extends RecyclerView.Adapter<SortByAdapter.MyViewHole
         {
             holder.imgCheck.setVisibility(View.VISIBLE);
             holder.imgCheck.setImageResource(R.drawable.check_line);
-            holder.tvSortBy.setText(g);
             holder.tvSortBy.setTextColor(Color.WHITE);
             holder.linear_sortBy.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
         }else {
             holder.imgCheck.setVisibility(View.GONE);
-            holder.tvSortBy.setText(g);
         }
         holder.linear_sortBy.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -35,7 +35,7 @@ public class RecylerColorAdapter extends RecyclerView.Adapter<RecylerColorAdapte
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.color_button,null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.color_button,parent,false);
         return new MyViewHolder(view);
     }
 

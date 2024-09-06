@@ -66,7 +66,6 @@ public class Util {
             url = url.replace("http://", "https://");
             return url;
         }
-
         // Nếu không, tiếp tục với quy trình hiện tại
         int widthDP = dpToPx(context, w);
         int heightDP = dpToPx(context, h);

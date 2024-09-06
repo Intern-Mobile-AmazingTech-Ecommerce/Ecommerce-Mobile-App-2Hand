@@ -1,8 +1,13 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ProductDetailsSize {
+public class ProductDetailsSize implements Parcelable {
     @JsonProperty("product_details_size_id")
     private int productDetailsSizeID;
     @JsonProperty("product_details_id")
@@ -10,6 +15,26 @@ public class ProductDetailsSize {
     private Size size;
     @JsonProperty("stock")
     private int stock;
+
+
+    protected ProductDetailsSize(Parcel in) {
+        productDetailsSizeID = in.readInt();
+        productDetailsID = in.readInt();
+        size = in.readParcelable(Size.class.getClassLoader());
+        stock = in.readInt();
+    }
+
+    public static final Creator<ProductDetailsSize> CREATOR = new Creator<ProductDetailsSize>() {
+        @Override
+        public ProductDetailsSize createFromParcel(Parcel in) {
+            return new ProductDetailsSize(in);
+        }
+
+        @Override
+        public ProductDetailsSize[] newArray(int size) {
+            return new ProductDetailsSize[size];
+        }
+    };
 
     @JsonProperty("size_id")
     public void setSizeID(int SizeID){
@@ -65,5 +90,19 @@ public class ProductDetailsSize {
 
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(productDetailsSizeID);
+        dest.writeInt(productDetailsID);
+        dest.writeParcelable(size, flags);
+        dest.writeInt(stock);
     }
 }

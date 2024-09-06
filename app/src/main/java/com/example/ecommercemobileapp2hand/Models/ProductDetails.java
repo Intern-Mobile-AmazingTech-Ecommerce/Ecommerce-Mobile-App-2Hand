@@ -42,6 +42,42 @@ public class ProductDetails implements Parcelable {
         this.sizeArrayList = sizeArrayList;
     }
 
+    protected ProductDetails(Parcel in) {
+        product_details_id = in.readInt();
+        product_id = in.readInt();
+        productColor = in.readParcelable(ProductColor.class.getClassLoader());
+        description = in.readString();
+        imgDetailsArrayList = in.createTypedArrayList(ProductDetailsImg.CREATOR);
+        sizeArrayList = in.createTypedArrayList(ProductDetailsSize.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(product_details_id);
+        dest.writeInt(product_id);
+        dest.writeParcelable(productColor, flags);
+        dest.writeString(description);
+        dest.writeTypedList(imgDetailsArrayList);
+        dest.writeTypedList(sizeArrayList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ProductDetails> CREATOR = new Creator<ProductDetails>() {
+        @Override
+        public ProductDetails createFromParcel(Parcel in) {
+            return new ProductDetails(in);
+        }
+
+        @Override
+        public ProductDetails[] newArray(int size) {
+            return new ProductDetails[size];
+        }
+    };
+
     public ArrayList<ProductDetailsSize> getSizeArrayList() {
         return sizeArrayList;
     }
@@ -123,40 +159,7 @@ public class ProductDetails implements Parcelable {
         this.sale_price = sale_price;
     }
 
-    protected ProductDetails(Parcel in) {
-        product_details_id = in.readInt();
-        product_id = in.readInt();
-        productColor = in.readParcelable(ProductColor.class.getClassLoader());
-        description = in.readString();
-        sale_price = new BigDecimal(in.readString());
-        createdAt = new Timestamp(in.readLong());
-        imgDetailsArrayList = in.createTypedArrayList(ProductDetailsImg.CREATOR);
-    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeInt(product_details_id);
-        dest.writeInt(product_id);
-        dest.writeParcelable(productColor, flags);
-        dest.writeString(description);
-        dest.writeString(sale_price.toString());
-        dest.writeLong(createdAt.getTime());
-        dest.writeTypedList(imgDetailsArrayList);
-    }
-    public static final Creator<ProductDetails> CREATOR = new Creator<ProductDetails>() {
-        @Override
-        public ProductDetails createFromParcel(Parcel in) {
-            return new ProductDetails(in);
-        }
 
-        @Override
-        public ProductDetails[] newArray(int size) {
-            return new ProductDetails[size];
-        }
-    };
 }

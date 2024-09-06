@@ -50,6 +50,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Product pro = lstPro.get(position);
+        ProductDetails details = new ProductDetails();
         Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
                 .filter(detail -> detail.getSale_price() != null && detail.getSale_price().compareTo(BigDecimal.ZERO) > 0)
                 .findFirst();
@@ -58,10 +59,9 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         holder.tvProductName.setText(pro.getProduct_name());
         holder.tvSalePrice.setVisibility(View.VISIBLE);
         if(firstSaleDetails.isPresent()){
-            ProductDetails details = firstSaleDetails.get();
+            details = firstSaleDetails.get();
             Log.d("IMG_URL DETAILS"+details.getProduct_details_id(),details.getImgDetailsArrayList().get(0).getImg_url());
             url = Util.getCloudinaryImageUrl(context,details.getImgDetailsArrayList().get(0).getImg_url(),159,220);
-            
             holder.tvSalePrice.setText("$" + String.valueOf(details.getSale_price()));
             holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()));
             // Gạch ngang giá gốc
@@ -75,6 +75,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         Picasso.get().load(url).into(holder.img_Product);
 
 
+        ProductDetails finalDetails = details;
         holder.productCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +83,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("lstDetails",pro);
                 if(firstSaleDetails.isPresent()){
-                    bundle.putParcelable("currentSale",firstSaleDetails.get());
+                    bundle.putParcelable("currentSale", finalDetails);
                 }
                 intent.putExtras(bundle);
                 context.startActivity(intent);

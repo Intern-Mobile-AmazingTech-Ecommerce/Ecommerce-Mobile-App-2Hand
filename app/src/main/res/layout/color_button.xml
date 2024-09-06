@@ -4,13 +4,12 @@
     android:backgroundTint="@color/TRANSPARENT"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="10dp"
-    app:cardElevation="0dp"
 
     >
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="56dp">
+    android:layout_height="56dp"
+    android:layout_marginTop="10dp">
     <Button
         android:id="@+id/button_content"
         style="@style/bg_product_card"
