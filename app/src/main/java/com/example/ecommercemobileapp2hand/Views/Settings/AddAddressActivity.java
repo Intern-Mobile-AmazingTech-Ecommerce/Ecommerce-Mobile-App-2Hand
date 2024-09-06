@@ -2,7 +2,10 @@ package com.example.ecommercemobileapp2hand.Views.Settings;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +17,9 @@ import com.example.ecommercemobileapp2hand.R;
 
 public class AddAddressActivity extends AppCompatActivity {
 
-    private ImageButton btn_return;
+    private ImageView imgBack;
+    private EditText edtStreetAddress, edtCity, edtState, edtZipCode;
+    private Button btnSaveAddress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,14 +30,24 @@ public class AddAddressActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        returnToListAddress();
+        addControls();
+        addEvents();
     }
-    private void returnToListAddress(){
-        btn_return=(ImageButton) findViewById(R.id.btn_return);
-        btn_return.setOnClickListener(new View.OnClickListener() {
+    private void addControls()
+    {
+        imgBack = findViewById(R.id.imgBack);
+        edtStreetAddress = findViewById(R.id.edtStreetAddress);
+        edtCity = findViewById(R.id.edtCity);
+        edtState= findViewById(R.id.edtState);
+        edtZipCode= findViewById(R.id.edtZipCode);
+        btnSaveAddress = findViewById(R.id.btnSaveAddress);
+    }
+    private void addEvents()
+    {
+        imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                onBackPressed();
+            public void onClick(View v) {
+                finish();
             }
         });
     }
