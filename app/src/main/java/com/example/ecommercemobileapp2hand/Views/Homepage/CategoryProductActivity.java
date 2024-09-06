@@ -1,6 +1,8 @@
 package com.example.ecommercemobileapp2hand.Views.Homepage;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -36,7 +38,8 @@ public class CategoryProductActivity extends AppCompatActivity {
     private ProductCardAdapter proAdapter;
     private ArrayList<Product> topSellingList;
     private ArrayList<Product> newInList;
-    private String genderTextView;
+    private String gender;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,7 @@ public class CategoryProductActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getGenderKey();
         loadRecycleCategoryProduct();
         addEvents();
     }
@@ -94,7 +98,7 @@ public class CategoryProductActivity extends AppCompatActivity {
     private void loadRecycleCategoryProduct() {
 
         if(Category!=null){
-            lstPro = ProductHandler.getDataByObjectNameAndCategoryID("Men", Category.getProduct_category_id());
+            lstPro = ProductHandler.getDataByObjectNameAndCategoryID(gender, Category.getProduct_category_id());
             proAdapter = new ProductCardAdapter(lstPro, CategoryProductActivity.this);
             tvCategoryName.setText(Category.getProduct_category_name()+" ("+lstPro.size()+")");
         }else if(topSellingList.size() > 0){
@@ -118,5 +122,12 @@ public class CategoryProductActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    private void getGenderKey(){
+        sharedPreferences = getSharedPreferences("my_userID",Context.MODE_PRIVATE);
+        gender = sharedPreferences.getString("gender_key","");
+        if(gender.isEmpty()){
+            gender = "Men";
+        }
     }
 }

@@ -1,9 +1,13 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -21,12 +25,9 @@ import java.util.List;
 
 public class PaymentActivity extends AppCompatActivity {
 
-    private RecyclerView rv_paypal;
-    private PaypalAdapter adapter;
-    private List<Paypal> paypalList;
-    private RecyclerView recyclerView;
-    private CardAdapter cardAdapter;
-    private List<Card> cardList;
+    private ImageView imgBack;
+    private RecyclerView recy_cards;
+    private CardView cv_cards;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,34 +37,30 @@ public class PaymentActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
-
-
         });
-        recyclerView = findViewById(R.id.rv_Cards);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        //fake data
-        cardList = new ArrayList<>();
-        cardList.add(new Card("**** 4187", "123", "12/25", "John Doe"));
-        cardList.add(new Card("**** 9387", "456", "11/24", "Jane Smith"));
-
-        // Set up the adapter
-        cardAdapter = new CardAdapter(cardList);
-        recyclerView.setAdapter(cardAdapter);
-
-
-        rv_paypal = findViewById(R.id.rv_Paypal);
-        rv_paypal.setLayoutManager(new LinearLayoutManager(this));
-
-// Initialize the list
-        paypalList = new ArrayList<>();
-
-// Add sample data
-        paypalList.add(new Paypal("Cloth@gmail.com"));
-
-
-// Set up the adapter with the list
-        adapter = new PaypalAdapter(paypalList);
-        rv_paypal.setAdapter(adapter);
+        addControls();
+        addEvents();
+    }
+    private void addControls()
+    {
+        imgBack = findViewById(R.id.imgBack);
+        recy_cards = findViewById(R.id.recy_cards);
+        cv_cards = findViewById(R.id.cv_cards);
+    }
+    private void addEvents()
+    {
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        cv_cards.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PaymentActivity.this, AddCardActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
