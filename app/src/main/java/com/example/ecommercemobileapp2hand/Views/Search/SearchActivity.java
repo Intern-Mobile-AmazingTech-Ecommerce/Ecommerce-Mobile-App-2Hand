@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -40,8 +41,12 @@ import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +66,12 @@ public class SearchActivity extends AppCompatActivity {
     private LinearLayout categoryContainer,productContainer,layoutFilter;
     private AppCompatButton filter,btnDeals,btnGender,btnSortBy,btnPrice;
     private String genderFilter = "";
+    private TextView tv_clear;
+    private LocalDateTime now = LocalDateTime.now();
+    private Boolean sortByPriceAsc=null;
+    private LocalDateTime  thirtyDaysAgo=LocalDateTime.MIN;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +121,7 @@ public class SearchActivity extends AppCompatActivity {
         btnPrice = findViewById(R.id.btnPrice);
         btnGender = findViewById(R.id.btnGender);
         btnDeals = findViewById(R.id.btnDeals);
+        tv_clear=findViewById(R.id.tv_clear);
     }
 
     private void loadRecycleViewCategories() {
@@ -131,8 +143,7 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d("SearchQuery", "Current query: " + newText);
-                filterList(newText,"");
+                filterList(newText,"",null,LocalDateTime.MIN);
                 return false;
             }
         });
@@ -166,13 +177,23 @@ public class SearchActivity extends AppCompatActivity {
                 showSortByOverlay("Price");
             }
         });
+
     }
-    void filterList(String text,String genderFilter)
+    void filterList(String text,String genderFilter,Boolean sortByPriceAsc,LocalDateTime thirtyDaysAgo)
     {
+
+
+
         ArrayList <Product> filterList = new ArrayList<>();
         filterList = lstPro.stream()
                 .filter(product -> product.getProduct_name().toLowerCase().contains(text.toLowerCase()))
                 .filter(product -> genderFilter.isEmpty() || product.getProductObject().getObject_name().equalsIgnoreCase(genderFilter))
+                .filter(product -> product.getCreated_at().isAfter(thirtyDaysAgo))
+                .sorted(sortByPriceAsc != null
+                        ? (sortByPriceAsc ? Comparator.comparing(Product::getBase_price)
+                        : Comparator.comparing(Product::getBase_price).reversed())
+                        : Comparator.comparingInt(Product::getProduct_id))
+
                 .collect(Collectors.toCollection(ArrayList::new));
 
         if (text.isEmpty())
@@ -238,22 +259,56 @@ public class SearchActivity extends AppCompatActivity {
             sortByArr.add(0,"Min");
             sortByArr.add(1,"Max");
         }
-
+        Log.d("SortByAdapter", "Sort By Array: " + sortByArr.toString());
         SortByAdapter sortByAdapter = new SortByAdapter(sortByArr ,getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
             @Override
             public void onSortBySelected(String selectedSortBy) {
+                //Add clear function
+
                 //Add filter function
+                Log.d("SortByAdapter", "Selected Sort By: " + selectedSortBy);
                 if(type.contains("Gender")){
                     if (selectedSortBy.equalsIgnoreCase("Men")) {
                         genderFilter = "Men";
                     } else if (selectedSortBy.equalsIgnoreCase("Women")) {
                         genderFilter = "Women";
                     }
-                    filterList(searchView.getQuery().toString(), genderFilter);
-                    btnGender.setText(genderFilter);
-                    dialog.dismiss();
+
+                }
+                else if(type.contains("Sort by")){
+                    if (selectedSortBy.equalsIgnoreCase("Lowest-Highest Price")) {
+                        Toast.makeText(getApplicationContext(),"low to high price", Toast.LENGTH_SHORT).show();
+                        sortByPriceAsc = true;
+                        btnSortBy.setText("Lowest-Highest Price");
+
+                    } else if (selectedSortBy.equalsIgnoreCase("Highest-Lowest Price")) {
+                        Toast.makeText(getApplicationContext(),"high to low price", Toast.LENGTH_SHORT).show();
+                        sortByPriceAsc = false;
+
+                        btnSortBy.setText("Highest-Lowest Price");
+                    }
+                    else if (selectedSortBy.equalsIgnoreCase("Newest")){
+                        Toast.makeText(getApplicationContext(),"newest", Toast.LENGTH_SHORT).show();
+                        sortByPriceAsc = null;
+                        thirtyDaysAgo=now.minus(30, ChronoUnit.DAYS);
+                        btnSortBy.setText("Newest");
+                    }
+                    else
+                    {
+                        Toast.makeText(getApplicationContext(),"rec", Toast.LENGTH_SHORT).show();
+                        sortByPriceAsc = null;
+
+                        btnSortBy.setText("Recommended");
+                    }
+
                 }
 
+                filterList(searchView.getQuery().toString(), genderFilter,sortByPriceAsc,thirtyDaysAgo);
+                btnGender.setText(genderFilter);
+
+
+
+                dialog.dismiss();
             }
         },genderFilter);
         return sortByAdapter;
