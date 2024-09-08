@@ -18,6 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
+
+        <activity
+            android:name=".Views.BroadcastReceiver.BtnBroadcastReciverActivity"
+            android:exported="false" />
         <activity
             android:name=".Views.Orders.OrderDetailsActivity"
             android:exported="false" />
@@ -118,7 +122,12 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
+        <receiver android:name=".Views.BroadcastReceiver.OrderChangeReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="ORDER_STATUS_CHANGED" />
+            </intent-filter>
+        </receiver>
         <meta-data
             android:name="com.google.android.gms.client_id"
             android:value="@string/default_web_client_id" />

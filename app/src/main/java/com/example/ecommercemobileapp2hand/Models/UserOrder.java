@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 public class UserOrder implements Serializable {
     private int user_order_id;
+    private String user_id;
     private int user_address_id;
     private BigDecimal total_price;
     private int order_status_id;
@@ -13,12 +14,21 @@ public class UserOrder implements Serializable {
     public UserOrder() {
     }
 
-    public UserOrder(int user_order_id, int user_address_id, BigDecimal total_price, int order_status_id, String created_at) {
+    public UserOrder(int user_order_id,String user_id, int user_address_id, BigDecimal total_price, int order_status_id, String created_at) {
         this.user_order_id = user_order_id;
+        this.user_id=user_id;
         this.user_address_id = user_address_id;
         this.total_price = total_price;
         this.order_status_id = order_status_id;
         this.created_at = created_at;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public int getUser_order_id() {
