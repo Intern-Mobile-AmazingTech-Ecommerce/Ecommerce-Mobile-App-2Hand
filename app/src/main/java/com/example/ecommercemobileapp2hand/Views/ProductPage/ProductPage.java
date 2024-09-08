@@ -158,14 +158,13 @@ public class ProductPage extends AppCompatActivity {
         quantity = 1;
         tvQuantity.setText(String.valueOf(quantity));
         curr.setFavorite(false);
-        if (!curr.getSale_price().equals(0)) {
+        if (curr.getSale_price().compareTo(BigDecimal.ZERO) != 0) {
             tvTotalPrice.setText("$" + String.valueOf(curr.getSale_price().toString()));
             productPrice = curr.getSale_price();
         } else {
             tvTotalPrice.setText("$" + String.valueOf(product.getBase_price().toString()));
             productPrice = product.getBase_price();
         }
-
         tvSize.setText(curr.getSizeArrayList() != null ? curr.getSizeArrayList().get(0).getSize().getSize_name() : "None");
         //Size
         int totalStockOfSize = curr.getSizeArrayList() != null ? curr.getSizeArrayList().stream().mapToInt(ProductDetailsSize::getStock).sum() : 0;
