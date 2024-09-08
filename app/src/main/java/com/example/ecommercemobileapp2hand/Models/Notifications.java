@@ -10,16 +10,26 @@ public class Notifications implements Serializable {
     private int notifications_id;
     private String notifications_content;
     private String created_at;
+    private String user_id;
     private boolean viewed;
     public Notifications(){
 
     }
 
-    public Notifications(int notifications_id, String notifications_content, String created_at, boolean viewed) {
+    public Notifications(int notifications_id, String notifications_content, String created_at,String user_id, boolean viewed) {
         this.notifications_id = notifications_id;
         this.notifications_content = notifications_content;
         this.created_at = created_at;
+        this.user_id=user_id;
         this.viewed = viewed;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public int getNotifications_id() {

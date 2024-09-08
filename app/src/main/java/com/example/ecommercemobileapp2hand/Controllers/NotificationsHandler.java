@@ -31,6 +31,7 @@ public class NotificationsHandler {
                     notification.setNotifications_id(rs.getInt("notifications_id"));
                     notification.setNotifications_content(rs.getString("notifications_content"));
                     notification.setCreated_at(rs.getString("created_at"));
+                    notification.setUser_id(rs.getString("user_id"));
                     notification.setViewed(rs.getBoolean("viewed"));
                     notificationsList.add(notification);
                 }
@@ -66,6 +67,29 @@ public class NotificationsHandler {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void saveNotification(Notifications notification) {
+        Connection conn = null;
+        Statement stmt = null;
+
+        try {
+            conn = new DBConnect().connectionClass();
+            if (conn != null) {
+                String query = "INSERT INTO notifications (notifications_content, created_at, user_id, viewed) " +
+                        "VALUES ('" + notification.getNotifications_content() + "', '" + notification.getCreated_at() + "', '" + notification.getUser_id() + "', " + (notification.isViewed() ? 1 : 0) + ")";
+                stmt = conn.createStatement();
+                stmt.executeUpdate(query);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         } finally {
             try {
                 if (stmt != null) stmt.close();
