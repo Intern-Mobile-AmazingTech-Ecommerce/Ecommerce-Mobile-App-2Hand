@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -28,6 +29,16 @@ public class ProductDetails implements Parcelable {
     private ArrayList<ProductDetailsImg> imgDetailsArrayList;
     @JsonProperty("product_details_size_array")
     private ArrayList<ProductDetailsSize> sizeArrayList;
+    private Boolean isFavorite;
+
+    public Boolean getFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(Boolean favorite) {
+        isFavorite = favorite;
+    }
+
     public ProductDetails() {
     }
 
@@ -47,23 +58,9 @@ public class ProductDetails implements Parcelable {
         product_id = in.readInt();
         productColor = in.readParcelable(ProductColor.class.getClassLoader());
         description = in.readString();
+        sale_price = BigDecimal.valueOf(in.readDouble());
         imgDetailsArrayList = in.createTypedArrayList(ProductDetailsImg.CREATOR);
         sizeArrayList = in.createTypedArrayList(ProductDetailsSize.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(product_details_id);
-        dest.writeInt(product_id);
-        dest.writeParcelable(productColor, flags);
-        dest.writeString(description);
-        dest.writeTypedList(imgDetailsArrayList);
-        dest.writeTypedList(sizeArrayList);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<ProductDetails> CREATOR = new Creator<ProductDetails>() {
@@ -160,6 +157,19 @@ public class ProductDetails implements Parcelable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeInt(product_details_id);
+        dest.writeInt(product_id);
+        dest.writeParcelable(productColor, flags);
+        dest.writeString(description);
+        dest.writeDouble(sale_price != null ? sale_price.doubleValue() : 0.00);
+        dest.writeTypedList(imgDetailsArrayList);
+        dest.writeTypedList(sizeArrayList);
+    }
 }

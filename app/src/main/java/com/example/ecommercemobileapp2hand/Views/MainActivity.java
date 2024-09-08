@@ -201,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.gender_overlay, null);
-        bottomSheetDialog.setContentView(dialogView);
 
+        bottomSheetDialog.setContentView(dialogView);
         TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
         overlayTitle.setText(type);
         ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
@@ -231,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
 //                FragmentManager fragmentManager = getSupportFragmentManager();
 //                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
                 if (isSaved) {
-                    App.getCache().invalidateAll();
                    LoadFragment(new HomeFragment());
                 }
                 bottomSheetDialog.dismiss();

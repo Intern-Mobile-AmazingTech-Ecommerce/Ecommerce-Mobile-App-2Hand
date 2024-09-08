@@ -28,9 +28,14 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CategoryProductActivity extends AppCompatActivity {
-    private static ProductCategory Category;
+    private ExecutorService service = Executors.newCachedThreadPool();
+    private ProductCategory Category;
     private ImageView imgBack;
     private TextView tvCategoryName;
     private RecyclerView recyCategoryProduct;
@@ -53,35 +58,43 @@ public class CategoryProductActivity extends AppCompatActivity {
         });
 
         addcontrols();
-        getBundleIntent();
-
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        getBundleIntent();
         getGenderKey();
         loadRecycleCategoryProduct();
         addEvents();
     }
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
 
     private void getBundleIntent() {
         Intent intent = getIntent();
-        Category = null;
+        Category = new ProductCategory();
         topSellingList = new ArrayList<>();
         newInList = new ArrayList<>();
-        if(intent.getParcelableExtra("Category")!=null){
-            Category =intent.getParcelableExtra("Category");
+        if (intent.getParcelableExtra("Category") != null) {
+            Category = intent.getParcelableExtra("Category");
 //            genderTextView = intent.getStringExtra("Gender");
-        }else
-            if(intent.getParcelableArrayListExtra("TopSellingList")!=null){
-
+        } else if (intent.getParcelableArrayListExtra("TopSellingList") != null) {
             topSellingList = intent.getParcelableArrayListExtra("TopSellingList");
-        }else if(intent.getParcelableArrayListExtra("NewInList")!=null){
+        } else if (intent.getParcelableArrayListExtra("NewInList") != null) {
 
             newInList = intent.getParcelableArrayListExtra("NewInList");
         }
@@ -95,19 +108,32 @@ public class CategoryProductActivity extends AppCompatActivity {
 
 
     }
+
     private void loadRecycleCategoryProduct() {
 
-        if(Category!=null){
-            lstPro = ProductHandler.getDataByObjectNameAndCategoryID(gender, Category.getProduct_category_id());
-            proAdapter = new ProductCardAdapter(lstPro, CategoryProductActivity.this);
-            tvCategoryName.setText(Category.getProduct_category_name()+" ("+lstPro.size()+")");
-        }else if(topSellingList.size() > 0){
-            proAdapter = new ProductCardAdapter(topSellingList, CategoryProductActivity.this);
-            tvCategoryName.setText("Top Selling ("+topSellingList.size()+")");
 
-        }else if(newInList.size() >0){
+        if (Category != null) {
+            service.execute(() -> {
+                lstPro = ProductHandler.getDataByObjectNameAndCategoryID(gender, Category.getProduct_category_id());
+                runOnUiThread(() -> {
+                    if (lstPro != null && !lstPro.isEmpty()) {
+                        proAdapter = new ProductCardAdapter(lstPro, CategoryProductActivity.this);
+                        tvCategoryName.setText(Category.getProduct_category_name() + " (" + lstPro.size() + ")");
+                        recyCategoryProduct.setLayoutManager(new GridLayoutManager(this, 2));
+                        recyCategoryProduct.setItemAnimator(new DefaultItemAnimator());
+                        recyCategoryProduct.setAdapter(proAdapter);
+                    }
+
+                });
+            });
+
+        } else if (topSellingList.size() > 0) {
+            proAdapter = new ProductCardAdapter(topSellingList, CategoryProductActivity.this);
+            tvCategoryName.setText("Top Selling (" + topSellingList.size() + ")");
+
+        } else if (newInList.size() > 0) {
             proAdapter = new ProductCardAdapter(newInList, CategoryProductActivity.this);
-            tvCategoryName.setText("New In ("+newInList.size()+")");
+            tvCategoryName.setText("New In (" + newInList.size() + ")");
         }
         recyCategoryProduct.setLayoutManager(new GridLayoutManager(this, 2));
         recyCategoryProduct.setItemAnimator(new DefaultItemAnimator());
@@ -123,10 +149,11 @@ public class CategoryProductActivity extends AppCompatActivity {
             }
         });
     }
-    private void getGenderKey(){
-        sharedPreferences = getSharedPreferences("my_userID",Context.MODE_PRIVATE);
-        gender = sharedPreferences.getString("gender_key","");
-        if(gender.isEmpty()){
+
+    private void getGenderKey() {
+        sharedPreferences = getSharedPreferences("my_userID", Context.MODE_PRIVATE);
+        gender = sharedPreferences.getString("gender_key", "");
+        if (gender.isEmpty()) {
             gender = "Men";
         }
     }

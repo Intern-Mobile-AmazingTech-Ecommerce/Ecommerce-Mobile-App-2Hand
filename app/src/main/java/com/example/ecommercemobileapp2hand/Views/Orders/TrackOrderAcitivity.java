@@ -26,9 +26,13 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.TrackOrderAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class TrackOrderAcitivity extends AppCompatActivity {
-
+    private ExecutorService service = Executors.newCachedThreadPool();
     ImageView img_Back;
     RecyclerView recy_status;
     TextView tv_orderid, tv_amount_order, tv_viewall, tv_shippingdetails;
@@ -36,6 +40,7 @@ public class TrackOrderAcitivity extends AppCompatActivity {
     UserOrder order;
     UserAccount userAccount;
     TrackOrderAdapter trackOrderAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +51,55 @@ public class TrackOrderAcitivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        getIt();
+
         addcontrols();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getIt();
+        loadOrderStatus();
         addevents();
     }
-    void addcontrols()
-    {
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+    private void loadOrderStatus() {
+        service.execute(() -> {
+            orderStatuses = OrderStatusHandler.getData1();
+            runOnUiThread(() -> {
+                if (orderStatuses != null && !orderStatuses.isEmpty()) {
+                    Collections.reverse(orderStatuses);
+
+                    trackOrderAdapter = new TrackOrderAdapter(orderStatuses, TrackOrderAcitivity.this, order);
+
+                    recy_status.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+                    recy_status.setItemAnimator(new DefaultItemAnimator());
+
+                    recy_status.setAdapter(trackOrderAdapter);
+                }
+
+            });
+        });
+
+
+    }
+
+    private void addcontrols() {
         img_Back = findViewById(R.id.imgBack);
         recy_status = findViewById(R.id.recy_status);
         tv_orderid = findViewById(R.id.tv_orderid);
@@ -71,19 +119,9 @@ public class TrackOrderAcitivity extends AppCompatActivity {
 //            }
 //        }
         tv_shippingdetails.setText(s1);
-
-        orderStatuses = OrderStatusHandler.getData1();
-        Collections.reverse(orderStatuses);
-
-        trackOrderAdapter = new TrackOrderAdapter(orderStatuses, TrackOrderAcitivity.this, order);
-
-        recy_status.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recy_status.setItemAnimator(new DefaultItemAnimator());
-
-        recy_status.setAdapter(trackOrderAdapter);
     }
-    void addevents()
-    {
+
+    void addevents() {
         img_Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,8 +137,8 @@ public class TrackOrderAcitivity extends AppCompatActivity {
             }
         });
     }
-    void getIt()
-    {
+
+    void getIt() {
         Intent intent = getIntent();
         userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
         order = (UserOrder) intent.getSerializableExtra("order");

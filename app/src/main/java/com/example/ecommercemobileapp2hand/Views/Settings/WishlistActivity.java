@@ -20,8 +20,12 @@ import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.WishListAdapter;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class WishlistActivity extends AppCompatActivity {
+    private ExecutorService service = Executors.newCachedThreadPool();
     RecyclerView rv_wishlist;
     ImageView btnBack;
     private WishListAdapter wishListAdapter;
@@ -38,10 +42,29 @@ public class WishlistActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        getIt();
         addControl();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getIt();
         addEvent();
         loadRecycleViewCategories();
+    }
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
     }
     private void addControl(){
         rv_wishlist = findViewById(R.id.rv_wishlist);
@@ -65,11 +88,17 @@ public class WishlistActivity extends AppCompatActivity {
     }
 
     private void loadRecycleViewCategories(){
-        wishListAdapter = new WishListAdapter(WishlistActivity.this, WishlistHandler.getWishListByUserID(1), userAccount);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(WishlistActivity.this,RecyclerView.VERTICAL,false);
-        rv_wishlist.setLayoutManager(layoutManager);
+        service.execute(()->{
+            wishList = WishlistHandler.getWishListByUserID(1);
+            runOnUiThread(()->{
+                wishListAdapter = new WishListAdapter(WishlistActivity.this, wishList, userAccount);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(WishlistActivity.this,RecyclerView.VERTICAL,false);
+                rv_wishlist.setLayoutManager(layoutManager);
 
-        rv_wishlist.setAdapter(wishListAdapter);
+                rv_wishlist.setAdapter(wishListAdapter);
+            });
+        });
+
     }
     private void getIt()
     {
