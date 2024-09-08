@@ -3,6 +3,7 @@
     <style name="Base.Theme.EcommerceMobileApp2Hand" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="strokeColor">#1d182a</item>
     </style>
     <!-- Darkmode -->
     <style name="SCREEN">
@@ -228,6 +229,11 @@
         <item name="android:background">@drawable/circle</item>
         <item name="android:backgroundTint">@color/Bg_Dark_2</item>
         <item name="android:src">@drawable/white_heart</item>
+    </style>
+    <style name="isFavorite">
+        <item name="android:background">@drawable/circle</item>
+        <item name="android:backgroundTint">@color/Bg_Dark_2</item>
+        <item name="android:src">@drawable/red_heart</item>
     </style>
     <style name="caret_down">
         <item name="android:src">@drawable/arrowdown_white</item>

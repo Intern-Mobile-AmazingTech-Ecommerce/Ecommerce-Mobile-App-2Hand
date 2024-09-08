@@ -22,14 +22,20 @@ import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.OrderDetailsAdapter;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class OrderDetailsActivity extends AppCompatActivity {
+    private ExecutorService service = Executors.newCachedThreadPool();
     private ImageView imgBack;
     private RecyclerView recy_orderdetails;
     private TextView tvtotal_price;
     private UserOrder order;
     private ArrayList<UserOrderProducts> lst;
     private OrderDetailsAdapter orderDetailsAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,26 +48,54 @@ public class OrderDetailsActivity extends AppCompatActivity {
         });
         getIt();
         addControls();
-        addEvents();
+
     }
-    private void addControls()
-    {
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadUserOrderProduct();
+        addEvents();
+
+    }
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+    private void loadUserOrderProduct() {
+        service.execute(() -> {
+            lst = UserOrderProductsHandler.getUserOrderProductsByOrderID(order.getUser_order_id());
+            runOnUiThread(() -> {
+                if (!lst.isEmpty() && lst != null) {
+                    orderDetailsAdapter = new OrderDetailsAdapter(lst, OrderDetailsActivity.this);
+                    recy_orderdetails.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+                    recy_orderdetails.setItemAnimator(new DefaultItemAnimator());
+                    recy_orderdetails.setAdapter(orderDetailsAdapter);
+                    tvtotal_price.setText("Total price: $" + String.valueOf(order.getTotal_price()));
+                }
+
+            });
+        });
+
+    }
+
+    private void addControls() {
         imgBack = findViewById(R.id.imgBack);
         recy_orderdetails = findViewById(R.id.recy_orderdetails);
         tvtotal_price = findViewById(R.id.tvtotal_price);
-
-        lst = UserOrderProductsHandler.getUserOrderProductsByOrderID(order.getUser_order_id());
-
-        orderDetailsAdapter = new OrderDetailsAdapter(lst, OrderDetailsActivity.this);
-        recy_orderdetails.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recy_orderdetails.setItemAnimator(new DefaultItemAnimator());
-
-        recy_orderdetails.setAdapter(orderDetailsAdapter);
-
-        tvtotal_price.setText("Total price: $" + String.valueOf(order.getTotal_price()));
     }
-    private void addEvents()
-    {
+
+    private void addEvents() {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,8 +103,8 @@ public class OrderDetailsActivity extends AppCompatActivity {
             }
         });
     }
-    void getIt()
-    {
+
+    void getIt() {
         Intent intent = getIntent();
         order = (UserOrder) intent.getSerializableExtra("Order");
     }

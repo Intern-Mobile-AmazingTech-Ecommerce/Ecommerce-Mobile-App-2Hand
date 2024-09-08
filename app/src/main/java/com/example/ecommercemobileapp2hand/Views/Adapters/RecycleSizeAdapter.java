@@ -45,23 +45,29 @@ public class RecycleSizeAdapter extends RecyclerView.Adapter<RecycleSizeAdapter.
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ProductDetailsSize size = sizes.get(position);
         holder.tvSize.setText(size.getSize().getSize_name());
-        if(size.getSize().getSize_name().contains(selectedSize.getSize().getSize_name())){
-            holder.checked.setVisibility(View.VISIBLE);
-            holder.checked.setImageResource(R.drawable.check_line);
-            holder.tvSize.setTextColor(Color.WHITE);
-            holder.linear_layout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
-        }else {
-            holder.checked.setVisibility(View.GONE);
-
-        }
-        holder.linear_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedSize = size;
-                listener.onSizeSelected(selectedSize);
-                notifyDataSetChanged();
+        if(size.getStock() != 0){
+            if(size.getSize().getSize_name().contains(selectedSize.getSize().getSize_name())){
+                holder.checked.setVisibility(View.VISIBLE);
+                holder.checked.setImageResource(R.drawable.check_line);
+                holder.tvSize.setTextColor(Color.WHITE);
+                holder.linear_layout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
+            }else {
+                holder.checked.setVisibility(View.GONE);
             }
-        });
+            holder.linear_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedSize = size;
+                    listener.onSizeSelected(selectedSize);
+                    notifyDataSetChanged();
+                }
+            });
+            holder.linear_layout.setClickable(true);
+        }else {
+            holder.linear_layout.setClickable(false);
+            holder.linear_layout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#BCBCBC")));
+        }
+
     }
 
     @Override

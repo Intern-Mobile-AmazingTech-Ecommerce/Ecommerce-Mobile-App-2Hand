@@ -13,12 +13,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.ProductPage.ProductPage;
+import com.example.ecommercemobileapp2hand.Views.Utils.ProductDiffCallBack;
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Picasso;
@@ -35,10 +37,11 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         this.lstPro = lstPro;
         this.context = context;
     }
-    public void setFilteredList(ArrayList<Product> filteredList)
-    {
-        this.lstPro = filteredList;
-        notifyDataSetChanged();
+    public void setFilteredList(ArrayList<Product> newProductList) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ProductDiffCallBack(this.lstPro,newProductList));
+        this.lstPro.clear();
+        this.lstPro.addAll(newProductList);
+        diffResult.dispatchUpdatesTo(this);
     }
     @NonNull
     @Override
