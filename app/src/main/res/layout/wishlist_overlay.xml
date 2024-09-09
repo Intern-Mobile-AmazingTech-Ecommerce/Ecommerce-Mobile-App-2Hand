@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/framelayoutWL"
+    style="@style/SCREEN"
+    android:layout_width="match_parent"
+    android:layout_height="700dp"
+    android:background="@drawable/rounded_border_popup_menu"
+    android:paddingHorizontal="24dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_border_popup_menu">
+
+        <RelativeLayout
+            android:id="@+id/title_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="14dp">
+
+            <TextView
+                android:id="@+id/overlay_title"
+                style="@style/TEXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:backgroundTint="#00000000"
+                android:gravity="top"
+                android:text="Add to wishlist"
+                android:textAppearance="@style/overlay_title"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_cancel"
+                style="@style/TEXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/circularstdmedium500"
+                android:text="Cancel"
+                android:textSize="14dp" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/btnNewWL"
+            style="@style/btn_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_container"
+            android:layout_centerHorizontal="true"
+            android:layout_marginVertical="14dp"
+            android:backgroundTint="#000000"
+            android:text="New wishlist"
+            android:textSize="20dp"
+            android:textColor="#FFFFFF" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recy_wl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btnDone"
+            android:layout_below="@id/btnNewWL"
+            android:layout_marginVertical="14dp" />
+
+        <Button
+            android:id="@+id/btnDone"
+            style="@style/btn_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginVertical="14dp"
+            android:backgroundTint="@color/purple"
+            android:text="Done" />
+
+    </RelativeLayout>
+</FrameLayout>
