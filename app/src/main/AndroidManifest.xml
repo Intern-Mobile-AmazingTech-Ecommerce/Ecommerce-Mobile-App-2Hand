@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".Views.App"
@@ -21,6 +22,9 @@
 
         <activity
             android:name=".Views.BroadcastReceiver.BtnBroadcastReciverActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.Settings.EditProfileActivity"
             android:exported="false" />
         <activity
             android:name=".Views.Orders.OrderDetailsActivity"

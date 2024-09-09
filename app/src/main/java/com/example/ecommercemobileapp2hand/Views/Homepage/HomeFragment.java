@@ -143,6 +143,20 @@ public class HomeFragment extends Fragment {
         loadCategoriesData();
         addEvent();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Nhận tt user từ Bundle
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            UserAccount userAccount = (UserAccount) bundle.getSerializable("UserAccount");
+            if (userAccount != null) {
+                String email = userAccount.getEmail();
+            }
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

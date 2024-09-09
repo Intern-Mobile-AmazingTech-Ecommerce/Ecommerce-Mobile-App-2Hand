@@ -24,6 +24,8 @@ import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Age;
 import com.example.ecommercemobileapp2hand.Views.Adapters.AgeAdapter;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,6 +39,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private Button btnFinish, btn_men, btn_women;
     private String gender = "Men";
     private String ageRange = "";
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +52,24 @@ public class OnboardingActivity extends AppCompatActivity {
             return insets;
         });
 
+        addControl();
+        addEvents();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        firebaseAuth = FirebaseAuth.getInstance();
+    }
+
+    public void addControl() {
         btn_men = findViewById(R.id.btn_men);
         btn_women = findViewById(R.id.btn_women);
         btnFinish = findViewById(R.id.btn_finish);
         spiAge = findViewById(R.id.spi_age);
+    }
 
+    public void addEvents() {
         btn_men.setBackgroundColor(Color.parseColor("#8E6CEF"));
 
         ageAdapter = new AgeAdapter(this, R.layout.age_selected, getList());
@@ -83,26 +99,43 @@ public class OnboardingActivity extends AppCompatActivity {
                 return;
             }
 
-            SharedPreferences  sharedPreferences = getSharedPreferences("my_userID",MODE_PRIVATE);
+            Intent intent = getIntent();
+            if (intent != null) {
+                String email = intent.getStringExtra("email");
+                String firstName = intent.getStringExtra("firstName");
+                String lastName = intent.getStringExtra("lastName");
+
+                UserAccountHandler.saveUserToDB(firstName, lastName, email, gender, ageRange);
+            }
+
+            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("gender_key", gender);
             editor.putString("age_range_key", ageRange);
+            editor.putBoolean("onboardingCompleted", true);
             editor.apply();
 
-            UserAccountHandler.updateUserDetails(getIntent().getStringExtra("email"), gender);
+            intent = new Intent(OnboardingActivity.this, MainActivity.class);
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                intent.putExtra("email", user.getEmail());
+                intent.putExtra("firstName", user.getDisplayName().split(" ")[0]);
+                intent.putExtra("lastName", user.getDisplayName().split(" ").length > 1 ? user.getDisplayName().split(" ")[1] : "");
+            }
 
-            startActivity(new Intent(OnboardingActivity.this, MainActivity.class));
+            startActivity(intent);
             finish();
         });
+
     }
 
     private List<Age> getList() {
         List<Age> list = new ArrayList<>();
         list.add(new Age("Age Range"));
-        list.add(new Age("6->10"));
-        list.add(new Age("11->15"));
-        list.add(new Age("16->20"));
-        list.add(new Age("21->30"));
+        list.add(new Age("6-10"));
+        list.add(new Age("11-15"));
+        list.add(new Age("16-20"));
+        list.add(new Age("21-30"));
         return list;
     }
 

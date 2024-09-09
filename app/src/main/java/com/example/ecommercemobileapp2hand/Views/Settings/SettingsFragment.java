@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 import com.example.ecommercemobileapp2hand.R;
@@ -33,7 +35,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class SettingsFragment extends Fragment {
-    private TextView tvUserName, tvEmail, tvPhoneNumber, tvSignOut;
+    private TextView tvUserName, tvEmail, tvPhoneNumber, tvSignOut, tvEdit;
     private TextView tvAddress, tvWishlist, tvPayment, tvHelp, tvSupport;
     private static final String TAG = "SettingsFragment";
     private FirebaseAuth firebaseAuth;
@@ -66,8 +68,8 @@ public class SettingsFragment extends Fragment {
             }
         }
 
-        fetchUserDataFromSharedPreferences();
-        fetchUserDataFromDatabase();
+        //fetchUserDataFromSharedPreferences();
+        fetchUserData();
 
         addEvent();
         return view;
@@ -84,6 +86,7 @@ public class SettingsFragment extends Fragment {
         tvPayment = view.findViewById(R.id.Payment);
         tvHelp = view.findViewById(R.id.Help);
         tvSupport = view.findViewById(R.id.Support);
+        tvEdit = view.findViewById(R.id.edit);
     }
 
     private void fetchUserDataFromFirebase() {
@@ -108,60 +111,39 @@ public class SettingsFragment extends Fragment {
         editor.apply();
     }
 
-    private void fetchUserDataFromSharedPreferences() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String userName = sharedPreferences.getString("userName", "Chưa có tên");
-        String userEmail = sharedPreferences.getString("userEmail", "Chưa có email");
-        String userPhone = sharedPreferences.getString("userPhone", "Chưa có số điện thoại");
+//    private void fetchUserDataFromSharedPreferences() {
+//        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+//        String userName = sharedPreferences.getString("userName", "Null");
+//        String userEmail = sharedPreferences.getString("userEmail", "Null");
+//        String userPhone = sharedPreferences.getString("userPhone", "Null");
+//
+//        tvUserName.setText(userName);
+//        tvEmail.setText(userEmail);
+//        tvPhoneNumber.setText(userPhone);
+//    }
 
-        tvUserName.setText(userName);
-        tvEmail.setText(userEmail);
-        tvPhoneNumber.setText(userPhone);
-    }
-
-    private void fetchUserDataFromDatabase() {
-        DBConnect dbConnect = new DBConnect();
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
+    private void fetchUserData() {
         String email = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                 .getString("userEmail", null);
 
-        try {
-            conn = dbConnect.connectionClass();
+        if (email != null) {
+            UserAccount userAccount = UserAccountHandler.getUserAccountByEmail(email);
 
-            if (conn != null) {
-                String query = "SELECT first_name, last_name, phone_number FROM user_account WHERE email = ?";
-                pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, email);
-                rs = pstmt.executeQuery();
+            if (userAccount != null) {
+                email = userAccount.getEmail();
+                String firstName = userAccount.getFirstName();
+                String lastName = userAccount.getLastName();
+                String phoneNumber = userAccount.getPhoneNumber();
 
-                if (rs.next()) {
-                    String firstName = rs.getString("first_name");
-                    String lastName = rs.getString("last_name");
-                    String phoneNumber = rs.getString("phone_number");
-
-                    String fullName = firstName + " " + lastName;
-                    tvUserName.setText(fullName);
-                    tvPhoneNumber.setText(phoneNumber != null ? phoneNumber : "Chưa có số điện thoại");
-                } else {
-                    Log.e(TAG, "Không tìm thấy người dùng với email: " + email);
-                }
+                tvEmail.setText(email);
+                String fullName = firstName + " " + lastName;
+                tvUserName.setText(fullName);
+                tvPhoneNumber.setText(phoneNumber != null ? phoneNumber : "Null");
             } else {
-                Log.e(TAG, "Kết nối cơ sở dữ liệu thất bại");
+                Log.e(TAG, "Không tìm thấy người dùng với email: " + email);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Log.e(TAG, "Lỗi khi truy vấn cơ sở dữ liệu: " + e.getMessage());
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        } else {
+            Log.e(TAG, "Email không hợp lệ.");
         }
     }
 
@@ -197,5 +179,29 @@ public class SettingsFragment extends Fragment {
             Intent intent = new Intent(getActivity(), PaymentActivity.class);
             startActivity(intent);
         });
+
+        tvEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+            intent.putExtra("firstName", tvUserName.getText().toString().split(" ")[0]);
+            intent.putExtra("lastName", tvUserName.getText().toString().split(" ")[1]);
+            intent.putExtra("phoneNumber", tvPhoneNumber.getText().toString());
+            intent.putExtra("email", tvEmail.getText().toString());
+            startActivityForResult(intent, 1);
+        });
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
+            String updatedFirstName = data.getStringExtra("updatedFirstName");
+            String updatedLastName = data.getStringExtra("updatedLastName");
+            String updatedPhoneNumber = data.getStringExtra("updatedPhoneNumber");
+
+            String fullName = updatedFirstName + " " + updatedLastName;
+            tvUserName.setText(fullName);
+            tvPhoneNumber.setText(updatedPhoneNumber);
+        }
+    }
+
 }

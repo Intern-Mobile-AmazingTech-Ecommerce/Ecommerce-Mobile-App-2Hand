@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -56,8 +57,8 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         createAccount();
         returnToSignIn();
         resetPassword();
@@ -148,9 +149,10 @@ public class SignUpActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    UserAccountHandler.saveUserToDB(firstName, lastName, email, encryptPassword(password));
                                     Intent intent = new Intent(SignUpActivity.this, OnboardingActivity.class);
                                     intent.putExtra("email", email);
+                                    intent.putExtra("firstName", firstName);
+                                    intent.putExtra("lastName", lastName);
                                     startActivity(intent);
                                     finish();
                                     Toast.makeText(SignUpActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
@@ -162,22 +164,6 @@ public class SignUpActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private String encryptPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(password.getBytes());
-            byte[] byteData = md.digest();
-            StringBuilder sb = new StringBuilder();
-            for (byte b : byteData) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     private void resetPassword() {

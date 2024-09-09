@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Views.Notifications;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.NotificationsHandler;
 import com.example.ecommercemobileapp2hand.Models.Notifications;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.NotificationsAdapter;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
@@ -49,6 +51,22 @@ public class NotificationsActivity extends AppCompatActivity {
         addControls();
         addEvents();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Nhận tt user
+        Intent intent = getIntent();
+        if (intent != null) {
+            String email = intent.getStringExtra("email");
+            // Lưu vào SharedPreferences
+            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("user_email", email);
+            editor.apply();
+        }
+    }
+
     void addControls()
     {
         linearLayoutListNotifi = (LinearLayout) findViewById(R.id.ListNotifi) ;
