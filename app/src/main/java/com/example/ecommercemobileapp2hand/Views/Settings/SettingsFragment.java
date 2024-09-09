@@ -117,5 +117,6 @@ public class SettingsFragment extends Fragment {
     private void addressOnClick() {
         tvAddress.setOnClickListener(view -> startActivity(new Intent(getActivity(), ListAddressActivity.class)));
         tvWishlist.setOnClickListener(v -> startActivity(new Intent(getActivity(), WishlistActivity.class)));
+        tvPayment.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddCardActivity.class)));
     }
 }
