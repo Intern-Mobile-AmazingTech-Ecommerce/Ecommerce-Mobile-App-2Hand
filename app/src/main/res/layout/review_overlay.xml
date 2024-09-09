@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="24dp"
+    style="@style/SCREEN"
+    android:background="@drawable/rounded_border_popup_menu"
+    >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/title_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="14dp">
+
+            <TextView
+                android:id="@+id/overlay_title"
+                style="@style/TEXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:backgroundTint="#00000000"
+                android:gravity="top"
+                android:text="Write a Review"
+                android:textAppearance="@style/overlay_title"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btn_close"
+                style="@style/btn_close"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#00000000"
+                android:clipToOutline="true" />
+
+            <TextView
+                android:id="@+id/subtitle"
+                style="@style/ordercard_tvamount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/overlay_title"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="14dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/circularstdmedium500"
+                android:text="Share your thoughts with the community" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/title_rating"
+            style="@style/TEXT"
+            android:layout_marginTop="14dp"
+            android:layout_below="@id/title_container"
+            android:fontFamily="@font/circularstdmedium500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Overall rating *"
+            android:layout_marginBottom="14dp"/>
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_rating"/>
+
+        <TextView
+            android:id="@+id/title_review"
+            style="@style/TEXT"
+            android:layout_marginTop="14dp"
+            android:layout_below="@id/ratingBar"
+            android:fontFamily="@font/circularstdmedium500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Review *"
+            android:layout_marginBottom="14dp"
+            />
+
+        <EditText
+            android:id="@+id/edt_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_review"
+            style="@style/address_param_box"
+            android:minLines="5"
+            android:gravity="top"
+            android:inputType="textMultiLine" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_below="@id/edt_review"
+            android:text="Submit"
+            style="@style/btn_continue"
+            android:backgroundTint="@color/purple"
+            android:layout_marginVertical="14dp"/>
+
+    </RelativeLayout>
+</FrameLayout>

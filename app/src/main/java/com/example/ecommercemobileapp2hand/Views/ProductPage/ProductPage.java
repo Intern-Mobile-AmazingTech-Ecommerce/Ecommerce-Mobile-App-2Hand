@@ -1,22 +1,30 @@
 package com.example.ecommercemobileapp2hand.Views.ProductPage;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +35,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,16 +46,20 @@ import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsImg;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsSize;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Adapters.GenderAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleProductImageAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleReviewAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleSizeAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecylerColorAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.SortByAdapter;
+import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
+import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -248,7 +261,10 @@ public class ProductPage extends AppCompatActivity {
             if (currentDetails.getFavorite() == false) {
                 btnFavorite.setImageResource(R.drawable.red_heart);
                 currentDetails.setFavorite(true);
-            } else {
+                showAddToWLOverlay();
+            }
+            else
+            {
                 int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
                 int bgResource;
                 if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
@@ -259,11 +275,15 @@ public class ProductPage extends AppCompatActivity {
 
                 btnFavorite.setImageResource(bgResource);
                 currentDetails.setFavorite(false);
+                showAddToWLOverlay();
             }
         });
 
-        btnAddToBag.setOnClickListener(v -> {
-
+        btnAddToBag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showReviewOverlay();
+            }
         });
     }
 
@@ -353,5 +373,98 @@ public class ProductPage extends AppCompatActivity {
 
     }
 
+    private void showReviewOverlay() {
+        View view = LayoutInflater.from(ProductPage.this).inflate(R.layout.review_overlay, null);
+
+        final Dialog dialog = new Dialog(ProductPage.this);
+        dialog.setContentView(view);
+
+        Window window = dialog.getWindow();
+        if (window == null)
+        {
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowattri = window.getAttributes();
+        windowattri.gravity = Gravity.BOTTOM;
+        window.setAttributes(windowattri);
+
+        RatingBar ratingBar = dialog.findViewById(R.id.ratingBar);
+        Button btnSubmit = dialog.findViewById(R.id.btnSubmit);
+        EditText edt_review = dialog.findViewById(R.id.edt_review);
+
+        ImageButton btnClose = dialog.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
+    private void showAddToWLOverlay() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        View parentLayout = (View) dialogView.getParent();
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(parentLayout);
+        behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO, true);
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        TextView tv_cancel;
+        Button btnNewWL, btnDone;
+        RecyclerView recyWL;
+
+        tv_cancel = dialogView.findViewById(R.id.tv_cancel);
+        btnNewWL = dialogView.findViewById(R.id.btnNewWL);
+        btnDone = dialogView.findViewById(R.id.btnDone);
+        recyWL = dialogView.findViewById(R.id.recy_wl);
+
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        btnNewWL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddWLOverlay();
+            }
+        });
+        bottomSheetDialog.show();
+
+    }
+
+    private void showAddWLOverlay() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.addwishlist_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        ImageButton btn_close;
+        EditText edtNameWL;
+        Button btnCreate;
+
+        btn_close = dialogView.findViewById(R.id.btn_close);
+        edtNameWL = dialogView.findViewById(R.id.edtNameWL);
+        btnCreate = dialogView.findViewById(R.id.btnCreate);
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        bottomSheetDialog.show();
+    }
 
 }

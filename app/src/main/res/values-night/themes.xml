@@ -185,6 +185,7 @@
         <item name="android:paddingBottom">17dp</item>
         <item name="android:background">@drawable/frame_52_dark</item>
         <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
     </style>
 
     <style name="icon_hearth">
