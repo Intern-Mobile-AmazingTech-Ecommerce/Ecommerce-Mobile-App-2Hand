@@ -65,9 +65,22 @@ public class OrdersFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        // Nhận tt user từ Bundle
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            UserAccount userAccount = (UserAccount) bundle.getSerializable("UserAccount");
+            if (userAccount != null) {
+                String email = userAccount.getEmail();
+            }
+        }
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_orders, container, false);
         addControl(view);
         return view;

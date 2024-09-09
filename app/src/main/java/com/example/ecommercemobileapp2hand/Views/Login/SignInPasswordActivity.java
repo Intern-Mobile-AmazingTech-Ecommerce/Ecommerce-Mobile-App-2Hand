@@ -23,6 +23,7 @@ import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SignInPasswordActivity extends AppCompatActivity {
 
@@ -87,6 +88,14 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
                                     editor.putBoolean(KEY_IS_LOGGED_IN, true);
                                     editor.apply();
+
+                                    //truyền thông tin user qua MainActivity
+                                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                                    if (user != null) {
+                                        intent.putExtra("email", user.getEmail());
+                                        intent.putExtra("displayName", user.getDisplayName());
+                                    }
+
                                     startActivity(intent);
                                     finish();
                                     Toast.makeText(SignInPasswordActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();

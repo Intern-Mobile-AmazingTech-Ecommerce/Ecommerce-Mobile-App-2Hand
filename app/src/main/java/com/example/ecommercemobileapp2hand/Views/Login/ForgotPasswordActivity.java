@@ -40,11 +40,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        initialUI();
         returnToSignInPassword();
     }
 
-    private void initialUI() {
+    @Override
+    protected void onStart() {
+        super.onStart();
         btnContinue_2 = findViewById(R.id.btnContinue_2);
         edtEmail = findViewById(R.id.edt_email_address);
         btnContinue_2.setOnClickListener(v -> {
@@ -58,6 +59,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
     }
+
     private boolean isValidEmail(String email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }

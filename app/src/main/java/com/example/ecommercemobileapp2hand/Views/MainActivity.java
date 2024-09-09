@@ -72,6 +72,23 @@ public class MainActivity extends AppCompatActivity {
         addControl();
         binding();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Nhận tt user từ Intent
+        Intent intent = getIntent();
+        if (intent != null) {
+            String email = intent.getStringExtra("email");
+            // Lưu vào sharedpreferences
+            sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("user_email", email);
+            editor.apply();
+        }
+    }
+
     private void getIt()
     {
         Intent intent = getIntent();
