@@ -30,7 +30,7 @@ public class ListAddressActivity extends AppCompatActivity {
     Connection connection;
     //
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {git pull origin main
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_list_address);
