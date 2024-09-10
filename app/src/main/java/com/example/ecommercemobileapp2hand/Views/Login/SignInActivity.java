@@ -19,6 +19,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.facebook.AccessToken;
@@ -168,9 +169,11 @@ public class SignInActivity extends AppCompatActivity {
         if (user != null) {
             String email = user.getEmail();
             if (email != null) {
+                UserAccount userAccount = UserAccountHandler.getUserAccount(email);
                 UserAccountHandler userAccountHandler = new UserAccountHandler();
                 boolean emailExists = userAccountHandler.checkEmailExists(email);
                 Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
+                intent.putExtra("UserAccount", userAccount);
                 intent.putExtra("email", email);
                 intent.putExtra("displayName", user.getDisplayName());
                 startActivity(intent);

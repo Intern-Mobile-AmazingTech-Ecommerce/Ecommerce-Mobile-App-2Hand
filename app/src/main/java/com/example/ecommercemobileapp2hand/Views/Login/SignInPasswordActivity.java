@@ -19,6 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
@@ -89,9 +90,11 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                     editor.putBoolean(KEY_IS_LOGGED_IN, true);
                                     editor.apply();
 
+                                    UserAccount userAccount = UserAccountHandler.getUserAccount(email);
                                     //truyền thông tin user qua MainActivity
                                     FirebaseUser user = firebaseAuth.getCurrentUser();
                                     if (user != null) {
+                                        intent.putExtra("UserAccount", userAccount);
                                         intent.putExtra("email", user.getEmail());
                                         intent.putExtra("displayName", user.getDisplayName());
                                         intent.putExtra("user_id",user.getUid());
