@@ -89,12 +89,11 @@ public class WishlistActivity extends AppCompatActivity {
 
     private void loadRecycleViewCategories(){
         service.execute(()->{
-            wishList = WishlistHandler.getWishListByUserID(1);
+            wishList = WishlistHandler.getWishListByUserID(userAccount.getUserId());
             runOnUiThread(()->{
                 wishListAdapter = new WishListAdapter(WishlistActivity.this, wishList, userAccount);
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(WishlistActivity.this,RecyclerView.VERTICAL,false);
                 rv_wishlist.setLayoutManager(layoutManager);
-
                 rv_wishlist.setAdapter(wishListAdapter);
             });
         });
