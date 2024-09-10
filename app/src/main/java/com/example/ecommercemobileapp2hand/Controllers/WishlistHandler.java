@@ -90,13 +90,13 @@ public class WishlistHandler {
 
         return list;
     }
-    public static ArrayList<Wishlist> getWishListByUserID(int userID){
+    public static ArrayList<Wishlist> getWishListByUserID(String userID){
         conn = dbConnect.connectionClass();
         ArrayList<Wishlist> list = new ArrayList<>();
         if(conn!=null){
             try{
                 CallableStatement cstmt = conn.prepareCall("call GetWishlist(?)");
-                cstmt.setInt(1, userID);
+                cstmt.setString(1, userID);
                 ResultSet rs = cstmt.executeQuery();
                 while (rs.next()){
                     Wishlist wishlist = new Wishlist();

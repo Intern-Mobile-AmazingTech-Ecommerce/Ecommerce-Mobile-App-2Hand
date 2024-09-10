@@ -278,11 +278,11 @@ public class SearchActivity extends AppCompatActivity {
                     Optional<BigDecimal> minSale = updatedFilterList.stream()
                             .flatMap(product -> product.getProductDetailsArrayList().stream())
                             .map(ProductDetails::getSale_price)
-                            .filter(Objects::nonNull)
+                            .filter(salePrice->salePrice.compareTo(BigDecimal.ZERO)!=0)
                             .min(Comparator.naturalOrder());
 
                     Optional<BigDecimal> minNotSale = updatedFilterList.stream()
-                            .filter(product -> product.getBase_price().compareTo(minSale.get()) <= 0)
+                            .filter(product -> product.getBase_price().compareTo(minSale.get()) <= 0 )
                             .map(Product::getBase_price)
                             .filter(Objects::nonNull)
                             .min(Comparator.naturalOrder());
@@ -297,18 +297,18 @@ public class SearchActivity extends AppCompatActivity {
                         updatedFilterList = updatedFilterList.stream()
                                 .filter(product -> product.getProductDetailsArrayList()
                                         .stream()
-                                        .anyMatch(productDetails -> productDetails.getSale_price() != null && productDetails.getSale_price().compareTo(minValue) <= 0))
+                                        .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO)!=0 && productDetails.getSale_price().compareTo(minValue) <= 0))
                                 .collect(Collectors.toCollection(ArrayList::new));
                     }
                 } else if (price.equals("Max")) {
                     Optional<BigDecimal> maxSale = updatedFilterList.stream()
                             .flatMap(product -> product.getProductDetailsArrayList().stream())
                             .map(ProductDetails::getSale_price)
-                            .filter(Objects::nonNull)
+                            .filter(salePrice->salePrice.compareTo(BigDecimal.ZERO)!=0)
                             .max(Comparator.naturalOrder());
 
                     Optional<BigDecimal> maxNotSale = updatedFilterList.stream()
-                            .filter(product -> product.getBase_price().compareTo(maxSale.get()) >= 0 && product.getProductDetailsArrayList().stream().anyMatch(productDetails -> productDetails.getSale_price() == null))
+                            .filter(product -> product.getBase_price().compareTo(maxSale.get()) >= 0 && product.getProductDetailsArrayList().stream().anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO)==0))
                             .map(Product::getBase_price)
                             .filter(Objects::nonNull)
                             .max(Comparator.naturalOrder());
@@ -323,7 +323,7 @@ public class SearchActivity extends AppCompatActivity {
                         updatedFilterList = updatedFilterList.stream()
                                 .filter(product -> product.getProductDetailsArrayList()
                                         .stream()
-                                        .anyMatch(productDetails -> productDetails.getSale_price() != null && productDetails.getSale_price().compareTo(maxValue) >= 0))
+                                        .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO)!=0 && productDetails.getSale_price().compareTo(maxValue) >= 0))
                                 .collect(Collectors.toCollection(ArrayList::new));
                     }
                 }
@@ -378,13 +378,9 @@ public class SearchActivity extends AppCompatActivity {
     private @NonNull SortByAdapter getSortByAdapter(String type, BottomSheetDialog dialog) {
         ArrayList<String> sortByArr = getStrings(type);
 
-
-
         SortByAdapter sortByAdapter = new SortByAdapter(sortByArr, getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
             @Override
             public void onSortBySelected(String selectedSortBy) {
-
-
                 //Add filter function
                 if (type.contains("Gender")) {
                     if(!filterChangedGender){
