@@ -94,6 +94,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                     if (user != null) {
                                         intent.putExtra("email", user.getEmail());
                                         intent.putExtra("displayName", user.getDisplayName());
+                                        intent.putExtra("user_id",user.getUid());
                                     }
 
                                     startActivity(intent);
