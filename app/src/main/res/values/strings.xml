@@ -13,6 +13,7 @@
     <string name="wishlist_title">My Favourite</string>
     //google
     <string name="default_web_client_id">100988898087-b7dg3l4c94d6rvufbuam29cjj5kntgto.apps.googleusercontent.com</string>
+    <string name="default_notification_channel_id">default_channel</string>
 
     //facebook
     <string name="facebook_app_id">8502098026491690</string>

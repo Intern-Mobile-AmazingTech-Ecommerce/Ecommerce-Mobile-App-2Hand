@@ -34,7 +34,7 @@ public class NotificationDetailFragment extends Fragment {
     private RecyclerView recyclerViewNotifications;
     private NotificationsAdapter adapter;
     private List<Notifications> notificationsList;
-    private int currentUserId ;
+    private String userId ;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
