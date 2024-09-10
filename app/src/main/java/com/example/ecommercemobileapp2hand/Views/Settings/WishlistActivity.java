@@ -91,7 +91,7 @@ public class WishlistActivity extends AppCompatActivity {
         service.execute(()->{
             wishList = WishlistHandler.getWishListByUserID(userAccount.getUserId());
             runOnUiThread(()->{
-                wishListAdapter = new WishListAdapter(WishlistActivity.this, wishList, userAccount);
+                wishListAdapter = new WishListAdapter(WishlistActivity.this, wishList);
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(WishlistActivity.this,RecyclerView.VERTICAL,false);
                 rv_wishlist.setLayoutManager(layoutManager);
                 rv_wishlist.setAdapter(wishListAdapter);

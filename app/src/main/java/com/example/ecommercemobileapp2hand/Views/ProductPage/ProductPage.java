@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -39,12 +40,16 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Reviews;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductColor;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsImg;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsSize;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.GenderAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleProductImageAdapter;
@@ -52,6 +57,7 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleReviewAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleSizeAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecylerColorAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.SortByAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.WishListAdapter;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -68,7 +74,7 @@ import java.util.stream.Collectors;
 
 public class ProductPage extends AppCompatActivity {
     private ExecutorService service = Executors.newCachedThreadPool();
-
+    private UserAccount userAccount;
     private Product product;
     //Current
     private ProductDetails currentDetails;
@@ -118,11 +124,19 @@ public class ProductPage extends AppCompatActivity {
         }
         currentSize = currentDetails.getSizeArrayList() != null ? currentDetails.getSizeArrayList().get(0) : new ProductDetailsSize();
         colorList = product.getProductDetailsArrayList().stream().map(productDetails -> productDetails.getProductColor()).distinct().collect(Collectors.toCollection(ArrayList::new));
-    }
 
+    }
+    private void getUserAccount(){
+        service.execute(()->{
+            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs",MODE_PRIVATE);
+            String email = sharedPreferences.getString("userEmail","");
+            userAccount = UserAccountHandler.getUserAccountByEmail(email);
+        });
+    }
     @Override
     protected void onResume() {
         super.onResume();
+        getUserAccount();
         getBundleIntent();
         loadListViewReviews();
         addEvent();
@@ -427,24 +441,40 @@ public class ProductPage extends AppCompatActivity {
         btnNewWL = dialogView.findViewById(R.id.btnNewWL);
         btnDone = dialogView.findViewById(R.id.btnDone);
         recyWL = dialogView.findViewById(R.id.recy_wl);
+        ExecutorService loadingWishlist = Executors.newSingleThreadExecutor();
+        loadingWishlist.execute(()->{
+            ArrayList<Wishlist> wishlists = WishlistHandler.getWishListByUserID(userAccount.getUserId());
+            runOnUiThread(()->{
+                WishListAdapter wishListAdapter = new WishListAdapter(ProductPage.this,wishlists,currentDetails.getProduct_details_id());
+                recyWL.setLayoutManager(new LinearLayoutManager(ProductPage.this,LinearLayoutManager.VERTICAL,false));
+                recyWL.setAdapter(wishListAdapter);
+            });
+        });
 
         tv_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadingWishlist.shutdown();
                 bottomSheetDialog.dismiss();
             }
         });
         btnNewWL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddWLOverlay();
+                showAddWLOverlay(()->{
+                    loadingWishlist.execute(()->{
+                        ArrayList<Wishlist> updatedWishlists = WishlistHandler.getWishListByUserID(userAccount.getUserId());
+                        runOnUiThread(() -> {
+                            WishListAdapter updatedWishListAdapter = new WishListAdapter(ProductPage.this, updatedWishlists, currentDetails.getProduct_details_id());
+                            recyWL.setAdapter(updatedWishListAdapter);
+                        });
+                    });
+                });
             }
         });
         bottomSheetDialog.show();
-
     }
-
-    private void showAddWLOverlay() {
+    private void showAddWLOverlay(Runnable onDismissCallback) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.addwishlist_overlay, null);
@@ -457,10 +487,40 @@ public class ProductPage extends AppCompatActivity {
         btn_close = dialogView.findViewById(R.id.btn_close);
         edtNameWL = dialogView.findViewById(R.id.edtNameWL);
         btnCreate = dialogView.findViewById(R.id.btnCreate);
+        ExecutorService insertWishlist = Executors.newSingleThreadExecutor();
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(edtNameWL.getText().length() > 0){
 
+                    insertWishlist.execute(()->{
+                        boolean result = WishlistHandler.addNewWishlist(userAccount.getUserId(),edtNameWL.getText().toString());
+                        runOnUiThread(()->{
+                            if(result){
+                                Toast.makeText(getApplicationContext(),"New Wishlist added Successfully",Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(getApplicationContext(),"New Wishlist added Failed",Toast.LENGTH_SHORT).show();
+                            }
+                            if (onDismissCallback != null) {
+                                onDismissCallback.run();
+                            }
+                        });
+                    });
+
+                }else {
+                    if (onDismissCallback != null) {
+                        onDismissCallback.run();
+                    }
+                }
+                insertWishlist.shutdown();
+                bottomSheetDialog.dismiss();
+
+            }
+        });
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                insertWishlist.shutdown();
                 bottomSheetDialog.dismiss();
             }
         });

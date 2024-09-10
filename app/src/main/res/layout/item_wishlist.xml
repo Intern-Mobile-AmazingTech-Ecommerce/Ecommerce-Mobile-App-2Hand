@@ -51,7 +51,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+    <CheckBox
+        android:visibility="gone"
+        android:id="@+id/cbAdded"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="309dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="9dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:checked="true"
+        />
     <ImageView
         android:id="@+id/icon_arrow_right"
         style="@style/icon_arrow_right"

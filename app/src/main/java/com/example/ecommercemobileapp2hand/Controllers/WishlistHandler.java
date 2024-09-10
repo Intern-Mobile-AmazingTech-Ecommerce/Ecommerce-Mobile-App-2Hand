@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -95,17 +96,16 @@ public class WishlistHandler {
         ArrayList<Wishlist> list = new ArrayList<>();
         if(conn!=null){
             try{
-                CallableStatement cstmt = conn.prepareCall("call GetWishlist(?)");
+                CallableStatement cstmt = conn.prepareCall("call getWishListByUserID(?)");
                 cstmt.setString(1, userID);
                 ResultSet rs = cstmt.executeQuery();
                 while (rs.next()){
                     Wishlist wishlist = new Wishlist();
                     wishlist.setWishlist_id(rs.getInt(1));
                     wishlist.setWishlist_name(rs.getString(2));
-                    wishlist.setWishlist_quantity((rs.getInt(3)));
+                    wishlist.setWishlist_quantity(rs.getInt(3));
                     list.add(wishlist);
                 }
-
             }catch (SQLException e){
                 throw new RuntimeException(e);
             }finally {
@@ -118,5 +118,27 @@ public class WishlistHandler {
         }
 
         return list;
+    }
+    public static Boolean addNewWishlist(String UserID,String wishListName){
+        conn = dbConnect.connectionClass();
+        try{
+            if(conn != null){
+                String sql = "Insert Into wishlist VALUES (?,?)";
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setString(1,UserID);
+                preparedStatement.setString(2,wishListName);
+                int result =preparedStatement.executeUpdate();
+                return result > 0;
+            }
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            try{
+                conn.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

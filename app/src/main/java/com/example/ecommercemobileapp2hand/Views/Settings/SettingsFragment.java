@@ -67,10 +67,8 @@ public class SettingsFragment extends Fragment {
                 fetchUserDataFromFirebase();
             }
         }
-
         //fetchUserDataFromSharedPreferences();
         fetchUserData();
-
         addEvent();
         return view;
     }

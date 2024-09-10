@@ -493,7 +493,6 @@ public class SearchActivity extends AppCompatActivity {
                     thirtyDaysAgo = LocalDateTime.MIN;
                     filterChangeSortBy=false;
                 }
-
                 //
                 if(numberFilter>0) {
                     numberFilter -= 1;

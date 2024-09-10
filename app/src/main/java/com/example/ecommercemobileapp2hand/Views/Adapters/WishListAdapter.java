@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,13 +22,16 @@ import java.util.List;
 public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.WishlistViewHolder>{
     private List<Wishlist> wishlistItems;
     private Context context;
-    private UserAccount userAccount;
-    public WishListAdapter(Context context,List<Wishlist> wishlistItems, UserAccount userAccount) {
+    private int is_product_added;
+    public WishListAdapter(Context context,List<Wishlist> wishlistItems) {
         this.wishlistItems = wishlistItems;
         this.context = context;
-        this.userAccount = userAccount;
     }
-
+    public WishListAdapter(Context context,List<Wishlist> wishlistItems,int product_details_id) {
+        this.wishlistItems = wishlistItems;
+        this.context = context;
+        this.is_product_added = product_details_id;
+    }
     @Override
     public WishlistViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wishlist, parent, false);
@@ -43,11 +47,18 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, WishlistDetail.class);
-                intent.putExtra("UserAccount", (CharSequence) userAccount);
                 intent.putExtra("wishlistID",item.getWishlist_id());
                 context.startActivity(intent);
             }
         });
+        if(is_product_added != -1){
+            holder.iconArrowRight.setVisibility(View.GONE);
+            holder.cbAdded.setVisibility(View.VISIBLE);
+        }else {
+            holder.iconArrowRight.setVisibility(View.VISIBLE);
+            holder.cbAdded.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -62,8 +73,10 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
         ImageView iconHearth;
         ImageView iconArrowRight;
         ConstraintLayout wishListItem;
+        CheckBox cbAdded;
         public WishlistViewHolder(View itemView) {
             super(itemView);
+            cbAdded = itemView.findViewById(R.id.cbAdded);
             tvNameWish = itemView.findViewById(R.id.tv_name_wish);
             tvQuantity = itemView.findViewById(R.id.tv_quantity);
             iconHearth = itemView.findViewById(R.id.icon_hearth);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -12,11 +13,14 @@ import android.util.Log;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.ecommercemobileapp2hand.Models.config.CloudinaryConfig;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.Map;
 
 public class Util {
     public static Bitmap blur(Context context, Bitmap image) {
@@ -73,5 +77,21 @@ public class Util {
                 .generate(publicId);
         url = url.replace("http://", "https://");
         return url;
+    }
+    public static Map uploadImage(String imgPath){
+        try{
+            Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
+            Map options = ObjectUtils.asMap(
+                    "use_filename",true,
+                    "use_filename_as_display_name",true,
+                    "folder","EcommerceApp",
+                    "unique_filename",true
+            );
+            File file = new File(imgPath);
+            cloudinary.uploader().upload(file,options);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 }

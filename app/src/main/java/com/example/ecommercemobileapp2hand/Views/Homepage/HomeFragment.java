@@ -175,13 +175,13 @@ public class HomeFragment extends Fragment {
     private void loadListPro(String gen) {
         service.execute(() -> {
             lstPro = ProductHandler.getDataByObjectName(gen);
-            getActivity().runOnUiThread(()->{
+            getActivity().runOnUiThread(() -> {
                 loadTopSellingProductsData();
                 loadNewInProductsData();
             });
         });
-
     }
+
 
     private void addControl(View view) {
 
@@ -199,7 +199,6 @@ public class HomeFragment extends Fragment {
             categoryList = CategoriesHandler.getData();
             getActivity().runOnUiThread(() -> {
                 if (!categoryList.isEmpty() && categoryList != null) {
-
                     ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
                     categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
                     recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
