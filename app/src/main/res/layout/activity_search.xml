@@ -27,7 +27,6 @@
                 android:layout_height="40dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-
                 android:padding="12dp" />
 
             <androidx.appcompat.widget.SearchView
@@ -53,26 +52,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <ScrollView
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="horizontal"
+                android:scrollbars="none"
                 >
                 <LinearLayout
                     android:id="@+id/layoutFilter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="10dp"
+                    android:orientation="horizontal"
                     >
 
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/filter"
-                        android:layout_width="43dp"
+                        android:layout_width="50dp"
                         android:layout_height="27dp"
                         android:drawablePadding="4dp"
                         android:paddingHorizontal="8dp"
-                        android:text="2"
+                        android:text="0"
                         android:textColor="@color/white"
                         android:background="@drawable/frame_40"
                         android:drawableStart="@drawable/filter"
@@ -82,7 +82,7 @@
                         android:id="@+id/btnDeals"
                         android:layout_width="59dp"
                         android:layout_height="27dp"
-                        android:text="On Sale"
+                        android:text="Deals"
                         android:textAllCaps="false"
                         android:textSize="12sp"
                         android:lineHeight="19sp"
@@ -127,13 +127,13 @@
                         android:drawableEnd="@drawable/arrowdown_white"
                         android:fontFamily="@font/circularstdmedium500"
                         android:lineHeight="19sp"
-                        android:text="Women"
+                        android:text="Gender"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="12sp"
                         />
                 </LinearLayout>
-            </ScrollView>
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/tvResult"

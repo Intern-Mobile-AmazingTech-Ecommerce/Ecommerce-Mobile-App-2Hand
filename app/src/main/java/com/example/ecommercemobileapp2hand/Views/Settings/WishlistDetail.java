@@ -21,13 +21,17 @@ import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class WishlistDetail extends AppCompatActivity {
-    ProductCardAdapter adapter;
-    RecyclerView recyclerView;
-    ArrayList<Product> imgList=new ArrayList<>();
-    ImageButton btn_back;
-    TextView txtWishListLabel;
+    private ExecutorService service = Executors.newCachedThreadPool();
+    private ProductCardAdapter adapter;
+    private RecyclerView recyclerView;
+    private ArrayList<Product> imgList=new ArrayList<>();
+    private ImageButton btn_back;
+    private TextView txtWishListLabel;
     int wishList_ID;
     private UserAccount userAccount;
     @Override
@@ -40,10 +44,30 @@ public class WishlistDetail extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        getIt();
         addControls();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getIt();
         getData();
         addEvents();
+    }
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
     }
     private void addControls(){
         recyclerView=findViewById(R.id.recyWishListProduct);
@@ -60,11 +84,15 @@ public class WishlistDetail extends AppCompatActivity {
         });
     }
     private void getData(){
-        imgList= WishlistHandler.getWishListDetailByWishListID(wishList_ID);
-        adapter=new ProductCardAdapter(imgList,WishlistDetail.this);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(WishlistDetail.this,2);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+        service.execute(()->{
+            imgList= WishlistHandler.getWishListDetailByWishListID(wishList_ID);
+            runOnUiThread(()->{
+                adapter=new ProductCardAdapter(imgList,WishlistDetail.this);
+                RecyclerView.LayoutManager layoutManager = new GridLayoutManager(WishlistDetail.this,2);
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(adapter);
+            });
+        });
     }
     private void getIt()
     {

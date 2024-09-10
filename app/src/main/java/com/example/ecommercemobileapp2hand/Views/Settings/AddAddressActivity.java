@@ -31,8 +31,15 @@ public class AddAddressActivity extends AppCompatActivity {
             return insets;
         });
         addControls();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         addEvents();
     }
+
     private void addControls()
     {
         imgBack = findViewById(R.id.imgBack);

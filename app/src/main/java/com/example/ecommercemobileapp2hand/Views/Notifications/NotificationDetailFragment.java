@@ -20,6 +20,9 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.NotificationsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +30,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class NotificationDetailFragment extends Fragment {
+    private ExecutorService service = Executors.newCachedThreadPool();
     private RecyclerView recyclerViewNotifications;
     private NotificationsAdapter adapter;
     private List<Notifications> notificationsList;
@@ -92,16 +96,29 @@ public class NotificationDetailFragment extends Fragment {
 
         fetchNotifications();
     }
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
     @Override
     public void onPause(){
         super.onPause();
-
         NotificationsHandler.markAllNotificationsAsViewed();
     }
     private void fetchNotifications() {
-        new Thread(() -> {
+        service.execute(()->{
             notificationsList = NotificationsHandler.getNotifications();
-            getActivity().runOnUiThread(() -> {
+            getActivity().runOnUiThread(()->{
                 if (notificationsList == null || notificationsList.isEmpty()) {
                     navigateToNoNotifications();
                 } else {
@@ -114,7 +131,7 @@ public class NotificationDetailFragment extends Fragment {
                     }
                 }
             });
-        }).start();
+        });
     }
     private void navigateToNoNotifications() {
         FragmentManager fragmentManager = getParentFragmentManager();

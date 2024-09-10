@@ -72,6 +72,23 @@ public class MainActivity extends AppCompatActivity {
         addControl();
         binding();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Nhận tt user từ Intent
+        Intent intent = getIntent();
+        if (intent != null) {
+            String email = intent.getStringExtra("email");
+            // Lưu vào sharedpreferences
+            sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("user_email", email);
+            editor.apply();
+        }
+    }
+
     private void getIt()
     {
         Intent intent = getIntent();
@@ -201,8 +218,8 @@ public class MainActivity extends AppCompatActivity {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.gender_overlay, null);
-        bottomSheetDialog.setContentView(dialogView);
 
+        bottomSheetDialog.setContentView(dialogView);
         TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
         overlayTitle.setText(type);
         ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
@@ -231,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
 //                FragmentManager fragmentManager = getSupportFragmentManager();
 //                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
                 if (isSaved) {
-                    App.getCache().invalidateAll();
                    LoadFragment(new HomeFragment());
                 }
                 bottomSheetDialog.dismiss();

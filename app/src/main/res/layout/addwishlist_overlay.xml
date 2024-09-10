@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="24dp"
+    style="@style/SCREEN"
+    android:background="@drawable/rounded_border_popup_menu"
+    >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/title_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="14dp">
+
+            <ImageButton
+                android:id="@+id/btn_close"
+                style="@style/btn_close"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="#00000000"
+                android:clipToOutline="true" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv12"
+            style="@style/TEXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_container"
+            android:layout_centerInParent="true"
+            android:layout_marginVertical="14dp"
+            android:fontFamily="@font/gabarito"
+            android:text="Give your wishlist a name"
+            android:textSize="24dp" />
+
+        <EditText
+            android:id="@+id/edtNameWL"
+            style="@style/address_param_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv12"
+            android:ems="10"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btnCreate"
+            style="@style/btn_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edtNameWL"
+            android:layout_centerInParent="true"
+            android:layout_marginVertical="14dp"
+            android:backgroundTint="@color/purple"
+            android:text="Create" />
+
+    </RelativeLayout>
+</FrameLayout>

@@ -8,18 +8,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.ProductPage.ProductPage;
+import com.example.ecommercemobileapp2hand.Views.Utils.ProductDiffCallBack;
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Picasso;
 
@@ -35,10 +42,11 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         this.lstPro = lstPro;
         this.context = context;
     }
-    public void setFilteredList(ArrayList<Product> filteredList)
-    {
-        this.lstPro = filteredList;
-        notifyDataSetChanged();
+    public void setFilteredList(ArrayList<Product> newProductList) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ProductDiffCallBack(this.lstPro,newProductList));
+        this.lstPro.clear();
+        this.lstPro.addAll(newProductList);
+        diffResult.dispatchUpdatesTo(this);
     }
     @NonNull
     @Override
@@ -89,6 +97,12 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 context.startActivity(intent);
             }
         });
+        holder.img_Heart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddToWLOverlay();
+            }
+        });
     }
 
     @Override
@@ -111,5 +125,64 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
             this.tvSalePrice = itemView.findViewById(R.id.tvSalePrice);
             this.tvPrice = itemView.findViewById(R.id.tvPrice);
         }
+    }
+
+    private void showAddToWLOverlay() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        View parentLayout = (View) dialogView.getParent();
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(parentLayout);
+        behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO, true);
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        TextView tv_cancel;
+        Button btnNewWL, btnDone;
+        RecyclerView recyWL;
+
+        tv_cancel = dialogView.findViewById(R.id.tv_cancel);
+        btnNewWL = dialogView.findViewById(R.id.btnNewWL);
+        btnDone = dialogView.findViewById(R.id.btnDone);
+        recyWL = dialogView.findViewById(R.id.recy_wl);
+
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        btnNewWL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddWLOverlay();
+            }
+        });
+        bottomSheetDialog.show();
+
+    }
+
+    private void showAddWLOverlay() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.addwishlist_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        ImageButton btn_close;
+        EditText edtNameWL;
+        Button btnCreate;
+
+        btn_close = dialogView.findViewById(R.id.btn_close);
+        edtNameWL = dialogView.findViewById(R.id.edtNameWL);
+        btnCreate = dialogView.findViewById(R.id.btnCreate);
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        bottomSheetDialog.show();
     }
 }

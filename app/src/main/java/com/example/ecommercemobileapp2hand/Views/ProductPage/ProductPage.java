@@ -1,20 +1,30 @@
 package com.example.ecommercemobileapp2hand.Views.ProductPage;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +35,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,23 +46,35 @@ import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsImg;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsSize;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Adapters.GenderAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleProductImageAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleReviewAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleSizeAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecylerColorAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.SortByAdapter;
+import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
+import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ProductPage extends AppCompatActivity {
+    private ExecutorService service = Executors.newCachedThreadPool();
 
     private Product product;
+    //Current
     private ProductDetails currentDetails;
     private ProductDetailsSize currentSize;
+    private ArrayList<ProductDetailsSize> currentSizes;
+    //
     private RecyclerView recycleImgSlider;
     private RecycleProductImageAdapter imgSliderApdater;
     private ArrayList<ProductDetailsImg> imgList;
@@ -59,13 +82,15 @@ public class ProductPage extends AppCompatActivity {
     private ArrayList<ProductColor> colorList;
     private RecycleReviewAdapter reviewAdapter;
     private RecyclerView recycleReviews;
-    private RelativeLayout btnColor, btnSize;
-    private ImageView imgBack, btnIncrease, btnDecrease;
-    private TextView tvProductName, tvPrice, tvOldPrice, tvDescription, tvSize, tvQuantity,tvTotalPrice;
+    private RelativeLayout btnColor, btnSize, btnQuantity;
+    private ImageView imgBack, btnIncrease, btnDecrease, btnFavorite;
+    private TextView tvProductName, tvPrice, tvOldPrice, tvDescription, tvSize, tvQuantity, tvTotalPrice;
     private View bgColor;
     private int quantity = 1;
     private BigDecimal totalPrice;
-    private RelativeLayout btnAddToBag;
+    private BigDecimal productPrice;
+    private RelativeLayout btnAddToBag, btnOutOfStock;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +102,7 @@ public class ProductPage extends AppCompatActivity {
             return insets;
         });
         addControl();
-        getBundleIntent();
+
 
     }
 
@@ -91,30 +116,46 @@ public class ProductPage extends AppCompatActivity {
         } else {
             currentDetails = product.getProductDetailsArrayList().get(0);
         }
-        currentSize = currentDetails.getSizeArrayList().get(0);
+        currentSize = currentDetails.getSizeArrayList() != null ? currentDetails.getSizeArrayList().get(0) : new ProductDetailsSize();
         colorList = product.getProductDetailsArrayList().stream().map(productDetails -> productDetails.getProductColor()).distinct().collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        getBundleIntent();
         loadListViewReviews();
         addEvent();
         bindingData(currentDetails);
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
     @SuppressLint("ResourceType")
     private void bindingData(ProductDetails curr) {
         loadRecycleViewImgSlider(curr);
         tvProductName.setText(product.getProduct_name());
-        if (curr.getSale_price() != null) {
+
+        if (curr.getSale_price().compareTo(BigDecimal.ZERO) != 0) {
             tvOldPrice.setVisibility(View.VISIBLE);
             tvOldPrice.setText("$" + product.getBase_price().toString());
             tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             tvPrice.setText("$" + curr.getSale_price().toString());
         } else {
             tvOldPrice.setVisibility(View.GONE);
-            tvPrice.setText(product.getBase_price().toString());
+            tvPrice.setText("$" + product.getBase_price().toString());
 
         }
         String colorName = curr.getProductColor().getProduct_color_name().toLowerCase().trim();
@@ -129,25 +170,42 @@ public class ProductPage extends AppCompatActivity {
 
         quantity = 1;
         tvQuantity.setText(String.valueOf(quantity));
-
-        if(curr.getSale_price()!=null){
-            tvTotalPrice.setText(String.valueOf(currentDetails.getSale_price().toString()));
-            totalPrice = currentDetails.getSale_price();
-        }else {
-            tvTotalPrice.setText(String.valueOf(product.getBase_price().toString()));
-            totalPrice = product.getBase_price();
+        curr.setFavorite(false);
+        if (curr.getSale_price().compareTo(BigDecimal.ZERO) != 0) {
+            tvTotalPrice.setText("$" + String.valueOf(curr.getSale_price().toString()));
+            productPrice = curr.getSale_price();
+        } else {
+            tvTotalPrice.setText("$" + String.valueOf(product.getBase_price().toString()));
+            productPrice = product.getBase_price();
+        }
+        tvSize.setText(curr.getSizeArrayList() != null ? curr.getSizeArrayList().get(0).getSize().getSize_name() : "None");
+        //Size
+        int totalStockOfSize = curr.getSizeArrayList() != null ? curr.getSizeArrayList().stream().mapToInt(ProductDetailsSize::getStock).sum() : 0;
+        if (totalStockOfSize == 0 || curr.getSizeArrayList() == null) {
+            btnOutOfStock.setVisibility(View.VISIBLE);
+            btnQuantity.setVisibility(View.GONE);
+            btnSize.setVisibility(View.GONE);
+        } else {
+            btnOutOfStock.setVisibility(View.GONE);
+            btnQuantity.setVisibility(View.VISIBLE);
+            btnSize.setVisibility(View.VISIBLE);
         }
     }
 
     private void addControl() {
 
+        //TextView
         tvProductName = findViewById(R.id.tvProductName);
         tvPrice = findViewById(R.id.tvPrice);
         tvOldPrice = findViewById(R.id.tvOldPrice);
         tvDescription = findViewById(R.id.tvDescription);
         tvSize = findViewById(R.id.txtSize);
+
+        //RecycleView
         recycleImgSlider = findViewById(R.id.recyclerProductImgSlider);
         recycleReviews = findViewById(R.id.recyclerRating);
+
+        //Btn
         btnColor = findViewById(R.id.btnColor);
         btnSize = findViewById(R.id.btnSize);
         bgColor = findViewById(R.id.bgColor);
@@ -161,6 +219,7 @@ public class ProductPage extends AppCompatActivity {
 
 
         //Quantity
+        btnQuantity = findViewById(R.id.btnQuantity);
         btnIncrease = findViewById(R.id.btnIncreaseQuantity);
         btnDecrease = findViewById(R.id.btnDecreaseQuantity);
         tvQuantity = findViewById(R.id.txtQuantityValue);
@@ -168,48 +227,81 @@ public class ProductPage extends AppCompatActivity {
         //btnAddToBag
         btnAddToBag = findViewById(R.id.btnAddToBag);
         tvTotalPrice = findViewById(R.id.tvTotalPrice);
+
+        //btnFavorite
+        btnFavorite = findViewById(R.id.imgFavorite);
+
+        //btnOutOfStock
+        btnOutOfStock = findViewById(R.id.btnOutOfStock);
     }
 
     public void addEvent() {
-        imgBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                finish();
-            }
+        imgBack.setOnClickListener(v -> {
+            finish();
         });
 
-        btnIncrease.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                quantity+=1;
+        btnIncrease.setOnClickListener(v -> {
+            quantity += 1;
+            tvQuantity.setText(String.valueOf(quantity));
+            totalPrice = productPrice.multiply(BigDecimal.valueOf(quantity));
+            tvTotalPrice.setText("$" + totalPrice.toString());
+        });
+        btnDecrease.setOnClickListener(v -> {
+            if (quantity != 1) {
+                quantity -= 1;
                 tvQuantity.setText(String.valueOf(quantity));
-                totalPrice = totalPrice.multiply(BigDecimal.valueOf(quantity));
-                tvTotalPrice.setText(totalPrice.toString());
+                totalPrice = productPrice.multiply(BigDecimal.valueOf(quantity));
+                tvTotalPrice.setText("$" + totalPrice.toString());
+
             }
         });
-        btnDecrease.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (quantity != 1) {
-                    quantity-=1;
-                    tvQuantity.setText(String.valueOf(quantity));
-                    totalPrice = totalPrice.multiply(BigDecimal.valueOf(quantity));
-                    tvTotalPrice.setText(totalPrice.toString());
 
+        btnFavorite.setOnClickListener(v -> {
+
+            if (currentDetails.getFavorite() == false) {
+                btnFavorite.setImageResource(R.drawable.red_heart);
+                currentDetails.setFavorite(true);
+                showAddToWLOverlay();
+            }
+            else
+            {
+                int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                int bgResource;
+                if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                    bgResource = R.drawable.white_heart;
+                } else {
+                    bgResource = R.drawable.black_heart;
                 }
 
+                btnFavorite.setImageResource(bgResource);
+                currentDetails.setFavorite(false);
+                showAddToWLOverlay();
+            }
+        });
 
+        btnAddToBag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showReviewOverlay();
             }
         });
     }
 
     private void loadRecycleViewImgSlider(ProductDetails productDetails) {
-        imgList = productDetails.getImgDetailsArrayList();
-        imgSliderApdater = new RecycleProductImageAdapter(imgList, getApplicationContext());
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        recycleImgSlider.setLayoutManager(layoutManager);
-        recycleImgSlider.setAdapter(imgSliderApdater);
+
+        service.execute(() -> {
+            imgList = productDetails.getImgDetailsArrayList();
+            runOnUiThread(() -> {
+                if (!imgList.isEmpty() && imgList != null) {
+                    imgSliderApdater = new RecycleProductImageAdapter(imgList, getApplicationContext());
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+                    recycleImgSlider.setLayoutManager(layoutManager);
+                    recycleImgSlider.setAdapter(imgSliderApdater);
+                }
+
+            });
+        });
+
     }
 
     private void loadListViewReviews() {
@@ -266,7 +358,7 @@ public class ProductPage extends AppCompatActivity {
             }
         });
         RecyclerView recyclerSize = dialogView.findViewById(R.id.recy_size);
-        RecycleSizeAdapter recycleSizeAdapter = new RecycleSizeAdapter(currentDetails.getSizeArrayList(), ProductPage.this, new RecycleSizeAdapter.OnSizeSelectedListener() {
+        RecycleSizeAdapter recycleSizeAdapter = new RecycleSizeAdapter(currentDetails.getSizeArrayList() != null ? currentDetails.getSizeArrayList() : new ArrayList<>(), ProductPage.this, new RecycleSizeAdapter.OnSizeSelectedListener() {
             @Override
             public void onSizeSelected(ProductDetailsSize size) {
                 currentSize = size;
@@ -274,11 +366,105 @@ public class ProductPage extends AppCompatActivity {
                 bottomSheetDialog.dismiss();
             }
         }, currentSize);
+
         recyclerSize.setLayoutManager(new LinearLayoutManager(bottomSheetDialog.getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerSize.setAdapter(recycleSizeAdapter);
         bottomSheetDialog.show();
 
     }
 
+    private void showReviewOverlay() {
+        View view = LayoutInflater.from(ProductPage.this).inflate(R.layout.review_overlay, null);
+
+        final Dialog dialog = new Dialog(ProductPage.this);
+        dialog.setContentView(view);
+
+        Window window = dialog.getWindow();
+        if (window == null)
+        {
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowattri = window.getAttributes();
+        windowattri.gravity = Gravity.BOTTOM;
+        window.setAttributes(windowattri);
+
+        RatingBar ratingBar = dialog.findViewById(R.id.ratingBar);
+        Button btnSubmit = dialog.findViewById(R.id.btnSubmit);
+        EditText edt_review = dialog.findViewById(R.id.edt_review);
+
+        ImageButton btnClose = dialog.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
+    private void showAddToWLOverlay() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        View parentLayout = (View) dialogView.getParent();
+        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(parentLayout);
+        behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO, true);
+        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        TextView tv_cancel;
+        Button btnNewWL, btnDone;
+        RecyclerView recyWL;
+
+        tv_cancel = dialogView.findViewById(R.id.tv_cancel);
+        btnNewWL = dialogView.findViewById(R.id.btnNewWL);
+        btnDone = dialogView.findViewById(R.id.btnDone);
+        recyWL = dialogView.findViewById(R.id.recy_wl);
+
+        tv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        btnNewWL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddWLOverlay();
+            }
+        });
+        bottomSheetDialog.show();
+
+    }
+
+    private void showAddWLOverlay() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.addwishlist_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+
+        ImageButton btn_close;
+        EditText edtNameWL;
+        Button btnCreate;
+
+        btn_close = dialogView.findViewById(R.id.btn_close);
+        edtNameWL = dialogView.findViewById(R.id.edtNameWL);
+        btnCreate = dialogView.findViewById(R.id.btnCreate);
+
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        bottomSheetDialog.show();
+    }
 
 }

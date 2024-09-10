@@ -23,8 +23,13 @@ import com.example.ecommercemobileapp2hand.Views.App;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CategoriesActivity extends AppCompatActivity {
+    private ExecutorService service = Executors.newCachedThreadPool();
 
     private ImageView btnBack;
     private RecyclerView recyclerViewCategories;
@@ -55,7 +60,21 @@ public class CategoriesActivity extends AppCompatActivity {
         addEvent();
 
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
 
     private void addControl(){
         recyclerViewCategories = findViewById(R.id.recyclerViewCategories);
@@ -72,13 +91,21 @@ public class CategoriesActivity extends AppCompatActivity {
     }
     private void loadRecycleViewCategories(){
         // Initialize category list
-        categoryList = new ArrayList<>();
-        categoryList = (ArrayList<ProductCategory>) App.getCache().getIfPresent("categories");
-        categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
-        recyclerViewCategories.setLayoutManager(layoutManager);
+        service.execute(()->{
+            categoryList = new ArrayList<>();
+            categoryList = CategoriesHandler.getData();
+            runOnUiThread(()->{
+                if(categoryList != null && !categoryList.isEmpty()){
+                    categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
+                    recyclerViewCategories.setLayoutManager(layoutManager);
+                    recyclerViewCategories.setAdapter(categoriesAdapter);
+                }
 
-        recyclerViewCategories.setAdapter(categoriesAdapter);
+            });
+        });
+
+
     }
 //    private void getIt()
 //    {

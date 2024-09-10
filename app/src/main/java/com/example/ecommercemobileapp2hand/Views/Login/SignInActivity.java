@@ -38,6 +38,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Arrays;
 
@@ -46,18 +47,16 @@ public class SignInActivity extends AppCompatActivity {
     private static final int REQ_GOOGLE_SIGN_IN = 1;
     private static final String TAG = "SignInActivity";
 
-    CallbackManager callbackManager;
-    Button btnSignInGoogle;
-    Button btnSignInFacebook;
-    Button btnContinue;
-    TextView txtCreateAccount;
-    EditText edtEmail;
-    Switch switcher;
-    SharedPreferences sharedPreferences;
+    private CallbackManager callbackManager;
+    private Button btnSignInGoogle;
+    private Button btnSignInFacebook;
+    private Button btnContinue;
+    private TextView txtCreateAccount;
+    private EditText edtEmail;
+    private Switch switcher;
+    private SharedPreferences sharedPreferences;
     private boolean nightMode;
     private FirebaseAuth firebaseAuth;
-    private static final String PREFS_NAME = "user_prefs";
-    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +74,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         addControls();
         addEvents();
         facebookLoginMethod();
@@ -109,10 +108,6 @@ public class SignInActivity extends AppCompatActivity {
 
     private boolean isValidEmail(String email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private boolean isFieldNotEmpty(String field) {
-        return !field.isEmpty();
     }
 
     private void facebookLoginMethod() {
@@ -169,6 +164,26 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
+    private void handleSignInResult(FirebaseUser user) {
+        if (user != null) {
+            String email = user.getEmail();
+            if (email != null) {
+                UserAccountHandler userAccountHandler = new UserAccountHandler();
+                boolean emailExists = userAccountHandler.checkEmailExists(email);
+                Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
+                intent.putExtra("email", email);
+                intent.putExtra("displayName", user.getDisplayName());
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Email is null", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "User is null", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
@@ -179,7 +194,7 @@ public class SignInActivity extends AppCompatActivity {
                     String displayName = user.getDisplayName();
                     UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
                     Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                    navToMainActivity();
+                    handleSignInResult(user);
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_LONG).show();
@@ -192,11 +207,16 @@ public class SignInActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
             if (account != null) {
-                String email = account.getEmail();
-                String displayName = account.getDisplayName();
-                UserAccountHandler.saveUserAccount(email, displayName, "Google");
-                navToMainActivity();
-                Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+                firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, authTask -> {
+                    if (authTask.isSuccessful()) {
+                        FirebaseUser user = firebaseAuth.getCurrentUser();
+                        handleSignInResult(user);
+                    } else {
+                        Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Google sign-in error", authTask.getException());
+                    }
+                });
             }
         } catch (ApiException e) {
             Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
@@ -204,15 +224,6 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-
-    private void navToMainActivity() {
-        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(KEY_IS_LOGGED_IN, true);
-        editor.apply();
-        startActivity(new Intent(SignInActivity.this, MainActivity.class));
-        finish();
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

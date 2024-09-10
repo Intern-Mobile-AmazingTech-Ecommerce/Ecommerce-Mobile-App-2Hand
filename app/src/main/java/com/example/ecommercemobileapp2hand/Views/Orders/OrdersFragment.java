@@ -34,16 +34,21 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class OrdersFragment extends Fragment {
-    ChipGroup chipGroup;
-    RecyclerView recyOrders;
-    ArrayList<UserOrder> lstorders;
-    OrderCardAdapter orderCardAdapter;
-    LinearLayout linear_order1, linear_order2;
-    ImageView img_empty_order;
-    Button btn_explore;
-    String checkstatus;
+    private ExecutorService service = Executors.newCachedThreadPool();
+    private ChipGroup chipGroup;
+    private RecyclerView recyOrders;
+    private ArrayList<UserOrder> lstorders;
+    private OrderCardAdapter orderCardAdapter;
+    private LinearLayout linear_order1, linear_order2;
+    private ImageView img_empty_order;
+    private Button btn_explore;
+    private String checkstatus;
     private UserAccount userAccount;
     private ArrayList<OrderStatus> oderstatus;
     public OrdersFragment() {
@@ -60,30 +65,43 @@ public class OrdersFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_orders, container, false);
+    public void onStart() {
+        super.onStart();
+        // Nhận tt user từ Bundle
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            UserAccount userAccount = (UserAccount) bundle.getSerializable("UserAccount");
+            if (userAccount != null) {
+                String email = userAccount.getEmail();
+            }
+        }
+
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_orders, container, false);
+        addControl(view);
+        return view;
+    }
 
+
+    private void getBundleIntent(){
         if (getArguments() != null)
         {
             userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
         }
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        oderstatus = OrderStatusHandler.getData();
-
-        chipGroup = view.findViewById(R.id.chipgroup);
-        recyOrders = view.findViewById(R.id.recyOrders);
-        img_empty_order = view.findViewById(R.id.img_empty_order);
-        linear_order1 = view.findViewById(R.id.linear_order1);
-        linear_order2 = view.findViewById(R.id.linear_order2);
-        btn_explore = view.findViewById(R.id.btn_explore);
-
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        getBundleIntent();
         //lstorders = userAccount.getLstOrder();
 
         if (lstorders.isEmpty())
@@ -103,10 +121,40 @@ public class OrdersFragment extends Fragment {
         }
         else
         {
-            ArrayList<OrderStatus> oderstatus = OrderStatusHandler.getData();
-
-            createChips(oderstatus);
+            loadOrderStatus();
         }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+    private void addControl(View view){
+        chipGroup = view.findViewById(R.id.chipgroup);
+        recyOrders = view.findViewById(R.id.recyOrders);
+        img_empty_order = view.findViewById(R.id.img_empty_order);
+        linear_order1 = view.findViewById(R.id.linear_order1);
+        linear_order2 = view.findViewById(R.id.linear_order2);
+        btn_explore = view.findViewById(R.id.btn_explore);
+    }
+    private void loadOrderStatus(){
+        service.execute(()->{
+            oderstatus = OrderStatusHandler.getData();
+            getActivity().runOnUiThread(()->{
+                if(!oderstatus.isEmpty() && oderstatus != null)
+                createChips(oderstatus);
+            });
+        });
     }
     private void createChips(ArrayList<OrderStatus> statuses)
     {

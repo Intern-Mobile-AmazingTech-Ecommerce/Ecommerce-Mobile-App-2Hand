@@ -23,15 +23,17 @@ import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
-import com.example.ecommercemobileapp2hand.Views.App;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.example.ecommercemobileapp2hand.Views.Search.SearchActivity;
@@ -43,9 +45,9 @@ import com.google.android.material.button.MaterialButton;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+    private ExecutorService service = Executors.newCachedThreadPool();
     private String gender;
     private TextView tvSeeAll;
-    private ArrayList<Product> allPro;
     private ArrayList<Product> lstPro;
     private RecyclerView recyclerViewCategories;
     private ArrayList<ProductCategory> categoryList;
@@ -105,7 +107,6 @@ public class HomeFragment extends Fragment {
         }
 
 
-
     }
 
 
@@ -120,123 +121,135 @@ public class HomeFragment extends Fragment {
 //                userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
 //                genderTextView = getArguments().getString("UserGender");
 //            }
-            addControl(view);
+        addControl(view);
 
         return view;
     }
-    private void getGenderKey(){
-        sharedPreferences = getActivity().getSharedPreferences("my_userID",Context.MODE_PRIVATE);
-        gender = sharedPreferences.getString("gender_key","");
-        if(gender.isEmpty()){
+
+    private void getGenderKey() {
+        sharedPreferences = getActivity().getSharedPreferences("my_userID", Context.MODE_PRIVATE);
+        gender = sharedPreferences.getString("gender_key", "");
+        if (gender.isEmpty()) {
             gender = "Men";
         }
-        Log.d("Gender",gender);
+        Log.d("Gender", gender);
     }
+
     @Override
     public void onResume() {
         super.onResume();
-        try {
-            getGenderKey();
-            loadListPro(gender);
-            loadCategoriesData();
-            loadTopSellingProductsData();
-            loadNewInProductsData();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        getGenderKey();
+        loadListPro(gender);
+        loadCategoriesData();
         addEvent();
     }
-    private void loadListPro(String gen) throws ExecutionException {
-        allPro = (ArrayList<Product>) App.getCache().get("allPro", new Callable<ArrayList<Product>>() {
-            @Override
-            public ArrayList<Product> call() throws Exception {
-                return ProductHandler.getData();
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Nhận tt user từ Bundle
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            UserAccount userAccount = (UserAccount) bundle.getSerializable("UserAccount");
+            if (userAccount != null) {
+                String email = userAccount.getEmail();
             }
-        });
-        //GenerateListPro
-        lstPro = (ArrayList<Product>) App.getCache().get("lstPro", new Callable<ArrayList<Product>>() {
-            @Override
-            public ArrayList<Product> call() throws Exception {
-                return ProductHandler.getDataByObjectName(gen);
-            }
-        });
+        }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+    private void loadListPro(String gen) {
+        service.execute(() -> {
+            lstPro = ProductHandler.getDataByObjectName(gen);
+            getActivity().runOnUiThread(()->{
+                loadTopSellingProductsData();
+                loadNewInProductsData();
+            });
+        });
+
+    }
+
     private void addControl(View view) {
 
         recyclerViewCategories = view.findViewById(R.id.recyclerViewCategories);
         tvSeeAll = view.findViewById(R.id.tvSeeAll);
-
         recyclerViewNewIn = view.findViewById(R.id.recyclerViewNewIn);
         recyclerViewTopSelling = view.findViewById(R.id.recyclerViewTopSelling);
-
         tvNewInSeeAll = view.findViewById(R.id.tvNewInSeeAll);
         tvTopSellingSeeAll = view.findViewById(R.id.tvTopSellingSeeAll);
         btnSearch = view.findViewById(R.id.btnSearch);
     }
 
-    private void loadCategoriesData() throws ExecutionException {
+    private void loadCategoriesData() {
+        service.execute(() -> {
+            categoryList = CategoriesHandler.getData();
+            getActivity().runOnUiThread(() -> {
+                if (!categoryList.isEmpty() && categoryList != null) {
 
-        ArrayList<ProductCategory> categoryList = (ArrayList<ProductCategory>) App.getCache().get("categories", new Callable<ArrayList<ProductCategory>>() {
-            @Override
-            public ArrayList<ProductCategory> call() throws Exception {
-                ArrayList<ProductCategory> categories = CategoriesHandler.getData();
-                return categories.size() > 5 ? new ArrayList<>(categories.subList(0, 5)) : categories;
-            }
+                    ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
+                    categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
+                    recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+                    recyclerViewCategories.setAdapter(categoriesAdapter);
+                }
+            });
         });
-        categoriesAdapter = new CategoriesAdapter(categoryList, getContext(), R.layout.custom_recycle_categories_homepage);
-        recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
-        recyclerViewCategories.setAdapter(categoriesAdapter);
-
-
     }
 
-    private void loadTopSellingProductsData() throws ExecutionException {
+    private void loadTopSellingProductsData() {
 
-        lstProTopSelling = (ArrayList<Product>) App.getCache().get("TopSelling", new Callable<ArrayList<Product>>() {
-            @Override
-            public ArrayList<Product> call() throws Exception {
-                    ArrayList<Product> lst = (ArrayList<Product>) lstPro.stream()
-                            .filter(product -> product.getSold().compareTo(BigDecimal.ZERO) > 0)
-                            .sorted(Comparator.comparing(Product::getSold).reversed())
-                            .collect(Collectors.toList());
-                return lstPro.size() > 0 ? new ArrayList<>(lst) : new ArrayList<>();
-            }
-        });
-        if (lstProTopSelling.size() > 5) {
-            ArrayList<Product> subTopSellingList = lstProTopSelling.subList(0, 5).stream().collect(Collectors.toCollection(ArrayList::new));
+        if (lstPro != null && lstPro.size() > 0) {
+            lstProTopSelling = lstPro.stream()
+                    .filter(product -> product.getSold().compareTo(BigDecimal.ZERO) > 0)
+                    .sorted(Comparator.comparing(Product::getSold).reversed())
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            ArrayList<Product> subTopSellingList = lstProTopSelling.size() > 5 ? lstProTopSelling.subList(0, 5).stream().collect(Collectors.toCollection(ArrayList::new)) : lstProTopSelling;
             TopSellingAdapter = new ProductCardAdapter(subTopSellingList, getActivity());
+        } else {
+            lstProTopSelling = new ArrayList<>();
         }
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewTopSelling.setLayoutManager(layoutManager);
         recyclerViewTopSelling.setAdapter(TopSellingAdapter);
 
     }
-    private void loadNewInProductsData() throws ExecutionException {
 
-        lstProNewIn = (ArrayList<Product>) App.getCache().get("NewIn", new Callable<ArrayList<Product>>() {
-            @Override
-            public ArrayList<Product> call() throws Exception {
-                if (lstPro.size() > 0) {
-                    LocalDateTime now = LocalDateTime.now();
-                    LocalDateTime thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS);
-                    return lstPro.stream()
-                            .filter(product -> product.getCreated_at().isAfter(thirtyDaysAgo))
-                            .collect(Collectors.toCollection(ArrayList::new));
-                }
-                return new ArrayList<>();
-            }
-        });
-
-        if (lstProNewIn.size() > 5) {
-            ArrayList<Product> subNewInProductList = lstProNewIn.subList(0, 5).stream().collect(Collectors.toCollection(ArrayList::new));
+    private void loadNewInProductsData() {
+        if (lstPro != null && lstPro.size() > 0) {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS);
+            lstProNewIn = lstPro.stream()
+                    .filter(product -> product.getCreated_at().isAfter(thirtyDaysAgo))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<Product> subNewInProductList = lstProNewIn.size() > 5 ? lstProNewIn.subList(0, 5).stream().collect(Collectors.toCollection(ArrayList::new)) : lstProNewIn;
             NewInAdapter = new ProductCardAdapter(subNewInProductList, getActivity());
+        } else {
+            lstProTopSelling = new ArrayList<>();
         }
+
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewNewIn.setLayoutManager(layoutManager);
         recyclerViewNewIn.setAdapter(NewInAdapter);
 
     }
+
+
 
     private void addEvent() {
         tvSeeAll.setOnClickListener(new View.OnClickListener() {
