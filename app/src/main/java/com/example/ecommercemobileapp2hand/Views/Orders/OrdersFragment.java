@@ -102,7 +102,7 @@ public class OrdersFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getBundleIntent();
-        //lstorders = userAccount.getLstOrder();
+        lstorders = userAccount.getLstOrder();
 
         if (lstorders.isEmpty())
         {
@@ -152,12 +152,16 @@ public class OrdersFragment extends Fragment {
             oderstatus = OrderStatusHandler.getData();
             getActivity().runOnUiThread(()->{
                 if(!oderstatus.isEmpty() && oderstatus != null)
-                createChips(oderstatus);
+                {
+                    createChips(oderstatus);
+                }
             });
         });
     }
     private void createChips(ArrayList<OrderStatus> statuses)
     {
+        chipGroup.removeAllViews();
+
         Random random = new Random();
 
         int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
