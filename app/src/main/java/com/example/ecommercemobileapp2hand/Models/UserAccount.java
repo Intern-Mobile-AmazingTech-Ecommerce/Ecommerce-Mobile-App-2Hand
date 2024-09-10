@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class UserAccount implements Serializable {
-    private String userId; // Đổi từ int sang String
+    private String userId;
     private String email;
     private String firstName;
     private String lastName;

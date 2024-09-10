@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    style="@style/SCREEN"
     tools:context=".Views.Settings.EditProfileActivity">
 
     <RelativeLayout
@@ -42,7 +43,7 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/img"
+        android:id="@+id/imgUser"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="center"
