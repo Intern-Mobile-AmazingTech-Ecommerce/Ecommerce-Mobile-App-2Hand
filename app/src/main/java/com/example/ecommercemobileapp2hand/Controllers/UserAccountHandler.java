@@ -27,20 +27,12 @@ public class UserAccountHandler {
 
     //lấy tt user
     public static UserAccount getUserAccountByEmail(String email) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
         UserAccount userAccount = null;
+        try (Connection conn = dbConnect.connectionClass();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT user_id, email, first_name, last_name, phone_number, img_url, gender, age_range FROM user_account WHERE email = ?")) {
 
-        try {
-            conn = dbConnect.connectionClass();
-            if (conn != null) {
-                String query = "SELECT user_id, email, first_name, last_name, phone_number, img_url, gender, age_range " +
-                        "FROM user_account WHERE email = ?";
-                pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, email);
-                rs = pstmt.executeQuery();
-
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     String userId = rs.getString("user_id");
                     String firstName = rs.getString("first_name");
@@ -52,20 +44,9 @@ public class UserAccountHandler {
 
                     userAccount = new UserAccount(userId, email, firstName, lastName, phoneNumber, imgUrl, gender, ageRange);
                 }
-            } else {
-                Log.e("DB_QUERY", "Kết nối thất bại.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             Log.e("DB_QUERY", "Lỗi truy vấn: " + e.getMessage());
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return userAccount;
     }
@@ -158,11 +139,9 @@ public class UserAccountHandler {
                 pstmt.setString(6, ageRange);
             }
 
-            Log.d("UserAccountHandler", "Saving user to database...");
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            Log.e("UserAccountHandler", "Error saving user to database: " + e.getMessage());
         } finally {
             try {
                 if (pstmt != null) pstmt.close();
@@ -202,7 +181,6 @@ public class UserAccountHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            // Ensure the database resources are closed
             try {
                 if (pstmt != null) pstmt.close();
                 if (conn != null) conn.close();

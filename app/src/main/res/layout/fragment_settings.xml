@@ -9,11 +9,10 @@
     >
 
     <ImageView
-        android:id="@+id/ellipse_14"
+        android:id="@+id/imgUser"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_gravity="center"
-        android:src="@drawable/user" />
+        android:layout_gravity="center" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

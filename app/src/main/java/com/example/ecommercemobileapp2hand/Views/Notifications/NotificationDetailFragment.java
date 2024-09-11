@@ -1,6 +1,8 @@
 package com.example.ecommercemobileapp2hand.Views.Notifications;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ecommercemobileapp2hand.Controllers.NotificationsHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Models.Notifications;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.NotificationsAdapter;
 
@@ -22,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,7 +40,8 @@ public class NotificationDetailFragment extends Fragment {
     private NotificationsAdapter adapter;
     private List<Notifications> notificationsList;
     private String userId ;
-
+    private SharedPreferences sharedPreferences;
+    private UserAccount userAccount;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -66,6 +72,22 @@ public class NotificationDetailFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    private void getUserAccount()
+    {
+
+        Future<?> task = service.submit(()->{
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            String email = sharedPreferences.getString("userEmail","");
+            userAccount = UserAccountHandler.getUserAccountByEmail(email);
+        });
+        try {
+            task.get();
+
+        }catch (Exception e)
+        {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,6 +97,8 @@ public class NotificationDetailFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
 
         }
+
+
     }
 
     @SuppressLint("MissingInflatedId")
@@ -83,17 +107,19 @@ public class NotificationDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notification_detail, container, false);
         recyclerViewNotifications = view.findViewById(R.id.recycler_view_notifications);
-        recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new NotificationsAdapter(new ArrayList<>());
-        recyclerViewNotifications.setAdapter(adapter);
-        fetchNotifications();
 
+
+
+
+//        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs",MODE_PRIVATE);
+//        String email = sharedPreferences.getString("userEmail","");
+//        userAccount = UserAccountHandler.getUserAccountByEmail(email);
         return view;
     }
     @Override
     public void onResume() {
         super.onResume();
-
+        getUserAccount();
         fetchNotifications();
     }
     public void onDestroy() {
@@ -116,14 +142,15 @@ public class NotificationDetailFragment extends Fragment {
         NotificationsHandler.markAllNotificationsAsViewed();
     }
     private void fetchNotifications() {
-        service.execute(()->{
-            notificationsList = NotificationsHandler.getNotifications();
+        Future<?> task = service.submit(()->{
+            notificationsList = NotificationsHandler.getNotifications(userAccount.getUserId());
             getActivity().runOnUiThread(()->{
                 if (notificationsList == null || notificationsList.isEmpty()) {
                     navigateToNoNotifications();
                 } else {
                     if (adapter == null) {
                         adapter = new NotificationsAdapter(notificationsList);
+                        recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
                         recyclerViewNotifications.setAdapter(adapter);
                     } else {
                         adapter.setNotificationsList(notificationsList);
@@ -132,6 +159,14 @@ public class NotificationDetailFragment extends Fragment {
                 }
             });
         });
+        try {
+            task.get();
+
+        }catch (Exception e)
+        {
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
     private void navigateToNoNotifications() {
         FragmentManager fragmentManager = getParentFragmentManager();

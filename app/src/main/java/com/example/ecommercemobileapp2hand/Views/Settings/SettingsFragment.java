@@ -1,24 +1,21 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
-import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
 import com.facebook.login.LoginManager;
@@ -36,15 +33,19 @@ import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+
 public class SettingsFragment extends Fragment {
     private ExecutorService service = Executors.newSingleThreadExecutor();
     private TextView tvUserName, tvEmail, tvPhoneNumber, tvSignOut, tvEdit;
     private TextView tvAddress, tvWishlist, tvPayment, tvHelp, tvSupport;
     private static final String TAG = "SettingsFragment";
     private FirebaseAuth firebaseAuth;
-    private static final String PREFS_NAME = "user_prefs";
-
+    private ImageView imageUser;
     private UserAccount userAccount;
+    String fullImageUrl;
 
     @Nullable
     @Override
@@ -52,22 +53,24 @@ public class SettingsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        if (getArguments() != null) {
-            userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
-        }
-
         addControls(view);
+
+        addEvent();
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         firebaseAuth = FirebaseAuth.getInstance();
         GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (googleAccount != null) {
-            saveUserDataToSharedPreferences(googleAccount.getDisplayName(), googleAccount.getEmail(), null);
-            tvUserName.setText(googleAccount.getDisplayName());
-            tvEmail.setText(googleAccount.getEmail());
+            fetchUserData(googleAccount.getEmail());
         } else {
             FirebaseUser user = firebaseAuth.getCurrentUser();
             if (user != null) {
-                fetchUserDataFromFirebase();
+                fetchUserData(user.getEmail());
             }
         }
         //fetchUserDataFromSharedPreferences();
@@ -75,7 +78,6 @@ public class SettingsFragment extends Fragment {
         addEvent();
         return view;
     }
-
 
     private void addControls(View view) {
         tvUserName = view.findViewById(R.id.tvUserName);
@@ -88,87 +90,7 @@ public class SettingsFragment extends Fragment {
         tvHelp = view.findViewById(R.id.Help);
         tvSupport = view.findViewById(R.id.Support);
         tvEdit = view.findViewById(R.id.edit);
-    }
-
-    private void fetchUserDataFromFirebase() {
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-
-        if (user != null) {
-            String userName = user.getDisplayName();
-            String userEmail = user.getEmail();
-            String userPhone = user.getPhoneNumber();
-
-            saveUserDataToSharedPreferences(userName, userEmail, userPhone);
-        }
-    }
-
-    private void saveUserDataToSharedPreferences(String userName, String userEmail, String userPhone) {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putString("userName", userName);
-        editor.putString("userEmail", userEmail);
-        editor.putString("userPhone", userPhone);
-        editor.apply();
-    }
-
-//    private void fetchUserDataFromSharedPreferences() {
-//        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-//        String userName = sharedPreferences.getString("userName", "Null");
-//        String userEmail = sharedPreferences.getString("userEmail", "Null");
-//        String userPhone = sharedPreferences.getString("userPhone", "Null");
-//
-//        tvUserName.setText(userName);
-//        tvEmail.setText(userEmail);
-//        tvPhoneNumber.setText(userPhone);
-//    }
-
-    private void fetchUserData() {
-        String email = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                .getString("userEmail", null);
-
-        if (email != null) {
-            // Sử dụng biến finalEmail để đảm bảo giá trị không thay đổi
-            final String finalEmail = email;
-            service.execute(() -> {
-                UserAccount userAccount = UserAccountHandler.getUserAccountByEmail(finalEmail);
-                getActivity().runOnUiThread(() -> {
-                    if (userAccount != null) {
-                        String userEmail = userAccount.getEmail(); // Sử dụng biến khác để lưu giá trị mới
-                        String firstName = userAccount.getFirstName();
-                        String lastName = userAccount.getLastName();
-                        String phoneNumber = userAccount.getPhoneNumber();
-
-                        tvEmail.setText(userEmail);
-                        String fullName = firstName + " " + lastName;
-                        tvUserName.setText(fullName);
-                        tvPhoneNumber.setText(phoneNumber != null ? phoneNumber : "Null");
-                    } else {
-                        Log.e(TAG, "Không tìm thấy người dùng với email: " + finalEmail);
-                    }
-                });
-            });
-            service.shutdown(); // Đảm bảo rằng tài nguyên được giải phóng sau khi công việc hoàn tất
-        } else {
-            Log.e(TAG, "Email không hợp lệ.");
-        }
-    }
-
-    private void signOut() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
-        googleSignInClient.signOut().addOnCompleteListener(task -> {
-            LoginManager.getInstance().logOut();
-            SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear();
-            editor.apply();
-            startActivity(new Intent(getActivity(), SignInActivity.class));
-            requireActivity().finish();
-            Toast.makeText(getActivity(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
-        });
+        imageUser = view.findViewById(R.id.imgUser);
     }
 
     private void addEvent() {
@@ -193,9 +115,60 @@ public class SettingsFragment extends Fragment {
             intent.putExtra("lastName", tvUserName.getText().toString().split(" ")[1]);
             intent.putExtra("phoneNumber", tvPhoneNumber.getText().toString());
             intent.putExtra("email", tvEmail.getText().toString());
+            intent.putExtra("imgUrl", fullImageUrl);
             startActivityForResult(intent, 1);
         });
     }
+
+    private void fetchUserData(String email) {
+        if (email != null) {
+            userAccount = UserAccountHandler.getUserAccountByEmail(email);
+
+            if (userAccount != null) {
+                tvEmail.setText(userAccount.getEmail());
+
+                String fullName = (userAccount.getFirstName() != null ? userAccount.getFirstName() : "") + " " +
+                        (userAccount.getLastName() != null ? userAccount.getLastName() : "");
+                tvUserName.setText(fullName);
+
+                tvPhoneNumber.setText(userAccount.getPhoneNumber() != null ? userAccount.getPhoneNumber() : "Null");
+
+                if (userAccount.getImgUrl() != null && !userAccount.getImgUrl().isEmpty()) {
+                    String baseUrl = "https://res.cloudinary.com/dr0xghsna/image/upload/";
+                    fullImageUrl = baseUrl + userAccount.getImgUrl();
+
+                    Picasso.get()
+                            .load(fullImageUrl)
+                            .placeholder(R.drawable.user)
+                            .error(R.drawable.user)
+                            .into(imageUser);
+                    Log.d("Image", "Full Image URL: " + fullImageUrl);
+
+                } else {
+                    imageUser.setImageResource(R.drawable.user);
+                }
+            } else {
+                Log.e(TAG, "Không tìm thấy: " + email);
+            }
+        } else {
+            Log.e(TAG, "Không tìm thấy email");
+        }
+    }
+
+
+    private void signOut() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            LoginManager.getInstance().logOut();
+            startActivity(new Intent(getActivity(), SignInActivity.class));
+            requireActivity().finish();
+            Toast.makeText(getActivity(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+        });
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -204,10 +177,20 @@ public class SettingsFragment extends Fragment {
             String updatedFirstName = data.getStringExtra("updatedFirstName");
             String updatedLastName = data.getStringExtra("updatedLastName");
             String updatedPhoneNumber = data.getStringExtra("updatedPhoneNumber");
+            String updatedImageUrl = data.getStringExtra("updatedImageUrl");
 
             String fullName = updatedFirstName + " " + updatedLastName;
             tvUserName.setText(fullName);
+
             tvPhoneNumber.setText(updatedPhoneNumber);
+
+            if (updatedImageUrl != null && !updatedImageUrl.isEmpty()) {
+                Picasso.get()
+                        .load(updatedImageUrl)
+                        .placeholder(R.drawable.user)
+                        .error(R.drawable.category_shorts)
+                        .into(imageUser);
+            }
         }
     }
 
