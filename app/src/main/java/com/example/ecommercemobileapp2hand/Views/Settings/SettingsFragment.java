@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
@@ -38,7 +39,7 @@ import com.squareup.picasso.Picasso;
 
 
 public class SettingsFragment extends Fragment {
-    private ExecutorService service = Executors.newSingleThreadExecutor();
+    private ExecutorService service;
     private TextView tvUserName, tvEmail, tvPhoneNumber, tvSignOut, tvEdit;
     private TextView tvAddress, tvWishlist, tvPayment, tvHelp, tvSupport;
     private static final String TAG = "SettingsFragment";
@@ -54,15 +55,15 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
         addControls(view);
-
-        addEvent();
         return view;
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
+    public void onResume() {
+        super.onResume();
+        if(service == null){
+            service = Executors.newSingleThreadExecutor();
+        }
         firebaseAuth = FirebaseAuth.getInstance();
         GoogleSignInAccount googleAccount = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (googleAccount != null) {
@@ -74,9 +75,8 @@ public class SettingsFragment extends Fragment {
             }
         }
         //fetchUserDataFromSharedPreferences();
-        fetchUserData();
+
         addEvent();
-        return view;
     }
 
     private void addControls(View view) {
@@ -122,7 +122,7 @@ public class SettingsFragment extends Fragment {
 
     private void fetchUserData(String email) {
         if (email != null) {
-            userAccount = UserAccountHandler.getUserAccountByEmail(email);
+            userAccount = UserAccountManager.instance.getCurrentUserAccount();
 
             if (userAccount != null) {
                 tvEmail.setText(userAccount.getEmail());
@@ -134,6 +134,7 @@ public class SettingsFragment extends Fragment {
                 tvPhoneNumber.setText(userAccount.getPhoneNumber() != null ? userAccount.getPhoneNumber() : "Null");
 
                 if (userAccount.getImgUrl() != null && !userAccount.getImgUrl().isEmpty()) {
+
                     String baseUrl = "https://res.cloudinary.com/dr0xghsna/image/upload/";
                     fullImageUrl = baseUrl + userAccount.getImgUrl();
 

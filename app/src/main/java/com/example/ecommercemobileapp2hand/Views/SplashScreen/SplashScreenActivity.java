@@ -34,12 +34,11 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         new Handler().postDelayed(() -> {
             SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             boolean isLoggedIn = sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
-
             if (isLoggedIn) {
                 startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
             } else {
@@ -47,6 +46,12 @@ public class SplashScreenActivity extends AppCompatActivity {
             }
             finish();
         }, 1000);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 }
 

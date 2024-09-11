@@ -23,7 +23,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.ecommercemobileapp2hand.Controllers.OrderStatusHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Models.OrderStatus;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
@@ -37,10 +39,12 @@ import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class OrdersFragment extends Fragment {
-    private ExecutorService service = Executors.newCachedThreadPool();
+    private ExecutorService service;
+    private Future<?> task;
     private ChipGroup chipGroup;
     private RecyclerView recyOrders;
     private ArrayList<UserOrder> lstorders;
@@ -87,12 +91,6 @@ public class OrdersFragment extends Fragment {
     }
 
 
-    private void getBundleIntent(){
-        if (getArguments() != null)
-        {
-            userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
-        }
-    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -101,28 +99,11 @@ public class OrdersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getBundleIntent();
-        lstorders = userAccount.getLstOrder();
-
-        if (lstorders.isEmpty())
-        {
-            linear_order1.setGravity(Gravity.CENTER);
-            chipGroup.setVisibility(View.GONE);
-            recyOrders.setVisibility(View.GONE);
-            linear_order2.setVisibility(View.VISIBLE);
-
-            btn_explore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getContext(), CategoriesActivity.class);
-                    startActivity(intent);
-                }
-            });
+        userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
+        if(service == null){
+            service = Executors.newCachedThreadPool();
         }
-        else
-        {
-            loadOrderStatus();
-        }
+        bgTask();
     }
     @Override
     public void onDestroy() {
@@ -139,6 +120,32 @@ public class OrdersFragment extends Fragment {
             }
         }
     }
+    private void bgTask(){
+        getActivity().runOnUiThread(()->{
+            lstorders = userAccount.getLstOrder();
+            if (lstorders.isEmpty())
+            {
+                linear_order1.setGravity(Gravity.CENTER);
+                chipGroup.setVisibility(View.GONE);
+                recyOrders.setVisibility(View.GONE);
+                linear_order2.setVisibility(View.VISIBLE);
+
+                btn_explore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), CategoriesActivity.class);
+                        startActivity(intent);
+                    }
+                });
+            }
+            else
+            {
+                loadOrderStatus();
+            }
+        });
+
+
+    }
     private void addControl(View view){
         chipGroup = view.findViewById(R.id.chipgroup);
         recyOrders = view.findViewById(R.id.recyOrders);
@@ -148,7 +155,7 @@ public class OrdersFragment extends Fragment {
         btn_explore = view.findViewById(R.id.btn_explore);
     }
     private void loadOrderStatus(){
-        service.execute(()->{
+       task = service.submit(()->{
             oderstatus = OrderStatusHandler.getData();
             getActivity().runOnUiThread(()->{
                 if(!oderstatus.isEmpty() && oderstatus != null)

@@ -73,15 +73,16 @@ public class SignInActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        addControls();
         firebaseAuth = FirebaseAuth.getInstance();
         callbackManager = CallbackManager.Factory.create();
     }
 
+
+
     @Override
-    protected void onStart() {
-        super.onStart();
-        addControls();
+    protected void onResume() {
+        super.onResume();
         addEvents();
         facebookLoginMethod();
         googleLoginMethod();
@@ -173,17 +174,20 @@ public class SignInActivity extends AppCompatActivity {
         if (user != null) {
             String email = user.getEmail();
             if (email != null) {
-                UserAccount userAccount = UserAccountHandler.getUserAccount(email);
-                UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-                UserAccountHandler userAccountHandler = new UserAccountHandler();
 
-                service.execute(()->{
+
+                service.submit(()->{
+                    UserAccount userAccount = UserAccountHandler.getUserAccount(email);
+                    UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                    UserAccountHandler userAccountHandler = new UserAccountHandler();
                     boolean emailExists = userAccountHandler.checkEmailExists(email);
-                    Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
-                    intent.putExtra("UserAccount", userAccount);
-                    intent.putExtra("email", email);
-                    intent.putExtra("displayName", user.getDisplayName());
-                    startActivity(intent);
+                    runOnUiThread(()->{
+                        Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
+                        intent.putExtra("UserAccount", userAccount);
+                        intent.putExtra("email", email);
+                        intent.putExtra("displayName", user.getDisplayName());
+                        startActivity(intent);
+                    });
                 });
 
 

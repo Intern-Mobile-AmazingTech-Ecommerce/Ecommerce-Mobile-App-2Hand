@@ -49,7 +49,8 @@ import com.google.android.material.button.MaterialButton;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    private ExecutorService service = Executors.newCachedThreadPool();
+    private ExecutorService service;
+    private Future<?> backgroundTask;
     private String gender;
     private TextView tvSeeAll;
     private ArrayList<Product> lstPro;
@@ -142,30 +143,26 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (service == null) {
+            service = Executors.newCachedThreadPool();
+        }
         getGenderKey();
-        loadListPro(gender);
+        bgTask();
         loadCategoriesData();
         addEvent();
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        // Nhận tt user từ Bundle
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            UserAccount userAccount = (UserAccount) bundle.getSerializable("UserAccount");
-            if (userAccount != null) {
-                String email = userAccount.getEmail();
-            }
+    public void onPause() {
+        super.onPause();
+        if(!backgroundTask.isDone()){
+            backgroundTask.cancel(true);
         }
     }
-
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
 
 
         if (service != null && !service.isShutdown()) {
@@ -183,27 +180,29 @@ public class HomeFragment extends Fragment {
 
 
     private void loadListPro(String gen) {
-      service.submit(() -> {
-          try{
-              lstPro = ProductHandler.getDataByObjectName(gen);
-              ArrayList<Product> allListPro = ProductHandler.getData();
-              ProductManager.getInstance().setLstPro(lstPro);
-              ProductManager.getInstance().getAllListPro(allListPro);
-              getActivity().runOnUiThread(() -> {
-                  loadTopSellingProductsData();
-                  loadNewInProductsData();
-              });
-          }catch (Exception e) {
-              getActivity().runOnUiThread(() -> {
-                  Toast.makeText(getContext(), "Loading Data Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-              });
-
-          }
-
-        });
+        lstPro = ProductHandler.getDataByObjectName(gen);
+        ArrayList<Product> allListPro = ProductHandler.getData();
+        ProductManager.getInstance().setLstPro(lstPro);
+        ProductManager.getInstance().getAllListPro(allListPro);
     }
 
+    private void bgTask() {
+        backgroundTask = service.submit(() -> {
+            loadListPro(gender);
+            getActivity().runOnUiThread(() -> {
+                if (!categoryList.isEmpty() && categoryList != null) {
 
+                    ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
+                    categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
+                    recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+                    recyclerViewCategories.setAdapter(categoriesAdapter);
+                }
+                loadTopSellingProductsData();
+                loadNewInProductsData();
+
+            });
+        });
+    }
     private void addControl(View view) {
 
         recyclerViewCategories = view.findViewById(R.id.recyclerViewCategories);
@@ -216,26 +215,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadCategoriesData() {
-        service.submit(() -> {
-            try{
-                categoryList = CategoriesHandler.getData();
-                getActivity().runOnUiThread(() -> {
-                    if (!categoryList.isEmpty() && categoryList != null) {
-                        CategoriesManager.getInstance().setProductCategories(categoryList);
-                        ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
-                        categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
-                        recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
-                        recyclerViewCategories.setAdapter(categoriesAdapter);
-                    }
-                });
-            }catch (Exception e){
-                getActivity().runOnUiThread(()->{
-                    Toast.makeText(getContext(),"Loading Data Error: "+e.getMessage(),Toast.LENGTH_SHORT).show();
-                });
-            }
 
-        });
-
+        categoryList = CategoriesHandler.getData();
+        CategoriesManager.getInstance().setProductCategories(categoryList);
     }
 
     private void loadTopSellingProductsData() {
@@ -277,7 +259,6 @@ public class HomeFragment extends Fragment {
         recyclerViewNewIn.setAdapter(NewInAdapter);
 
     }
-
 
 
     private void addEvent() {
