@@ -81,12 +81,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             String email = intent.getStringExtra("email");
-            String userId = intent.getStringExtra("user_id");
             // Lưu vào sharedpreferences
             sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("user_email", email);
-            editor.putString("user_id",userId);
             editor.apply();
         }
     }

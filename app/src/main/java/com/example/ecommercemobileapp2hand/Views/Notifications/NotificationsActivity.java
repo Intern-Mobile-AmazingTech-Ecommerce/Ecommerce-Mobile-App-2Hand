@@ -59,7 +59,6 @@ public class NotificationsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             String email = intent.getStringExtra("email");
-            // Lưu vào SharedPreferences
             SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("user_email", email);
