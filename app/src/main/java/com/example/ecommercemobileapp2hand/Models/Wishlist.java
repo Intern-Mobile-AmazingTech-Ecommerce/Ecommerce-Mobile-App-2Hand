@@ -1,19 +1,26 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Wishlist implements Serializable {
     private int wishlist_id;
     private String wishlist_name;
     private int wishlist_quantity;
 
+    public Wishlist(int wishlist_id, String wishlist_name, int wishlist_quantity) {
+        this.wishlist_id = wishlist_id;
+        this.wishlist_name = wishlist_name;
+        this.wishlist_quantity = wishlist_quantity;
+    }
+
     public Wishlist() {
     }
 
-    public Wishlist(int wishlist_id, String wishlist_name) {
-        this.wishlist_id = wishlist_id;
-        this.wishlist_name = wishlist_name;
-    }
+
+
 
     public int getWishlist_id() {
         return wishlist_id;

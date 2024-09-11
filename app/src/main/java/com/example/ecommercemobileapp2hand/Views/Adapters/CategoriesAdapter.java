@@ -23,9 +23,13 @@ import com.squareup.picasso.Picasso;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
-
+    private ExecutorService service = Executors.newCachedThreadPool();
+    private Future<?> currentTask;
     private ArrayList<ProductCategory> categories;
     private Context context;
     private int layout;
@@ -45,8 +49,13 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         ProductCategory category = categories.get(position);
         holder.textViewCategoryName.setText(category.getProduct_category_name());
-        String imgUrl = Util.getCloudinaryImageUrl(context,category.getProduct_category_thumbnail(),592,592);
-        Picasso.get().load(imgUrl).into(holder.imageViewCategoryIcon);
+        currentTask = service.submit(()->{
+            String imgUrl = Util.getCloudinaryImageUrl(context,category.getProduct_category_thumbnail(),592,592);
+            ((android.app.Activity)context).runOnUiThread(()->{
+               Picasso.get().load(imgUrl).into(holder.imageViewCategoryIcon);
+
+            });
+        });
         holder.relative_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

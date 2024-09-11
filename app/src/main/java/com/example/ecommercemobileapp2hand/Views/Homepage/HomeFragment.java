@@ -14,11 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
 import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
+import com.example.ecommercemobileapp2hand.Models.Singleton.CategoriesManager;
+import com.example.ecommercemobileapp2hand.Models.Singleton.ProductManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
@@ -33,6 +36,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -157,9 +161,13 @@ public class HomeFragment extends Fragment {
         }
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+
+
         if (service != null && !service.isShutdown()) {
             service.shutdown();
             try {
@@ -172,16 +180,29 @@ public class HomeFragment extends Fragment {
             }
         }
     }
-    private void loadListPro(String gen) {
-        service.execute(() -> {
-            lstPro = ProductHandler.getDataByObjectName(gen);
-            getActivity().runOnUiThread(()->{
-                loadTopSellingProductsData();
-                loadNewInProductsData();
-            });
-        });
 
+
+    private void loadListPro(String gen) {
+      service.submit(() -> {
+          try{
+              lstPro = ProductHandler.getDataByObjectName(gen);
+              ArrayList<Product> allListPro = ProductHandler.getData();
+              ProductManager.getInstance().setLstPro(lstPro);
+              ProductManager.getInstance().getAllListPro(allListPro);
+              getActivity().runOnUiThread(() -> {
+                  loadTopSellingProductsData();
+                  loadNewInProductsData();
+              });
+          }catch (Exception e) {
+              getActivity().runOnUiThread(() -> {
+                  Toast.makeText(getContext(), "Loading Data Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+              });
+
+          }
+
+        });
     }
+
 
     private void addControl(View view) {
 
@@ -195,23 +216,31 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadCategoriesData() {
-        service.execute(() -> {
-            categoryList = CategoriesHandler.getData();
-            getActivity().runOnUiThread(() -> {
-                if (!categoryList.isEmpty() && categoryList != null) {
+        service.submit(() -> {
+            try{
+                categoryList = CategoriesHandler.getData();
+                getActivity().runOnUiThread(() -> {
+                    if (!categoryList.isEmpty() && categoryList != null) {
+                        CategoriesManager.getInstance().setProductCategories(categoryList);
+                        ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
+                        categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
+                        recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+                        recyclerViewCategories.setAdapter(categoriesAdapter);
+                    }
+                });
+            }catch (Exception e){
+                getActivity().runOnUiThread(()->{
+                    Toast.makeText(getContext(),"Loading Data Error: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+                });
+            }
 
-                    ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
-                    categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
-                    recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
-                    recyclerViewCategories.setAdapter(categoriesAdapter);
-                }
-            });
         });
+
     }
 
     private void loadTopSellingProductsData() {
 
-        if (lstPro != null && lstPro.size() > 0) {
+        if (ProductManager.getInstance().getLstPro() != null && ProductManager.getInstance().getLstPro().size() > 0) {
             lstProTopSelling = lstPro.stream()
                     .filter(product -> product.getSold().compareTo(BigDecimal.ZERO) > 0)
                     .sorted(Comparator.comparing(Product::getSold).reversed())
@@ -230,7 +259,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadNewInProductsData() {
-        if (lstPro != null && lstPro.size() > 0) {
+        if (ProductManager.getInstance().getLstPro() != null && ProductManager.getInstance().getLstPro().size() > 0) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS);
             lstProNewIn = lstPro.stream()

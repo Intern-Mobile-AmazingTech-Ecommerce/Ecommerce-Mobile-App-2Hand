@@ -28,13 +28,16 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.ProductCardAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class CategoryProductActivity extends AppCompatActivity {
     private ExecutorService service = Executors.newCachedThreadPool();
+    private CountDownLatch latch = new CountDownLatch(1);
     private ProductCategory Category;
     private ImageView imgBack;
     private TextView tvCategoryName;
@@ -98,6 +101,7 @@ public class CategoryProductActivity extends AppCompatActivity {
 
             newInList = intent.getParcelableArrayListExtra("NewInList");
         }
+        latch.countDown();
     }
 
 
@@ -105,12 +109,9 @@ public class CategoryProductActivity extends AppCompatActivity {
         imgBack = findViewById(R.id.imgBack);
         tvCategoryName = findViewById(R.id.tvCategoryName);
         recyCategoryProduct = findViewById(R.id.recyCategoryProduct);
-
-
     }
 
     private void loadRecycleCategoryProduct() {
-
 
         if (Category != null) {
             service.execute(() -> {
@@ -128,10 +129,12 @@ public class CategoryProductActivity extends AppCompatActivity {
             });
 
         } else if (topSellingList.size() > 0) {
+
             proAdapter = new ProductCardAdapter(topSellingList, CategoryProductActivity.this);
             tvCategoryName.setText("Top Selling (" + topSellingList.size() + ")");
 
         } else if (newInList.size() > 0) {
+
             proAdapter = new ProductCardAdapter(newInList, CategoryProductActivity.this);
             tvCategoryName.setText("New In (" + newInList.size() + ")");
         }

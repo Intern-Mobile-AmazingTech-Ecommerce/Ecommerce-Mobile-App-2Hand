@@ -122,6 +122,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 return;
             }
 
+
             if (imageUrl != null) {
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 executor.execute(() -> uploadImage(firstName, lastName, phoneNumber));
@@ -130,6 +131,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 updateUserDetails(firstName, lastName, phoneNumber, null);
                 finish();
             }
+
         });
 
         tvEdit.setOnClickListener(view -> {

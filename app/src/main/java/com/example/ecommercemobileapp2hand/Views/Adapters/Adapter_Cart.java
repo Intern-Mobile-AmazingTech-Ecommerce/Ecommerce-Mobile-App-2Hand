@@ -28,7 +28,7 @@ public class Adapter_Cart extends ArrayAdapter<Cartt> {
         IdLayout = idLayout;
         this.myList = myList;
     }
-    //getW
+    //get
 
     @NonNull
     @Override

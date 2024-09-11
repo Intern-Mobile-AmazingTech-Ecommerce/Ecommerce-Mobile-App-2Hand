@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="700dp"
     android:background="@drawable/rounded_border_popup_menu"
-    android:paddingHorizontal="24dp">
+    android:paddingHorizontal="24dp"
+    android:paddingBottom="20dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -52,7 +53,6 @@
             android:layout_marginVertical="14dp"
             android:backgroundTint="#000000"
             android:text="New wishlist"
-            android:textSize="20dp"
             android:textColor="#FFFFFF" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -66,12 +66,12 @@
         <Button
             android:id="@+id/btnDone"
             style="@style/btn_continue"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginVertical="14dp"
+            android:layout_marginVertical="15dp"
             android:backgroundTint="@color/purple"
+            android:layout_centerHorizontal="true"
             android:text="Done" />
 
     </RelativeLayout>

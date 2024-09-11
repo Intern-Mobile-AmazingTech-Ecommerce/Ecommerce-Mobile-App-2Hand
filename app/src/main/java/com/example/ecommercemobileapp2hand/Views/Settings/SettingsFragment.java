@@ -25,10 +25,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+
 public class SettingsFragment extends Fragment {
+    private ExecutorService service = Executors.newSingleThreadExecutor();
     private TextView tvUserName, tvEmail, tvPhoneNumber, tvSignOut, tvEdit;
     private TextView tvAddress, tvWishlist, tvPayment, tvHelp, tvSupport;
     private static final String TAG = "SettingsFragment";
@@ -63,6 +73,10 @@ public class SettingsFragment extends Fragment {
                 fetchUserData(user.getEmail());
             }
         }
+        //fetchUserDataFromSharedPreferences();
+        fetchUserData();
+        addEvent();
+        return view;
     }
 
     private void addControls(View view) {

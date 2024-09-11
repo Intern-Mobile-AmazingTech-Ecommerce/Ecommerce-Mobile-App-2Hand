@@ -1,7 +1,11 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class WishlistProduct {
+    @JsonProperty("wishlist_id")
     private int wishlist_id;
+    @JsonProperty("product_details_id")
     private int product_details_id;
 
     public WishlistProduct(){}
