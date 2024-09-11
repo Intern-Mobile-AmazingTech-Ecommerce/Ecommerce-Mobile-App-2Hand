@@ -7,10 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".Views.Settings.WishlistActivity"
     style="@style/SCREEN"
-
     >
-
-
     <ImageView
 
         android:id="@+id/btnBack"
