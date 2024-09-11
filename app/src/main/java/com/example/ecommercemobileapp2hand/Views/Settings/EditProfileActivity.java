@@ -19,6 +19,8 @@ import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.R;
 
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class EditProfileActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_PICK_IMAGE = 1;
@@ -77,14 +79,17 @@ public class EditProfileActivity extends AppCompatActivity {
                 phoneNumberEditText.setError("Số điện thoại không hợp lệ");
                 return;
             }
-
-            UserAccountHandler.updateUserAccountDetails(firstName, lastName, phoneNumber, imageUrl, email);
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("updatedFirstName", firstName);
-            resultIntent.putExtra("updatedLastName", lastName);
-            resultIntent.putExtra("updatedPhoneNumber", phoneNumber);
-            setResult(RESULT_OK, resultIntent);
-            Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+            ExecutorService service = Executors.newCachedThreadPool();
+            service.execute(()->{
+                UserAccountHandler.updateUserAccountDetails(firstName, lastName, phoneNumber, imageUrl, email);
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("updatedFirstName", firstName);
+                resultIntent.putExtra("updatedLastName", lastName);
+                resultIntent.putExtra("updatedPhoneNumber", phoneNumber);
+                setResult(RESULT_OK, resultIntent);
+                Toast.makeText(this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+            });
+            service.shutdown();
             finish();
         });
 

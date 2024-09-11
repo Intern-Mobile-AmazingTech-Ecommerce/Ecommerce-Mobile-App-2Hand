@@ -33,15 +33,23 @@ import com.squareup.picasso.Picasso;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.MyViewHolder> {
     ArrayList<Product> lstPro;
     Context context;
+    ArrayList<ProductDetails> lstDetails;
+    private ExecutorService service = Executors.newCachedThreadPool();
+    private Future<?> currentTask;
 
     public ProductCardAdapter(ArrayList<Product> lstPro, Context context) {
         this.lstPro = lstPro;
         this.context = context;
     }
+
+
     public void setFilteredList(ArrayList<Product> newProductList) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ProductDiffCallBack(this.lstPro,newProductList));
         this.lstPro.clear();
@@ -57,46 +65,52 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Product pro = lstPro.get(position);
-        ProductDetails details = new ProductDetails();
-        Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
-                .filter(detail -> detail.getSale_price() != null && detail.getSale_price().compareTo(BigDecimal.ZERO) > 0)
-                .findFirst();
 
-        String url = "";
-        holder.tvProductName.setText(pro.getProduct_name());
-        holder.tvSalePrice.setVisibility(View.VISIBLE);
-        if(firstSaleDetails.isPresent()){
-            details = firstSaleDetails.get();
-            Log.d("IMG_URL DETAILS"+details.getProduct_details_id(),details.getImgDetailsArrayList().get(0).getImg_url());
-            url = Util.getCloudinaryImageUrl(context,details.getImgDetailsArrayList().get(0).getImg_url(),159,220);
-            holder.tvSalePrice.setText("$" + String.valueOf(details.getSale_price()));
-            holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()));
-            // Gạch ngang giá gốc
-            holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }else {
-            url = Util.getCloudinaryImageUrl(context, pro.getThumbnail(),159,220);
-            holder.tvPrice.setVisibility(View.GONE);
-            holder.tvSalePrice.setText("$" + String.valueOf(pro.getBase_price()));
-        }
-
-        Picasso.get().load(url).into(holder.img_Product);
-
-
-        ProductDetails finalDetails = details;
-        holder.productCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ProductPage.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("lstDetails",pro);
-                if(firstSaleDetails.isPresent()){
-                    bundle.putParcelable("currentSale", finalDetails);
-                }
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+        currentTask = service.submit(()->{
+            Product pro = lstPro.get(position);
+            ProductDetails details = new ProductDetails();
+            Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
+                    .filter(detail -> detail.getSale_price() != null && detail.getSale_price().compareTo(BigDecimal.ZERO) > 0)
+                    .findFirst();
+            String url = "";
+            if(firstSaleDetails.isPresent()){
+                details = firstSaleDetails.get();
+                url = Util.getCloudinaryImageUrl(context,details.getImgDetailsArrayList().get(0).getImg_url(),159,220);
+            }else {
+                url = Util.getCloudinaryImageUrl(context, pro.getThumbnail(),159,220);
             }
+            String finalUrl = url;
+            ProductDetails finalDetails = details;
+            ((android.app.Activity)context).runOnUiThread(()->{
+                holder.tvProductName.setText(pro.getProduct_name());
+                holder.tvSalePrice.setVisibility(View.VISIBLE);
+                Picasso.get().load(finalUrl).into(holder.img_Product);
+                if(firstSaleDetails.isPresent()){
+                    Log.d("IMG_URL DETAILS"+ finalDetails.getProduct_details_id(), finalDetails.getImgDetailsArrayList().get(0).getImg_url());
+                    holder.tvSalePrice.setText("$" + String.valueOf(finalDetails.getSale_price()));
+                    holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()));
+                    // Gạch ngang giá gốc
+                    holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                }else {
+                    holder.tvPrice.setVisibility(View.GONE);
+                    holder.tvSalePrice.setText("$" + String.valueOf(pro.getBase_price()));
+                }
+                holder.productCard.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, ProductPage.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("lstDetails",pro);
+                        if(firstSaleDetails.isPresent()){
+                            bundle.putParcelable("currentSale", finalDetails);
+                        }
+                        intent.putExtras(bundle);
+                        context.startActivity(intent);
+                    }
+                });
+            });
         });
+
         holder.img_Heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +122,14 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
     @Override
     public int getItemCount() {
         return lstPro.size();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull MyViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (currentTask != null) {
+            currentTask.cancel(true); // Hủy tác vụ hiện tại
+        }
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder

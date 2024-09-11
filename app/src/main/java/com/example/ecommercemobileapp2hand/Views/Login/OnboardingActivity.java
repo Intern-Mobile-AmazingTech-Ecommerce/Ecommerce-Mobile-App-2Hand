@@ -32,6 +32,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class OnboardingActivity extends AppCompatActivity {
     private Spinner spiAge;
@@ -105,7 +107,11 @@ public class OnboardingActivity extends AppCompatActivity {
                 String firstName = intent.getStringExtra("firstName");
                 String lastName = intent.getStringExtra("lastName");
 
-                UserAccountHandler.saveUserToDB(firstName, lastName, email, gender, ageRange);
+                ExecutorService service = Executors.newCachedThreadPool();
+                service.execute(()->{
+                    UserAccountHandler.saveUserToDB(firstName, lastName, email, gender, ageRange);
+                });
+
             }
 
             SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
@@ -122,7 +128,6 @@ public class OnboardingActivity extends AppCompatActivity {
                 intent.putExtra("firstName", user.getDisplayName().split(" ")[0]);
                 intent.putExtra("lastName", user.getDisplayName().split(" ").length > 1 ? user.getDisplayName().split(" ")[1] : "");
             }
-
             startActivity(intent);
             finish();
         });

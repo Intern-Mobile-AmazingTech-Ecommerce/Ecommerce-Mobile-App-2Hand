@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Login;
 
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +21,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
@@ -91,6 +93,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                     editor.apply();
 
                                     UserAccount userAccount = UserAccountHandler.getUserAccount(email);
+                                    UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
                                     //truyền thông tin user qua MainActivity
                                     FirebaseUser user = firebaseAuth.getCurrentUser();
                                     if (user != null) {

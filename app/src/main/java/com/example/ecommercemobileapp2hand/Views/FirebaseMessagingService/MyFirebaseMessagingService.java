@@ -22,11 +22,15 @@ import java.util.Objects;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MyFirebaseMessagingService  extends FirebaseMessagingService {
+    ExecutorService service = Executors.newCachedThreadPool();
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // Kiểm tra nếu tin nhắn có data
+
         Log.d("MyFirebaseMessagingService", "Tin nhắn đã nhận: " + remoteMessage.getData().toString());
         if (remoteMessage.getData().size() > 0) {
             String userOrderId = remoteMessage.getData().get("user_order_id");
@@ -37,17 +41,20 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
             // Tạo nội dung thông báo
             String notificationContent = "Order #" + userOrderId + " changed status to " + orderStatusName;
 
-            // Update order status in the database
-            UserOrderHandler.updateOrderStatus(Integer.parseInt(userOrderId), Integer.parseInt(orderStatusId));
-            // Tạo đối tượng thông báo mới
-            Notifications notification = new Notifications();
-            notification.setNotifications_content(notificationContent);
-            notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
-            notification.setUser_id(userId);
-            notification.setViewed(false);
+            service.execute(()->{
+                // Update order status in the database
+                UserOrderHandler.updateOrderStatus(Integer.parseInt(userOrderId), Integer.parseInt(orderStatusId));
+                // Tạo đối tượng thông báo mới
+                Notifications notification = new Notifications();
+                notification.setNotifications_content(notificationContent);
+                notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+                notification.setUser_id(userId);
+                notification.setViewed(false);
 
-            // Lưu thông báo vào cơ sở dữ liệu
-            NotificationsHandler.saveNotification(notification);
+                // Lưu thông báo vào cơ sở dữ liệu
+                NotificationsHandler.saveNotification(notification);
+            });
+
 
             // Gửi thông báo đến người dùng
 //            sendNotification(userOrderId, notificationContent);

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 public class ProductDetailsHandler {
     private static DBConnect dbConnect = new DBConnect();
     private static Connection connection;
-
 //    public static ArrayList<ProductDetails> getData() {
 //        connection = dbConnect.connectionClass();
 //        ArrayList<ProductDetails> list = new ArrayList<>();

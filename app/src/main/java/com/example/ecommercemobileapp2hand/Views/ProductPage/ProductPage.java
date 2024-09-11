@@ -48,6 +48,7 @@ import com.example.ecommercemobileapp2hand.Models.ProductColor;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsImg;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsSize;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
@@ -66,9 +67,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -127,11 +130,7 @@ public class ProductPage extends AppCompatActivity {
 
     }
     private void getUserAccount(){
-        service.execute(()->{
-            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs",MODE_PRIVATE);
-            String email = sharedPreferences.getString("userEmail","");
-            userAccount = UserAccountHandler.getUserAccountByEmail(email);
-        });
+        userAccount = UserAccountManager.instance.getCurrentUserAccount();
     }
     @Override
     protected void onResume() {
@@ -204,8 +203,37 @@ public class ProductPage extends AppCompatActivity {
             btnQuantity.setVisibility(View.VISIBLE);
             btnSize.setVisibility(View.VISIBLE);
         }
-    }
 
+        isFavorite(curr);
+
+    }
+    private void isFavorite(ProductDetails curr){
+        service.submit(()->{
+            boolean result = WishlistHandler.checkProductDetailsExistsInWishlistByUserID(curr.getProduct_details_id(),userAccount.getUserId());
+            runOnUiThread(()->{
+                if (result) {
+                    btnFavorite.setImageResource(R.drawable.red_heart);
+                    currentDetails.setFavorite(true);;
+                }
+                else
+                {
+                    int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                    int bgResource;
+                    if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                        bgResource = R.drawable.white_heart;
+                    } else {
+                        bgResource = R.drawable.black_heart;
+                    }
+
+                    btnFavorite.setImageResource(bgResource);
+                    currentDetails.setFavorite(false);
+
+                }
+            });
+
+        });
+
+    }
     private void addControl() {
 
         //TextView
@@ -271,26 +299,7 @@ public class ProductPage extends AppCompatActivity {
         });
 
         btnFavorite.setOnClickListener(v -> {
-
-            if (currentDetails.getFavorite() == false) {
-                btnFavorite.setImageResource(R.drawable.red_heart);
-                currentDetails.setFavorite(true);
-                showAddToWLOverlay();
-            }
-            else
-            {
-                int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                int bgResource;
-                if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-                    bgResource = R.drawable.white_heart;
-                } else {
-                    bgResource = R.drawable.black_heart;
-                }
-
-                btnFavorite.setImageResource(bgResource);
-                currentDetails.setFavorite(false);
-                showAddToWLOverlay();
-            }
+        showAddToWLOverlay();
         });
 
         btnAddToBag.setOnClickListener(new View.OnClickListener() {
@@ -302,19 +311,16 @@ public class ProductPage extends AppCompatActivity {
     }
 
     private void loadRecycleViewImgSlider(ProductDetails productDetails) {
-
-        service.execute(() -> {
+        runOnUiThread(() -> {
             imgList = productDetails.getImgDetailsArrayList();
-            runOnUiThread(() -> {
-                if (!imgList.isEmpty() && imgList != null) {
-                    imgSliderApdater = new RecycleProductImageAdapter(imgList, getApplicationContext());
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-                    recycleImgSlider.setLayoutManager(layoutManager);
-                    recycleImgSlider.setAdapter(imgSliderApdater);
-                }
-
-            });
+            if (!imgList.isEmpty()) {
+                imgSliderApdater = new RecycleProductImageAdapter(imgList, this);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+                recycleImgSlider.setLayoutManager(layoutManager);
+                recycleImgSlider.setAdapter(imgSliderApdater);
+            }
         });
+
 
     }
 
@@ -445,10 +451,18 @@ public class ProductPage extends AppCompatActivity {
         loadingWishlist.execute(()->{
             ArrayList<Wishlist> wishlists = WishlistHandler.getWishListByUserID(userAccount.getUserId());
             runOnUiThread(()->{
-                WishListAdapter wishListAdapter = new WishListAdapter(ProductPage.this,wishlists,currentDetails.getProduct_details_id());
+                WishListAdapter wishListAdapter = new WishListAdapter(ProductPage.this, wishlists, currentDetails.getProduct_details_id());
                 recyWL.setLayoutManager(new LinearLayoutManager(ProductPage.this,LinearLayoutManager.VERTICAL,false));
                 recyWL.setAdapter(wishListAdapter);
             });
+        });
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+                isFavorite(currentDetails);
+            }
         });
 
         tv_cancel.setOnClickListener(new View.OnClickListener() {
@@ -465,7 +479,7 @@ public class ProductPage extends AppCompatActivity {
                     loadingWishlist.execute(()->{
                         ArrayList<Wishlist> updatedWishlists = WishlistHandler.getWishListByUserID(userAccount.getUserId());
                         runOnUiThread(() -> {
-                            WishListAdapter updatedWishListAdapter = new WishListAdapter(ProductPage.this, updatedWishlists, currentDetails.getProduct_details_id());
+                            WishListAdapter updatedWishListAdapter = new WishListAdapter(ProductPage.this, updatedWishlists, currentDetails.getProduct_details_id() );
                             recyWL.setAdapter(updatedWishListAdapter);
                         });
                     });

@@ -18,8 +18,13 @@ import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.MyViewHolder>{
+    private ExecutorService service = Executors.newCachedThreadPool();
+    private Future<?> currentTask;
     ArrayList<UserOrderProducts> lstOrderDetails;
     Context context;
 
@@ -39,8 +44,13 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         UserOrderProducts details = lstOrderDetails.get(position);
 
-        String url = Util.getCloudinaryImageUrl(context,  details.getThumbnail(), -1, -1);
-        Picasso.get().load(url).into(holder.imgPro);
+
+        currentTask = service.submit(()->{
+            String url = Util.getCloudinaryImageUrl(context,  details.getThumbnail(), -1, -1);
+            ((android.app.Activity)context).runOnUiThread(()->{
+                Picasso.get().load(url).into(holder.imgPro);
+            });
+        });
 
         holder.tv_ProductName.setText(details.getProduct_name());
         holder.tv_SizeColor.setText(details.getProduct_color_name() + ", Size " + details.getSize_name());
@@ -61,6 +71,14 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         }
         BigDecimal totalPrice = details.getSale_price().multiply(BigDecimal.valueOf(details.getAmount()));
         holder.tvTotalPricePro.setText("Subtotal: $" + totalPrice);
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull MyViewHolder holder) {
+        super.onViewRecycled(holder);
+        if(currentTask!=null){
+            currentTask.cancel(true);
+        }
     }
 
     @Override

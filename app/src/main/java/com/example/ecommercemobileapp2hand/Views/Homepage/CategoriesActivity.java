@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
+import com.example.ecommercemobileapp2hand.Models.Singleton.CategoriesManager;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
 import com.example.ecommercemobileapp2hand.Views.App;
@@ -93,7 +94,7 @@ public class CategoriesActivity extends AppCompatActivity {
         // Initialize category list
         service.execute(()->{
             categoryList = new ArrayList<>();
-            categoryList = CategoriesHandler.getData();
+            categoryList = CategoriesManager.instance.getProductCategories();
             runOnUiThread(()->{
                 if(categoryList != null && !categoryList.isEmpty()){
                     categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);

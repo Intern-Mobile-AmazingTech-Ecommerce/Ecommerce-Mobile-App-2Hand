@@ -141,4 +141,110 @@ public class WishlistHandler {
         }
         return false;
     }
+    public static boolean checkProductDetailsExistsInWishlist(int product_details_id, int wishlist_id){
+        conn = dbConnect.connectionClass();
+        PreparedStatement stmt = null;
+        try{
+            if(conn!=null){
+                String sql = "SELECT COUNT(*) " +
+                        "FROM wishlist_product wp " +
+                        "INNER JOIN wishlist w ON w.wishlist_id = wp.wishlist_id " +
+                        "WHERE wp.product_details_id = ? AND wp.wishlist_id = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, product_details_id);
+                stmt.setInt(2, wishlist_id);
+                ResultSet rs = stmt.executeQuery();
+                if(rs.next()){
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            try{
+                conn.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean checkProductDetailsExistsInWishlistByUserID(int product_details_id, String userID){
+        conn = dbConnect.connectionClass();
+        PreparedStatement stmt = null;
+        try{
+            if(conn!=null){
+                String sql = "select COUNT(*)\n" +
+                        "from wishlist_product wp \n" +
+                        "inner join wishlist w on w.wishlist_id = wp.wishlist_id\n" +
+                        "where product_details_id = ? and w.user_id = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, product_details_id);
+                stmt.setString(2, userID);
+                ResultSet rs = stmt.executeQuery();
+                if(rs.next()){
+                    return rs.getInt(1) > 0;
+                }
+            }
+
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            try{
+                conn.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+    public static Boolean insertToWishlist(int wishlist_id,int product_details_id){
+        conn = dbConnect.connectionClass();
+        PreparedStatement preparedStatement = null;
+        try{
+            if(conn!=null){
+                String sql = "Insert into wishlist_product values(?,?)";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1,wishlist_id);
+                preparedStatement.setInt(2,product_details_id);
+                int rs = preparedStatement.executeUpdate();
+                return rs>0;
+            }
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            try{
+                conn.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+    public static Boolean removeFromWishlist(int wishlist_id,int product_details_id){
+        conn = dbConnect.connectionClass();
+        PreparedStatement preparedStatement = null;
+        try{
+            if(conn!=null){
+                String sql = "Delete from wishlist_product where wishlist_product.wishlist_id = ? and wishlist_product.product_details_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1,wishlist_id);
+                preparedStatement.setInt(2,product_details_id);
+                int rs = preparedStatement.executeUpdate();
+                return rs>0;
+            }
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }finally {
+            try{
+                conn.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
 }

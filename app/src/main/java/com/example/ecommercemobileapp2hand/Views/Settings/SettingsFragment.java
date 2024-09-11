@@ -33,8 +33,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SettingsFragment extends Fragment {
+    private ExecutorService service = Executors.newSingleThreadExecutor();
     private TextView tvUserName, tvEmail, tvPhoneNumber, tvSignOut, tvEdit;
     private TextView tvAddress, tvWishlist, tvPayment, tvHelp, tvSupport;
     private static final String TAG = "SettingsFragment";
@@ -125,21 +128,27 @@ public class SettingsFragment extends Fragment {
                 .getString("userEmail", null);
 
         if (email != null) {
-            UserAccount userAccount = UserAccountHandler.getUserAccountByEmail(email);
+            // Sử dụng biến finalEmail để đảm bảo giá trị không thay đổi
+            final String finalEmail = email;
+            service.execute(() -> {
+                UserAccount userAccount = UserAccountHandler.getUserAccountByEmail(finalEmail);
+                getActivity().runOnUiThread(() -> {
+                    if (userAccount != null) {
+                        String userEmail = userAccount.getEmail(); // Sử dụng biến khác để lưu giá trị mới
+                        String firstName = userAccount.getFirstName();
+                        String lastName = userAccount.getLastName();
+                        String phoneNumber = userAccount.getPhoneNumber();
 
-            if (userAccount != null) {
-                email = userAccount.getEmail();
-                String firstName = userAccount.getFirstName();
-                String lastName = userAccount.getLastName();
-                String phoneNumber = userAccount.getPhoneNumber();
-
-                tvEmail.setText(email);
-                String fullName = firstName + " " + lastName;
-                tvUserName.setText(fullName);
-                tvPhoneNumber.setText(phoneNumber != null ? phoneNumber : "Null");
-            } else {
-                Log.e(TAG, "Không tìm thấy người dùng với email: " + email);
-            }
+                        tvEmail.setText(userEmail);
+                        String fullName = firstName + " " + lastName;
+                        tvUserName.setText(fullName);
+                        tvPhoneNumber.setText(phoneNumber != null ? phoneNumber : "Null");
+                    } else {
+                        Log.e(TAG, "Không tìm thấy người dùng với email: " + finalEmail);
+                    }
+                });
+            });
+            service.shutdown(); // Đảm bảo rằng tài nguyên được giải phóng sau khi công việc hoàn tất
         } else {
             Log.e(TAG, "Email không hợp lệ.");
         }
