@@ -46,7 +46,7 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
         android:hint="Card Number"
-        android:inputType="text"
+        android:inputType="number"
         style="@style/address_param_box" />
 
     <LinearLayout
@@ -66,7 +66,7 @@
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:hint="CCV"
-            android:inputType="text" />
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/edtEXP"
