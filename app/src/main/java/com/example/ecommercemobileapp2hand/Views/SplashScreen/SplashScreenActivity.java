@@ -31,11 +31,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         new Handler().postDelayed(() -> {
             SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             boolean isLoggedIn = sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
@@ -49,8 +44,8 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
 
     }
 }

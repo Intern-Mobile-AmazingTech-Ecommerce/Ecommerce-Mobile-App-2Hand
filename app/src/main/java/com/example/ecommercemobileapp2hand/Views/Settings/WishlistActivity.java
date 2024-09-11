@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
@@ -48,7 +49,7 @@ public class WishlistActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getIt();
+        userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
         addEvent();
         loadRecycleViewCategories();
     }
@@ -91,7 +92,7 @@ public class WishlistActivity extends AppCompatActivity {
         service.execute(()->{
             wishList = WishlistHandler.getWishListByUserID(userAccount.getUserId());
             runOnUiThread(()->{
-                wishListAdapter = new WishListAdapter(WishlistActivity.this, wishList);
+                wishListAdapter = new WishListAdapter(WishlistActivity.this, wishList,-1 );
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(WishlistActivity.this,RecyclerView.VERTICAL,false);
                 rv_wishlist.setLayoutManager(layoutManager);
                 rv_wishlist.setAdapter(wishListAdapter);
@@ -99,9 +100,5 @@ public class WishlistActivity extends AppCompatActivity {
         });
 
     }
-    private void getIt()
-    {
-        Intent intent = getIntent();
-        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
-    }
+
 }

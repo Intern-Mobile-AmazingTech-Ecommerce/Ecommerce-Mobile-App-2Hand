@@ -50,7 +50,7 @@ public class AddAddressActivity extends AppCompatActivity {
             return insets;
         });
         addControls();
-        addAddress();
+
     }
 
     @Override
@@ -58,6 +58,7 @@ public class AddAddressActivity extends AppCompatActivity {
         super.onResume();
         addEvents();
         validateInput();
+        addAddress();
     }
 
     private void addControls()

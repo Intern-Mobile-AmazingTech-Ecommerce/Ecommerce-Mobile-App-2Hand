@@ -19,6 +19,8 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.R;
@@ -41,8 +43,6 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
     ArrayList<Product> lstPro;
     Context context;
     ArrayList<ProductDetails> lstDetails;
-    private ExecutorService service = Executors.newCachedThreadPool();
-    private Future<?> currentTask;
 
     public ProductCardAdapter(ArrayList<Product> lstPro, Context context) {
         this.lstPro = lstPro;
@@ -51,11 +51,12 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
 
     public void setFilteredList(ArrayList<Product> newProductList) {
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ProductDiffCallBack(this.lstPro,newProductList));
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ProductDiffCallBack(this.lstPro, newProductList));
         this.lstPro.clear();
         this.lstPro.addAll(newProductList);
         diffResult.dispatchUpdatesTo(this);
     }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,49 +67,45 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        currentTask = service.submit(()->{
-            Product pro = lstPro.get(position);
-            ProductDetails details = new ProductDetails();
-            Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
-                    .filter(detail -> detail.getSale_price() != null && detail.getSale_price().compareTo(BigDecimal.ZERO) > 0)
-                    .findFirst();
-            String url = "";
-            if(firstSaleDetails.isPresent()){
-                details = firstSaleDetails.get();
-                url = Util.getCloudinaryImageUrl(context,details.getImgDetailsArrayList().get(0).getImg_url(),159,220);
-            }else {
-                url = Util.getCloudinaryImageUrl(context, pro.getThumbnail(),159,220);
-            }
-            String finalUrl = url;
-            ProductDetails finalDetails = details;
-            ((android.app.Activity)context).runOnUiThread(()->{
-                holder.tvProductName.setText(pro.getProduct_name());
-                holder.tvSalePrice.setVisibility(View.VISIBLE);
-                Picasso.get().load(finalUrl).into(holder.img_Product);
-                if(firstSaleDetails.isPresent()){
-                    Log.d("IMG_URL DETAILS"+ finalDetails.getProduct_details_id(), finalDetails.getImgDetailsArrayList().get(0).getImg_url());
-                    holder.tvSalePrice.setText("$" + String.valueOf(finalDetails.getSale_price()));
-                    holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()));
-                    // Gạch ngang giá gốc
-                    holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                }else {
-                    holder.tvPrice.setVisibility(View.GONE);
-                    holder.tvSalePrice.setText("$" + String.valueOf(pro.getBase_price()));
+        Product pro = lstPro.get(position);
+        ProductDetails details = new ProductDetails();
+        Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
+                .filter(detail -> detail.getSale_price() != null && detail.getSale_price().compareTo(BigDecimal.ZERO) > 0)
+                .findFirst();
+        String url = "";
+        if (firstSaleDetails.isPresent()) {
+            details = firstSaleDetails.get();
+            url = Util.getCloudinaryImageUrl(context, details.getImgDetailsArrayList().get(0).getImg_url(), 159, 220);
+        } else {
+            url = Util.getCloudinaryImageUrl(context, pro.getThumbnail(), 159, 220);
+        }
+        String finalUrl = url;
+        ProductDetails finalDetails = details;
+        holder.tvProductName.setText(pro.getProduct_name());
+        holder.tvSalePrice.setVisibility(View.VISIBLE);
+        Glide.with(context) .load(finalUrl).apply(new RequestOptions().override(159, 220)).into(holder.img_Product);
+        if (firstSaleDetails.isPresent()) {
+            Log.d("IMG_URL DETAILS" + finalDetails.getProduct_details_id(), finalDetails.getImgDetailsArrayList().get(0).getImg_url());
+            holder.tvSalePrice.setText("$" + String.valueOf(finalDetails.getSale_price()));
+            holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()));
+            // Gạch ngang giá gốc
+            holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            holder.tvPrice.setVisibility(View.GONE);
+            holder.tvSalePrice.setText("$" + String.valueOf(pro.getBase_price()));
+        }
+        holder.productCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ProductPage.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("lstDetails", pro);
+                if (firstSaleDetails.isPresent()) {
+                    bundle.putParcelable("currentSale", finalDetails);
                 }
-                holder.productCard.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(context, ProductPage.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("lstDetails",pro);
-                        if(firstSaleDetails.isPresent()){
-                            bundle.putParcelable("currentSale", finalDetails);
-                        }
-                        intent.putExtras(bundle);
-                        context.startActivity(intent);
-                    }
-                });
-            });
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
         });
 
         holder.img_Heart.setOnClickListener(new View.OnClickListener() {
@@ -124,20 +121,12 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         return lstPro.size();
     }
 
-    @Override
-    public void onViewRecycled(@NonNull MyViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (currentTask != null) {
-            currentTask.cancel(true); // Hủy tác vụ hiện tại
-        }
-    }
-
-    class MyViewHolder extends RecyclerView.ViewHolder
-    {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         private CardView productCard;
         private ImageView img_Product;
         private TextView tvProductName, tvSalePrice, tvPrice;
         private MaterialButton img_Heart;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             this.productCard = itemView.findViewById(R.id.cardProduct);

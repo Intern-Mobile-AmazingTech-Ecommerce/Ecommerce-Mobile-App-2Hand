@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.R;
@@ -28,11 +29,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.ViewHolder> {
-    private ExecutorService service = Executors.newCachedThreadPool();
-    private Future<?> currentTask;
+
+
     private ArrayList<ProductCategory> categories;
     private Context context;
     private int layout;
+
     public CategoriesAdapter(ArrayList<ProductCategory> categories, Context context, int layout) {
         this.categories = categories;
         this.context = context;
@@ -49,13 +51,11 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         ProductCategory category = categories.get(position);
         holder.textViewCategoryName.setText(category.getProduct_category_name());
-        currentTask = service.submit(()->{
-            String imgUrl = Util.getCloudinaryImageUrl(context,category.getProduct_category_thumbnail(),592,592);
-            ((android.app.Activity)context).runOnUiThread(()->{
-               Picasso.get().load(imgUrl).into(holder.imageViewCategoryIcon);
+        String imgUrl = Util.getCloudinaryImageUrl(context, category.getProduct_category_thumbnail(), 592, 592);
 
-            });
-        });
+        Glide.with(context).load(imgUrl).override(592,592).into(holder.imageViewCategoryIcon);
+
+
         holder.relative_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

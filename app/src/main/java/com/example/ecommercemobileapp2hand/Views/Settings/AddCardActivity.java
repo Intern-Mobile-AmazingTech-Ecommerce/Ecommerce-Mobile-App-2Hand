@@ -46,7 +46,7 @@ public class AddCardActivity extends AppCompatActivity {
             return insets;
         });
         addControls();
-        addCard();
+
     }
 
     @Override
@@ -54,6 +54,7 @@ public class AddCardActivity extends AppCompatActivity {
         super.onResume();
         addEvents();
         validateInput();
+        addCard();
     }
 
     private void addControls()

@@ -59,15 +59,14 @@ public class CategoryProductActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        getBundleIntent();
+        getGenderKey();
         addcontrols();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getBundleIntent();
-        getGenderKey();
         loadRecycleCategoryProduct();
         addEvents();
     }

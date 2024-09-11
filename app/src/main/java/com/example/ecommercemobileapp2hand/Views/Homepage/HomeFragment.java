@@ -37,6 +37,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -50,7 +51,6 @@ import com.google.android.material.button.MaterialButton;
  */
 public class HomeFragment extends Fragment {
     private ExecutorService service;
-    private Future<?> backgroundTask;
     private String gender;
     private TextView tvSeeAll;
     private ArrayList<Product> lstPro;
@@ -110,7 +110,7 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        getGenderKey();
 
     }
 
@@ -143,28 +143,17 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (service == null) {
+        if (service == null || service.isShutdown()) {
             service = Executors.newCachedThreadPool();
         }
-        getGenderKey();
         bgTask();
-        loadCategoriesData();
         addEvent();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(!backgroundTask.isDone()){
-            backgroundTask.cancel(true);
-        }
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-
         if (service != null && !service.isShutdown()) {
             service.shutdown();
             try {
@@ -177,31 +166,25 @@ public class HomeFragment extends Fragment {
             }
         }
     }
-
-
     private void loadListPro(String gen) {
-        lstPro = ProductHandler.getDataByObjectName(gen);
-        ArrayList<Product> allListPro = ProductHandler.getData();
-        ProductManager.getInstance().setLstPro(lstPro);
-        ProductManager.getInstance().getAllListPro(allListPro);
+        service.submit(()->{
+            lstPro = ProductHandler.getDataByObjectName(gen);
+            ArrayList<Product> allListPro = ProductHandler.getData();
+            ProductManager.getInstance().setLstPro(lstPro);
+            ProductManager.getInstance().getAllListPro(allListPro);
+            getActivity().runOnUiThread(()->{
+                loadTopSellingProductsData();
+                loadNewInProductsData();
+            });
+        });
+
     }
 
     private void bgTask() {
-        backgroundTask = service.submit(() -> {
-            loadListPro(gender);
-            getActivity().runOnUiThread(() -> {
-                if (!categoryList.isEmpty() && categoryList != null) {
 
-                    ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
-                    categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
-                    recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
-                    recyclerViewCategories.setAdapter(categoriesAdapter);
-                }
-                loadTopSellingProductsData();
-                loadNewInProductsData();
-
-            });
-        });
+        loadListPro(gender);
+        loadCategoriesData();
+        service.shutdown();
     }
     private void addControl(View view) {
 
@@ -216,8 +199,20 @@ public class HomeFragment extends Fragment {
 
     private void loadCategoriesData() {
 
-        categoryList = CategoriesHandler.getData();
-        CategoriesManager.getInstance().setProductCategories(categoryList);
+        service.submit(()->{
+            categoryList = CategoriesHandler.getData();
+            CategoriesManager.getInstance().setProductCategories(categoryList);
+           getActivity().runOnUiThread(()->{
+               if (!categoryList.isEmpty() && categoryList != null) {
+
+                   ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
+                   categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
+                   recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+                   recyclerViewCategories.setAdapter(categoriesAdapter);
+               }
+           });
+        });
+
     }
 
     private void loadTopSellingProductsData() {
