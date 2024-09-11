@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,20 +27,12 @@ public class UserAccountHandler {
 
     //lấy tt user
     public static UserAccount getUserAccountByEmail(String email) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
         UserAccount userAccount = null;
+        try (Connection conn = dbConnect.connectionClass();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT user_id, email, first_name, last_name, phone_number, img_url, gender, age_range FROM user_account WHERE email = ?")) {
 
-        try {
-            conn = dbConnect.connectionClass();
-            if (conn != null) {
-                String query = "SELECT user_id, email, first_name, last_name, phone_number, img_url, gender, age_range " +
-                        "FROM user_account WHERE email = ?";
-                pstmt = conn.prepareStatement(query);
-                pstmt.setString(1, email);
-                rs = pstmt.executeQuery();
-
+            pstmt.setString(1, email);
+            try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     String userId = rs.getString("user_id");
                     String firstName = rs.getString("first_name");
@@ -51,20 +44,9 @@ public class UserAccountHandler {
 
                     userAccount = new UserAccount(userId, email, firstName, lastName, phoneNumber, imgUrl, gender, ageRange);
                 }
-            } else {
-                Log.e("DB_QUERY", "Kết nối thất bại.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
             Log.e("DB_QUERY", "Lỗi truy vấn: " + e.getMessage());
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return userAccount;
     }
@@ -157,11 +139,9 @@ public class UserAccountHandler {
                 pstmt.setString(6, ageRange);
             }
 
-            Log.d("UserAccountHandler", "Saving user to database...");
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            Log.e("UserAccountHandler", "Error saving user to database: " + e.getMessage());
         } finally {
             try {
                 if (pstmt != null) pstmt.close();
@@ -201,7 +181,6 @@ public class UserAccountHandler {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            // Ensure the database resources are closed
             try {
                 if (pstmt != null) pstmt.close();
                 if (conn != null) conn.close();
@@ -231,6 +210,70 @@ public class UserAccountHandler {
             }
         }
         return emailExists;
+    }
+
+    public static UserAccount getUserAccount (String email)
+    {
+        UserAccount userAccount = null;
+        conn = dbConnect.connectionClass();
+        String sql = "{call GetDetailsUserAccount(?)}";
+        try (CallableStatement callableStatement = conn.prepareCall(sql)) {
+            callableStatement.setString(1, email);
+            try (ResultSet resultSet = callableStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Khởi tạo UserAccount với dữ liệu từ resultSet
+                    userAccount = new UserAccount(
+                            resultSet.getString("user_id"),
+                            resultSet.getString("email"),
+                            resultSet.getString("first_name"),
+                            resultSet.getString("last_name"),
+                            resultSet.getString("phone_number"),
+                            resultSet.getString("img_url"),
+                            resultSet.getString("gender"),
+                            resultSet.getString("age_range")
+                    );
+
+                    // Lấy dữ liệu từ JSON để phân tích các thuộc tính danh sách
+                    String wishlistJson = resultSet.getString("wishlist_array");
+                    String notificationsJson = resultSet.getString("notifications_array");
+                    String cardsJson = resultSet.getString("cards_array");
+                    String ordersJson = resultSet.getString("order_array");
+                    String addressesJson = resultSet.getString("address_array");
+
+                    // Phân tích JSON thành các danh sách tương ứng
+                    userAccount.setLstWL(parseJson(wishlistJson, Wishlist.class));
+                    userAccount.setLstNoti(parseJson(notificationsJson, Notifications.class));
+                    userAccount.setLstCard(parseJson(cardsJson, UserCards.class));
+                    userAccount.setLstOrder(parseJson(ordersJson, UserOrder.class));
+                    userAccount.setLstAddress(parseJson(addressesJson, UserAddress.class));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return userAccount;
+    }
+
+    private static <T> ArrayList<T> parseJson(String json, Class<T> clazz) {
+        ArrayList<T> list = new ArrayList<>();
+        if (json != null && !json.isEmpty()) {
+            try {
+                Gson gson = new Gson();
+                Type listType = TypeToken.getParameterized(ArrayList.class, clazz).getType();
+                list = gson.fromJson(json, listType);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return list;
     }
 
 }

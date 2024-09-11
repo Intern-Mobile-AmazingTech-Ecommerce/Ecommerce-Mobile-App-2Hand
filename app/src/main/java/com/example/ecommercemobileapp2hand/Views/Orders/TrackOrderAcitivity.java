@@ -51,7 +51,7 @@ public class TrackOrderAcitivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        getIt();
         addcontrols();
 
     }
@@ -111,13 +111,13 @@ public class TrackOrderAcitivity extends AppCompatActivity {
         tv_amount_order.setText(String.valueOf(UserOrderProductsHandler.getAmountItems(order.getUser_order_id()) + " items"));
 
         String s1 = "";
-//        for (UserAddress address : userAccount.getLstAddress())
-//        {
-//            if (address.getUser_address_id() == order.getUser_address_id())
-//            {
-//                s1 += address.getUser_address_street() + " " + address.getUser_address_city() + ", " + address.getUser_address_state() + " " + address.getUser_address_zipcode() + "\n" + userAccount.getPhone_number();
-//            }
-//        }
+        for (UserAddress address : userAccount.getLstAddress())
+        {
+            if (address.getUser_address_id() == order.getUser_address_id())
+            {
+                s1 += address.getUser_address_street() + " " + address.getUser_address_city() + ", " + address.getUser_address_state() + " " + address.getUser_address_zipcode() + "\n" + address.getUser_address_phone();
+            }
+        }
         tv_shippingdetails.setText(s1);
     }
 

@@ -17,6 +17,7 @@ import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Orders.TrackOrderAcitivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyViewHoler> {
@@ -72,7 +73,7 @@ public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyVi
     private void DetailTrackOrder(UserOrder ord)
     {
         Intent intent = new Intent(context, TrackOrderAcitivity.class);
-        intent.putExtra("UserAccount", (CharSequence) userAccount);
+        intent.putExtra("UserAccount", userAccount);
         intent.putExtra("order", ord);
         context.startActivity(intent);
     }
