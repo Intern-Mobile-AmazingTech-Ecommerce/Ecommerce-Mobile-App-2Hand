@@ -44,31 +44,75 @@ public class UserAddressHandler {
         }
         return null;
     }
-    public static boolean insertAddress(String UserID,String street,String city,String state, String zipcode,String phoneNumber){
-        conn = dbConnect.connectionClass();
-        try{
-            String sql = "Insert into user_address values (?,?,?,?,?,?)";
-            if(conn!=null){
-                PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                preparedStatement.setString(1,UserID);
-                preparedStatement.setString(2,street);
-                preparedStatement.setString(3,city);
-                preparedStatement.setString(4,state);
-                preparedStatement.setString(5,zipcode);
-                preparedStatement.setString(6,phoneNumber);
-                int rs = preparedStatement.executeUpdate();
-                return rs > 0;
-            }
 
+    public static ArrayList<UserAddress> getListAdressByUserId(String userId) {
+        ArrayList<UserAddress> list = new ArrayList<>();
+        Connection conn = dbConnect.connectionClass();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
 
-        }catch (SQLException e){
-            throw new RuntimeException(e.getMessage());
+        if (conn != null) {
+            try {
+                String sql = "SELECT user_address_id, user_address_street, user_address_city, user_address_state, user_address_zipcode, user_address_phone FROM user_address WHERE user_id = ?";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, userId);
+                rs = pstmt.executeQuery();
 
-        }finally {
-            try{
-                conn.close();
-            }catch (SQLException e){
+                while (rs.next()) {
+                    UserAddress address = new UserAddress();
+                    address.setUser_address_id(rs.getInt("user_address_id"));
+                    address.setUser_address_street(rs.getString("user_address_street"));
+                    address.setUser_address_city(rs.getString("user_address_city"));
+                    address.setUser_address_state(rs.getString("user_address_state"));
+                    address.setUser_address_zipcode(rs.getString("user_address_zipcode"));
+                    address.setUser_address_phone(rs.getString("user_address_phone"));
+                    list.add(address);
+                }
+            } catch (SQLException e) {
                 e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (rs != null) rs.close();
+                    if (pstmt != null) pstmt.close();
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return list;
+    }
+    public static boolean updateAddressById(int addressId, String street, String city, String state, String zip, String phone) {
+        Connection conn = dbConnect.connectionClass();
+        PreparedStatement pstmt = null;
+
+        if (conn != null) {
+            try {
+                String sql = "UPDATE user_address SET user_address_street = ?, user_address_city = ?, user_address_state = ?, user_address_zipcode = ?, user_address_phone = ? WHERE user_address_id = ?";
+                pstmt = conn.prepareStatement(sql);
+                System.out.println(street);
+                System.out.println(city);
+                System.out.println(state);
+                pstmt.setString(1, street);
+                pstmt.setString(2, city);
+                pstmt.setString(3, state);
+                pstmt.setString(4, zip);
+                pstmt.setString(5, phone);
+                pstmt.setInt(6,addressId);
+
+                int rowsUpdated = pstmt.executeUpdate();
+                return rowsUpdated > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (pstmt != null) pstmt.close();
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return false;

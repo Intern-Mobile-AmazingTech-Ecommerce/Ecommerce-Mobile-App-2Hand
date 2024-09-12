@@ -1,6 +1,8 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,8 +16,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserCardsHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Card;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Paypal;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CardAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.PaypalAdapter;
@@ -28,6 +34,8 @@ public class PaymentActivity extends AppCompatActivity {
     private ImageView imgBack;
     private RecyclerView recy_cards;
     private CardView cv_cards;
+    private ArrayList<UserCards> lstCard;
+    private CardAdapter cardAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +54,7 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         addEvents();
+        loadListCard();
     }
 
     private void addControls()
@@ -53,6 +62,7 @@ public class PaymentActivity extends AppCompatActivity {
         imgBack = findViewById(R.id.imgBack);
         recy_cards = findViewById(R.id.recy_cards);
         cv_cards = findViewById(R.id.cv_cards);
+
     }
     private void addEvents()
     {
@@ -69,5 +79,21 @@ public class PaymentActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    void loadListCard()
+    {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        String email = sharedPreferences.getString("userEmail","");
+        UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
+        String userId = user.getUserId();
+        System.out.println("user"+userId);
+        System.out.println("user");
+        lstCard = UserCardsHandler.getListCardByUserId(userId);
+        if (lstCard != null && !!lstCard.isEmpty())
+        {
+             cardAdapter =  new CardAdapter(lstCard,PaymentActivity.this);
+             recy_cards.setLayoutManager(new LinearLayoutManager(this));
+             recy_cards.setAdapter(cardAdapter);
+        }
     }
 }

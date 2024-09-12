@@ -1,6 +1,8 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,15 +13,27 @@ import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Adapters.AddressAdapter;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ListAddressActivity extends AppCompatActivity {
-
+    ExecutorService service = Executors.newSingleThreadExecutor();
     private ImageView imgBack;
     private RecyclerView recy_address;
     private CardView cv_address;
+    private ArrayList<UserAddress> lstAddress;
+    private AddressAdapter addressAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +52,7 @@ public class ListAddressActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         addEvents();
+        loadListAddress();
     }
 
     private void addControls()
@@ -62,5 +77,24 @@ public class ListAddressActivity extends AppCompatActivity {
             }
         });
     }
+     void loadListAddress()
+     {
+         service.execute(() -> {
+             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+             String email = sharedPreferences.getString("userEmail", "");
+             UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
+             String userId = user.getUserId();
+             lstAddress = UserAddressHandler.getListAdressByUserId(userId);
+
+             if (lstAddress != null && !lstAddress.isEmpty()) {
+                 runOnUiThread(() -> {
+                     addressAdapter = new AddressAdapter(lstAddress, ListAddressActivity.this);
+                     recy_address.setLayoutManager(new LinearLayoutManager(ListAddressActivity.this));
+                     recy_address.setAdapter(addressAdapter);
+                 });
+             }
+         });
+
+     }
 
 }

@@ -2,6 +2,8 @@ package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +11,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Models.FakeModels.Card;
+import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Settings.PaymentActivity;
+import com.example.ecommercemobileapp2hand.Views.Settings.UpdateCardActivity;
 
 import java.util.List;
 
@@ -18,9 +22,9 @@ import androidx.annotation.NonNull;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
 
-    private List<Card> cardList;
-
-    public CardAdapter(List<Card> cardList) {
+    private List<UserCards> cardList;
+    private Context context;
+    public CardAdapter(List<UserCards> cardList, PaymentActivity paymentActivity) {
         this.cardList = cardList;
     }
 
@@ -34,10 +38,21 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        Card card = cardList.get(position);
-        holder.cardNumberTextView.setText(card.getCardNumber());
-
-
+        UserCards card = cardList.get(position);
+        holder.cardNumberTextView.setText(card.getUser_card_number());
+        System.out.println("aaaa"+card.getUser_cards_id());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, UpdateCardActivity.class);
+                intent.putExtra("id",card.getUser_cards_id());
+                intent.putExtra("cardNumber",card.getUser_card_number());
+                intent.putExtra("ccv",card.getUser_card_ccv());
+                intent.putExtra("exp",card.getUser_card_exp());
+                intent.putExtra("hold",card.getUser_card_holder_name());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
