@@ -59,6 +59,7 @@ public class UserCardsHandler {
                 pstmt = conn.prepareStatement(sql);
                 pstmt.setString(1, cardNumber);
                 pstmt.setString(2, cardCcv);
+                pstmt.setString(3, cardExp);
                 pstmt.setString(4, cardHolderName);
                 pstmt.setInt(5, cardId);
 

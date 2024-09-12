@@ -55,6 +55,7 @@ public class PaymentActivity extends AppCompatActivity {
         super.onResume();
         addEvents();
         loadListCard();
+        System.out.println("1");
     }
 
     private void addControls()
@@ -82,18 +83,19 @@ public class PaymentActivity extends AppCompatActivity {
     }
     void loadListCard()
     {
+        System.out.println("2");
         SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String email = sharedPreferences.getString("userEmail","");
+        String email = sharedPreferences.getString("userEmail", "");
         UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
         String userId = user.getUserId();
-        System.out.println("user"+userId);
-        System.out.println("user");
         lstCard = UserCardsHandler.getListCardByUserId(userId);
-        if (lstCard != null && !!lstCard.isEmpty())
+        if (lstCard != null && !lstCard.isEmpty())
         {
              cardAdapter =  new CardAdapter(lstCard,PaymentActivity.this);
              recy_cards.setLayoutManager(new LinearLayoutManager(this));
              recy_cards.setAdapter(cardAdapter);
+             cardAdapter =  new CardAdapter(lstCard,PaymentActivity.this);
+
         }
     }
 }
