@@ -81,13 +81,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             String email = intent.getStringExtra("email");
+            String userId = intent.getStringExtra("user_id");
             // Lưu vào sharedpreferences
             sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("user_email", email);
+            editor.putString("user_id",userId);
             editor.apply();
         }
     }
+
 
     private void getIt()
     {
@@ -99,6 +102,28 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         addEvent();
         addCart();
+        hideActionBar();
+    }
+
+    private void hideActionBar(){
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frameLayout);
+
+        btnAvt = findViewById(R.id.btnAvt);
+        btnObject = findViewById(R.id.btnObject);
+        btnBag = findViewById(R.id.btnBag);
+
+        Intent intent = getIntent();
+        boolean hideActionBar = intent.getBooleanExtra("hideActionBar", false);
+
+        if (currentFragment instanceof SettingsFragment) {
+           btnAvt.setVisibility(View.GONE);
+           btnObject.setVisibility(View.GONE);
+           btnBag.setVisibility(View.GONE);
+        } else {
+            btnAvt.setVisibility(View.VISIBLE);
+            btnObject.setVisibility(View.VISIBLE);
+            btnBag.setVisibility(View.VISIBLE);
+        }
     }
 
     private void addControl(){
@@ -127,65 +152,51 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private void binding() {
+    private void binding(){
         Intent intent = getIntent();
         bottomNavigationView = findViewById(R.id.bottom_nav);
+        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo"))) {
 
-        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-        String currentFragmentTag = sharedPreferences.getString("current_fragment", "HomeFragment");
+            LoadFragment(new SettingsFragment());
 
-        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo")) && intent.getBooleanExtra("ActionBarOFF",false) == true) {
-            btnObject.setVisibility(GONE);
-            btnAvt.setVisibility(GONE);
-            btnBag.setVisibility(GONE);
-            tvFragmentName.setVisibility(View.GONE);
-            LoadFragment(new SettingsFragment(), "HomeFragment");
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
             bottomNavigationView.setSelectedItemId(R.id.itemSettings);
-        } else if (intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))) {
-            LoadFragment(new OrdersFragment(), "HomeFragment");
+        }else if(intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))){
+            LoadFragment(new OrdersFragment());
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
             bottomNavigationView.setSelectedItemId(R.id.itemOrders);
-        } else if (intent != null && "NotificationsDetailFragment".equals(intent.getStringExtra("navigateTo"))) {
-            LoadFragment(new OrdersFragment(), "HomeFragment");
+        }
+        else if(intent != null && "NotificationsDetailFragment".equals(intent.getStringExtra("navigateTo"))){
+            LoadFragment(new OrdersFragment());
+
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
             bottomNavigationView.setSelectedItemId(R.id.itemNotifications);
-        } else {
-            Fragment fragment;
-            switch (currentFragmentTag) {
-                case "SettingsFragment":
-                    fragment = new SettingsFragment();
-                    break;
-                case "OrdersFragment":
-                    fragment = new OrdersFragment();
-                    break;
-                case "NotificationsFragment":
-                    fragment = new NotificationDetailFragment();
-                    break;
-                default:
-                    fragment = new HomeFragment();
-                    break;
-            }
-            LoadFragment(fragment, "HomeFragment");
+        }
+        else{
+            LoadFragment(new HomeFragment());
         }
     }
-
     private void addEvent(){
-
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.itemHome) {
-                    LoadFragment(new HomeFragment(), "HomeFragment");
+
+                    LoadFragment(new HomeFragment());
                     btnObject.setVisibility(View.VISIBLE);
                     btnAvt.setVisibility(View.VISIBLE);
                     btnBag.setVisibility(View.VISIBLE);
                     tvFragmentName.setVisibility(View.GONE);
                     return true;
                 } else if (id == R.id.itemNotifications) {
+
                     btnObject.setVisibility(GONE);
                     btnAvt.setVisibility(GONE);
                     btnBag.setVisibility(GONE);
-                    LoadFragment(new NotificationDetailFragment(), "NotificationDetailFragment"); // Pass tag "NotificationDetailFragment"
+                    LoadFragment(new NotificationDetailFragment());
                     tvFragmentName.setText("Notifications");
                     tvFragmentName.setVisibility(View.VISIBLE);
                     return true;
@@ -193,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                     btnObject.setVisibility(GONE);
                     btnAvt.setVisibility(GONE);
                     btnBag.setVisibility(GONE);
-                    LoadFragment(new OrdersFragment(), "OrdersFragment"); // Pass tag "OrdersFragment"
+                    LoadFragment(new OrdersFragment());
                     tvFragmentName.setText("Orders");
                     tvFragmentName.setVisibility(View.VISIBLE);
                     return true;
@@ -202,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
                     btnAvt.setVisibility(GONE);
                     btnBag.setVisibility(GONE);
                     tvFragmentName.setVisibility(View.GONE);
-                    LoadFragment(new SettingsFragment(), "SettingsFragment"); // Pass tag "SettingsFragment"
+                    LoadFragment(new SettingsFragment());
                     return true;
                 }
                 return false;
@@ -216,22 +227,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void LoadFragment(Fragment fragment, String tag) {
+    private void LoadFragment(Fragment fragment){
         Bundle bundle = new Bundle();
         bundle.putSerializable("UserAccount", (Serializable) userAccount);
         fragment.setArguments(bundle);
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("current_fragment", tag);
-        editor.apply();
-
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.frameLayout, fragment, tag);
+        ft.replace(R.id.frameLayout,fragment);
         ft.addToBackStack(null);
-        ft.commitAllowingStateLoss();
+        ft.commit();
     }
-
 
     private void showGenderOverlay(String type) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
@@ -267,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
 //                FragmentManager fragmentManager = getSupportFragmentManager();
 //                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
                 if (isSaved) {
-                   LoadFragment(new HomeFragment(), "HomeFragment");
+                    LoadFragment(new HomeFragment());
                 }
                 bottomSheetDialog.dismiss();
             }

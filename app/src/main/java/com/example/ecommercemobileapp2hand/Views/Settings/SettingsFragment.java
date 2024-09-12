@@ -204,6 +204,7 @@ public class SettingsFragment extends Fragment {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.putExtra("navigateTo", "SettingsFragment");
             intent.putExtra("ActionBarOFF",true);
+            intent.putExtra("hideActionBar", true);
             startActivity(intent);
 
             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

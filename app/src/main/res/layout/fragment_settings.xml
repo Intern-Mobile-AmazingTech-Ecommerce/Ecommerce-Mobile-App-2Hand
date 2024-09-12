@@ -115,7 +115,7 @@
             android:layout_height="50dp"
             style="@style/setting_items"
             android:layout_alignParentBottom="true"
-            android:text="Bật/tắt chế độ tối"
+            android:text="Turn On/Off Night Mode"
             android:drawableEnd="@null"/>
 
         <TextView

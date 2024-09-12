@@ -1,5 +1,7 @@
 package com.example.ecommercemobileapp2hand.Controllers;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
@@ -246,5 +248,35 @@ public class WishlistHandler {
         }
         return false;
     }
+
+    public static void clearWishlist(int wishList_ID) {
+        conn = dbConnect.connectionClass();
+        PreparedStatement preparedStatement = null;
+        try {
+            if (conn != null) {
+                String sql = "DELETE FROM wishlist_product WHERE wishlist_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, wishList_ID);
+
+                int result = preparedStatement.executeUpdate();
+
+                if (result > 0) {
+                    System.out.println("Wishlist cleared successfully.");
+                } else {
+                    System.out.println("No products found in the wishlist.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 }
