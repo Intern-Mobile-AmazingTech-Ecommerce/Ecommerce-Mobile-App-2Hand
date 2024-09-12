@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Views.Settings.AddCardActivity"
+    style="@style/SCREEN"
+    >
+    <RelativeLayout
+        android:id="@+id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="40dp"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+
+            android:id="@+id/imgBack"
+            style="@style/BUTTON_BACK"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:padding="12dp" />
+
+        <TextView
+            android:id="@+id/tv_payment"
+            style="@style/TEXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/gabarito"
+            android:text="Add Card"
+            android:textFontWeight="700"
+            android:textSize="16dp" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/edtCardNumber"
+        android:layout_below="@id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="12dp"
+        android:hint="Card Number"
+        android:inputType="number"
+        style="@style/address_param_box" />
+
+    <LinearLayout
+        android:id="@+id/linearccvexp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edtCardNumber"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edtCCV"
+            style="@style/address_param_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:hint="CCV"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/edtEXP"
+            style="@style/address_param_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Exp"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edtCardholderName"
+        android:layout_below="@+id/linearccvexp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="12dp"
+        android:hint="Cardholder Name"
+        android:inputType="text"
+        style="@style/address_param_box" />
+
+    <Button
+        android:id="@+id/btnSaveCard"
+        android:layout_marginHorizontal="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Save"
+        style="@style/btn_continue"
+        android:backgroundTint="@color/purple"/>
+</RelativeLayout>
