@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -23,11 +25,13 @@ import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
+import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -62,6 +66,7 @@ public class SettingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         UserAccountManager.getInstance();
         addControls(view);
+        nightModeSwitch(view);
         return view;
     }
 
@@ -82,7 +87,7 @@ public class SettingsFragment extends Fragment {
             }
         }
         addEvent();
-        nightModeSwitch();
+
     }
 
     private void addControls(View view) {
@@ -181,26 +186,27 @@ public class SettingsFragment extends Fragment {
             }
         }
     }
-
-    private void nightModeSwitch() {
-        sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
+    private void nightModeSwitch(View view) {
+        switcher = view.findViewById(R.id.switcher);
+        sharedPreferences = getActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
         nightMode = sharedPreferences.getBoolean("night", false);
-        switcher.setChecked(nightMode);
-        AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+
+        if (nightMode) {
+            switcher.setChecked(true);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
 
         switcher.setOnClickListener(v -> {
             nightMode = !nightMode;
             AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-
             sharedPreferences.edit().putBoolean("night", nightMode).apply();
-            String currentFragmentTag = sharedPreferences.getString("current_fragment", "HomeFragment");
-            Fragment currentFragment = requireActivity().getSupportFragmentManager().findFragmentByTag(currentFragmentTag);
-            if (currentFragment != null) {
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .detach(currentFragment)
-                        .attach(currentFragment)
-                        .commitAllowingStateLoss();
-            }
+
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.putExtra("navigateTo", "SettingsFragment");
+            intent.putExtra("ActionBarOFF",true);
+            startActivity(intent);
+
+            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }
 

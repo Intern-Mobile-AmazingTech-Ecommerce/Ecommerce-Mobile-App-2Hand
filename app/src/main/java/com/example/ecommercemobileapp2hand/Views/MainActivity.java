@@ -134,7 +134,11 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         String currentFragmentTag = sharedPreferences.getString("current_fragment", "HomeFragment");
 
-        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo"))) {
+        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo")) && intent.getBooleanExtra("ActionBarOFF",false) == true) {
+            btnObject.setVisibility(GONE);
+            btnAvt.setVisibility(GONE);
+            btnBag.setVisibility(GONE);
+            tvFragmentName.setVisibility(View.GONE);
             LoadFragment(new SettingsFragment(), "HomeFragment");
             bottomNavigationView.setSelectedItemId(R.id.itemSettings);
         } else if (intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))) {
@@ -164,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addEvent(){
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

@@ -25,15 +25,16 @@
             android:textSize="16dp"
             android:visibility="gone" />
     <androidx.cardview.widget.CardView
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="999dp"
         android:layout_centerVertical="true">
         <ImageButton
+            android:visibility="visible"
             android:id="@+id/btnAvt"
             android:layout_width="40dp"
             android:layout_height="40dp"
-
             android:src="@drawable/avt"
             android:background="@drawable/shape"
             android:scaleType="centerCrop"
@@ -41,6 +42,7 @@
     </androidx.cardview.widget.CardView>
 
         <com.google.android.material.button.MaterialButton
+            android:visibility="visible"
             android:id="@+id/btnObject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +56,9 @@
             app:iconGravity="end"
 
             />
+
         <ImageButton
+            android:visibility="visible"
             android:id="@+id/btnBag"
             android:layout_width="40dp"
             android:layout_height="40dp"

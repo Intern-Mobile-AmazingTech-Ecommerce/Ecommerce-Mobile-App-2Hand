@@ -96,14 +96,14 @@ public class SearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        binding = ActivitySearchBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_search), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        binding = ActivitySearchBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+
         addControls();
 
 
@@ -494,7 +494,6 @@ public class SearchActivity extends AppCompatActivity {
                     thirtyDaysAgo = LocalDateTime.MIN;
                     filterChangeSortBy = false;
                 }
-                //
                 if (numberFilter > 0) {
                     numberFilter -= 1;
                     filter.setText(String.valueOf(numberFilter));
