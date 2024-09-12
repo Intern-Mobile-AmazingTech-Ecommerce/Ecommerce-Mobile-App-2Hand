@@ -183,27 +183,17 @@ public class SettingsFragment extends Fragment {
     }
 
     private void nightModeSwitch() {
-        // Initialize SharedPreferences
         sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
-
-        // Get current night mode status
         nightMode = sharedPreferences.getBoolean("night", false);
         switcher.setChecked(nightMode);
-
-        // Set night mode
         AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
         switcher.setOnClickListener(v -> {
             nightMode = !nightMode;
             AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
 
-            // Save night mode preference
             sharedPreferences.edit().putBoolean("night", nightMode).apply();
-
-            // Get the current fragment's tag from SharedPreferences
             String currentFragmentTag = sharedPreferences.getString("current_fragment", "HomeFragment");
-
-            // Reattach the current fragment to reflect changes
             Fragment currentFragment = requireActivity().getSupportFragmentManager().findFragmentByTag(currentFragmentTag);
             if (currentFragment != null) {
                 requireActivity().getSupportFragmentManager().beginTransaction()
