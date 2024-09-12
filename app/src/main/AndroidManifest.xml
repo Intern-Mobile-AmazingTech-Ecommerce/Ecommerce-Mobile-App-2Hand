@@ -202,7 +202,15 @@
                 <action android:name="ORDER_STATUS_CHANGED" />
             </intent-filter>
         </receiver>
-
+        <receiver
+            android:name=".Views.BroadcastReceiver.NotificationBroadcastReceiver"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi">
+            <intent-filter>
+                <action android:name="GLOBAL_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
         <service
             android:name=".Views.FirebaseMessagingService.MyFirebaseMessagingService"
             android:exported="true"
@@ -211,7 +219,17 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service> <!-- Set the name of the channel for Android 8.0 and higher -->
+        </service>
+        <service
+            android:name=".Views.FirebaseMessagingService.MyFirebaseMessagingEvents"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- Set the name of the channel for Android 8.0 and higher -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />

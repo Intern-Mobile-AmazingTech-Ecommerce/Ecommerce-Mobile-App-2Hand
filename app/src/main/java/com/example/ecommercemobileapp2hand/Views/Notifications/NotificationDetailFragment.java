@@ -107,13 +107,6 @@ public class NotificationDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notification_detail, container, false);
         recyclerViewNotifications = view.findViewById(R.id.recycler_view_notifications);
-
-
-
-
-//        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs",MODE_PRIVATE);
-//        String email = sharedPreferences.getString("userEmail","");
-//        userAccount = UserAccountHandler.getUserAccountByEmail(email);
         return view;
     }
     @Override

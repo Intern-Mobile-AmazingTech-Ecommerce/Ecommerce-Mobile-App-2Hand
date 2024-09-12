@@ -33,33 +33,49 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
 
         Log.d("MyFirebaseMessagingService", "Tin nhắn đã nhận: " + remoteMessage.getData().toString());
         if (remoteMessage.getData().size() > 0) {
-            String userOrderId = remoteMessage.getData().get("user_order_id");
-            String orderStatusId = remoteMessage.getData().get("order_status_id");
-            String userId = remoteMessage.getData().get("user_id");
-            // Chuyển đổi order_status_id sang order_status_name
-            String orderStatusName = getOrderStatusName(orderStatusId);
-            // Tạo nội dung thông báo
-            String notificationContent = "Order #" + userOrderId + " changed status to " + orderStatusName;
+            handleDataMessage(remoteMessage);
+        }
+        if (remoteMessage.getNotification() != null) {
 
+            String title = remoteMessage.getNotification().getTitle();
+            String body = remoteMessage.getNotification().getBody();
             service.execute(()->{
-                // Update order status in the database
-                UserOrderHandler.updateOrderStatus(Integer.parseInt(userOrderId), Integer.parseInt(orderStatusId));
-                // Tạo đối tượng thông báo mới
-                Notifications notification = new Notifications();
-                notification.setNotifications_content(notificationContent);
-                notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
-                notification.setUser_id(userId);
-                notification.setViewed(false);
-
-                // Lưu thông báo vào cơ sở dữ liệu
-                NotificationsHandler.saveNotification(notification);
+                Intent broadcastIntent = new Intent();
+                broadcastIntent.setAction("GLOBAL_NOTIFICATION");
+                broadcastIntent.putExtra("title", title);
+                broadcastIntent.putExtra("body", body);
+                sendBroadcast(broadcastIntent);
+                sendNotification(title, body);
             });
 
-
-            // Gửi thông báo đến người dùng
-//            sendNotification(userOrderId, notificationContent);
         }
+
     }
+    private void handleDataMessage(RemoteMessage remoteMessage) {
+        String userOrderId = remoteMessage.getData().get("user_order_id");
+        String orderStatusId = remoteMessage.getData().get("order_status_id");
+        String userId = remoteMessage.getData().get("user_id");
+        // Chuyển đổi order_status_id sang order_status_name
+        String orderStatusName = getOrderStatusName(orderStatusId);
+        // Tạo nội dung thông báo
+        String notificationContent = "Order #" + userOrderId + " changed status to " + orderStatusName;
+
+        service.execute(()->{
+            // Update order status in the database
+            UserOrderHandler.updateOrderStatus(Integer.parseInt(userOrderId), Integer.parseInt(orderStatusId));
+            // Tạo đối tượng thông báo mới
+            Notifications notification = new Notifications();
+            notification.setNotifications_content(notificationContent);
+            notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+            notification.setUser_id(userId);
+            notification.setViewed(false);
+
+            // Lưu thông báo vào cơ sở dữ liệu
+            NotificationsHandler.saveNotification(notification);
+            sendNotification("Cập nhật trạng thái đơn hàng", notificationContent);
+        });
+    }
+
     private String getOrderStatusName(String orderStatusId) {
         switch (orderStatusId) {
             case "1":
@@ -81,30 +97,30 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
         }
     }
 
-//    private void sendNotification(String userOrderId, String messageBody) {
-//        Intent intent = new Intent(this, NotificationDetailFragment.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
-//
-//        String channelId = "default_channel";
-//        NotificationCompat.Builder notificationBuilder =
-//                new NotificationCompat.Builder(this, channelId)
-//                        .setSmallIcon(R.drawable.notificationbing)
-//                        .setContentTitle("Thông báo đơn hàng")
-//                        .setContentText(messageBody)
-//                        .setAutoCancel(true)
-//                        .setContentIntent(pendingIntent);
-//
-//        NotificationManager notificationManager =
-//                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            NotificationChannel channel = new NotificationChannel(channelId, "Thông báo", NotificationManager.IMPORTANCE_DEFAULT);
-//            notificationManager.createNotificationChannel(channel);
-//        }
-//
-//        notificationManager.notify(Integer.parseInt(userOrderId), notificationBuilder.build());
-//    }
+    private void sendNotification(String messageTitle, String messageBody) {
+        Intent intent = new Intent(this, NotificationDetailFragment.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+
+        String channelId = "default_channel";
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.notificationbing)
+                        .setContentTitle(messageTitle)
+                        .setContentText(messageBody)
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId, "Thông báo", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
     @Override
     public void onNewToken(String token) {
         Log.d("MyFirebaseMessagingService", "FCM Token: " + token);
