@@ -87,4 +87,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     // Firebase Analytics (optional)
     implementation 'com.google.firebase:firebase-analytics'
+
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

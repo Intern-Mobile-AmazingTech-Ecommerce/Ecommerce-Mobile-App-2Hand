@@ -57,7 +57,6 @@ public class SignInActivity extends AppCompatActivity {
     private Button btnContinue;
     private TextView txtCreateAccount;
     private EditText edtEmail;
-    private Switch switcher;
     private SharedPreferences sharedPreferences;
     private static final String PREFS_NAME = "user_prefs";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
@@ -88,7 +87,6 @@ public class SignInActivity extends AppCompatActivity {
         addEvents();
         facebookLoginMethod();
         googleLoginMethod();
-        nightModeSwitch();
     }
 
     private void addControls() {
@@ -155,23 +153,6 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
-    private void nightModeSwitch() {
-        switcher = findViewById(R.id.switcher);
-        sharedPreferences = getSharedPreferences("MODE", Context.MODE_PRIVATE);
-        nightMode = sharedPreferences.getBoolean("night", false);
-
-        if (nightMode) {
-            switcher.setChecked(true);
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
-
-        switcher.setOnClickListener(v -> {
-            nightMode = !nightMode;
-            AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-            sharedPreferences.edit().putBoolean("night", nightMode).apply();
-        });
-    }
-
     private void handleSignInResult(FirebaseUser user) {
         if (user != null) {
             String email = user.getEmail();
@@ -185,14 +166,9 @@ public class SignInActivity extends AppCompatActivity {
                     boolean emailExists = userAccountHandler.checkEmailExists(email);
                     runOnUiThread(()->{
                         Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
-                        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean(KEY_IS_LOGGED_IN, true);
-                        editor.putString("email",email);
                         intent.putExtra("UserAccount", userAccount);
                         intent.putExtra("email", email);
                         intent.putExtra("displayName", user.getDisplayName());
-                        editor.apply();
                         startActivity(intent);
                     });
                 });
