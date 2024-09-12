@@ -120,12 +120,5 @@
         style="@style/button_signin"
         android:layout_below="@id/btnSignInGoogle"
         />
-    <Switch
-        android:id="@+id/switcher"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mode"
-        android:layout_alignParentBottom="true"
-        android:layout_marginHorizontal="24dp"
-        />
+
 </RelativeLayout>

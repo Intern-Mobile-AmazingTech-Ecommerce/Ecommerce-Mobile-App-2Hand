@@ -24,15 +24,22 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
+import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 import com.example.ecommercemobileapp2hand.R;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class AddAddressActivity extends AppCompatActivity {
-
+    private ExecutorService service;
     private ImageView imgBack;
     private EditText edtStreetAddress, edtCity, edtState, edtZipCode;
     private Button btnSaveAddress;
@@ -56,11 +63,28 @@ public class AddAddressActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if(service == null || service.isShutdown()){
+            service = Executors.newSingleThreadExecutor();
+        }
         addEvents();
         validateInput();
         addAddress();
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (service != null && !service.isShutdown()) {
+            service.shutdown();
+            try {
+                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
+                    service.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                service.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
     private void addControls()
     {
         imgBack = findViewById(R.id.imgBack);
@@ -72,23 +96,25 @@ public class AddAddressActivity extends AppCompatActivity {
     }
 
     private void addAddress(){
-        String l = "5";
         btnSaveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DBConnect c = new DBConnect();
-                connection = c.connectionClass();
-                try{
-                    if(connection != null){
-                        String sqlinsert="Insert into user_address values ('5','"+edtStreetAddress.getText().toString()+"','"+edtCity.getText().toString()+"','"+edtState.getText().toString()+"','"+edtZipCode.getText().toString()+"','null')";
-                        Statement st = connection.createStatement();
-                        ResultSet rs = st.executeQuery(sqlinsert);
-                    }
-                }catch (Exception exception){
-                    Log.e("Error", exception.getMessage());
-                }
-                Intent myintent = new Intent(AddAddressActivity.this, ListAddressActivity.class);
-                startActivity(myintent);
+                String streetAddress=edtStreetAddress.getText().toString();
+                String city=edtCity.getText().toString();
+                String state=edtState.getText().toString();
+                String zipCode=edtZipCode.getText().toString();
+                service.execute(()->{
+                    boolean rs = UserAddressHandler.insertAddress(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(),streetAddress,city,state,zipCode,"null");
+                    runOnUiThread(()->{
+                        if(rs){
+                            Toast.makeText(getApplicationContext(),"Address Added Successfully",Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getApplicationContext(),"Address Added Failed",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+                service.shutdown();
+                finish();
             }
         });
     }

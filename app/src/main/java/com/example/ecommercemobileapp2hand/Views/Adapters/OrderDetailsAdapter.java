@@ -44,7 +44,6 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         UserOrderProducts details = lstOrderDetails.get(position);
 
-
         currentTask = service.submit(()->{
             String url = Util.getCloudinaryImageUrl(context,  details.getThumbnail(), -1, -1);
             ((android.app.Activity)context).runOnUiThread(()->{

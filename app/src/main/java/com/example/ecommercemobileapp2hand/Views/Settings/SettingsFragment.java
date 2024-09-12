@@ -1,16 +1,20 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,14 +50,17 @@ public class SettingsFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private ImageView imageUser;
     private UserAccount userAccount;
-    String fullImageUrl;
+    private Switch switcher;
+    private String fullImageUrl;
+    private SharedPreferences sharedPreferences;
+    private boolean nightMode;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
-
+        UserAccountManager.getInstance();
         addControls(view);
         return view;
     }
@@ -61,7 +68,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(service == null){
+        if (service == null) {
             service = Executors.newSingleThreadExecutor();
         }
         firebaseAuth = FirebaseAuth.getInstance();
@@ -74,9 +81,8 @@ public class SettingsFragment extends Fragment {
                 fetchUserData(user.getEmail());
             }
         }
-        //fetchUserDataFromSharedPreferences();
-
         addEvent();
+        nightModeSwitch();
     }
 
     private void addControls(View view) {
@@ -91,24 +97,18 @@ public class SettingsFragment extends Fragment {
         tvSupport = view.findViewById(R.id.Support);
         tvEdit = view.findViewById(R.id.edit);
         imageUser = view.findViewById(R.id.imgUser);
+        switcher = view.findViewById(R.id.switcher);
     }
 
     private void addEvent() {
         tvSignOut.setOnClickListener(v -> signOut());
-        tvAddress.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ListAddressActivity.class);
-            startActivity(intent);
-        });
+        tvAddress.setOnClickListener(v -> startActivity(new Intent(getActivity(), ListAddressActivity.class)));
         tvWishlist.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), WishlistActivity.class);
             intent.putExtra("UserAccount", userAccount.getUserId());
             startActivity(intent);
         });
-        tvPayment.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), PaymentActivity.class);
-            startActivity(intent);
-        });
-
+        tvPayment.setOnClickListener(v -> startActivity(new Intent(getActivity(), PaymentActivity.class)));
         tvEdit.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
             intent.putExtra("firstName", tvUserName.getText().toString().split(" ")[0]);
@@ -122,46 +122,36 @@ public class SettingsFragment extends Fragment {
 
     private void fetchUserData(String email) {
         if (email != null) {
-            userAccount = UserAccountManager.instance.getCurrentUserAccount();
+            userAccount = UserAccountHandler.getUserAccountByEmail(email);
+            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
 
             if (userAccount != null) {
                 tvEmail.setText(userAccount.getEmail());
-
-                String fullName = (userAccount.getFirstName() != null ? userAccount.getFirstName() : "") + " " +
-                        (userAccount.getLastName() != null ? userAccount.getLastName() : "");
-                tvUserName.setText(fullName);
-
+                tvUserName.setText(userAccount.getFirstName() + " " + userAccount.getLastName());
                 tvPhoneNumber.setText(userAccount.getPhoneNumber() != null ? userAccount.getPhoneNumber() : "Null");
 
                 if (userAccount.getImgUrl() != null && !userAccount.getImgUrl().isEmpty()) {
-
-                    String baseUrl = "https://res.cloudinary.com/dr0xghsna/image/upload/";
-                    fullImageUrl = baseUrl + userAccount.getImgUrl();
-
+                    fullImageUrl = "https://res.cloudinary.com/dr0xghsna/image/upload/" + userAccount.getImgUrl();
                     Picasso.get()
                             .load(fullImageUrl)
                             .placeholder(R.drawable.user)
                             .error(R.drawable.user)
                             .into(imageUser);
-                    Log.d("Image", "Full Image URL: " + fullImageUrl);
-
                 } else {
                     imageUser.setImageResource(R.drawable.user);
                 }
             } else {
-                Log.e(TAG, "Không tìm thấy: " + email);
+                Log.e(TAG, "Không tìm thấy thông tin người dùng.");
             }
         } else {
-            Log.e(TAG, "Không tìm thấy email");
+            Log.e(TAG, "Không tìm thấy email.");
         }
     }
 
-
     private void signOut() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso);
+        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(),
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build());
+
         googleSignInClient.signOut().addOnCompleteListener(task -> {
             LoginManager.getInstance().logOut();
             startActivity(new Intent(getActivity(), SignInActivity.class));
@@ -169,7 +159,6 @@ public class SettingsFragment extends Fragment {
             Toast.makeText(getActivity(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
         });
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -180,9 +169,7 @@ public class SettingsFragment extends Fragment {
             String updatedPhoneNumber = data.getStringExtra("updatedPhoneNumber");
             String updatedImageUrl = data.getStringExtra("updatedImageUrl");
 
-            String fullName = updatedFirstName + " " + updatedLastName;
-            tvUserName.setText(fullName);
-
+            tvUserName.setText(updatedFirstName + " " + updatedLastName);
             tvPhoneNumber.setText(updatedPhoneNumber);
 
             if (updatedImageUrl != null && !updatedImageUrl.isEmpty()) {
@@ -193,6 +180,28 @@ public class SettingsFragment extends Fragment {
                         .into(imageUser);
             }
         }
+    }
+
+    private void nightModeSwitch() {
+        sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        nightMode = sharedPreferences.getBoolean("night", false);
+        switcher.setChecked(nightMode);
+        AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+
+        switcher.setOnClickListener(v -> {
+            nightMode = !nightMode;
+            AppCompatDelegate.setDefaultNightMode(nightMode ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+
+            sharedPreferences.edit().putBoolean("night", nightMode).apply();
+            String currentFragmentTag = sharedPreferences.getString("current_fragment", "HomeFragment");
+            Fragment currentFragment = requireActivity().getSupportFragmentManager().findFragmentByTag(currentFragmentTag);
+            if (currentFragment != null) {
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .detach(currentFragment)
+                        .attach(currentFragment)
+                        .commitAllowingStateLoss();
+            }
+        });
     }
 
 }
