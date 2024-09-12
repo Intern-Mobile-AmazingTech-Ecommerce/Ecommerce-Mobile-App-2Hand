@@ -29,23 +29,25 @@ public class WishlistDetail extends AppCompatActivity {
     private ExecutorService service = Executors.newCachedThreadPool();
     private ProductCardAdapter adapter;
     private RecyclerView recyclerView;
-    private ArrayList<Product> imgList=new ArrayList<>();
+    private ArrayList<Product> imgList = new ArrayList<>();
     private ImageButton btn_back;
-    private TextView txtWishListLabel;
+    private TextView txtWishListLabel, btn_clear, tvBlank;
     int wishList_ID;
     private UserAccount userAccount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_wishlist_detail);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        addControls();
 
+        addControls();
     }
 
     @Override
@@ -55,6 +57,8 @@ public class WishlistDetail extends AppCompatActivity {
         getData();
         addEvents();
     }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (service != null && !service.isShutdown()) {
@@ -69,35 +73,53 @@ public class WishlistDetail extends AppCompatActivity {
             }
         }
     }
-    private void addControls(){
-        recyclerView=findViewById(R.id.recyWishListProduct);
-        btn_back=findViewById(R.id.btn_back);
-        txtWishListLabel=findViewById(R.id.wishlist_label);
+
+    private void addControls() {
+        recyclerView = findViewById(R.id.recyWishListProduct);
+        btn_back = findViewById(R.id.btn_back);
+        txtWishListLabel = findViewById(R.id.wishlist_label);
+        btn_clear = findViewById(R.id.btn_clear);
+        tvBlank = findViewById(R.id.tvBlank);
     }
-    private void addEvents(){
-        adapter=new ProductCardAdapter(imgList,WishlistDetail.this);
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
+
+    private void addEvents() {
+        btn_back.setOnClickListener(view ->
+                finish()
+        );
+
+        btn_clear.setOnClickListener(view -> {
+            service.execute(() -> {
+                WishlistHandler.clearWishlist(wishList_ID);
+                runOnUiThread(() -> {
+                    imgList.clear();
+                    adapter.notifyDataSetChanged();
+                    tvBlank.setVisibility(View.VISIBLE);
+                });
+            });
         });
     }
-    private void getData(){
-        service.execute(()->{
-            imgList= WishlistHandler.getWishListDetailByWishListID(wishList_ID);
-            runOnUiThread(()->{
-                adapter=new ProductCardAdapter(imgList,WishlistDetail.this);
-                RecyclerView.LayoutManager layoutManager = new GridLayoutManager(WishlistDetail.this,2);
+
+    private void getData() {
+        service.execute(() -> {
+            imgList = WishlistHandler.getWishListDetailByWishListID(wishList_ID);
+            runOnUiThread(() -> {
+                if (imgList.isEmpty()) {
+                    tvBlank.setVisibility(View.VISIBLE);
+                } else {
+                    tvBlank.setVisibility(View.GONE);
+                }
+
+                adapter = new ProductCardAdapter(imgList, WishlistDetail.this);
+                RecyclerView.LayoutManager layoutManager = new GridLayoutManager(WishlistDetail.this, 2);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
             });
         });
     }
-    private void getIt()
-    {
-        Intent intent=getIntent();
-        wishList_ID = intent.getIntExtra("wishlistID",0);
+
+    private void getIt() {
+        Intent intent = getIntent();
+        wishList_ID = intent.getIntExtra("wishlistID", 0);
         userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
     }
 }
