@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -30,6 +31,7 @@ public class WishlistHandler {
     static ObjectMapper objectMapper = new ObjectMapper();
     public static ArrayList<Product> getWishListDetailByWishListID(int wishListID){
         conn = dbConnect.connectionClass();
+        objectMapper.registerModule(new JavaTimeModule());
         ArrayList<Product> list = new ArrayList<>();
         if(conn!=null){
             try{
@@ -63,7 +65,6 @@ public class WishlistHandler {
                     category.setProduct_category_thumbnail(rs.getString(12));
                     p.setProductCategory(category);
 
-
                     //Array Pro Details
                     String productDetailsJson = rs.getString("product_details_array");
                     ArrayList<ProductDetails> productDetails = objectMapper.readValue(
@@ -96,6 +97,7 @@ public class WishlistHandler {
     public static ArrayList<Wishlist> getWishListByUserID(String userID){
         conn = dbConnect.connectionClass();
         ArrayList<Wishlist> list = new ArrayList<>();
+        objectMapper.registerModule(new JavaTimeModule());
         if(conn!=null){
             try{
                 CallableStatement cstmt = conn.prepareCall("call getWishListByUserID(?)");

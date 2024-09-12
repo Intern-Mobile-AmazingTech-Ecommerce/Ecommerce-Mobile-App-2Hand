@@ -33,6 +33,7 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.GenderAdapter;
 import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationDetailFragment;
+import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFragment;
 import com.example.ecommercemobileapp2hand.Views.Orders.OrdersFragment;
 import com.example.ecommercemobileapp2hand.Views.Settings.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -102,29 +103,29 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         addEvent();
         addCart();
-        hideActionBar();
+//        hideActionBar();
     }
 
-    private void hideActionBar(){
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frameLayout);
-
-        btnAvt = findViewById(R.id.btnAvt);
-        btnObject = findViewById(R.id.btnObject);
-        btnBag = findViewById(R.id.btnBag);
-
-        Intent intent = getIntent();
-        boolean hideActionBar = intent.getBooleanExtra("hideActionBar", false);
-
-        if (currentFragment instanceof SettingsFragment) {
-           btnAvt.setVisibility(View.GONE);
-           btnObject.setVisibility(View.GONE);
-           btnBag.setVisibility(View.GONE);
-        } else {
-            btnAvt.setVisibility(View.VISIBLE);
-            btnObject.setVisibility(View.VISIBLE);
-            btnBag.setVisibility(View.VISIBLE);
-        }
-    }
+//    private void hideActionBar(){
+//        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frameLayout);
+//
+//        btnAvt = findViewById(R.id.btnAvt);
+//        btnObject = findViewById(R.id.btnObject);
+//        btnBag = findViewById(R.id.btnBag);
+//
+//        Intent intent = getIntent();
+//        boolean hideActionBar = intent.getBooleanExtra("hideActionBar", false);
+//
+//        if (currentFragment instanceof SettingsFragment) {
+//           btnAvt.setVisibility(View.GONE);
+//           btnObject.setVisibility(View.GONE);
+//           btnBag.setVisibility(View.GONE);
+//        } else {
+//            btnAvt.setVisibility(View.VISIBLE);
+//            btnObject.setVisibility(View.VISIBLE);
+//            btnBag.setVisibility(View.VISIBLE);
+//        }
+//    }
 
     private void addControl(){
         bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -155,22 +156,19 @@ public class MainActivity extends AppCompatActivity {
     private void binding(){
         Intent intent = getIntent();
         bottomNavigationView = findViewById(R.id.bottom_nav);
-        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo"))) {
-
+        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo")) && intent.getBooleanExtra("ActionBarOFF",false) == true) {
+            btnObject.setVisibility(GONE);
+            btnAvt.setVisibility(GONE);
+            btnBag.setVisibility(GONE);
+            tvFragmentName.setVisibility(View.GONE);
             LoadFragment(new SettingsFragment());
-
-            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
             bottomNavigationView.setSelectedItemId(R.id.itemSettings);
-        }else if(intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))){
+        } else if (intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))) {
             LoadFragment(new OrdersFragment());
-
-            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
             bottomNavigationView.setSelectedItemId(R.id.itemOrders);
         }
         else if(intent != null && "NotificationsDetailFragment".equals(intent.getStringExtra("navigateTo"))){
-            LoadFragment(new OrdersFragment());
-
-            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+            LoadFragment(new NotificationsFragment());
             bottomNavigationView.setSelectedItemId(R.id.itemNotifications);
         }
         else{
@@ -184,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.itemHome) {
-
                     LoadFragment(new HomeFragment());
                     btnObject.setVisibility(View.VISIBLE);
                     btnAvt.setVisibility(View.VISIBLE);
@@ -231,10 +228,9 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putSerializable("UserAccount", (Serializable) userAccount);
         fragment.setArguments(bundle);
-
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.frameLayout,fragment);
+        ft.replace(R.id.frameLayout, fragment);
         ft.addToBackStack(null);
         ft.commit();
     }

@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.OptionalDouble;
 
 public class ProductDetails implements Parcelable {
     @JsonProperty("product_details_id")
@@ -29,6 +30,17 @@ public class ProductDetails implements Parcelable {
     private ArrayList<ProductDetailsImg> imgDetailsArrayList;
     @JsonProperty("product_details_size_array")
     private ArrayList<ProductDetailsSize> sizeArrayList;
+    @JsonProperty("product_reviews_array")
+    private ArrayList<ProductReview> productReviews;
+
+    public ArrayList<ProductReview> getProductReviews() {
+        return productReviews;
+    }
+
+    public void setProductReviews(ArrayList<ProductReview> productReviews) {
+        this.productReviews = productReviews;
+    }
+
     private Boolean isFavorite;
 
     public Boolean getFavorite() {
@@ -42,15 +54,17 @@ public class ProductDetails implements Parcelable {
     public ProductDetails() {
     }
 
-    public ProductDetails(int product_details_id, int product_id, ProductColor productColor, String description, Timestamp createdAt, BigDecimal sale_price, ArrayList<ProductDetailsImg> imgDetailsArrayList, ArrayList<ProductDetailsSize> sizeArrayList) {
+    public ProductDetails(int product_details_id, int product_id, ProductColor productColor, String description, BigDecimal sale_price, Timestamp createdAt, ArrayList<ProductDetailsImg> imgDetailsArrayList, ArrayList<ProductDetailsSize> sizeArrayList, ArrayList<ProductReview> productReviews, Boolean isFavorite) {
         this.product_details_id = product_details_id;
         this.product_id = product_id;
         this.productColor = productColor;
         this.description = description;
-        this.createdAt = createdAt;
         this.sale_price = sale_price;
+        this.createdAt = createdAt;
         this.imgDetailsArrayList = imgDetailsArrayList;
         this.sizeArrayList = sizeArrayList;
+//        this.productReviews = productReviews;
+        this.isFavorite = isFavorite;
     }
 
     protected ProductDetails(Parcel in) {
@@ -61,6 +75,7 @@ public class ProductDetails implements Parcelable {
         sale_price = BigDecimal.valueOf(in.readDouble());
         imgDetailsArrayList = in.createTypedArrayList(ProductDetailsImg.CREATOR);
         sizeArrayList = in.createTypedArrayList(ProductDetailsSize.CREATOR);
+        productReviews = in.createTypedArrayList(ProductReview.CREATOR);
     }
 
     public static final Creator<ProductDetails> CREATOR = new Creator<ProductDetails>() {
@@ -156,7 +171,14 @@ public class ProductDetails implements Parcelable {
         this.sale_price = sale_price;
     }
 
-
+    public Double getAverageRatings(){
+        if(getProductReviews() != null){
+            OptionalDouble optionalDouble = getProductReviews().stream().mapToDouble(ProductReview::getRating).average();
+            if(optionalDouble.isPresent())
+                return  optionalDouble.getAsDouble();
+        }
+        return Double.valueOf("0");
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -171,5 +193,6 @@ public class ProductDetails implements Parcelable {
         dest.writeDouble(sale_price != null ? sale_price.doubleValue() : 0.00);
         dest.writeTypedList(imgDetailsArrayList);
         dest.writeTypedList(sizeArrayList);
+        dest.writeTypedList(productReviews);
     }
 }

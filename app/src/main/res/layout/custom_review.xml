@@ -8,7 +8,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardview1"
@@ -63,6 +64,7 @@
         android:lineHeight="19dp"
         android:layout_marginTop="4dp"/>
     <TextView
+        android:id="@+id/tvDays"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="12days ago"
@@ -70,5 +72,5 @@
         android:lineHeight="19dp"
         android:textSize="12dp"
         android:fontFamily="@font/circularstdmedium500"
-        android:layout_marginTop="4dp"/>
+        android:layout_marginTop="8dp"/>
 </LinearLayout>

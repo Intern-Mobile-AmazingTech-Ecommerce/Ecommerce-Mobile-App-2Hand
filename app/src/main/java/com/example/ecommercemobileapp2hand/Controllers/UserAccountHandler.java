@@ -261,7 +261,55 @@ public class UserAccountHandler {
         }
         return userAccount;
     }
+    public static UserAccount getUserAccountByuserID (String userID)
+    {
+        UserAccount userAccount = null;
+        conn = dbConnect.connectionClass();
+        String sql = "{call GetDetailsUserAccountByUserID(?)}";
+        try (CallableStatement callableStatement = conn.prepareCall(sql)) {
+            callableStatement.setString(1, userID);
+            try (ResultSet resultSet = callableStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    // Khởi tạo UserAccount với dữ liệu từ resultSet
+                    userAccount = new UserAccount(
+                            resultSet.getString("user_id"),
+                            resultSet.getString("email"),
+                            resultSet.getString("first_name"),
+                            resultSet.getString("last_name"),
+                            resultSet.getString("phone_number"),
+                            resultSet.getString("img_url"),
+                            resultSet.getString("gender"),
+                            resultSet.getString("age_range")
+                    );
 
+                    // Lấy dữ liệu từ JSON để phân tích các thuộc tính danh sách
+                    String wishlistJson = resultSet.getString("wishlist_array");
+                    String notificationsJson = resultSet.getString("notifications_array");
+                    String cardsJson = resultSet.getString("cards_array");
+                    String ordersJson = resultSet.getString("order_array");
+                    String addressesJson = resultSet.getString("address_array");
+
+                    // Phân tích JSON thành các danh sách tương ứng
+                    userAccount.setLstWL(parseJson(wishlistJson, Wishlist.class));
+                    userAccount.setLstNoti(parseJson(notificationsJson, Notifications.class));
+                    userAccount.setLstCard(parseJson(cardsJson, UserCards.class));
+                    userAccount.setLstOrder(parseJson(ordersJson, UserOrder.class));
+                    userAccount.setLstAddress(parseJson(addressesJson, UserAddress.class));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return userAccount;
+    }
     private static <T> ArrayList<T> parseJson(String json, Class<T> clazz) {
         ArrayList<T> list = new ArrayList<>();
         if (json != null && !json.isEmpty()) {

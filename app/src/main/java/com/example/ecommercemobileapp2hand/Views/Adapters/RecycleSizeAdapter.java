@@ -46,7 +46,7 @@ public class RecycleSizeAdapter extends RecyclerView.Adapter<RecycleSizeAdapter.
         ProductDetailsSize size = sizes.get(position);
         holder.tvSize.setText(size.getSize().getSize_name());
         if(size.getStock() != 0){
-            if(size.getSize().getSize_name().contains(selectedSize.getSize().getSize_name())){
+            if(size.getSize().getSize_name().equalsIgnoreCase(selectedSize.getSize().getSize_name())){
                 holder.checked.setVisibility(View.VISIBLE);
                 holder.checked.setImageResource(R.drawable.check_line);
                 holder.tvSize.setTextColor(Color.WHITE);

@@ -500,7 +500,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
                 // Call filterList to update results based on cleared filters
                 filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
-
+                dialog.dismiss();
             }
         });
         return sortByAdapter;

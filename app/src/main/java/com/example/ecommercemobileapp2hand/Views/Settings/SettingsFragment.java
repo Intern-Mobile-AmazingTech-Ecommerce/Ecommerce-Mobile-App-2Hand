@@ -127,9 +127,9 @@ public class SettingsFragment extends Fragment {
 
     private void fetchUserData(String email) {
         if (email != null) {
-            userAccount = UserAccountHandler.getUserAccountByEmail(email);
-            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-
+            userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
+//            userAccount = UserAccountHandler.getUserAccountByEmail(email);
+//            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
             if (userAccount != null) {
                 tvEmail.setText(userAccount.getEmail());
                 tvUserName.setText(userAccount.getFirstName() + " " + userAccount.getLastName());

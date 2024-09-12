@@ -48,6 +48,7 @@ import com.example.ecommercemobileapp2hand.Models.ProductColor;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsImg;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsSize;
+import com.example.ecommercemobileapp2hand.Models.ProductReview;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
@@ -67,6 +68,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -87,13 +90,13 @@ public class ProductPage extends AppCompatActivity {
     private RecyclerView recycleImgSlider;
     private RecycleProductImageAdapter imgSliderApdater;
     private ArrayList<ProductDetailsImg> imgList;
-    private ArrayList<Reviews> reviewsList;
+    private ArrayList<ProductReview> reviewsList;
     private ArrayList<ProductColor> colorList;
     private RecycleReviewAdapter reviewAdapter;
     private RecyclerView recycleReviews;
     private RelativeLayout btnColor, btnSize, btnQuantity;
     private ImageView imgBack, btnIncrease, btnDecrease, btnFavorite;
-    private TextView tvProductName, tvPrice, tvOldPrice, tvDescription, tvSize, tvQuantity, tvTotalPrice;
+    private TextView tvProductName, tvPrice, tvOldPrice, tvDescription, tvSize, tvQuantity, tvTotalPrice,tvRatingPoints,tvTotalReviews;
     private View bgColor;
     private int quantity = 1;
     private BigDecimal totalPrice;
@@ -204,6 +207,8 @@ public class ProductPage extends AppCompatActivity {
             btnSize.setVisibility(View.VISIBLE);
         }
 
+        tvTotalReviews.setText(String.valueOf(curr.getProductReviews() != null ? curr.getProductReviews().size() : 0) +" Reviews");
+        tvRatingPoints.setText(curr.getAverageRatings().toString()+" Ratings");
         isFavorite(curr);
 
     }
@@ -242,6 +247,8 @@ public class ProductPage extends AppCompatActivity {
         tvOldPrice = findViewById(R.id.tvOldPrice);
         tvDescription = findViewById(R.id.tvDescription);
         tvSize = findViewById(R.id.txtSize);
+        tvTotalReviews = findViewById(R.id.tvTotalReviews);
+        tvRatingPoints = findViewById(R.id.tvRatingPoints);
 
         //RecycleView
         recycleImgSlider = findViewById(R.id.recyclerProductImgSlider);
@@ -325,10 +332,7 @@ public class ProductPage extends AppCompatActivity {
     }
 
     private void loadListViewReviews() {
-        reviewsList = new ArrayList<>();
-        reviewsList.add(new Reviews(1, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
-        reviewsList.add(new Reviews(2, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
-        reviewsList.add(new Reviews(3, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
+        reviewsList = currentDetails.getProductReviews();
         reviewAdapter = new RecycleReviewAdapter(reviewsList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recycleReviews.setLayoutManager(layoutManager);
