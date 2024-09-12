@@ -38,7 +38,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             boolean isLoggedIn = sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
             String email = sharedPreferences.getString("email","");
-            UserAccount userAccount = UserAccountHandler.getUserAccountByEmail(email);
+            UserAccount userAccount = UserAccountHandler.getUserAccount(email);
             UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
             if (isLoggedIn) {
                 startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));

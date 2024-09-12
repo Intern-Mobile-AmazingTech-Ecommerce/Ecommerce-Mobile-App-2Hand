@@ -122,7 +122,7 @@ public class OrdersFragment extends Fragment {
     }
     private void bgTask(){
         getActivity().runOnUiThread(()->{
-            lstorders = userAccount.getLstOrder();
+            lstorders = userAccount.getLstOrder() != null ? userAccount.getLstOrder() : new ArrayList<>();
             if (lstorders.isEmpty())
             {
                 linear_order1.setGravity(Gravity.CENTER);

@@ -44,4 +44,33 @@ public class UserAddressHandler {
         }
         return null;
     }
+    public static boolean insertAddress(String UserID,String street,String city,String state, String zipcode,String phoneNumber){
+        conn = dbConnect.connectionClass();
+        try{
+            String sql = "Insert into user_address values (?,?,?,?,?,?)";
+            if(conn!=null){
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setString(1,UserID);
+                preparedStatement.setString(2,street);
+                preparedStatement.setString(3,city);
+                preparedStatement.setString(4,state);
+                preparedStatement.setString(5,zipcode);
+                preparedStatement.setString(6,phoneNumber);
+                int rs = preparedStatement.executeUpdate();
+                return rs > 0;
+            }
+
+
+        }catch (SQLException e){
+            throw new RuntimeException(e.getMessage());
+
+        }finally {
+            try{
+                conn.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
 }
