@@ -59,6 +59,8 @@ public class SignInActivity extends AppCompatActivity {
     private EditText edtEmail;
     private Switch switcher;
     private SharedPreferences sharedPreferences;
+    private static final String PREFS_NAME = "user_prefs";
+    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private boolean nightMode;
     private FirebaseAuth firebaseAuth;
     ExecutorService service =  Executors.newCachedThreadPool();
@@ -183,9 +185,14 @@ public class SignInActivity extends AppCompatActivity {
                     boolean emailExists = userAccountHandler.checkEmailExists(email);
                     runOnUiThread(()->{
                         Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
+                        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putBoolean(KEY_IS_LOGGED_IN, true);
+                        editor.putString("email",email);
                         intent.putExtra("UserAccount", userAccount);
                         intent.putExtra("email", email);
                         intent.putExtra("displayName", user.getDisplayName());
+                        editor.apply();
                         startActivity(intent);
                     });
                 });

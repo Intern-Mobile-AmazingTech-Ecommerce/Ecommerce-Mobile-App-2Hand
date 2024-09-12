@@ -11,6 +11,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
@@ -34,6 +37,9 @@ public class SplashScreenActivity extends AppCompatActivity {
         new Handler().postDelayed(() -> {
             SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             boolean isLoggedIn = sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
+            String email = sharedPreferences.getString("email","");
+            UserAccount userAccount = UserAccountHandler.getUserAccountByEmail(email);
+            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
             if (isLoggedIn) {
                 startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
             } else {
