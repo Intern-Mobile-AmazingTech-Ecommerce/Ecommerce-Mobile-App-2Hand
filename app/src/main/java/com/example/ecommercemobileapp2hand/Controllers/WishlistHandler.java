@@ -278,5 +278,34 @@ public class WishlistHandler {
         }
     }
 
+    public static void removeWishlist(int wishlist_ID )
+    {
+        conn = dbConnect.connectionClass();
+        PreparedStatement preparedStatement = null;
+        try {
+            if (conn != null) {
+                String sql = "DELETE FROM wishlist WHERE wishlist_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, wishlist_ID);
+
+                int result = preparedStatement.executeUpdate();
+
+                if (result > 0) {
+                    System.out.println("Wishlist has removed.");
+                } else {
+                    System.out.println("No found wishlist.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 }
