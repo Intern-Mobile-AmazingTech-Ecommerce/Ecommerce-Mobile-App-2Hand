@@ -74,7 +74,6 @@ public class NotificationDetailFragment extends Fragment {
     }
     private void getUserAccount()
     {
-
         Future<?> task = service.submit(()->{
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
             String email = sharedPreferences.getString("userEmail","");
