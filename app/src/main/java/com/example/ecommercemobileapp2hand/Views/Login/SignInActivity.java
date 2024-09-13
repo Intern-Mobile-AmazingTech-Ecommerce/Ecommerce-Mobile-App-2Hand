@@ -57,15 +57,13 @@ public class SignInActivity extends AppCompatActivity {
     private Button btnContinue;
     private TextView txtCreateAccount;
     private EditText edtEmail;
+    private Switch switcher;
     private SharedPreferences sharedPreferences;
-    private static final String PREFS_NAME = "user_prefs";
-    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     private boolean nightMode;
     private FirebaseAuth firebaseAuth;
-    ExecutorService service =  Executors.newCachedThreadPool();
+    private ExecutorService service = Executors.newCachedThreadPool();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         EdgeToEdge.enable(this);
@@ -74,16 +72,15 @@ public class SignInActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        addControls();
+
         firebaseAuth = FirebaseAuth.getInstance();
         callbackManager = CallbackManager.Factory.create();
     }
 
-
-
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
+        addControls();
         addEvents();
         facebookLoginMethod();
         googleLoginMethod();
@@ -157,24 +154,21 @@ public class SignInActivity extends AppCompatActivity {
         if (user != null) {
             String email = user.getEmail();
             if (email != null) {
-
-
                 service.submit(()->{
                     UserAccount userAccount = UserAccountHandler.getUserAccount(email);
-                    UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
                     UserAccountHandler userAccountHandler = new UserAccountHandler();
                     boolean emailExists = userAccountHandler.checkEmailExists(email);
-                    runOnUiThread(()->{
-                        Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
-                        intent.putExtra("UserAccount", userAccount);
-                        intent.putExtra("email", email);
-                        intent.putExtra("displayName", user.getDisplayName());
-                        startActivity(intent);
-                    });
+
+                    Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
+                    UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                    intent.putExtra("UserAccount", userAccount);
+                    intent.putExtra("email", email);
+                    intent.putExtra("displayName", user.getDisplayName());
+                    startActivity(intent);
+                    saveLoginState(email);
+                    finish();
                 });
 
-
-                finish();
             } else {
                 Toast.makeText(this, "Email is null", Toast.LENGTH_SHORT).show();
             }
@@ -192,11 +186,15 @@ public class SignInActivity extends AppCompatActivity {
                 if (user != null) {
                     String email = user.getEmail();
                     String displayName = user.getDisplayName();
-                    service.execute(()->{
+                    service.submit(()->{
                         UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
+                        runOnUiThread(()->{
+                            Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                            handleSignInResult(user);
+                        });
                     });
-                    Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                    handleSignInResult(user);
+
+
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_LONG).show();
@@ -204,7 +202,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void handleGoogleSignInResult(Task<GoogleSignInAccount> task) {
         try {
@@ -227,6 +224,13 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    private void saveLoginState(String email) {
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isLoggedIn", true);
+        editor.putString("email", email);
+        editor.apply();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

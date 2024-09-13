@@ -1,5 +1,7 @@
 package com.example.ecommercemobileapp2hand.Controllers;
 
+import android.database.sqlite.SQLiteDatabase;
+
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
@@ -10,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -28,6 +31,7 @@ public class WishlistHandler {
     static ObjectMapper objectMapper = new ObjectMapper();
     public static ArrayList<Product> getWishListDetailByWishListID(int wishListID){
         conn = dbConnect.connectionClass();
+        objectMapper.registerModule(new JavaTimeModule());
         ArrayList<Product> list = new ArrayList<>();
         if(conn!=null){
             try{
@@ -61,7 +65,6 @@ public class WishlistHandler {
                     category.setProduct_category_thumbnail(rs.getString(12));
                     p.setProductCategory(category);
 
-
                     //Array Pro Details
                     String productDetailsJson = rs.getString("product_details_array");
                     ArrayList<ProductDetails> productDetails = objectMapper.readValue(
@@ -94,6 +97,7 @@ public class WishlistHandler {
     public static ArrayList<Wishlist> getWishListByUserID(String userID){
         conn = dbConnect.connectionClass();
         ArrayList<Wishlist> list = new ArrayList<>();
+        objectMapper.registerModule(new JavaTimeModule());
         if(conn!=null){
             try{
                 CallableStatement cstmt = conn.prepareCall("call getWishListByUserID(?)");
@@ -246,5 +250,35 @@ public class WishlistHandler {
         }
         return false;
     }
+
+    public static void clearWishlist(int wishList_ID) {
+        conn = dbConnect.connectionClass();
+        PreparedStatement preparedStatement = null;
+        try {
+            if (conn != null) {
+                String sql = "DELETE FROM wishlist_product WHERE wishlist_id = ?";
+                preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setInt(1, wishList_ID);
+
+                int result = preparedStatement.executeUpdate();
+
+                if (result > 0) {
+                    System.out.println("Wishlist cleared successfully.");
+                } else {
+                    System.out.println("No products found in the wishlist.");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 }

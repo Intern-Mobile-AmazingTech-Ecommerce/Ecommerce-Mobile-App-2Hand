@@ -127,9 +127,9 @@ public class SettingsFragment extends Fragment {
 
     private void fetchUserData(String email) {
         if (email != null) {
-            userAccount = UserAccountHandler.getUserAccountByEmail(email);
-            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-
+            userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
+//            userAccount = UserAccountHandler.getUserAccountByEmail(email);
+//            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
             if (userAccount != null) {
                 tvEmail.setText(userAccount.getEmail());
                 tvUserName.setText(userAccount.getFirstName() + " " + userAccount.getLastName());
@@ -204,6 +204,7 @@ public class SettingsFragment extends Fragment {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.putExtra("navigateTo", "SettingsFragment");
             intent.putExtra("ActionBarOFF",true);
+            intent.putExtra("hideActionBar", true);
             startActivity(intent);
 
             getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

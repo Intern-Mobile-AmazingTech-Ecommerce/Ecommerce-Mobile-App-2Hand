@@ -71,14 +71,14 @@ public class OrdersFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        // Nhận tt user từ Bundle
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            UserAccount userAccount = (UserAccount) bundle.getSerializable("UserAccount");
-            if (userAccount != null) {
-                String email = userAccount.getEmail();
-            }
-        }
+//        // Nhận tt user từ Bundle
+//        Bundle bundle = getArguments();
+//        if (bundle != null) {
+//            UserAccount userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
+//            if (userAccount != null) {
+//                String email = userAccount.getEmail();
+//            }
+//        }
 
     }
 
@@ -100,7 +100,7 @@ public class OrdersFragment extends Fragment {
     public void onResume() {
         super.onResume();
         userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
-        if(service == null){
+        if(service == null || service.isShutdown()){
             service = Executors.newCachedThreadPool();
         }
         bgTask();

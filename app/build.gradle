@@ -87,6 +87,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     // Firebase Analytics (optional)
     implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3' // hoặc phiên bản mới hơn nếu có
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

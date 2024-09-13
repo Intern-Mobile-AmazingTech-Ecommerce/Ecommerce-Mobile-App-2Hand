@@ -74,12 +74,8 @@ public class WishlistActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
     }
     private void addEvent(){
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                onBackPressed();
-            }
+        btnBack.setOnClickListener(View -> {
+            finish();
         });
     }
 

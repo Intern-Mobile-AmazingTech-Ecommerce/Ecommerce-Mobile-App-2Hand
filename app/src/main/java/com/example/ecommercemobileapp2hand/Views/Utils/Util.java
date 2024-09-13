@@ -78,20 +78,23 @@ public class Util {
         url = url.replace("http://", "https://");
         return url;
     }
-    public static Map uploadImage(String imgPath){
+
+    public static boolean uploadImage(String imgPath){
         try{
-            Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
-            Map options = ObjectUtils.asMap(
-                    "use_filename",true,
-                    "use_filename_as_display_name",true,
-                    "folder","EcommerceApp",
-                    "unique_filename",true
-            );
-            File file = new File(imgPath);
-            cloudinary.uploader().upload(file,options);
+            if(imgPath!=null || !imgPath.isEmpty()){
+                Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
+                Map options = ObjectUtils.asMap(
+                        "folder","EcommerceApp"
+                );
+                File file = new File(imgPath);
+                cloudinary.uploader().upload(file,options);
+                return true;
+            }
+
         }catch (Exception e){
             throw new RuntimeException(e);
+
         }
-        return null;
+        return false;
     }
 }
