@@ -1,7 +1,13 @@
 package com.example.ecommercemobileapp2hand.Views.Adapters;
 
+import static android.app.PendingIntent.getActivity;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,17 +19,26 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
+import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.ProductPage.ProductPage;
 import com.example.ecommercemobileapp2hand.Views.Utils.ProductDiffCallBack;
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
@@ -32,6 +47,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.squareup.picasso.Picasso;
 
+import org.checkerframework.checker.units.qual.C;
+
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -43,12 +61,17 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
     ArrayList<Product> lstPro;
     Context context;
     ArrayList<ProductDetails> lstDetails;
-
+    private FavoriteClickedListener listener;
+    private ExecutorService service;
     public ProductCardAdapter(ArrayList<Product> lstPro, Context context) {
         this.lstPro = lstPro;
         this.context = context;
     }
-
+    public ProductCardAdapter(ArrayList<Product> lstPro, Context context, FavoriteClickedListener listener) {
+        this.lstPro = lstPro;
+        this.context = context;
+        this.listener = listener;
+    }
 
     public void setFilteredList(ArrayList<Product> newProductList) {
         DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ProductDiffCallBack(this.lstPro, newProductList));
@@ -57,6 +80,10 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         diffResult.dispatchUpdatesTo(this);
     }
 
+    public void updateItem(int position, Product item) {
+        lstPro.set(position, item);
+        notifyItemChanged(position);
+    }
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -107,18 +134,26 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 context.startActivity(intent);
             }
         });
+        boolean result = WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+        if(result){
+            holder.img_Heart.setIconResource(R.drawable.red_heart);
+            holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.RED));
+        }else {
+            holder.img_Heart.setIconResource(R.drawable.black_heart);
+        }
 
         holder.img_Heart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddToWLOverlay();
+                showAddToWLOverlay(finalDetails,pro,holder.getAdapterPosition());
             }
         });
+
     }
 
     @Override
     public int getItemCount() {
-        return lstPro.size();
+        return lstPro != null ? lstPro.size():0;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -138,7 +173,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         }
     }
 
-    private void showAddToWLOverlay() {
+    private void showAddToWLOverlay(ProductDetails currentDetails,Product pro,int pos) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
@@ -157,24 +192,62 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         btnNewWL = dialogView.findViewById(R.id.btnNewWL);
         btnDone = dialogView.findViewById(R.id.btnDone);
         recyWL = dialogView.findViewById(R.id.recy_wl);
+        ExecutorService loadingWishlist = Executors.newCachedThreadPool();
+        loadingWishlist.execute(()->{
+            ArrayList<Wishlist> wishlists = WishlistHandler.getWishListByUserID(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+            ((android.app.Activity)context).runOnUiThread(()->{
+                WishListAdapter wishListAdapter = new WishListAdapter(context, wishlists, currentDetails.getProduct_details_id());
+                recyWL.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
+                recyWL.setAdapter(wishListAdapter);
+            });
+        });
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+                loadingWishlist.submit(()->{
+                    boolean result = WishlistHandler.checkProductDetailsExistsInWishlistByUserID(currentDetails.getProduct_details_id(), UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+                    if(result){
+                        ((android.app.Activity)context).runOnUiThread(()->{
+                            if(listener != null){
+                               listener.onDoneClicked();
+                            }
+                        });
+
+                    }
+
+                });
+
+            }
+        });
 
         tv_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadingWishlist.shutdown();
                 bottomSheetDialog.dismiss();
             }
         });
         btnNewWL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddWLOverlay();
+                showAddWLOverlay(()->{
+                    loadingWishlist.execute(()->{
+                        ArrayList<Wishlist> updatedWishlists = WishlistHandler.getWishListByUserID(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+                        ((android.app.Activity)context).runOnUiThread(() -> {
+                            WishListAdapter updatedWishListAdapter = new WishListAdapter(context, updatedWishlists, currentDetails.getProduct_details_id() );
+                            recyWL.setAdapter(updatedWishListAdapter);
+                        });
+                    });
+                });
             }
         });
         bottomSheetDialog.show();
 
     }
 
-    private void showAddWLOverlay() {
+    private void showAddWLOverlay(Runnable onDismissCallback) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.addwishlist_overlay, null);
@@ -187,13 +260,46 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         btn_close = dialogView.findViewById(R.id.btn_close);
         edtNameWL = dialogView.findViewById(R.id.edtNameWL);
         btnCreate = dialogView.findViewById(R.id.btnCreate);
+        ExecutorService insertWishlist = Executors.newSingleThreadExecutor();
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(edtNameWL.getText().length() > 0){
 
+                    insertWishlist.execute(()->{
+                        boolean result = WishlistHandler.addNewWishlist(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(),edtNameWL.getText().toString());
+                        ((android.app.Activity)context).runOnUiThread(()->{
+                            if(result){
+                                Toast.makeText(context,"New Wishlist added Successfully",Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(context,"New Wishlist added Failed",Toast.LENGTH_SHORT).show();
+                            }
+                            if (onDismissCallback != null) {
+                                onDismissCallback.run();
+                            }
+                        });
+                    });
+
+                }else {
+                    if (onDismissCallback != null) {
+                        onDismissCallback.run();
+                    }
+                }
+                insertWishlist.shutdown();
+                bottomSheetDialog.dismiss();
+
+            }
+        });
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                insertWishlist.shutdown();
                 bottomSheetDialog.dismiss();
             }
         });
         bottomSheetDialog.show();
+    }
+    public interface FavoriteClickedListener{
+        void onDoneClicked();
     }
 }
