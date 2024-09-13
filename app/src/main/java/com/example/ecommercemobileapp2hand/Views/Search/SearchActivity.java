@@ -133,22 +133,14 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
     }
-
     private void loadListPro() {
         service.execute(() -> {
-            lstPro = ProductManager.getInstance().getAllListPro();
+            lstPro = ProductHandler.getData();;
             originalProductList = new ArrayList<>(lstPro);
             runOnUiThread(() -> {
 
                 if (lstPro != null && !lstPro.isEmpty()) {
-                    proAdapter = new ProductCardAdapter(lstPro, SearchActivity.this, new ProductCardAdapter.FavoriteClickedListener() {
-                        @Override
-                        public void onDoneClicked() {
-                            Intent intent = getIntent();
-                            finish();
-                            startActivity(intent);
-                        }
-                    });
+                    proAdapter = new ProductCardAdapter(lstPro, SearchActivity.this);
                     recyViewSearchPro.setLayoutManager(new GridLayoutManager(this, 2));
                     recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
                     recyViewSearchPro.setAdapter(proAdapter);

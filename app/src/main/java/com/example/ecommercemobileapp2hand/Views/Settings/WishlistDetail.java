@@ -108,8 +108,12 @@ public class WishlistDetail extends AppCompatActivity {
                 } else {
                     tvBlank.setVisibility(View.GONE);
                 }
+                adapter = new ProductCardAdapter(imgList, WishlistDetail.this, new ProductCardAdapter.FavoriteClickedListener() {
+                    @Override
+                    public void onDoneClicked() {
 
-                adapter = new ProductCardAdapter(imgList, WishlistDetail.this);
+                    }
+                },wishList_ID );
                 RecyclerView.LayoutManager layoutManager = new GridLayoutManager(WishlistDetail.this, 2);
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
@@ -120,6 +124,6 @@ public class WishlistDetail extends AppCompatActivity {
     private void getIt() {
         Intent intent = getIntent();
         wishList_ID = intent.getIntExtra("wishlistID", 0);
-        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
+//        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
     }
 }

@@ -172,9 +172,8 @@ public class HomeFragment extends Fragment {
     private void loadListPro(String gen) {
         service.submit(()->{
             lstPro = ProductHandler.getDataByObjectName(gen);
-            ArrayList<Product> allListPro = ProductHandler.getData();
+
             ProductManager.getInstance().setLstPro(lstPro);
-            ProductManager.getInstance().getAllListPro(allListPro);
             getActivity().runOnUiThread(()->{
                 loadTopSellingProductsData();
                 loadNewInProductsData();
@@ -217,7 +216,22 @@ public class HomeFragment extends Fragment {
         });
 
     }
+    public void ResetProduct(){
+        ExecutorService reRender = Executors.newCachedThreadPool();
+        lstPro.clear();
+        reRender.submit(()->{
 
+            getActivity().runOnUiThread(()->{
+                loadNewInProductsData();
+                loadTopSellingProductsData();
+                TopSellingAdapter.notifyDataSetChanged();
+                NewInAdapter.notifyDataSetChanged();
+            });
+
+            });
+
+
+    }
     public void loadTopSellingProductsData() {
 
         if (lstPro != null && lstPro.size() > 0) {
@@ -229,11 +243,7 @@ public class HomeFragment extends Fragment {
             TopSellingAdapter = new ProductCardAdapter(subTopSellingList, getActivity(), new ProductCardAdapter.FavoriteClickedListener() {
                 @Override
                 public void onDoneClicked() {
-                    FragmentManager fm = getActivity().getSupportFragmentManager();
-                    FragmentTransaction ft = fm.beginTransaction();
-                    ft.replace(R.id.frameLayout, new HomeFragment());
-                    ft.addToBackStack(null);
-                    ft.commit();
+                    ResetProduct();
                 }
             });
         } else {
@@ -258,7 +268,6 @@ public class HomeFragment extends Fragment {
         } else {
             lstProTopSelling = new ArrayList<>();
         }
-
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewNewIn.setLayoutManager(layoutManager);

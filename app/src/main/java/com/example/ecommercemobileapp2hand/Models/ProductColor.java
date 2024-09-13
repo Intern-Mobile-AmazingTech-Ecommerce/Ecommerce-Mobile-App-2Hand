@@ -14,13 +14,23 @@ public class ProductColor implements Parcelable {
     private int product_color_id;
     @JsonProperty("product_color_name")
     private String product_color_name;
+    @JsonProperty("product_color_value")
+    private String product_color_value;
     public ProductColor(){}
-    public ProductColor(int product_color_id, String product_color_name) {
+
+    public ProductColor(int product_color_id, String product_color_name, String product_color_value) {
         this.product_color_id = product_color_id;
         this.product_color_name = product_color_name;
+        this.product_color_value = product_color_value;
     }
 
+    public String getProduct_color_value() {
+        return product_color_value;
+    }
 
+    public void setProduct_color_value(String product_color_value) {
+        this.product_color_value = product_color_value;
+    }
 
     public int getProduct_color_id() {
         return product_color_id;
@@ -41,6 +51,7 @@ public class ProductColor implements Parcelable {
     protected ProductColor(Parcel in) {
         product_color_id = in.readInt();
         product_color_name = in.readString();
+        product_color_value = in.readString();
     }
 
     @Override
@@ -52,6 +63,7 @@ public class ProductColor implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(product_color_id);
         dest.writeString(product_color_name);
+        dest.writeString(product_color_value);
     }
     public static final Creator<ProductColor> CREATOR = new Creator<ProductColor>() {
         @Override

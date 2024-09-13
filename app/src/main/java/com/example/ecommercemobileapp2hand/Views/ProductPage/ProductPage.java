@@ -212,7 +212,6 @@ public class ProductPage extends AppCompatActivity {
         tvTotalReviews.setText(String.valueOf(curr.getProductReviews() != null ? curr.getProductReviews().size() : 0) +" Reviews");
         tvRatingPoints.setText(curr.getAverageRatings().toString()+" Ratings");
         isFavorite(curr);
-
     }
     private void isFavorite(ProductDetails curr){
         service.submit(()->{
@@ -472,7 +471,6 @@ public class ProductPage extends AppCompatActivity {
                 recyWL.setAdapter(wishListAdapter);
             });
         });
-
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
