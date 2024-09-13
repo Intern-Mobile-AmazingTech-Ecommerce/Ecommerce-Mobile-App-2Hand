@@ -99,58 +99,49 @@ public class UserAccountHandler {
         return UUID.randomUUID().toString();
     }
 
+
     //lưu tt user
     public static void saveUserToDB(String firstName, String lastName, String email, String gender, String ageRange) {
-        conn = null;
-        PreparedStatement pstmt = null;
+        String checkQuery = "SELECT COUNT(*) FROM user_account WHERE email = ?";
+        String insertQuery = "INSERT INTO user_account (user_id, email, first_name, last_name, gender, age_range) VALUES (?, ?, ?, ?, ?, ?)";
+        String updateQuery = "UPDATE user_account SET gender = ?, age_range = ? WHERE email = ?";
 
-        try {
-            conn = dbConnect.connectionClass();
+        try (Connection conn = dbConnect.connectionClass();
+             PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+             PreparedStatement updateStmt = conn.prepareStatement(updateQuery);
+             PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+
             if (conn == null) {
-                System.out.println("Không thể kết nối db.");
+                Log.e("DB_CONNECT", "Database connection failed.");
                 return;
             }
-            String checkQuery = "SELECT COUNT(*) FROM user_account WHERE email = ?";
-            pstmt = conn.prepareStatement(checkQuery);
-            pstmt.setString(1, email);
-            ResultSet rs = pstmt.executeQuery();
-            boolean userExists = false;
-            if (rs.next()) {
-                userExists = rs.getInt(1) > 0;
-            }
-            rs.close();
-            pstmt.close();
 
-            if (userExists) {
-                String updateQuery = "UPDATE user_account SET gender = ?, age_range = ? WHERE email = ?";
-                pstmt = conn.prepareStatement(updateQuery);
-                pstmt.setString(1, gender);
-                pstmt.setString(2, ageRange);
-                pstmt.setString(3, email);
-            } else {
-                String userId = generateRandomId();
-                String insertQuery = "INSERT INTO user_account (user_id, email, first_name, last_name, gender, age_range) VALUES (?, ?, ?, ?, ?, ?)";
-                pstmt = conn.prepareStatement(insertQuery);
-                pstmt.setString(1, userId);
-                pstmt.setString(2, email);
-                pstmt.setString(3, firstName);
-                pstmt.setString(4, lastName);
-                pstmt.setString(5, gender);
-                pstmt.setString(6, ageRange);
+            checkStmt.setString(1, email);
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                boolean userExists = rs.next() && rs.getInt(1) > 0;
+
+                if (userExists) {
+                    updateStmt.setString(1, gender);
+                    updateStmt.setString(2, ageRange);
+                    updateStmt.setString(3, email);
+                    updateStmt.executeUpdate();
+                } else {
+                    String userId = generateRandomId();
+                    insertStmt.setString(1, userId);
+                    insertStmt.setString(2, email);
+                    insertStmt.setString(3, firstName);
+                    insertStmt.setString(4, lastName);
+                    insertStmt.setString(5, gender);
+                    insertStmt.setString(6, ageRange);
+                    insertStmt.executeUpdate();
+                }
             }
 
-            pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (pstmt != null) pstmt.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            Log.e("DB_OPERATION", "Database operation failed: " + e.getMessage());
         }
     }
+
 
     //cập nhật tt chi tiết của user
     public static void updateUserAccountDetails(String firstName, String lastName, String phoneNumber, String imgUrl, String email) {
@@ -191,9 +182,9 @@ public class UserAccountHandler {
     }
 
     //kt email đã tồn tại chưa
-    public boolean checkEmailExists(String email) {
+    public static boolean checkEmailExists(String email) {
         boolean emailExists = false;
-        conn = dbConnect.connectionClass();
+        Connection conn = dbConnect.connectionClass();
         if (conn != null) {
             try {
                 String query = "SELECT COUNT(*) FROM user_account WHERE email = ?";
@@ -207,6 +198,12 @@ public class UserAccountHandler {
                 preparedStatement.close();
             } catch (Exception ex) {
                 Log.e("Error", ex.getMessage());
+            } finally {
+                try {
+                    if (conn != null) conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return emailExists;
@@ -221,7 +218,6 @@ public class UserAccountHandler {
             callableStatement.setString(1, email);
             try (ResultSet resultSet = callableStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    // Khởi tạo UserAccount với dữ liệu từ resultSet
                     userAccount = new UserAccount(
                             resultSet.getString("user_id"),
                             resultSet.getString("email"),
@@ -232,15 +228,12 @@ public class UserAccountHandler {
                             resultSet.getString("gender"),
                             resultSet.getString("age_range")
                     );
-
-                    // Lấy dữ liệu từ JSON để phân tích các thuộc tính danh sách
                     String wishlistJson = resultSet.getString("wishlist_array");
                     String notificationsJson = resultSet.getString("notifications_array");
                     String cardsJson = resultSet.getString("cards_array");
                     String ordersJson = resultSet.getString("order_array");
                     String addressesJson = resultSet.getString("address_array");
 
-                    // Phân tích JSON thành các danh sách tương ứng
                     userAccount.setLstWL(parseJson(wishlistJson, Wishlist.class));
                     userAccount.setLstNoti(parseJson(notificationsJson, Notifications.class));
                     userAccount.setLstCard(parseJson(cardsJson, UserCards.class));
@@ -270,7 +263,6 @@ public class UserAccountHandler {
             callableStatement.setString(1, userID);
             try (ResultSet resultSet = callableStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    // Khởi tạo UserAccount với dữ liệu từ resultSet
                     userAccount = new UserAccount(
                             resultSet.getString("user_id"),
                             resultSet.getString("email"),
@@ -282,14 +274,12 @@ public class UserAccountHandler {
                             resultSet.getString("age_range")
                     );
 
-                    // Lấy dữ liệu từ JSON để phân tích các thuộc tính danh sách
                     String wishlistJson = resultSet.getString("wishlist_array");
                     String notificationsJson = resultSet.getString("notifications_array");
                     String cardsJson = resultSet.getString("cards_array");
                     String ordersJson = resultSet.getString("order_array");
                     String addressesJson = resultSet.getString("address_array");
 
-                    // Phân tích JSON thành các danh sách tương ứng
                     userAccount.setLstWL(parseJson(wishlistJson, Wishlist.class));
                     userAccount.setLstNoti(parseJson(notificationsJson, Notifications.class));
                     userAccount.setLstCard(parseJson(cardsJson, UserCards.class));
@@ -323,5 +313,6 @@ public class UserAccountHandler {
         }
         return list;
     }
+
 
 }
