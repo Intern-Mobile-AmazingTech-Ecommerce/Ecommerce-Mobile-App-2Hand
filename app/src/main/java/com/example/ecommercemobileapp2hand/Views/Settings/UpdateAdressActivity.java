@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,9 +26,10 @@ public class UpdateAdressActivity extends AppCompatActivity {
 
     ExecutorService service = Executors.newSingleThreadExecutor();
     EditText editTextStreet, editTextCity, editTextState, editTextZipCode, editTextPhone;
-    Button buttonSave;
+    Button buttonSave, buttonDelete;
     ImageView imgBack;
     int addressId;
+    AlertDialog.Builder builder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +57,9 @@ public class UpdateAdressActivity extends AppCompatActivity {
         editTextState = findViewById(R.id.edtState);
         editTextZipCode = findViewById(R.id.edtZipCode);
         buttonSave = findViewById(R.id.btnSaveAddress);
+        buttonDelete = findViewById(R.id.btnDeleteAddress);
         imgBack = findViewById(R.id.imgBack);
+        builder = new AlertDialog.Builder(this);
         loadData();
     }
     void loadData() {
@@ -96,6 +101,42 @@ public class UpdateAdressActivity extends AppCompatActivity {
             public void onClick(View view) {
                 updateAddress();
             }
+        });
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view)
+            {
+               builder.setTitle("Warning!!!")
+                       .setMessage("Bạn có muốn xoá địa chỉ này ?")
+                       .setCancelable(true)
+                       .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               deleteAddress();
+                           }
+                       })
+                       .setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               dialogInterface.cancel();
+                           }
+                       }).show();
+            }
+        });
+    }
+    void deleteAddress()
+    {
+        service.submit(()->{
+            boolean isDelete = UserAddressHandler.deleteAddressById(addressId);
+            this.runOnUiThread(()->{
+                if (isDelete)
+                {
+                    Toast.makeText(getApplicationContext(), "Địa chỉ đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Cập nhật địa chỉ thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
     void updateAddress() {

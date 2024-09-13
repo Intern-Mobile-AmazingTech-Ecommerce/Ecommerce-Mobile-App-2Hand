@@ -107,4 +107,31 @@ public class UserCardsHandler {
 
         return false;
     }
+    public static boolean deleteCardById(int cardId) {
+        Connection conn = dbConnect.connectionClass();
+        PreparedStatement pstmt = null;
+
+        if (conn != null) {
+            try {
+                String sql = "DELETE FROM user_cards WHERE user_cards_id = ?";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setInt(1, cardId);
+
+                int rowsDeleted = pstmt.executeUpdate();
+                return rowsDeleted > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (pstmt != null) pstmt.close();
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
 }

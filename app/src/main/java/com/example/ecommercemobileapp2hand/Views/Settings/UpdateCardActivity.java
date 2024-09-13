@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -28,9 +30,10 @@ public class UpdateCardActivity extends AppCompatActivity {
 
     ExecutorService service = Executors.newSingleThreadExecutor();
     EditText editTextCardNumber, editTextCCV, editTextExp, editTextCardHolder;
-    Button buttonSave;
+    Button buttonSave, buttonDelete;
     ImageView imgBack;
     int cardId;
+    AlertDialog.Builder builder;
     boolean isValid ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,8 @@ public class UpdateCardActivity extends AppCompatActivity {
         editTextCardHolder = findViewById(R.id.edtCardholderName);
         buttonSave = findViewById(R.id.btnSaveCard);
         imgBack = findViewById(R.id.imgBack);
+        buttonDelete = findViewById(R.id.btnDeleteCard);
+        builder = new AlertDialog.Builder(this);
         loadData();
     }
     void loadData()
@@ -85,11 +90,46 @@ public class UpdateCardActivity extends AppCompatActivity {
         buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateAddress();
+                updateCard();
             }
         });
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                builder.setTitle("Warning!!!")
+                        .setMessage("Bạn có muốn xoá card này ?")
+                        .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteCard();
+                            }
+                        })
+                        .setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        }).show();
+            }
+        });
+
     }
-    void updateAddress() {
+    void deleteCard()
+    {
+        service.submit(()->{
+            boolean isDelete = UserCardsHandler.deleteCardById(cardId);
+            this.runOnUiThread(()->{
+                if (isDelete)
+                {
+                    Toast.makeText(getApplicationContext(), "Card đã được xoá thành công!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Xoá card thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+    }
+    void updateCard() {
         if (validateInput()) {
             service.submit(() -> {
                 String cardNumber = String.valueOf(editTextCardNumber.getText());
@@ -148,6 +188,7 @@ public class UpdateCardActivity extends AppCompatActivity {
 
         return isValid;
     }
+
 
 
 }
