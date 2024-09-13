@@ -146,4 +146,31 @@ public class UserAddressHandler {
         }
         return false;
     }
+    public static boolean deleteAddressById(int addressId) {
+        Connection conn = dbConnect.connectionClass();
+        PreparedStatement pstmt = null;
+
+        if (conn != null) {
+            try {
+                String sql = "DELETE FROM user_address WHERE user_address_id = ?";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setInt(1, addressId);
+
+                int rowsDeleted = pstmt.executeUpdate();
+                return rowsDeleted > 0;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    if (pstmt != null) pstmt.close();
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
 }

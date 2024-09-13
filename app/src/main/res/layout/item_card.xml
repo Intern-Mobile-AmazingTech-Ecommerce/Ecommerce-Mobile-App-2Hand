@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    style="@style/item_wishlist"
+    style="@style/ordercard_tablelayout"
     >
 
 
@@ -33,7 +33,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_payment" />
+        app:srcCompat="@drawable/payment" />
 
     <ImageView
         android:id="@+id/imageView7"
