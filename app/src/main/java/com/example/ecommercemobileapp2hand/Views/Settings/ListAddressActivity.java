@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.R;
@@ -81,9 +82,9 @@ public class ListAddressActivity extends AppCompatActivity {
      private void loadListAddress() {
         service.execute(() -> {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-            String email = sharedPreferences.getString("userEmail", "");
-            UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
-
+//            String email = sharedPreferences.getString("userEmail", "");
+//            UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
+            UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
             if (user != null) {
                 String userId = user.getUserId();
                 lstAddress = UserAddressHandler.getListAdressByUserId(userId);

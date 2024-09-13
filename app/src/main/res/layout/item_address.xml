@@ -6,39 +6,38 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    style="@style/item_wishlist"
+    style="@style/ordercard_tablelayout"
+    android:paddingHorizontal="12dp"
+    android:padding="25dp"
     >
 
 
     <TextView
         style="@style/TEXT"
         android:id="@+id/textViewAddress"
-        android:layout_width="wrap_content"
+        android:layout_width="248dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginBottom="27dp"
         android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:fontFamily="@font/circularstdmedium500"
+        android:textFontWeight="700"
+        android:textSize="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
         />
 
 
     <TextView
         android:id="@+id/textViewEdit"
         style="@style/icon_arrow_right"
-        android:layout_width="36dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="309dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginBottom="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/gabarito"
         android:text="Edit"
         android:textColor="@color/purple"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textFontWeight="700"
+        android:textSize="12dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>

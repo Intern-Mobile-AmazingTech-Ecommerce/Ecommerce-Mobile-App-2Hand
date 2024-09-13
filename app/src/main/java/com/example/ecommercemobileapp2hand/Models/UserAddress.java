@@ -70,4 +70,8 @@ public class UserAddress implements Serializable {
     public void setUser_address_phone(String user_address_phone) {
         this.user_address_phone = user_address_phone;
     }
+    public String getStringAddress()
+    {
+        return user_address_street + " " + user_address_city + ", " + user_address_state + " " + getUser_address_zipcode() + "\n" + user_address_phone;
+    }
 }

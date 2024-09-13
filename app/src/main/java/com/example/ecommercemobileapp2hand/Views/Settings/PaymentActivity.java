@@ -20,6 +20,7 @@ import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserCardsHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Card;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Paypal;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
@@ -86,9 +87,9 @@ public class PaymentActivity extends AppCompatActivity {
     void loadListCard() {
         service.execute(() -> {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-            String email = sharedPreferences.getString("userEmail", "");
-            UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
-
+//            String email = sharedPreferences.getString("userEmail", "");
+//            UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
+            UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
             if (user != null) {
                 String userId = user.getUserId();
                 lstCard = UserCardsHandler.getListCardByUserId(userId);
