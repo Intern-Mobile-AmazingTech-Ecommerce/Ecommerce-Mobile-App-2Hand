@@ -48,7 +48,7 @@ public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.MyViewHold
         ProductObject g = lstGender.get(position);
 
         holder.tvGender.setText(g.getObject_name());
-        if (g.equals(checkGender))
+        if (g.getObject_name().equals(checkGender))
         {
             holder.imgCheck.setVisibility(View.VISIBLE);
             holder.imgCheck.setImageResource(R.drawable.check_line);

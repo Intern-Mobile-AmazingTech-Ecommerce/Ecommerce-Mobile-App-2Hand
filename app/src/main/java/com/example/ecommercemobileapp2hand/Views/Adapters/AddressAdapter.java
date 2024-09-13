@@ -47,7 +47,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
     @Override
     public void onBindViewHolder(@NonNull AdressViewHolder holder, int position) {
         UserAddress address = userAddressList.get(position);
-        holder.textViewAdress.setText(address.getUser_address_street());
+        holder.textViewAdress.setText(address.getStringAddress());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

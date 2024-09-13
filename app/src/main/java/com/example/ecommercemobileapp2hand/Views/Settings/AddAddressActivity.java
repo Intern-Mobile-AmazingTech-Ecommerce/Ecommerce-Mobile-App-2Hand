@@ -108,13 +108,14 @@ public class AddAddressActivity extends AppCompatActivity {
                     runOnUiThread(()->{
                         if(rs){
                             Toast.makeText(getApplicationContext(),"Address Added Successfully",Toast.LENGTH_SHORT).show();
+
+                            service.shutdown();
+                            finish();
                         }else{
                             Toast.makeText(getApplicationContext(),"Address Added Failed",Toast.LENGTH_SHORT).show();
                         }
                     });
                 });
-                service.shutdown();
-                finish();
             }
         });
     }

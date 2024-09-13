@@ -39,34 +39,13 @@
             android:textSize="16dp" />
     </RelativeLayout>
 
-    <ScrollView
-        android:id="@+id/scrollview_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/linearlayout"
-        android:layout_marginHorizontal="24dp"
-        android:scrollbars="none"
-        android:layout_marginBottom="40dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recy_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-    </ScrollView>
-
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/scrollview_address"
+        android:layout_below="@id/linearlayout"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="40dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp">
 
@@ -127,4 +106,25 @@
 
         </TableLayout>
     </androidx.cardview.widget.CardView>
+
+    <ScrollView
+        android:id="@+id/scrollview_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cv_address"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="12dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recy_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

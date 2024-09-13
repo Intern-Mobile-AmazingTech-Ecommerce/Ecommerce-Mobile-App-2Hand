@@ -102,13 +102,14 @@ public class AddCardActivity extends AppCompatActivity {
                     runOnUiThread(()->{
                         if(rs){
                             Toast.makeText(getApplicationContext(),"Card Added Successfully",Toast.LENGTH_SHORT).show();
+
+                            service.shutdown();
+                            finish();
                         }else{
                             Toast.makeText(getApplicationContext(),"Card Added Failed",Toast.LENGTH_SHORT).show();
                         }
                     });
                 });
-                service.shutdown();
-                finish();
 
 
             }

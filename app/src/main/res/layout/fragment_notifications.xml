@@ -45,6 +45,7 @@
                     android:id="@+id/tv_No_Notification"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    style="@style/TEXT"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/circularstdmedium500"
                     android:text="No Notification yet"
@@ -56,7 +57,7 @@
                     android:id="@+id/btn_Exploro_Categories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
+                    android:textColor="@color/white"
                     android:backgroundTint="@color/purple"
                     android:text="Explore Categories" />
             </LinearLayout>
