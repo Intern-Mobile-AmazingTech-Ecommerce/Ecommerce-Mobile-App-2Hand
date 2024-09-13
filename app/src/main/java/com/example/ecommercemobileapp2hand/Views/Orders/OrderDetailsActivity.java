@@ -76,14 +76,17 @@ public class OrderDetailsActivity extends AppCompatActivity {
         service.execute(() -> {
             lst = UserOrderProductsHandler.getUserOrderProductsByOrderID(order.getUser_order_id());
             runOnUiThread(() -> {
-                if (!lst.isEmpty() && lst != null) {
-                    orderDetailsAdapter = new OrderDetailsAdapter(lst, OrderDetailsActivity.this);
-                    recy_orderdetails.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-                    recy_orderdetails.setItemAnimator(new DefaultItemAnimator());
-                    recy_orderdetails.setAdapter(orderDetailsAdapter);
-                    tvtotal_price.setText("Total price: $" + String.valueOf(order.getTotal_price()));
+                if (!lst.isEmpty() && lst != null && order.getOrder_status_id() == 5) {
+                    orderDetailsAdapter = new OrderDetailsAdapter(lst, OrderDetailsActivity.this, true);
                 }
-
+                else
+                {
+                    orderDetailsAdapter = new OrderDetailsAdapter(lst, OrderDetailsActivity.this, false);
+                }
+                recy_orderdetails.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+                recy_orderdetails.setItemAnimator(new DefaultItemAnimator());
+                recy_orderdetails.setAdapter(orderDetailsAdapter);
+                tvtotal_price.setText("Total price: $" + String.valueOf(order.getTotal_price()));
             });
         });
 

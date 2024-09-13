@@ -57,39 +57,80 @@ public class TrackOrderAdapter extends RecyclerView.Adapter<TrackOrderAdapter.My
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        if (orderStatus.getOrder_status_id()  <= order.getOrder_status_id())
-        {
-            holder.img_checkstattus.setImageResource(R.drawable.check_line);
-            holder.img_checkstattus.setBackgroundResource(R.drawable.circle_completed);
-            holder.tv_orderstatus.setText(orderStatus.getOrder_status_name());
 
-            holder.tv_created.setText(formattedDate);
+        ArrayList<OrderStatus> displayList = new ArrayList<>();
+
+        if (order.getOrder_status_id() == 6) {
+            // Trạng thái cho order_status_id = 6
+            for (OrderStatus status : lst_ordstt) {
+                if (status.getOrder_status_name().equals("Returned") ||
+                        status.getOrder_status_name().equals("Shipped") ||
+                        status.getOrder_status_name().equals("Order Confirmed") ||
+                        status.getOrder_status_name().equals("Order Placed")) {
+                    displayList.add(status);
+                }
+            }
         }
-        else
-        {
-            int nightModeFlags = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            boolean isDarkMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
-            if (isDarkMode)
-            {
-                holder.tv_orderstatus.setTextColor(Color.parseColor("#8E8C94"));
-                holder.tv_created.setTextColor(Color.parseColor("#8E8C94"));
+        else if (order.getOrder_status_id() == 7) {
+            // Trạng thái cho order_status_id = 7
+            for (OrderStatus status : lst_ordstt) {
+                if (status.getOrder_status_name().equals("Canceled") ||
+                        status.getOrder_status_name().equals("Order Confirmed") ||
+                        status.getOrder_status_name().equals("Order Placed")) {
+                    displayList.add(status);
+                }
             }
-            else
-            {
-                holder.tv_orderstatus.setTextColor(Color.parseColor("#939393"));
-                holder.tv_created.setTextColor(Color.parseColor("#939393"));
+        }
+        else if (order.getOrder_status_id() <= 5) {
+            // Trạng thái cho order_status_id <= 5
+            for (OrderStatus status : lst_ordstt) {
+                if (status.getOrder_status_name().equals("Delivered") ||
+                        status.getOrder_status_name().equals("Shipped") ||
+                        status.getOrder_status_name().equals("Order Confirmed") ||
+                        status.getOrder_status_name().equals("Order Placed")) {
+                    displayList.add(status);
+                }
             }
-            holder.img_checkstattus.setImageResource(R.drawable.check_line);
-            holder.img_checkstattus.setBackgroundResource(R.drawable.circle_incompleted);
-            holder.tv_orderstatus.setText(orderStatus.getOrder_status_name());
+        }
+        // Cập nhật UI cho từng trạng thái theo danh sách đã sắp xếp
+        if (position < displayList.size()) {
+            OrderStatus displayStatus = displayList.get(position);
 
-            holder.tv_created.setText(formattedDate);
+            if (displayStatus.getOrder_status_id() <= order.getOrder_status_id()) {
+                holder.img_checkstattus.setImageResource(R.drawable.check_line);
+                holder.img_checkstattus.setBackgroundResource(R.drawable.circle_completed);
+                holder.tv_orderstatus.setText(displayStatus.getOrder_status_name());
+                holder.tv_created.setText(formattedDate);
+            } else {
+                // Xử lý hiển thị khi trạng thái chưa hoàn thành
+                int nightModeFlags = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                boolean isDarkMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES;
+                if (isDarkMode) {
+                    holder.tv_orderstatus.setTextColor(Color.parseColor("#8E8C94"));
+                    holder.tv_created.setTextColor(Color.parseColor("#8E8C94"));
+                } else {
+                    holder.tv_orderstatus.setTextColor(Color.parseColor("#939393"));
+                    holder.tv_created.setTextColor(Color.parseColor("#939393"));
+                }
+                holder.img_checkstattus.setImageResource(R.drawable.check_line);
+                holder.img_checkstattus.setBackgroundResource(R.drawable.circle_incompleted);
+                holder.tv_orderstatus.setText(displayStatus.getOrder_status_name());
+                holder.tv_created.setText(formattedDate);
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return lst_ordstt != null ? lst_ordstt.size() : 0;
+        if (order.getOrder_status_id() <= 6)
+        {
+            return 4;
+        }
+        if (order.getOrder_status_id() == 7)
+        {
+            return 3;
+        }
+        return 0;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder

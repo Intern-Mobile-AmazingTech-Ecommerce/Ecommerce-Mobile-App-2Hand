@@ -183,6 +183,7 @@ public class OrdersFragment extends Fragment {
 
             if (chip.getText().equals("Processing"))
             {
+                chip.setClickable(false);
                 chip.setChecked(true);
                 chip.setTextColor(Color.parseColor("#FFFFFF"));
                 chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
@@ -210,6 +211,7 @@ public class OrdersFragment extends Fragment {
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked)
                     {
+                        chip.setClickable(false);
                         chip.setTextColor(Color.parseColor("#FFFFFF"));
                         chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
                         checkstatus = chip.getText().toString();
@@ -231,6 +233,7 @@ public class OrdersFragment extends Fragment {
                     }
                     else
                     {
+                        chip.setClickable(true);
                         if (isDarkMode)
                         {
                             chip.setTextColor(Color.parseColor("#FFFFFF"));
@@ -254,7 +257,7 @@ public class OrdersFragment extends Fragment {
         {
             if (ord.getOrder_status_name().equals("Processing"))
             {
-                if (!OrderStatusHandler.CheckStatus(order.getOrder_status_id(), "Delivered"))
+                if (!OrderStatusHandler.CheckStatus(order.getOrder_status_id(), "Shipped") && !OrderStatusHandler.CheckStatus(order.getOrder_status_id(), "Delivered") && !OrderStatusHandler.CheckStatus(order.getOrder_status_id(), "Returned") && !OrderStatusHandler.CheckStatus(order.getOrder_status_id(), "Canceled"))
                 {
                     filter.add(order);
                 }
@@ -267,6 +270,20 @@ public class OrdersFragment extends Fragment {
                 }
             }
             if (ord.getOrder_status_name().equals("Delivered"))
+            {
+                if (OrderStatusHandler.CheckStatus(order.getOrder_status_id(), ord.getOrder_status_name()))
+                {
+                    filter.add(order);
+                }
+            }
+            if (ord.getOrder_status_name().equals("Returned"))
+            {
+                if (OrderStatusHandler.CheckStatus(order.getOrder_status_id(), ord.getOrder_status_name()))
+                {
+                    filter.add(order);
+                }
+            }
+            if (ord.getOrder_status_name().equals("Canceled"))
             {
                 if (OrderStatusHandler.CheckStatus(order.getOrder_status_id(), ord.getOrder_status_name()))
                 {
