@@ -24,8 +24,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     private List<UserCards> cardList;
     private Context context;
-    public CardAdapter(List<UserCards> cardList, PaymentActivity paymentActivity) {
+
+    public CardAdapter(List<UserCards> cardList, Context context) {
         this.cardList = cardList;
+        this.context = context;
     }
 
     @NonNull
