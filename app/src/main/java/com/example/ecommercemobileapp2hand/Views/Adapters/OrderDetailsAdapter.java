@@ -82,7 +82,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
 
     @Override
     public int getItemCount() {
-        return lstOrderDetails.size();
+        return lstOrderDetails != null ? lstOrderDetails.size() : 0;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder

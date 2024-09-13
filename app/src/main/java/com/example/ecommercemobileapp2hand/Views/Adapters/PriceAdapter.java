@@ -70,7 +70,7 @@ public class PriceAdapter extends RecyclerView.Adapter<PriceAdapter.MyViewHolder
 
     @Override
     public int getItemCount() {
-        return lstPrice.size();
+        return lstPrice != null ? lstPrice.size(): 0;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{

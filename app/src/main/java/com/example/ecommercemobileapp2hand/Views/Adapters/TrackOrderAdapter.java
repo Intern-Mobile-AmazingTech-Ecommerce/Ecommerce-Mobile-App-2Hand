@@ -89,7 +89,7 @@ public class TrackOrderAdapter extends RecyclerView.Adapter<TrackOrderAdapter.My
 
     @Override
     public int getItemCount() {
-        return lst_ordstt.size();
+        return lst_ordstt != null ? lst_ordstt.size() : 0;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder

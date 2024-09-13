@@ -118,6 +118,8 @@ public class ProductPage extends AppCompatActivity {
 
     }
 
+
+
     private void getBundleIntent() {
         Intent intent = getIntent();
         if (intent.getParcelableExtra("lstDetails") != null) {
@@ -140,7 +142,6 @@ public class ProductPage extends AppCompatActivity {
         super.onResume();
         getUserAccount();
         getBundleIntent();
-        loadListViewReviews();
         addEvent();
         bindingData(currentDetails);
     }
@@ -162,6 +163,7 @@ public class ProductPage extends AppCompatActivity {
     @SuppressLint("ResourceType")
     private void bindingData(ProductDetails curr) {
         loadRecycleViewImgSlider(curr);
+        loadListViewReviews(curr);
         tvProductName.setText(product.getProduct_name());
 
         if (curr.getSale_price().compareTo(BigDecimal.ZERO) != 0) {
@@ -312,6 +314,16 @@ public class ProductPage extends AppCompatActivity {
         btnAddToBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                ProductDetailsSize selectedProductDetailsSize = getSelectedProductDetailsSize(); // This is a method to get the selected size.
+//
+//                // Check if the stock is available
+//                if (selectedProductDetailsSize.getStock() > 0) {
+//                    // Stock is available, add to bag
+//                    addToBag(selectedProductDetailsSize);
+//                } else {
+//                    // Stock is not available, show an out of stock message
+//                    Toast.makeText(getApplicationContext(), "This product is out of stock", Toast.LENGTH_SHORT).show();
+//                }
                 showReviewOverlay();
             }
         });
@@ -331,8 +343,8 @@ public class ProductPage extends AppCompatActivity {
 
     }
 
-    private void loadListViewReviews() {
-        reviewsList = currentDetails.getProductReviews();
+    private void loadListViewReviews(ProductDetails productDetails) {
+        reviewsList = productDetails.getProductReviews();
         reviewAdapter = new RecycleReviewAdapter(reviewsList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recycleReviews.setLayoutManager(layoutManager);

@@ -19,12 +19,11 @@ public class NotificationsHandler {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-
         try {
-            // Open a new connection
             conn = new DBConnect().connectionClass();
             if (conn != null) {
-                String query = "SELECT * FROM notifications WHERE user_id = ? ORDER BY notifications_id DESC";
+                // Select notifications for the current user or admin (user_id = 1)
+                String query = "SELECT * FROM notifications WHERE user_id = ? OR user_id = '1' ORDER BY created_at DESC";
                 pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, userId);  // Bind the user_id parameter
                 rs = pstmt.executeQuery();
@@ -53,6 +52,7 @@ public class NotificationsHandler {
         }
         return notificationsList;
     }
+
 
 
     public static ArrayList<Notifications> initNotificationList2() {
