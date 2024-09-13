@@ -312,6 +312,16 @@ public class ProductPage extends AppCompatActivity {
         btnAddToBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                ProductDetailsSize selectedProductDetailsSize = getSelectedProductDetailsSize(); // This is a method to get the selected size.
+//
+//                // Check if the stock is available
+//                if (selectedProductDetailsSize.getStock() > 0) {
+//                    // Stock is available, add to bag
+//                    addToBag(selectedProductDetailsSize);
+//                } else {
+//                    // Stock is not available, show an out of stock message
+//                    Toast.makeText(getApplicationContext(), "This product is out of stock", Toast.LENGTH_SHORT).show();
+//                }
                 showReviewOverlay();
             }
         });
