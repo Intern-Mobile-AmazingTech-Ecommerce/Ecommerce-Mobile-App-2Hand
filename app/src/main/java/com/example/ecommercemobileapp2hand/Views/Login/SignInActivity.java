@@ -215,19 +215,16 @@ public class SignInActivity extends AppCompatActivity {
                 firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, authTask -> {
                     if (authTask.isSuccessful()) {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
-                        if (user != null) {
-                            String email = user.getEmail();
-                            String displayName = user.getDisplayName();
-                            UserAccountHandler.saveUserAccount(email, displayName, "Google");
-                            handleSignInResult(user);
-                        }
+                        handleSignInResult(user);
                     } else {
                         Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Google sign-in error", authTask.getException());
                     }
                 });
             }
         } catch (ApiException e) {
             Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "Google sign-in failed", e);
         }
     }
 
