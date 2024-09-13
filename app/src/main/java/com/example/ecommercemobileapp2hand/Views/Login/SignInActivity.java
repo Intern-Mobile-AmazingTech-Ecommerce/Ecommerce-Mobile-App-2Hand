@@ -158,15 +158,19 @@ public class SignInActivity extends AppCompatActivity {
                     UserAccount userAccount = UserAccountHandler.getUserAccount(email);
                     UserAccountHandler userAccountHandler = new UserAccountHandler();
                     boolean emailExists = userAccountHandler.checkEmailExists(email);
+                    if(userAccount!=null){
+                        runOnUiThread(()->{
+                            Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
+                            saveLoginState(email);
+                            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                            intent.putExtra("UserAccount", userAccount);
+                            intent.putExtra("email", email);
+                            intent.putExtra("displayName", user.getDisplayName());
+                            startActivity(intent);
+                            finish();
+                        });
+                    }
 
-                    Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
-                    UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-                    intent.putExtra("UserAccount", userAccount);
-                    intent.putExtra("email", email);
-                    intent.putExtra("displayName", user.getDisplayName());
-                    startActivity(intent);
-                    saveLoginState(email);
-                    finish();
                 });
 
             } else {
