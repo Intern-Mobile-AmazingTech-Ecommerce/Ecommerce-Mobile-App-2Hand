@@ -2,7 +2,6 @@ package com.example.ecommercemobileapp2hand.Views.ProductPage;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -51,6 +50,7 @@ import com.example.ecommercemobileapp2hand.Models.ProductColor;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsImg;
 import com.example.ecommercemobileapp2hand.Models.ProductDetailsSize;
+import com.example.ecommercemobileapp2hand.Models.ProductReview;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
@@ -70,6 +70,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -90,13 +92,13 @@ public class ProductPage extends AppCompatActivity {
     private RecyclerView recycleImgSlider;
     private RecycleProductImageAdapter imgSliderApdater;
     private ArrayList<ProductDetailsImg> imgList;
-    private ArrayList<Reviews> reviewsList;
+    private ArrayList<ProductReview> reviewsList;
     private ArrayList<ProductColor> colorList;
     private RecycleReviewAdapter reviewAdapter;
     private RecyclerView recycleReviews;
     private RelativeLayout btnColor, btnSize, btnQuantity;
     private ImageView imgBack, btnIncrease, btnDecrease, btnFavorite;
-    private TextView tvProductName, tvPrice, tvOldPrice, tvDescription, tvSize, tvQuantity, tvTotalPrice;
+    private TextView tvProductName, tvPrice, tvOldPrice, tvDescription, tvSize, tvQuantity, tvTotalPrice,tvRatingPoints,tvTotalReviews;
     private View bgColor;
     private int quantity = 1;
     private BigDecimal totalPrice;
@@ -114,7 +116,12 @@ public class ProductPage extends AppCompatActivity {
             return insets;
         });
         addControl();
+
+
     }
+
+
+
     private void getBundleIntent() {
         Intent intent = getIntent();
         if (intent.getParcelableExtra("lstDetails") != null) {
@@ -131,7 +138,7 @@ public class ProductPage extends AppCompatActivity {
     }
     private void getUserAccount(){
         Future<?> task = service.submit(()->{
-            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             String email = sharedPreferences.getString("userEmail","");
             userAccount = UserAccountHandler.getUserAccountByEmail(email);
         });
@@ -148,7 +155,6 @@ public class ProductPage extends AppCompatActivity {
         super.onResume();
         getUserAccount();
         getBundleIntent();
-        loadListViewReviews();
         addEvent();
         bindingData(currentDetails);
     }
@@ -170,6 +176,7 @@ public class ProductPage extends AppCompatActivity {
     @SuppressLint("ResourceType")
     private void bindingData(ProductDetails curr) {
         loadRecycleViewImgSlider(curr);
+        loadListViewReviews(curr);
         tvProductName.setText(product.getProduct_name());
 
         if (curr.getSale_price().compareTo(BigDecimal.ZERO) != 0) {
@@ -215,8 +222,9 @@ public class ProductPage extends AppCompatActivity {
             btnSize.setVisibility(View.VISIBLE);
         }
 
+        tvTotalReviews.setText(String.valueOf(curr.getProductReviews() != null ? curr.getProductReviews().size() : 0) +" Reviews");
+        tvRatingPoints.setText(curr.getAverageRatings().toString()+" Ratings");
         isFavorite(curr);
-
     }
     private void isFavorite(ProductDetails curr){
         service.submit(()->{
@@ -253,6 +261,8 @@ public class ProductPage extends AppCompatActivity {
         tvOldPrice = findViewById(R.id.tvOldPrice);
         tvDescription = findViewById(R.id.tvDescription);
         tvSize = findViewById(R.id.txtSize);
+        tvTotalReviews = findViewById(R.id.tvTotalReviews);
+        tvRatingPoints = findViewById(R.id.tvRatingPoints);
 
         //RecycleView
         recycleImgSlider = findViewById(R.id.recyclerProductImgSlider);
@@ -310,7 +320,7 @@ public class ProductPage extends AppCompatActivity {
         });
 
         btnFavorite.setOnClickListener(v -> {
-        showAddToWLOverlay();
+            showAddToWLOverlay();
         });
 
         btnAddToBag.setOnClickListener(new View.OnClickListener() {
@@ -320,26 +330,21 @@ public class ProductPage extends AppCompatActivity {
                     Toast.makeText(ProductPage.this, "Please select a size.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 // Kiểm tra số lượng còn lại
                 int stock = currentSize.getStock();
                 if (stock <= 0) {
                     Toast.makeText(ProductPage.this, "Product out of stock.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 // Kiểm tra số lượng yêu cầu có vượt quá số lượng còn lại không
                 if (quantity > stock) {
                     Toast.makeText(ProductPage.this, "Not enough stock available.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                // Tạo đối tượng Bag để lưu vào cơ sở dữ liệu
                 Bag bag = new Bag();
                 bag.setUser_id(userAccount.getUserId());
                 bag.setProduct_details_size_id(currentSize.getProductDetailsSizeID());
                 bag.setAmount(quantity);
-
                 try {
                     // Lưu vào cơ sở dữ liệu
                     boolean isSuccess = BagHandler.addBag(bag);
@@ -355,27 +360,25 @@ public class ProductPage extends AppCompatActivity {
                 }
             }
         });
-
     }
     private void updateStockStatus() {
         if (currentSize == null) {
             btnOutOfStock.setVisibility(View.VISIBLE);
             btnQuantity.setVisibility(View.GONE);
-            btnAddToBag.setEnabled(false); // Vô hiệu hóa nút "Thêm vào giỏ hàng"
+            btnAddToBag.setEnabled(false);
         } else {
             int stock = currentSize.getStock();
             if (stock <= 0) {
                 btnOutOfStock.setVisibility(View.VISIBLE);
                 btnQuantity.setVisibility(View.GONE);
-                btnAddToBag.setEnabled(false); // Vô hiệu hóa nút "Thêm vào giỏ hàng"
+                btnAddToBag.setEnabled(false);
             } else {
                 btnOutOfStock.setVisibility(View.GONE);
                 btnQuantity.setVisibility(View.VISIBLE);
-                btnAddToBag.setEnabled(true); // Kích hoạt nút "Thêm vào giỏ hàng"
+                btnAddToBag.setEnabled(true);
             }
         }
     }
-
     private void loadRecycleViewImgSlider(ProductDetails productDetails) {
         runOnUiThread(() -> {
             imgList = productDetails.getImgDetailsArrayList();
@@ -386,17 +389,18 @@ public class ProductPage extends AppCompatActivity {
                 recycleImgSlider.setAdapter(imgSliderApdater);
             }
         });
+
+
     }
-    private void loadListViewReviews() {
-        reviewsList = new ArrayList<>();
-        reviewsList.add(new Reviews(1, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
-        reviewsList.add(new Reviews(2, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
-        reviewsList.add(new Reviews(3, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
+
+    private void loadListViewReviews(ProductDetails productDetails) {
+        reviewsList = productDetails.getProductReviews();
         reviewAdapter = new RecycleReviewAdapter(reviewsList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recycleReviews.setLayoutManager(layoutManager);
         recycleReviews.setAdapter(reviewAdapter);
     }
+
     private void showColorOverlay(String type) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -415,7 +419,7 @@ public class ProductPage extends AppCompatActivity {
                         .findFirst()
                         .orElse(null);
                 bindingData(currentDetails);
-                updateStockStatus(); // Cập nhật trạng thái còn hàng
+                updateStockStatus();
                 bottomSheetDialog.dismiss();
             }
         });
@@ -442,7 +446,6 @@ public class ProductPage extends AppCompatActivity {
         });
         RecyclerView recyclerSize = dialogView.findViewById(R.id.recy_size);
         RecycleSizeAdapter recycleSizeAdapter = new RecycleSizeAdapter(currentDetails.getSizeArrayList() != null ? currentDetails.getSizeArrayList() : new ArrayList<>(), ProductPage.this, new RecycleSizeAdapter.OnSizeSelectedListener() {
-            @Override
             public void onSizeSelected(ProductDetailsSize size) {
                 currentSize = size;
                 tvSize.setText(currentSize.getSize().getSize_name());
@@ -492,18 +495,22 @@ public class ProductPage extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+
     private void showAddToWLOverlay() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
         bottomSheetDialog.setContentView(dialogView);
+
         View parentLayout = (View) dialogView.getParent();
         BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(parentLayout);
         behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO, true);
         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
         TextView tv_cancel;
         Button btnNewWL, btnDone;
         RecyclerView recyWL;
+
         tv_cancel = dialogView.findViewById(R.id.tv_cancel);
         btnNewWL = dialogView.findViewById(R.id.btnNewWL);
         btnDone = dialogView.findViewById(R.id.btnDone);
@@ -517,7 +524,6 @@ public class ProductPage extends AppCompatActivity {
                 recyWL.setAdapter(wishListAdapter);
             });
         });
-
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

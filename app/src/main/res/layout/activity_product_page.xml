@@ -353,19 +353,21 @@
                         android:textStyle="bold"
                         android:lineHeight="29dp"/>
                     <TextView
+                        android:id="@+id/tvTotalReviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:textColor="@color/neutral_400"
                         android:fontFamily="@font/circularstdmedium500"
                         android:textSize="12dp"
-                        android:text="213 Reviews"/>
+                        android:text="0 Reviews"/>
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerRating"
-                        android:layout_marginTop="16dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scrollbars="none"/>
+                        android:layout_height="195dp"
+                        android:layout_marginTop="16dp"
+                        android:scrollbars="none" />
                 </LinearLayout>
 
 

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -25,6 +26,7 @@ public class ProductHandler {
     private static Connection conn ;
     static ObjectMapper objectMapper = new ObjectMapper();
     public static ArrayList<Product> getData(){
+        objectMapper.registerModule(new JavaTimeModule());
         conn = dbConnect.connectionClass();
         ArrayList<Product> list = new ArrayList<>();
         if(conn!=null){
@@ -88,6 +90,7 @@ public class ProductHandler {
 
     public static ArrayList<Product> getDataByObjectName(String objName){
         conn = dbConnect.connectionClass();
+        objectMapper.registerModule(new JavaTimeModule());
         ArrayList<Product> list = new ArrayList<>();
         if(conn!=null){
 
@@ -153,6 +156,7 @@ public class ProductHandler {
     public static ArrayList<Product> getDataByObjectNameAndCategoryID(String objName,int catID){
         conn = dbConnect.connectionClass();
         ArrayList<Product> list = new ArrayList<>();
+        objectMapper.registerModule(new JavaTimeModule());
         if(conn!=null){
 
             try{

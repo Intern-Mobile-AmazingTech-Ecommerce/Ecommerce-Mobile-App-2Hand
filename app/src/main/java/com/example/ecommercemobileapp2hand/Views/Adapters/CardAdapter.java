@@ -24,8 +24,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     private List<UserCards> cardList;
     private Context context;
-    public CardAdapter(List<UserCards> cardList, PaymentActivity paymentActivity) {
+
+    public CardAdapter(List<UserCards> cardList, Context context) {
         this.cardList = cardList;
+        this.context = context;
     }
 
     @NonNull
@@ -39,8 +41,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         UserCards card = cardList.get(position);
-        holder.cardNumberTextView.setText(card.getUser_card_number());
-        System.out.println("aaaa"+card.getUser_cards_id());
+        String cardNumber = card.getUser_card_number().substring(card.getUser_card_number().length()-4);
+        holder.cardNumberTextView.setText("**** "+cardNumber);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,7 +59,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     @Override
     public int getItemCount() {
-        return cardList.size();
+        return cardList!=null ? cardList.size() : 0;
     }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {

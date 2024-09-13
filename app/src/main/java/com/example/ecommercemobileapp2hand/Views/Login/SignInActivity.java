@@ -19,6 +19,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
@@ -42,6 +43,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -58,7 +61,7 @@ public class SignInActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private boolean nightMode;
     private FirebaseAuth firebaseAuth;
-
+    private ExecutorService service = Executors.newCachedThreadPool();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,16 +154,25 @@ public class SignInActivity extends AppCompatActivity {
         if (user != null) {
             String email = user.getEmail();
             if (email != null) {
-                UserAccount userAccount = UserAccountHandler.getUserAccount(email);
-                UserAccountHandler userAccountHandler = new UserAccountHandler();
-                boolean emailExists = userAccountHandler.checkEmailExists(email);
-                Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
-                intent.putExtra("UserAccount", userAccount);
-                intent.putExtra("email", email);
-                intent.putExtra("displayName", user.getDisplayName());
-                startActivity(intent);
-                saveLoginState(email);
-                finish();
+                service.submit(()->{
+                    UserAccount userAccount = UserAccountHandler.getUserAccount(email);
+                    UserAccountHandler userAccountHandler = new UserAccountHandler();
+                    boolean emailExists = userAccountHandler.checkEmailExists(email);
+                    if(userAccount!=null){
+                        runOnUiThread(()->{
+                            Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
+                            saveLoginState(email);
+                            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                            intent.putExtra("UserAccount", userAccount);
+                            intent.putExtra("email", email);
+                            intent.putExtra("displayName", user.getDisplayName());
+                            startActivity(intent);
+                            finish();
+                        });
+                    }
+
+                });
+
             } else {
                 Toast.makeText(this, "Email is null", Toast.LENGTH_SHORT).show();
             }
@@ -178,9 +190,15 @@ public class SignInActivity extends AppCompatActivity {
                 if (user != null) {
                     String email = user.getEmail();
                     String displayName = user.getDisplayName();
-                    UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
-                    Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                    handleSignInResult(user);
+                    service.submit(()->{
+                        UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
+                        runOnUiThread(()->{
+                            Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                            handleSignInResult(user);
+                        });
+                    });
+
+
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_LONG).show();

@@ -64,7 +64,7 @@ public class SortByAdapter extends RecyclerView.Adapter<SortByAdapter.MyViewHole
 
     @Override
     public int getItemCount() {
-        return lstSortBy.size();
+        return lstSortBy != null ? lstSortBy.size() : 0;
     }
 
     public interface OnSortBySelectedListener{

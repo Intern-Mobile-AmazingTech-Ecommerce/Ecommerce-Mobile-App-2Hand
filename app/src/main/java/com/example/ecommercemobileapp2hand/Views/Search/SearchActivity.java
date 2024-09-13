@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Views.Search;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -132,10 +133,9 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
     }
-
     private void loadListPro() {
         service.execute(() -> {
-            lstPro = ProductManager.getInstance().getAllListPro();
+            lstPro = ProductHandler.getData();;
             originalProductList = new ArrayList<>(lstPro);
             runOnUiThread(() -> {
 
@@ -500,7 +500,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
                 // Call filterList to update results based on cleared filters
                 filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
-
+                dialog.dismiss();
             }
         });
         return sortByAdapter;

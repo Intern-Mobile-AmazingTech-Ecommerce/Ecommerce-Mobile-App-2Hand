@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Settings.WishlistActivity;
 import com.example.ecommercemobileapp2hand.Views.Settings.WishlistDetail;
 
 import java.util.HashMap;
@@ -105,6 +107,22 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
             holder.iconArrowRight.setVisibility(View.VISIBLE);
             holder.cbAdded.setVisibility(View.GONE);
         }
+
+        holder.wishListItem.setOnLongClickListener(v -> {
+            new AlertDialog.Builder(context)
+                    .setTitle("Delete Wishlist")
+                    .setMessage("Are you sure you want to delete this wishlist?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        WishlistHandler.clearWishlist(item.getWishlist_id());
+                        WishlistHandler.removeWishlist(item.getWishlist_id());
+                        Intent intent=new Intent(context, WishlistActivity.class);
+
+
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+            return true;
+        });
     }
 
     @Override
@@ -117,7 +135,7 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
 
     @Override
     public int getItemCount() {
-        return wishlistItems.size();
+        return wishlistItems!=null ? wishlistItems.size() : 0;
     }
 
     public static class WishlistViewHolder extends RecyclerView.ViewHolder {

@@ -22,10 +22,10 @@
             android:weightSum="5">
 
             <androidx.cardview.widget.CardView
+                style="@style/bg_product_card"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                style="@style/bg_product_card"
+                android:layout_weight="1.7"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp">
 
@@ -33,29 +33,30 @@
                     android:id="@+id/imgPro"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"/>
+                    android:scaleType="fitXY" />
             </androidx.cardview.widget.CardView>
 
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3.5"
-                android:layout_marginLeft="10dp">
+                android:layout_marginLeft="10dp"
+                android:layout_weight="3.3">
 
                 <TextView
                     android:id="@+id/tv_ProductName"
+                    style="@style/TEXT"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:ellipsize="end"
-                    android:textSize="16dp"
                     android:fontFamily="@font/circularstdmedium500"
-                    style="@style/TEXT"
                     android:maxLines="2"
+                    android:text="TextView"
                     android:textFontWeight="450"
-                    android:text="TextView" />
+                    android:textSize="16dp" />
 
                 <LinearLayout
+                    android:id="@+id/linearsize"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_ProductName"
@@ -64,39 +65,39 @@
 
                     <TextView
                         android:id="@+id/tv_SizeColor"
+                        style="@style/ordercard_tvamount"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="13dp"
-                        android:textFontWeight="500"
-                        android:fontFamily="@font/circularstdmedium500"
                         android:layout_weight="2"
-                        style="@style/ordercard_tvamount"
-                        android:text="TextView" />
+                        android:fontFamily="@font/circularstdmedium500"
+                        android:text="TextView"
+                        android:textFontWeight="500"
+                        android:textSize="13dp" />
 
                     <TextView
                         android:id="@+id/tvAmount"
+                        style="@style/ordercard_tvamount"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="13dp"
-                        android:textFontWeight="500"
-                        android:fontFamily="@font/circularstdmedium500"
                         android:layout_weight="1"
-                        style="@style/ordercard_tvamount"
+                        android:fontFamily="@font/circularstdmedium500"
+                        android:text="TextView"
                         android:textAlignment="textEnd"
-                        android:text="TextView" />
+                        android:textFontWeight="500"
+                        android:textSize="13dp" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_BasePrice"
+                    style="@style/ordercard_tvamount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignBaseline="@id/tv_SalePrice"
                     android:layout_toLeftOf="@id/tv_SalePrice"
                     android:fontFamily="@font/circularstdmedium500"
-                    style="@style/ordercard_tvamount"
-                    android:textSize="15dp"
+                    android:text="TextView"
                     android:textFontWeight="500"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:textSize="15dp" />
 
                 <TextView
                     android:id="@+id/tv_SalePrice"
@@ -106,26 +107,44 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="8dp"
-                    android:textFontWeight="600"
                     android:fontFamily="@font/circularstdmedium500"
                     android:text="TextView"
+                    android:textFontWeight="600"
                     android:textSize="16dp" />
 
             </RelativeLayout>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvTotalPricePro"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:layout_marginTop="14dp"
-            android:textAlignment="textEnd"
-            android:textSize="16dp"
-            android:textFontWeight="600"
-            android:fontFamily="@font/circularstdmedium500"
-            style="@style/TEXT"/>
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <Button
+                android:id="@+id/btnReview"
+                style="@style/btn_continue"
+                android:layout_width="0dp"
+                android:layout_weight="1.7"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/purple"
+                android:text="Evaluate" />
+
+            <TextView
+                android:id="@+id/tvTotalPricePro"
+                style="@style/TEXT"
+                android:layout_width="0dp"
+                android:layout_weight="3.3"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/circularstdmedium500"
+                android:text="TextView"
+                android:textAlignment="textEnd"
+                android:textFontWeight="600"
+                android:textSize="16dp" />
+        </LinearLayout>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

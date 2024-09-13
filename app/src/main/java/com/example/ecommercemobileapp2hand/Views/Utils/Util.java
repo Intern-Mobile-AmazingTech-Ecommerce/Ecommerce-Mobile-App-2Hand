@@ -78,15 +78,13 @@ public class Util {
         url = url.replace("http://", "https://");
         return url;
     }
+
     public static boolean uploadImage(String imgPath){
         try{
             if(imgPath!=null || !imgPath.isEmpty()){
                 Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
                 Map options = ObjectUtils.asMap(
-                        "use_filename",true,
-                        "use_filename_as_display_name",true,
-                        "folder","EcommerceApp",
-                        "unique_filename",true
+                        "folder","EcommerceApp"
                 );
                 File file = new File(imgPath);
                 cloudinary.uploader().upload(file,options);

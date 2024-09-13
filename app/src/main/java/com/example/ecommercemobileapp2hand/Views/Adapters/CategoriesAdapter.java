@@ -70,7 +70,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return categories.size();
+        return categories!=null ? categories.size(): 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

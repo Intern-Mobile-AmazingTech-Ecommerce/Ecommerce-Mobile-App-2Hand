@@ -37,7 +37,7 @@ public class PaypalAdapter extends RecyclerView.Adapter<PaypalAdapter.PaypalView
 
     @Override
     public int getItemCount() {
-        return paypalList.size();
+        return paypalList != null ? paypalList.size() : 0;
     }
 
     public static class PaypalViewHolder extends RecyclerView.ViewHolder {

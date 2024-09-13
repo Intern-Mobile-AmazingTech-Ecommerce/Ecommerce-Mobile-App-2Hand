@@ -28,9 +28,11 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.PaypalAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class PaymentActivity extends AppCompatActivity {
-
+    ExecutorService service = Executors.newSingleThreadExecutor();
     private ImageView imgBack;
     private RecyclerView recy_cards;
     private CardView cv_cards;
@@ -82,18 +84,24 @@ public class PaymentActivity extends AppCompatActivity {
     }
     void loadListCard()
     {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-        String email = sharedPreferences.getString("userEmail","");
-        UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
-        String userId = user.getUserId();
-        System.out.println("user"+userId);
-        System.out.println("user");
-        lstCard = UserCardsHandler.getListCardByUserId(userId);
-        if (lstCard != null && !!lstCard.isEmpty())
-        {
-             cardAdapter =  new CardAdapter(lstCard,PaymentActivity.this);
-             recy_cards.setLayoutManager(new LinearLayoutManager(this));
-             recy_cards.setAdapter(cardAdapter);
-        }
+        service.execute(()->{
+            SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            String email = sharedPreferences.getString("userEmail", "");
+            UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
+            String userId = user.getUserId();
+            lstCard = UserCardsHandler.getListCardByUserId(userId);
+            if (lstCard != null && !lstCard.isEmpty())
+            {
+                runOnUiThread(()->{
+                    cardAdapter =  new CardAdapter(lstCard,PaymentActivity.this);
+                    recy_cards.setLayoutManager(new LinearLayoutManager(this));
+                    recy_cards.setAdapter(cardAdapter);
+                    cardAdapter =  new CardAdapter(lstCard,PaymentActivity.this);
+                });
+            }
+        });
+
+
+
     }
 }

@@ -142,4 +142,8 @@ public class UserAccount implements Serializable {
     public void setAgeRange(String ageRange) {
         this.ageRange = ageRange;
     }
+
+    public String getFullName(){
+        return firstName+" "+ lastName;
+    }
 }

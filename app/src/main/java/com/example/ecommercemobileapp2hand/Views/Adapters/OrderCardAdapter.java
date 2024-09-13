@@ -55,7 +55,7 @@ public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyVi
 
     @Override
     public int getItemCount() {
-        return lstorders.size();
+        return lstorders != null ? lstorders.size(): 0;
     }
 
     class MyViewHoler extends RecyclerView.ViewHolder

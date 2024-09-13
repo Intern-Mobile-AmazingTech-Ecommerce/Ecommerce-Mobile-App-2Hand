@@ -91,11 +91,23 @@
 
     <Button
         android:id="@+id/btnSaveCard"
-        android:layout_marginHorizontal="24dp"
+        style="@style/btn_continue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="Save"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="82dp"
+        android:backgroundTint="@color/purple"
+        android:text="Save" />
+
+    <Button
+        android:id="@+id/btnDeleteCard"
         style="@style/btn_continue"
-        android:backgroundTint="@color/purple"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="34dp"
+        android:backgroundTint="@color/red"
+        android:text="Delete" />
 </RelativeLayout>
