@@ -1,11 +1,21 @@
 package com.example.ecommercemobileapp2hand.Views.Adapters;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Models.UserOrderProducts;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.ProductPage.ProductPage;
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 import com.squareup.picasso.Picasso;
 
@@ -27,10 +38,12 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
     private Future<?> currentTask;
     ArrayList<UserOrderProducts> lstOrderDetails;
     Context context;
+    boolean checkDeliverd;
 
-    public OrderDetailsAdapter(ArrayList<UserOrderProducts> lstOrderDetails, Context context) {
+    public OrderDetailsAdapter(ArrayList<UserOrderProducts> lstOrderDetails, Context context, boolean checkDeliverd) {
         this.lstOrderDetails = lstOrderDetails;
         this.context = context;
+        this.checkDeliverd = checkDeliverd;
     }
 
     @NonNull
@@ -70,6 +83,21 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         }
         BigDecimal totalPrice = details.getSale_price().multiply(BigDecimal.valueOf(details.getAmount()));
         holder.tvTotalPricePro.setText("Subtotal: $" + totalPrice);
+
+        if (checkDeliverd)
+        {
+            holder.btnReview.setVisibility(View.VISIBLE);
+            holder.btnReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showReviewOverlay();
+                }
+            });
+        }
+        else
+        {
+            holder.btnReview.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -94,6 +122,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         private TextView tv_BasePrice;
         private TextView tv_SalePrice;
         private TextView tvTotalPricePro;
+        private Button btnReview;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             this.imgPro = itemView.findViewById(R.id.imgPro);
@@ -103,6 +132,41 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
             this.tv_BasePrice = itemView.findViewById(R.id.tv_BasePrice);
             this.tv_SalePrice = itemView.findViewById(R.id.tv_SalePrice);
             this.tvTotalPricePro = itemView.findViewById(R.id.tvTotalPricePro);
+            this.btnReview = itemView.findViewById(R.id.btnReview);
         }
+    }
+    private void showReviewOverlay() {
+        View view = LayoutInflater.from(context).inflate(R.layout.review_overlay, null);
+
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(view);
+
+        Window window = dialog.getWindow();
+        if (window == null)
+        {
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowattri = window.getAttributes();
+        windowattri.gravity = Gravity.BOTTOM;
+        window.setAttributes(windowattri);
+
+        RatingBar ratingBar = dialog.findViewById(R.id.ratingBar);
+        Button btnSubmit = dialog.findViewById(R.id.btnSubmit);
+        EditText edt_review = dialog.findViewById(R.id.edt_review);
+
+        ImageButton btnClose = dialog.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 }

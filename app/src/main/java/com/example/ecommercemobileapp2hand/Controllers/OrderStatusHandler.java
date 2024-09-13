@@ -57,7 +57,7 @@ public class OrderStatusHandler {
                 ResultSet rs = stmt.executeQuery(query);
                 while (rs.next())
                 {
-                    if (!rs.getString(2).equals("Processing") && !rs.getString(2).equals("Returned") && !rs.getString(2).equals("Canceled"))
+                    if (!rs.getString(2).equals("Processing"))
                     {
                         OrderStatus ord = new OrderStatus(rs.getInt(1), rs.getString(2));
                         lst.add(ord);
