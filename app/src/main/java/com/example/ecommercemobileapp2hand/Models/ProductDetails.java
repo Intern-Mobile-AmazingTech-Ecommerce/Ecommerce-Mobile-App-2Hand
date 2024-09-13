@@ -114,6 +114,14 @@ public class ProductDetails implements Parcelable {
         this.productColor.setProduct_color_name(productColorName);
     }
 
+    @JsonProperty("product_color_value")
+    public void setProductColorValue(String productColorValue) {
+        if (this.productColor == null) {
+            this.productColor = new ProductColor();
+        }
+        this.productColor.setProduct_color_value(productColorValue);
+    }
+
     public ProductColor getProductColor() {
         return productColor;
     }

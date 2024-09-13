@@ -120,7 +120,9 @@ public class UserAccount implements Serializable {
     }
 
     public String getImgUrl() {
+        if(imgUrl!=null)
         return imgUrl;
+        return "";
     }
 
     public void setImgUrl(String imgUrl) {

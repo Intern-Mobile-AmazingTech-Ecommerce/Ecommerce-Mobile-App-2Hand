@@ -187,14 +187,7 @@ public class ProductPage extends AppCompatActivity {
             tvPrice.setText("$" + product.getBase_price().toString());
 
         }
-        String colorName = curr.getProductColor().getProduct_color_name().toLowerCase().trim();
-        int color;
-        if (colorName.contains("dark blue")) {
-            color = Color.parseColor("#00008B");
-        } else {
-            color = Color.parseColor(colorName);
-        }
-        bgColor.setBackgroundTintList(ColorStateList.valueOf(color));
+        bgColor.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(curr.getProductColor().getProduct_color_value().trim())));
         tvDescription.setText(curr.getDescription());
 
         quantity = 1;

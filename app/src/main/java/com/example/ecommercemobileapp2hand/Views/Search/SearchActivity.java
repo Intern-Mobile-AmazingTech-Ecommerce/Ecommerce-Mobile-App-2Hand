@@ -263,9 +263,7 @@ public class SearchActivity extends AppCompatActivity {
         updateUIWithFilterResults(text, filterList);
         // Clear any potential adapter caching (if applicable)
 
-
     }
-
     private BigDecimal getMinSalePrice(Product product) {
         if (product.getProductDetailsArrayList() == null || product.getProductDetailsArrayList().isEmpty()) {
             return BigDecimal.ZERO; // Default value if no product details are available
@@ -276,7 +274,6 @@ public class SearchActivity extends AppCompatActivity {
                 .min(BigDecimal::compareTo)
                 .orElse(BigDecimal.ZERO);
     }
-
     private void updateUIWithFilterResults(String text, ArrayList<Product> filterList) {
         runOnUiThread(() -> {
             ArrayList<Product> updatedFilterList = new ArrayList<>(filterList); // Create a new list to hold filtered results

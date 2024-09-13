@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
 import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
@@ -104,7 +105,6 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
             service = Executors.newCachedThreadPool();
         }
         Product pro = lstPro.get(position);
-
         //First Sale Details
         ProductDetails details = new ProductDetails();
         Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
@@ -143,7 +143,15 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
             public void onClick(View v) {
                 Intent intent = new Intent(context, ProductPage.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable("lstDetails", pro);
+
+                if(currentWishListID != -1){
+                    Product ProDetails = ProductHandler.getDataByProductID(finalDetails.getProduct_id());
+                    bundle.putParcelable("lstDetails", ProDetails);
+
+                }else {
+                    bundle.putParcelable("lstDetails", pro);
+                }
+
                 if (firstSaleDetails.isPresent()) {
                     bundle.putParcelable("currentSale", finalDetails);
                 }

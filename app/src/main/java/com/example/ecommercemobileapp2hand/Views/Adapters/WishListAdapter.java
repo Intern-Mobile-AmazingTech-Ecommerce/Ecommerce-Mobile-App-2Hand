@@ -116,8 +116,6 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
                         WishlistHandler.clearWishlist(item.getWishlist_id());
                         WishlistHandler.removeWishlist(item.getWishlist_id());
                         Intent intent=new Intent(context, WishlistActivity.class);
-
-
                     })
                     .setNegativeButton("No", null)
                     .show();

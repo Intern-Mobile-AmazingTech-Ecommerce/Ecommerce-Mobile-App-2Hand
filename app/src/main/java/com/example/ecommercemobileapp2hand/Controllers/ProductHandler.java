@@ -219,4 +219,68 @@ public class ProductHandler {
         }
         return list;
     }
+    public static Product getDataByProductID(int productID){
+        conn = dbConnect.connectionClass();
+        ArrayList<Product> list = new ArrayList<>();
+        objectMapper.registerModule(new JavaTimeModule());
+        if(conn!=null){
+
+            try{
+                CallableStatement cstmt = conn.prepareCall("call  GetProductDetailsByProductID(?)");
+                cstmt.setInt(1, productID);
+                ResultSet rs = cstmt.executeQuery();
+                if(rs.next()){
+                    Product p = new Product();
+                    p.setProduct_id(rs.getInt(1));
+                    p.setProduct_name(rs.getString(2));
+                    p.setThumbnail(rs.getString(3));
+                    p.setBase_price(rs.getBigDecimal(4));
+                    p.setSold(rs.getBigDecimal(5));
+                    Timestamp timestamp = rs.getTimestamp(6);
+                    if (timestamp != null) {
+                        LocalDateTime localDateTime = timestamp.toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDateTime();
+                        p.setCreated_at(localDateTime);
+                    }
+                    //Object
+                    ProductObject obj = new ProductObject();
+                    obj.setProduct_object_id(7);
+                    obj.setObject_name(rs.getString(8));
+                    p.setProductObject(obj);
+                    //Category
+                    ProductCategory category = new ProductCategory();
+                    category.setProduct_category_id(rs.getInt(9));
+                    category.setProduct_category_name(rs.getString(10));
+                    category.setProduct_category_description(rs.getString(11));
+                    category.setProduct_category_thumbnail(rs.getString(12));
+                    p.setProductCategory(category);
+
+
+                    //Array Pro Details
+                    String productDetailsJson = rs.getString("product_details_array");
+                    ArrayList<ProductDetails> productDetails = objectMapper.readValue(
+                            productDetailsJson,
+                            new TypeReference< ArrayList<ProductDetails>>() {}
+                    );
+                    p.setProductDetailsArrayList(productDetails);
+                   return p;
+
+                }
+            }catch (SQLException e){
+                throw new RuntimeException(e);
+            } catch (JsonMappingException e) {
+                throw new RuntimeException(e);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try{
+                    conn.close();
+                }catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+       return new Product();
+    }
 }

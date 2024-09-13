@@ -122,12 +122,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-//            if (getArguments() != null)
-//            {
-//                userAccount = (UserAccount) getArguments().getSerializable("UserAccount");
-//                genderTextView = getArguments().getString("UserGender");
-//            }
         addControl(view);
 
         return view;
@@ -172,7 +166,6 @@ public class HomeFragment extends Fragment {
     private void loadListPro(String gen) {
         service.submit(()->{
             lstPro = ProductHandler.getDataByObjectName(gen);
-
             ProductManager.getInstance().setLstPro(lstPro);
             getActivity().runOnUiThread(()->{
                 loadTopSellingProductsData();
@@ -296,7 +289,6 @@ public class HomeFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
         tvNewInSeeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -44,18 +44,18 @@ public class RecylerColorAdapter extends RecyclerView.Adapter<RecylerColorAdapte
         ProductColor color = productColors.get(position);
         holder.btnColor.setText(color.getProduct_color_name());
         String colorName = color.getProduct_color_name().toLowerCase().trim();
-        int colorValue = -999;
-        try{
-            if (colorName.contains("dark blue")) {
-                colorValue = Color.parseColor("#00008B");
-            } else {
-                colorValue = Color.parseColor(colorName);
-            }
-        }catch (IllegalAccessError e){
-            colorValue = Color.parseColor("white");
-        }
+//        int colorValue = -999;
+//        try{
+//            if (colorName.contains("dark blue")) {
+//                colorValue = Color.parseColor("#00008B");
+//            } else {
+//                colorValue = Color.parseColor(colorName);
+//            }
+//        }catch (IllegalAccessError e){
+//            colorValue = Color.parseColor("white");
+//        }
 
-        holder.color.setBackgroundTintList(ColorStateList.valueOf(colorValue));
+        holder.color.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color.getProduct_color_value().trim())));
         if(color.getProduct_color_name().contains(checkColor)){
             holder.btnColor.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
             holder.btnColor.setTextColor(Color.WHITE);

@@ -4,6 +4,7 @@ import static android.view.View.GONE;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -26,8 +27,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.ecommercemobileapp2hand.Controllers.ProductObjectHandler;
 import com.example.ecommercemobileapp2hand.Models.ProductObject;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 
@@ -38,13 +41,17 @@ import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationDetai
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFragment;
 import com.example.ecommercemobileapp2hand.Views.Orders.OrdersFragment;
 import com.example.ecommercemobileapp2hand.Views.Settings.SettingsFragment;
+import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> listObj;
     private UserAccount userAccount;
     private SharedPreferences sharedPreferences;
-    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         addEvent();
         addCart();
+        loadAvt();
 //        hideActionBar();
     }
 
@@ -128,7 +135,22 @@ public class MainActivity extends AppCompatActivity {
 //            btnBag.setVisibility(View.VISIBLE);
 //        }
 //    }
-
+    private void loadAvt(){
+        if(!UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl().isEmpty()){
+            ExecutorService service = Executors.newCachedThreadPool();
+            service.submit(()->{
+               String url = Util.getCloudinaryImageUrl(getApplicationContext(),UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl(),-1,-1);
+               if(!url.isEmpty()){
+                 runOnUiThread(()->{
+                     Glide.with(getApplicationContext()).load(url).into(btnAvt);
+                 });
+               }
+            });
+        }else {
+            Bitmap bitmap = Util.convertStringToBitmapFromAccess(this,"avt.png");
+            btnAvt.setImageBitmap(bitmap);
+        }
+    }
     private void addControl(){
         bottomNavigationView = findViewById(R.id.bottom_nav);
         actionBar = findViewById(R.id.action_bar);
@@ -236,7 +258,6 @@ public class MainActivity extends AppCompatActivity {
         ft.addToBackStack(null);
         ft.commit();
     }
-
     private void showGenderOverlay(String type) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();

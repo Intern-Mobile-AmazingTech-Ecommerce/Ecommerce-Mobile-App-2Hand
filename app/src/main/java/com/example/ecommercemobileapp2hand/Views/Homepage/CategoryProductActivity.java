@@ -88,7 +88,7 @@ public class CategoryProductActivity extends AppCompatActivity {
 
     private void getBundleIntent() {
         Intent intent = getIntent();
-        Category = new ProductCategory();
+//        Category = new ProductCategory();
         topSellingList = new ArrayList<>();
         newInList = new ArrayList<>();
         if (intent.getParcelableExtra("Category") != null) {
@@ -97,10 +97,9 @@ public class CategoryProductActivity extends AppCompatActivity {
         } else if (intent.getParcelableArrayListExtra("TopSellingList") != null) {
             topSellingList = intent.getParcelableArrayListExtra("TopSellingList");
         } else if (intent.getParcelableArrayListExtra("NewInList") != null) {
-
             newInList = intent.getParcelableArrayListExtra("NewInList");
         }
-        latch.countDown();
+//        latch.countDown();
     }
 
 
@@ -126,20 +125,20 @@ public class CategoryProductActivity extends AppCompatActivity {
 
                 });
             });
-
         } else if (topSellingList.size() > 0) {
-
             proAdapter = new ProductCardAdapter(topSellingList, CategoryProductActivity.this);
             tvCategoryName.setText("Top Selling (" + topSellingList.size() + ")");
+            recyCategoryProduct.setAdapter(proAdapter);
 
         } else if (newInList.size() > 0) {
 
             proAdapter = new ProductCardAdapter(newInList, CategoryProductActivity.this);
             tvCategoryName.setText("New In (" + newInList.size() + ")");
+            recyCategoryProduct.setAdapter(proAdapter);
         }
         recyCategoryProduct.setLayoutManager(new GridLayoutManager(this, 2));
         recyCategoryProduct.setItemAnimator(new DefaultItemAnimator());
-        recyCategoryProduct.setAdapter(proAdapter);
+//        recyCategoryProduct.setAdapter(proAdapter);
 
     }
 
