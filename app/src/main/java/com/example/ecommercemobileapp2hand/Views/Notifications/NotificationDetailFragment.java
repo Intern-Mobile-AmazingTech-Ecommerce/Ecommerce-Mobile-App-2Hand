@@ -112,7 +112,11 @@ public class NotificationDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getUserAccount();
-        fetchNotifications();
+        if (userAccount != null) {
+            fetchNotifications();
+        } else {
+            navigateToNoNotifications();
+        }
     }
     public void onDestroy() {
         super.onDestroy();

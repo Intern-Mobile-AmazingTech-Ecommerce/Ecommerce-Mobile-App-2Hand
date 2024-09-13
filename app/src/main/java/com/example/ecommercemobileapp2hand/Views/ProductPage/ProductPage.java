@@ -120,8 +120,6 @@ public class ProductPage extends AppCompatActivity {
 
     }
 
-
-
     private void getBundleIntent() {
         Intent intent = getIntent();
         if (intent.getParcelableExtra("lstDetails") != null) {
@@ -497,64 +495,78 @@ public class ProductPage extends AppCompatActivity {
     }
 
     private void showAddToWLOverlay() {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
-        bottomSheetDialog.setContentView(dialogView);
+    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this); // Use 'this' for context
+    LayoutInflater inflater = this.getLayoutInflater(); // Use 'this' for context
+    View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
+    bottomSheetDialog.setContentView(dialogView);
 
-        View parentLayout = (View) dialogView.getParent();
-        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(parentLayout);
-        behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO, true);
-        behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    View parentLayout = (View) dialogView.getParent();
+    BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(parentLayout);
+    behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO, true);
+    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
-        TextView tv_cancel;
-        Button btnNewWL, btnDone;
-        RecyclerView recyWL;
+    TextView tv_cancel;
+    Button btnNewWL, btnDone;
+    RecyclerView recyWL;
 
-        tv_cancel = dialogView.findViewById(R.id.tv_cancel);
-        btnNewWL = dialogView.findViewById(R.id.btnNewWL);
-        btnDone = dialogView.findViewById(R.id.btnDone);
-        recyWL = dialogView.findViewById(R.id.recy_wl);
-        ExecutorService loadingWishlist = Executors.newSingleThreadExecutor();
-        loadingWishlist.execute(()->{
-            ArrayList<Wishlist> wishlists = WishlistHandler.getWishListByUserID(userAccount.getUserId());
-            runOnUiThread(()->{
-                WishListAdapter wishListAdapter = new WishListAdapter(ProductPage.this, wishlists, currentDetails.getProduct_details_id());
-                recyWL.setLayoutManager(new LinearLayoutManager(ProductPage.this,LinearLayoutManager.VERTICAL,false));
+    tv_cancel = dialogView.findViewById(R.id.tv_cancel);
+    btnNewWL = dialogView.findViewById(R.id.btnNewWL);
+    btnDone = dialogView.findViewById(R.id.btnDone);
+    recyWL = dialogView.findViewById(R.id.recy_wl);
+    ExecutorService loadingWishlist = Executors.newSingleThreadExecutor();
+    loadingWishlist.execute(() -> {
+        UserAccount currentUser = UserAccountManager.getInstance().getCurrentUserAccount();
+        if (currentUser != null) {
+            ArrayList<Wishlist> wishlists = WishlistHandler.getWishListByUserID(currentUser.getUserId());
+            runOnUiThread(() -> {
+                WishListAdapter wishListAdapter = new WishListAdapter(this, wishlists, currentDetails.getProduct_details_id()); // Use 'this' for context
+                recyWL.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)); // Use 'this' for context
                 recyWL.setAdapter(wishListAdapter);
             });
-        });
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.dismiss();
-                isFavorite(currentDetails);
-            }
-        });
+        } else {
+            runOnUiThread(() -> {
+                Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show(); // Use 'this' for context
+            });
+        }
+    });
+    btnDone.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            bottomSheetDialog.dismiss();
+            isFavorite(currentDetails);
+        }
+    });
 
-        tv_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadingWishlist.shutdown();
-                bottomSheetDialog.dismiss();
-            }
-        });
-        btnNewWL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAddWLOverlay(()->{
-                    loadingWishlist.execute(()->{
-                        ArrayList<Wishlist> updatedWishlists = WishlistHandler.getWishListByUserID(userAccount.getUserId());
+    tv_cancel.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            loadingWishlist.shutdown();
+            bottomSheetDialog.dismiss();
+        }
+    });
+    btnNewWL.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            showAddWLOverlay(() -> {
+                loadingWishlist.execute(() -> {
+                    UserAccount currentUser = UserAccountManager.getInstance().getCurrentUserAccount();
+                    if (currentUser != null) {
+                        ArrayList<Wishlist> updatedWishlists = WishlistHandler.getWishListByUserID(currentUser.getUserId());
                         runOnUiThread(() -> {
-                            WishListAdapter updatedWishListAdapter = new WishListAdapter(ProductPage.this, updatedWishlists, currentDetails.getProduct_details_id() );
-                            recyWL.setAdapter(updatedWishListAdapter);
+                            WishListAdapter updatedWishListAdapter = new WishListAdapter(ProductPage.this, updatedWishlists, currentDetails.getProduct_details_id());
+                            recyWL.setAdapter(updatedWishListAdapter);                            recyWL.setAdapter(updatedWishListAdapter);
                         });
-                    });
+                    } else {
+                        runOnUiThread(() -> {
+                        });
+                    }
                 });
-            }
-        });
-        bottomSheetDialog.show();
-    }
+            });
+        }
+    });
+    bottomSheetDialog.show();
+}
+
     private void showAddWLOverlay(Runnable onDismissCallback) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();

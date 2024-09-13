@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -77,24 +78,28 @@ public class ListAddressActivity extends AppCompatActivity {
             }
         });
     }
-     void loadListAddress()
-     {
-         service.execute(() -> {
-             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-             String email = sharedPreferences.getString("userEmail", "");
-             UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
-             String userId = user.getUserId();
-             lstAddress = UserAddressHandler.getListAdressByUserId(userId);
+     private void loadListAddress() {
+        service.execute(() -> {
+            SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            String email = sharedPreferences.getString("userEmail", "");
+            UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
 
-             if (lstAddress != null && !lstAddress.isEmpty()) {
-                 runOnUiThread(() -> {
-                     addressAdapter = new AddressAdapter(lstAddress, ListAddressActivity.this);
-                     recy_address.setLayoutManager(new LinearLayoutManager(ListAddressActivity.this));
-                     recy_address.setAdapter(addressAdapter);
-                 });
-             }
-         });
+            if (user != null) {
+                String userId = user.getUserId();
+                lstAddress = UserAddressHandler.getListAdressByUserId(userId);
 
-     }
+                if (lstAddress != null && !lstAddress.isEmpty()) {
+                    runOnUiThread(() -> {
+                        addressAdapter = new AddressAdapter(lstAddress, ListAddressActivity.this);
+                        recy_address.setLayoutManager(new LinearLayoutManager(ListAddressActivity.this));
+                        recy_address.setAdapter(addressAdapter);
+                    });
+                }
+            } else {
+                runOnUiThread(() -> {
+                });
+            }
+        });
+}
 
 }
