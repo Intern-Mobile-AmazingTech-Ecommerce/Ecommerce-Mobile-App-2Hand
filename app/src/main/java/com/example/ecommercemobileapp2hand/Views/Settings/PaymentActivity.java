@@ -82,26 +82,28 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
     }
-    void loadListCard()
-    {
-        service.execute(()->{
+
+    void loadListCard() {
+        service.execute(() -> {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
             String email = sharedPreferences.getString("userEmail", "");
             UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
-            String userId = user.getUserId();
-            lstCard = UserCardsHandler.getListCardByUserId(userId);
-            if (lstCard != null && !lstCard.isEmpty())
-            {
-                runOnUiThread(()->{
-                    cardAdapter =  new CardAdapter(lstCard,PaymentActivity.this);
-                    recy_cards.setLayoutManager(new LinearLayoutManager(this));
-                    recy_cards.setAdapter(cardAdapter);
-                    cardAdapter =  new CardAdapter(lstCard,PaymentActivity.this);
+
+            if (user != null) {
+                String userId = user.getUserId();
+                lstCard = UserCardsHandler.getListCardByUserId(userId);
+
+                if (lstCard != null && !lstCard.isEmpty()) {
+                    runOnUiThread(() -> {
+                        cardAdapter = new CardAdapter(lstCard, PaymentActivity.this);
+                        recy_cards.setLayoutManager(new LinearLayoutManager(this));
+                        recy_cards.setAdapter(cardAdapter);
+                    });
+                }
+            } else {
+                runOnUiThread(() -> {
                 });
             }
         });
-
-
-
     }
 }

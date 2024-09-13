@@ -1,7 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.SplashScreen;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -18,12 +17,10 @@ import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SplashScreenActivity extends AppCompatActivity {
-
-    private static final String PREFS_NAME = "user_prefs";
-    private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
-
+    UserAccountHandler userAccountHandler = new UserAccountHandler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +32,28 @@ public class SplashScreenActivity extends AppCompatActivity {
             return insets;
         });
         new Handler().postDelayed(() -> {
-            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            boolean isLoggedIn = sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
-            String email = sharedPreferences.getString("email","");
-            UserAccount userAccount = UserAccountHandler.getUserAccount(email);
-            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-            if (isLoggedIn) {
-                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+            if (firebaseUser != null) {
+                // đăng nhập với firebase
+                String email = firebaseUser.getEmail();
+                if (email != null && !email.isEmpty()) {
+                    // kiểm tra
+                    boolean emailExists = userAccountHandler.checkEmailExists(email);
+
+                    if (emailExists) {
+                        UserAccount userAccount = UserAccountHandler.getUserAccount(email);
+                        UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+
+                        startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                    } else {firebaseAuth.signOut();
+                        startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
+                    }
+                } else {
+                    firebaseAuth.signOut();
+                    startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
+                }
             } else {
                 startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
             }
@@ -52,7 +64,5 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 }
-
