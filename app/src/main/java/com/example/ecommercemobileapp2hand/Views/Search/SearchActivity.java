@@ -1,6 +1,7 @@
 package com.example.ecommercemobileapp2hand.Views.Search;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -140,7 +141,14 @@ public class SearchActivity extends AppCompatActivity {
             runOnUiThread(() -> {
 
                 if (lstPro != null && !lstPro.isEmpty()) {
-                    proAdapter = new ProductCardAdapter(lstPro, SearchActivity.this);
+                    proAdapter = new ProductCardAdapter(lstPro, SearchActivity.this, new ProductCardAdapter.FavoriteClickedListener() {
+                        @Override
+                        public void onDoneClicked() {
+                            Intent intent = getIntent();
+                            finish();
+                            startActivity(intent);
+                        }
+                    });
                     recyViewSearchPro.setLayoutManager(new GridLayoutManager(this, 2));
                     recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
                     recyViewSearchPro.setAdapter(proAdapter);

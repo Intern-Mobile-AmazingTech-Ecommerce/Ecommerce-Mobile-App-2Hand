@@ -72,7 +72,7 @@ public class RecycleSizeAdapter extends RecyclerView.Adapter<RecycleSizeAdapter.
 
     @Override
     public int getItemCount() {
-        return sizes.size();
+        return sizes!=null ? sizes.size() : 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{

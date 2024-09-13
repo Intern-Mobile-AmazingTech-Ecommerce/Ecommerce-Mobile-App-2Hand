@@ -73,7 +73,7 @@ public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
-        return lstGender.size();
+        return lstGender != null ? lstGender.size() : 0;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder

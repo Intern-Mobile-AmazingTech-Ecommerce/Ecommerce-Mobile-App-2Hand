@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -216,7 +218,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void loadTopSellingProductsData() {
+    public void loadTopSellingProductsData() {
 
         if (lstPro != null && lstPro.size() > 0) {
             lstProTopSelling = lstPro.stream()
@@ -224,7 +226,16 @@ public class HomeFragment extends Fragment {
                     .sorted(Comparator.comparing(Product::getSold).reversed())
                     .collect(Collectors.toCollection(ArrayList::new));
             ArrayList<Product> subTopSellingList = lstProTopSelling.size() > 5 ? lstProTopSelling.subList(0, 5).stream().collect(Collectors.toCollection(ArrayList::new)) : lstProTopSelling;
-            TopSellingAdapter = new ProductCardAdapter(subTopSellingList, getActivity());
+            TopSellingAdapter = new ProductCardAdapter(subTopSellingList, getActivity(), new ProductCardAdapter.FavoriteClickedListener() {
+                @Override
+                public void onDoneClicked() {
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    ft.replace(R.id.frameLayout, new HomeFragment());
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+            });
         } else {
             lstProTopSelling = new ArrayList<>();
         }
@@ -235,7 +246,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void loadNewInProductsData() {
+    public void loadNewInProductsData() {
         if (lstPro != null && lstPro.size() > 0) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS);
@@ -295,5 +306,7 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
+
 
 }

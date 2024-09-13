@@ -76,7 +76,7 @@ public class RecycleProductImageAdapter extends RecyclerView.Adapter<RecycleProd
 
     @Override
     public int getItemCount() {
-        return imgLists.size();
+        return imgLists!=null? imgLists.size():0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

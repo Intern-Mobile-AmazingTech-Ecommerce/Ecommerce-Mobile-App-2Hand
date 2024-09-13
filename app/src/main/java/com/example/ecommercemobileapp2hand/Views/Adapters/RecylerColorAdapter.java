@@ -74,7 +74,7 @@ public class RecylerColorAdapter extends RecyclerView.Adapter<RecylerColorAdapte
     }
     @Override
     public int getItemCount() {
-        return productColors.size();
+        return productColors != null ? productColors.size() : 0;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
