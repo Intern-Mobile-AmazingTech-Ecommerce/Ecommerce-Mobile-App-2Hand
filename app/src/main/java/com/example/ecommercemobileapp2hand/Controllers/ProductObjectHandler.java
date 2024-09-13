@@ -26,7 +26,7 @@ public class ProductObjectHandler {
                 {
                     ProductObject productObject = new ProductObject();
                     productObject.setProduct_object_id(resultSet.getInt(1));
-                    productObject.setObject_name(resultSet.getString(resultSet.getString(2)));
+                    productObject.setObject_name(resultSet.getString(2));
                     list.add(productObject);
                 }
             }catch (SQLException e)

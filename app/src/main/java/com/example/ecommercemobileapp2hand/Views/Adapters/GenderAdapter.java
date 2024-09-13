@@ -14,12 +14,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Models.ProductObject;
 import com.example.ecommercemobileapp2hand.R;
 
 import java.util.ArrayList;
 
 public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.MyViewHolder>{
-    ArrayList<String> lstGender;
+    ArrayList<ProductObject> lstGender;
     Context context;
     String checkGender;
     OnGenderSelectedListener listener;
@@ -28,7 +29,7 @@ public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.MyViewHold
         void onGenderSelected(String selectedGender);
     }
 
-    public GenderAdapter(ArrayList<String> lstGender, Context context, String checkGender, OnGenderSelectedListener listener) {
+    public GenderAdapter(ArrayList<ProductObject> lstGender, Context context, String checkGender, OnGenderSelectedListener listener) {
         this.lstGender = lstGender;
         this.context = context;
         this.checkGender = checkGender;
@@ -44,28 +45,28 @@ public class GenderAdapter extends RecyclerView.Adapter<GenderAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String g = lstGender.get(position);
+        ProductObject g = lstGender.get(position);
 
-        holder.tvGender.setText(g);
+        holder.tvGender.setText(g.getObject_name());
         if (g.equals(checkGender))
         {
             holder.imgCheck.setVisibility(View.VISIBLE);
             holder.imgCheck.setImageResource(R.drawable.check_line);
             holder.imgCheck.setBackgroundResource(R.drawable.circle_completed);
-            holder.tvGender.setText(g);
+            holder.tvGender.setText(g.getObject_name());
             holder.tvGender.setTextColor(Color.WHITE);
             holder.linear_gender.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
         }
         else
         {
             holder.imgCheck.setVisibility(View.GONE);
-            holder.tvGender.setText(g);
+            holder.tvGender.setText(g.getObject_name());
         }
         holder.linear_gender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkGender = g;  // Cập nhật giới tính được chọn
-                listener.onGenderSelected(g);  // Gọi callback để thông báo sự thay đổi
+                checkGender = g.getObject_name();  // Cập nhật giới tính được chọn
+                listener.onGenderSelected(g.getObject_name());  // Gọi callback để thông báo sự thay đổi
                 notifyDataSetChanged();
             }
         });

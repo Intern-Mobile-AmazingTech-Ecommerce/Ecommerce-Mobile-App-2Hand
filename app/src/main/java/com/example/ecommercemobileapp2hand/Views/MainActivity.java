@@ -26,6 +26,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.ProductObjectHandler;
+import com.example.ecommercemobileapp2hand.Models.ProductObject;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 
@@ -255,10 +257,9 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recy_gender = dialogView.findViewById(R.id.recy_gender);
 
-        String[] genderArr = {"Men", "Women"};
-        ArrayList<String> lstGender = new ArrayList<>(Arrays.asList(genderArr));
+        ArrayList<ProductObject> genderArr = ProductObjectHandler.getData();
 
-        genderAdapter = new GenderAdapter(lstGender, MainActivity.this, btnObject.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
+        genderAdapter = new GenderAdapter(genderArr, MainActivity.this, btnObject.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
             @Override
             public void onGenderSelected(String selectedGender) {
                 btnObject.setText(selectedGender);

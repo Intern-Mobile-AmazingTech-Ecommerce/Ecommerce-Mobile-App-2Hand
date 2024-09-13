@@ -96,7 +96,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         }
         else
         {
-            holder.btnReview.setVisibility(View.GONE);
+            holder.btnReview.setVisibility(View.INVISIBLE);
         }
     }
 
