@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Views.ProductPage;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -40,8 +41,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
+import com.example.ecommercemobileapp2hand.Models.Bag;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Reviews;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductColor;
@@ -111,10 +114,7 @@ public class ProductPage extends AppCompatActivity {
             return insets;
         });
         addControl();
-
-
     }
-
     private void getBundleIntent() {
         Intent intent = getIntent();
         if (intent.getParcelableExtra("lstDetails") != null) {
@@ -130,7 +130,18 @@ public class ProductPage extends AppCompatActivity {
 
     }
     private void getUserAccount(){
-        userAccount = UserAccountManager.instance.getCurrentUserAccount();
+        Future<?> task = service.submit(()->{
+            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+            String email = sharedPreferences.getString("userEmail","");
+            userAccount = UserAccountHandler.getUserAccountByEmail(email);
+        });
+        try {
+            task.get();
+
+        }catch (Exception e)
+        {
+            throw new RuntimeException(e.getMessage());
+        }
     }
     @Override
     protected void onResume() {
@@ -305,19 +316,64 @@ public class ProductPage extends AppCompatActivity {
         btnAddToBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ProductDetailsSize selectedProductDetailsSize = getSelectedProductDetailsSize(); // This is a method to get the selected size.
-//
-//                // Check if the stock is available
-//                if (selectedProductDetailsSize.getStock() > 0) {
-//                    // Stock is available, add to bag
-//                    addToBag(selectedProductDetailsSize);
-//                } else {
-//                    // Stock is not available, show an out of stock message
-//                    Toast.makeText(getApplicationContext(), "This product is out of stock", Toast.LENGTH_SHORT).show();
-//                }
-                showReviewOverlay();
+                if (currentSize == null) {
+                    Toast.makeText(ProductPage.this, "Please select a size.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Kiểm tra số lượng còn lại
+                int stock = currentSize.getStock();
+                if (stock <= 0) {
+                    Toast.makeText(ProductPage.this, "Product out of stock.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Kiểm tra số lượng yêu cầu có vượt quá số lượng còn lại không
+                if (quantity > stock) {
+                    Toast.makeText(ProductPage.this, "Not enough stock available.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Tạo đối tượng Bag để lưu vào cơ sở dữ liệu
+                Bag bag = new Bag();
+                bag.setUser_id(userAccount.getUserId());
+                bag.setProduct_details_size_id(currentSize.getProductDetailsSizeID());
+                bag.setAmount(quantity);
+
+                try {
+                    // Lưu vào cơ sở dữ liệu
+                    boolean isSuccess = BagHandler.addBag(bag);
+                    if (isSuccess) {
+                        Toast.makeText(ProductPage.this, "Product added to bag successfully.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Xử lý khi không thể thêm vào giỏ hàng (Ví dụ: do không đủ số lượng trong kho)
+                        Toast.makeText(ProductPage.this, "Failed to add product to bag. Please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    // Xử lý lỗi ngoại lệ (Ví dụ: lỗi kết nối cơ sở dữ liệu)
+                    Toast.makeText(ProductPage.this, "An error occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+    }
+    private void updateStockStatus() {
+        if (currentSize == null) {
+            btnOutOfStock.setVisibility(View.VISIBLE);
+            btnQuantity.setVisibility(View.GONE);
+            btnAddToBag.setEnabled(false); // Vô hiệu hóa nút "Thêm vào giỏ hàng"
+        } else {
+            int stock = currentSize.getStock();
+            if (stock <= 0) {
+                btnOutOfStock.setVisibility(View.VISIBLE);
+                btnQuantity.setVisibility(View.GONE);
+                btnAddToBag.setEnabled(false); // Vô hiệu hóa nút "Thêm vào giỏ hàng"
+            } else {
+                btnOutOfStock.setVisibility(View.GONE);
+                btnQuantity.setVisibility(View.VISIBLE);
+                btnAddToBag.setEnabled(true); // Kích hoạt nút "Thêm vào giỏ hàng"
+            }
+        }
     }
 
     private void loadRecycleViewImgSlider(ProductDetails productDetails) {
@@ -330,10 +386,7 @@ public class ProductPage extends AppCompatActivity {
                 recycleImgSlider.setAdapter(imgSliderApdater);
             }
         });
-
-
     }
-
     private void loadListViewReviews() {
         reviewsList = new ArrayList<>();
         reviewsList.add(new Reviews(1, "Alex Morgan", "AlexMorgan.png", 3, "Gucci transcribes its heritage, creativity, and innovation into a plenitude of collections. From staple items to distinctive accessories."));
@@ -344,7 +397,6 @@ public class ProductPage extends AppCompatActivity {
         recycleReviews.setLayoutManager(layoutManager);
         recycleReviews.setAdapter(reviewAdapter);
     }
-
     private void showColorOverlay(String type) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -363,6 +415,7 @@ public class ProductPage extends AppCompatActivity {
                         .findFirst()
                         .orElse(null);
                 bindingData(currentDetails);
+                updateStockStatus(); // Cập nhật trạng thái còn hàng
                 bottomSheetDialog.dismiss();
             }
         });
@@ -393,6 +446,8 @@ public class ProductPage extends AppCompatActivity {
             public void onSizeSelected(ProductDetailsSize size) {
                 currentSize = size;
                 tvSize.setText(currentSize.getSize().getSize_name());
+                int totalStockOfSize = currentSize.getStock();
+                updateStockStatus(); // Cập nhật trạng thái còn hàng
                 bottomSheetDialog.dismiss();
             }
         }, currentSize);
@@ -437,22 +492,18 @@ public class ProductPage extends AppCompatActivity {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
     private void showAddToWLOverlay() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
         bottomSheetDialog.setContentView(dialogView);
-
         View parentLayout = (View) dialogView.getParent();
         BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(parentLayout);
         behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO, true);
         behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
         TextView tv_cancel;
         Button btnNewWL, btnDone;
         RecyclerView recyWL;
-
         tv_cancel = dialogView.findViewById(R.id.tv_cancel);
         btnNewWL = dialogView.findViewById(R.id.btnNewWL);
         btnDone = dialogView.findViewById(R.id.btnDone);
