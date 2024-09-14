@@ -53,12 +53,18 @@ public class RecycleProductImageAdapter extends RecyclerView.Adapter<RecycleProd
 
         Future<?> currentTask = service.submit(() -> {
             ProductDetailsImg img = imgLists.get(position);
-            String url = Util.getCloudinaryImageUrl(context, img.getImg_url(), 592, 592);
-            ((android.app.Activity) context).runOnUiThread(() -> {
-                if (holder.getAdapterPosition() == position) {
-                    Picasso.get().load(url).into(holder.imgProduct);
+           Util.getCloudinaryImageUrl(context, img.getImg_url(), 592, 592, new Util.Callback<String>() {
+                @Override
+                public void onResult(String result) {
+                    String url = result;
+                    ((android.app.Activity) context).runOnUiThread(() -> {
+                        if (holder.getAdapterPosition() == position) {
+                            Picasso.get().load(url).into(holder.imgProduct);
+                        }
+                    });
                 }
             });
+
         });
 
         taskMap.put(holder.getAdapterPosition(), currentTask);

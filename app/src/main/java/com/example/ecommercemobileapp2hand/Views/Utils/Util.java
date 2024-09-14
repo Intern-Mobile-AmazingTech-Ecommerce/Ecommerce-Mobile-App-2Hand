@@ -21,8 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Util {
+    private static ExecutorService service = Executors.newCachedThreadPool();
     public static Bitmap blur(Context context, Bitmap image) {
         final float BITMAP_SCALE = 0.4f;
         final float BLUR_RADIUS = 6f;
@@ -62,21 +65,26 @@ public class Util {
     public static int dpToPx(Context context, int dp) {
         return Math.round(dp * context.getResources().getDisplayMetrics().density);
     }
-    public static String getCloudinaryImageUrl(Context context,String publicId,int w, int h) {
-        Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
-        // Kiểm tra nếu w hoặc h bằng -1, bỏ qua bước đặt kích thước
-        if (w == -1 || h == -1) {
-            String url = cloudinary.url().generate(publicId);
-            url = url.replace("http://", "https://");
-            return url;
-        }
-        // Nếu không, tiếp tục với quy trình hiện tại
-        int widthDP = dpToPx(context, w);
-        int heightDP = dpToPx(context, h);
-        String url = cloudinary.url().transformation(new Transformation().width(widthDP).height(heightDP))
-                .generate(publicId);
-        url = url.replace("http://", "https://");
-        return url;
+    public static void getCloudinaryImageUrl(Context context,String publicId,int w, int h,Callback<String> callback) {
+        service.execute(()->{
+            Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
+            // Kiểm tra nếu w hoặc h bằng -1, bỏ qua bước đặt kích thước
+            if (w == -1 || h == -1) {
+                String url = cloudinary.url().generate(publicId);
+                url = url.replace("http://", "https://");
+                callback.onResult(url);
+            }else {
+                // Nếu không, tiếp tục với quy trình hiện tại
+                int widthDP = dpToPx(context, w);
+                int heightDP = dpToPx(context, h);
+                String url = cloudinary.url().transformation(new Transformation().width(widthDP).height(heightDP))
+                        .generate(publicId);
+                url = url.replace("http://", "https://");
+                callback.onResult(url);
+            }
+
+        });
+
     }
 
     public static boolean uploadImage(String imgPath){
@@ -96,5 +104,8 @@ public class Util {
 
         }
         return false;
+    }
+    public interface Callback<T> {
+        void onResult(T result);
     }
 }

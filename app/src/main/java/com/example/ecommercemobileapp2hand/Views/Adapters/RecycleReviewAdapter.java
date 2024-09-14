@@ -54,8 +54,16 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
 
             ((android.app.Activity)context).runOnUiThread(()->{
                 if(userAccount.getImgUrl() != null){
-                    String url = Util.getCloudinaryImageUrl(context,userAccount.getImgUrl(),-1,-1);
-                    Glide.with(context).load(url).into(holder.imgAvt);
+                    Util.getCloudinaryImageUrl(context, userAccount.getImgUrl(), -1, -1, new Util.Callback<String>() {
+                        @Override
+                        public void onResult(String result) {
+                            String imgUrl = result;
+                            ((android.app.Activity)context).runOnUiThread(()->{
+                                Glide.with(context).load(imgUrl).into(holder.imgAvt);
+                            });
+                        }
+                    });
+
                 }else {
                     Bitmap bitmap = Util.convertStringToBitmapFromAccess(context.getApplicationContext(),"avt.png");
                     holder.imgAvt.setImageBitmap(bitmap);

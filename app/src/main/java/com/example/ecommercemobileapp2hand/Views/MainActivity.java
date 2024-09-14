@@ -138,13 +138,16 @@ public class MainActivity extends AppCompatActivity {
     private void loadAvt(){
         if(UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl() != null){
             ExecutorService service = Executors.newCachedThreadPool();
-            service.submit(()->{
-               String url = Util.getCloudinaryImageUrl(getApplicationContext(),UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl(),-1,-1);
-               if(!url.isEmpty()){
-                 runOnUiThread(()->{
-                     Glide.with(getApplicationContext()).load(url).into(btnAvt);
-                 });
-               }
+            Util.getCloudinaryImageUrl(getApplicationContext(), UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl(), -1, -1, new Util.Callback<String>() {
+                @Override
+                public void onResult(String result) {
+                    String url = result;
+                    if(!url.isEmpty()){
+                        runOnUiThread(()->{
+                            Glide.with(getApplicationContext()).load(url).into(btnAvt);
+                        });
+                    }
+                }
             });
         }else {
             Bitmap bitmap = Util.convertStringToBitmapFromAccess(this,"avt.png");
