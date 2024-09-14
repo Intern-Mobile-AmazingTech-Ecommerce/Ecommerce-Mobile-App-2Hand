@@ -81,7 +81,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ProductPage extends AppCompatActivity {
-    private ExecutorService service = Executors.newCachedThreadPool();
+
     private UserAccount userAccount;
     private Product product;
     //Current
@@ -135,18 +135,11 @@ public class ProductPage extends AppCompatActivity {
 
     }
     private void getUserAccount(){
-        Future<?> task = service.submit(()->{
-            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-            String email = sharedPreferences.getString("userEmail","");
-            userAccount = UserAccountHandler.getUserAccountByEmail(email);
-        });
-        try {
-            task.get();
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        String email = sharedPreferences.getString("userEmail","");
+//        userAccount = UserAccountHandler.getUserAccountByEmail(email);
+        userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
 
-        }catch (Exception e)
-        {
-            throw new RuntimeException(e.getMessage());
-        }
     }
     @Override
     protected void onResume() {
@@ -156,21 +149,7 @@ public class ProductPage extends AppCompatActivity {
         addEvent();
         bindingData(currentDetails);
     }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (service != null && !service.isShutdown()) {
-            service.shutdown();
-            try {
-                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
-                    service.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                service.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
+
     @SuppressLint("ResourceType")
     private void bindingData(ProductDetails curr) {
         loadRecycleViewImgSlider(curr);
@@ -218,30 +197,35 @@ public class ProductPage extends AppCompatActivity {
         isFavorite(curr);
     }
     private void isFavorite(ProductDetails curr){
-        service.submit(()->{
-            boolean result = WishlistHandler.checkProductDetailsExistsInWishlistByUserID(curr.getProduct_details_id(),userAccount.getUserId());
-            runOnUiThread(()->{
-                if (result) {
-                    btnFavorite.setImageResource(R.drawable.red_heart);
-                    currentDetails.setFavorite(true);;
-                }
-                else
-                {
-                    int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                    int bgResource;
-                    if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-                        bgResource = R.drawable.white_heart;
-                    } else {
-                        bgResource = R.drawable.black_heart;
-                    }
 
-                    btnFavorite.setImageResource(bgResource);
-                    currentDetails.setFavorite(false);
+            WishlistHandler.checkProductDetailsExistsInWishlistByUserID(curr.getProduct_details_id(), userAccount.getUserId(), new WishlistHandler.Callback<Boolean>() {
+                @Override
+                public void onResult(Boolean result) {
+                    runOnUiThread(()->{
+                        if (result) {
+                            btnFavorite.setImageResource(R.drawable.red_heart);
+                            currentDetails.setFavorite(true);;
+                        }
+                        else
+                        {
+                            int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                            int bgResource;
+                            if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                                bgResource = R.drawable.white_heart;
+                            } else {
+                                bgResource = R.drawable.black_heart;
+                            }
 
+                            btnFavorite.setImageResource(bgResource);
+                            currentDetails.setFavorite(false);
+
+                        }
+                    });
                 }
             });
 
-        });
+
+
 
     }
     private void addControl() {
@@ -338,13 +322,21 @@ public class ProductPage extends AppCompatActivity {
                 bag.setAmount(quantity);
                 try {
                     // Lưu vào cơ sở dữ liệu
-                    boolean isSuccess = BagHandler.addBag(bag);
-                    if (isSuccess) {
-                        Toast.makeText(ProductPage.this, "Product added to bag successfully.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Xử lý khi không thể thêm vào giỏ hàng (Ví dụ: do không đủ số lượng trong kho)
-                        Toast.makeText(ProductPage.this, "Failed to add product to bag. Please try again.", Toast.LENGTH_SHORT).show();
-                    }
+                    BagHandler.addBag(bag, new BagHandler.Callback<Boolean>() {
+                        @Override
+                        public void onResult(Boolean result) {
+                            if (result) {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(ProductPage.this, "Added to bag successfully.", Toast.LENGTH_SHORT).show();
+                                });
+                            } else {
+                                runOnUiThread(() -> {
+                                    Toast.makeText(ProductPage.this, "Failed to add to bag.", Toast.LENGTH_SHORT).show();
+                                });
+                            }
+                        }
+                    });
+
                 } catch (Exception e) {
                     // Xử lý lỗi ngoại lệ (Ví dụ: lỗi kết nối cơ sở dữ liệu)
                     Toast.makeText(ProductPage.this, "An error occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -582,17 +574,22 @@ public class ProductPage extends AppCompatActivity {
                 if(edtNameWL.getText().length() > 0){
 
                     insertWishlist.execute(()->{
-                        boolean result = WishlistHandler.addNewWishlist(userAccount.getUserId(),edtNameWL.getText().toString());
-                        runOnUiThread(()->{
-                            if(result){
-                                Toast.makeText(getApplicationContext(),"New Wishlist added Successfully",Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(getApplicationContext(),"New Wishlist added Failed",Toast.LENGTH_SHORT).show();
-                            }
-                            if (onDismissCallback != null) {
-                                onDismissCallback.run();
+                        WishlistHandler.addNewWishlist(userAccount.getUserId(), edtNameWL.getText().toString(), new WishlistHandler.Callback<Boolean>() {
+                            @Override
+                            public void onResult(Boolean result) {
+                                runOnUiThread(()->{
+                                    if(result){
+                                        Toast.makeText(getApplicationContext(),"New Wishlist added Successfully",Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        Toast.makeText(getApplicationContext(),"New Wishlist added Failed",Toast.LENGTH_SHORT).show();
+                                    }
+                                    if (onDismissCallback != null) {
+                                        onDismissCallback.run();
+                                    }
+                                });
                             }
                         });
+
                     });
 
                 }else {

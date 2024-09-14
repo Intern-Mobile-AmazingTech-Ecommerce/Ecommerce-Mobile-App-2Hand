@@ -128,26 +128,34 @@ public class SettingsFragment extends Fragment {
     private void fetchUserData(String email) {
         if (email != null) {
 //            userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
-            userAccount = UserAccountHandler.getUserAccountByEmail(email);
-//            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-            if (userAccount != null) {
-                tvEmail.setText(userAccount.getEmail());
-                tvUserName.setText(userAccount.getFirstName() + " " + userAccount.getLastName());
-                tvPhoneNumber.setText(userAccount.getPhoneNumber() != null ? userAccount.getPhoneNumber() : "Null");
+           UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
+                @Override
+                public void onResult(UserAccount result) {
+                    userAccount = result;
+                    getActivity().runOnUiThread(()->{
+                        if (userAccount != null) {
+                            tvEmail.setText(userAccount.getEmail());
+                            tvUserName.setText(userAccount.getFirstName() + " " + userAccount.getLastName());
+                            tvPhoneNumber.setText(userAccount.getPhoneNumber() != null ? userAccount.getPhoneNumber() : "Null");
 
-                if (userAccount.getImgUrl() != null && !userAccount.getImgUrl().isEmpty()) {
-                    fullImageUrl = "https://res.cloudinary.com/dr0xghsna/image/upload/" + userAccount.getImgUrl();
-                    Picasso.get()
-                            .load(fullImageUrl)
-                            .placeholder(R.drawable.user)
-                            .error(R.drawable.user)
-                            .into(imageUser);
-                } else {
-                    imageUser.setImageResource(R.drawable.user);
+                            if (userAccount.getImgUrl() != null && !userAccount.getImgUrl().isEmpty()) {
+                                fullImageUrl = "https://res.cloudinary.com/dr0xghsna/image/upload/" + userAccount.getImgUrl();
+                                Picasso.get()
+                                        .load(fullImageUrl)
+                                        .placeholder(R.drawable.user)
+                                        .error(R.drawable.user)
+                                        .into(imageUser);
+                            } else {
+                                imageUser.setImageResource(R.drawable.user);
+                            }
+                        } else {
+                            Log.e(TAG, "Không tìm thấy thông tin người dùng.");
+                        }
+                    });
                 }
-            } else {
-                Log.e(TAG, "Không tìm thấy thông tin người dùng.");
-            }
+            });
+//            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+
         } else {
             Log.e(TAG, "Không tìm thấy email.");
         }

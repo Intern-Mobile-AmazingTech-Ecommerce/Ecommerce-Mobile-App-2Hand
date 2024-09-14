@@ -58,20 +58,26 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
         // Tạo nội dung thông báo
         String notificationContent = "Order #" + userOrderId + " changed status to " + orderStatusName;
 
-        service.execute(()->{
-            // Update order status in the database
-            UserOrderHandler.updateOrderStatus(Integer.parseInt(userOrderId), Integer.parseInt(orderStatusId));
-            // Tạo đối tượng thông báo mới
-            Notifications notification = new Notifications();
-            notification.setNotifications_content(notificationContent);
-            notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
-            notification.setUser_id(userId);
-            notification.setViewed(false);
-
-            // Lưu thông báo vào cơ sở dữ liệu
-            NotificationsHandler.saveNotification(notification);
-            sendOrderStatusNotification("Cập nhật trạng thái đơn hàng", notificationContent);
+        UserOrderHandler.updateOrderStatus(Integer.parseInt(userOrderId), Integer.parseInt(orderStatusId), new UserOrderHandler.Callback<Boolean>() {
+            @Override
+            public void onResult(Boolean result) {
+                if (result) {
+                    Log.d("MyFirebaseMessagingService", "Đã cập nhật trạng thái đơn hàng thành công.");
+                } else {
+                    Log.d("MyFirebaseMessagingService", "Cập nhật trạng thái đơn hàng thất bại.");
+                }
+            }
         });
+        // Tạo đối tượng thông báo mới
+        Notifications notification = new Notifications();
+        notification.setNotifications_content(notificationContent);
+        notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+        notification.setUser_id(userId);
+        notification.setViewed(false);
+
+        // Lưu thông báo vào cơ sở dữ liệu
+        NotificationsHandler.saveNotification(notification);
+        sendOrderStatusNotification("Cập nhật trạng thái đơn hàng", notificationContent);
     }
 
     private String getOrderStatusName(String orderStatusId) {

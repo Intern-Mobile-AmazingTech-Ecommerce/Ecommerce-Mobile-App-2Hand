@@ -97,18 +97,20 @@ public class AddCardActivity extends AppCompatActivity {
                 String ccv=edtCCV.getText().toString();
                 String exp=edtEXP.getText().toString();
                 String cardHolderName=edtCardholderName.getText().toString();
-                service.submit(()->{
-                    boolean rs = UserCardsHandler.insertCard(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(),cardNumber,ccv,exp,cardHolderName);
-                    runOnUiThread(()->{
-                        if(rs){
-                            Toast.makeText(getApplicationContext(),"Card Added Successfully",Toast.LENGTH_SHORT).show();
+                UserCardsHandler.insertCard(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), cardNumber, ccv, exp, cardHolderName, new UserCardsHandler.Callback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean result) {
+                        runOnUiThread(()->{
+                            if(result){
+                                Toast.makeText(getApplicationContext(),"Card Added Successfully",Toast.LENGTH_SHORT).show();
 
-                            service.shutdown();
-                            finish();
-                        }else{
-                            Toast.makeText(getApplicationContext(),"Card Added Failed",Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                                service.shutdown();
+                                finish();
+                            }else{
+                                Toast.makeText(getApplicationContext(),"Card Added Failed",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 });
 
 

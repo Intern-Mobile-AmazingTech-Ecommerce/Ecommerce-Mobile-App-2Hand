@@ -202,19 +202,24 @@ public class HomeFragment extends Fragment {
 
     }
     public void ResetProduct(){
-        ExecutorService reRender = Executors.newCachedThreadPool();
         lstPro.clear();
-        reRender.submit(()->{
-
-            getActivity().runOnUiThread(()->{
-                loadNewInProductsData();
-                loadTopSellingProductsData();
-                TopSellingAdapter.notifyDataSetChanged();
-                NewInAdapter.notifyDataSetChanged();
-            });
-
-            });
-
+        lstPro = new ArrayList<>();
+        ProductHandler.getDataByObjectName(gender, new ProductHandler.Callback<ArrayList<Product>>() {
+            @Override
+            public void onResult(ArrayList<Product> result) {
+                Log.d("ResetProduct", "Products found: " + result.size());
+                lstPro = result;
+                ProductManager.getInstance().setLstPro(lstPro);
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(() -> {
+                        Log.d("ResetProduct", "Updating UI with new product data");
+                        loadTopSellingProductsData();
+                        loadNewInProductsData();
+                        Log.d("ResetProduct", "Updating UI with new product data 1");
+                    });
+                }
+            }
+        });
 
     }
     public void loadTopSellingProductsData() {
@@ -234,11 +239,12 @@ public class HomeFragment extends Fragment {
         } else {
             lstProTopSelling = new ArrayList<>();
         }
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerViewTopSelling.setLayoutManager(layoutManager);
-        recyclerViewTopSelling.getLayoutManager().setItemPrefetchEnabled(true);
-        recyclerViewTopSelling.setAdapter(TopSellingAdapter);
+        if (getActivity() != null) {
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewTopSelling.setLayoutManager(layoutManager);
+            recyclerViewTopSelling.getLayoutManager().setItemPrefetchEnabled(true);
+            recyclerViewTopSelling.setAdapter(TopSellingAdapter);
+        }
 
 
     }

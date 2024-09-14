@@ -187,14 +187,28 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void updateUserDetails(String firstName, String lastName, String phoneNumber, String uploadedImageUrl) {
-        UserAccountHandler.updateUserAccountDetails(firstName, lastName, phoneNumber, uploadedImageUrl, email);
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("updatedFirstName", firstName);
-        resultIntent.putExtra("updatedLastName", lastName);
-        resultIntent.putExtra("updatedPhoneNumber", phoneNumber);
-        resultIntent.putExtra("updatedImageUrl", uploadedImageUrl);
-        setResult(Activity.RESULT_OK, resultIntent);
-        Toast.makeText(EditProfileActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+        UserAccountHandler.updateUserAccountDetails(firstName, lastName, phoneNumber, uploadedImageUrl, email, new UserAccountHandler.Callback<Boolean>() {
+            @Override
+            public void onResult(Boolean result) {
+                if(result){
+                    runOnUiThread(()->{
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("updatedFirstName", firstName);
+                        resultIntent.putExtra("updatedLastName", lastName);
+                        resultIntent.putExtra("updatedPhoneNumber", phoneNumber);
+                        resultIntent.putExtra("updatedImageUrl", uploadedImageUrl);
+                        setResult(Activity.RESULT_OK, resultIntent);
+                        Toast.makeText(EditProfileActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                    });
+
+                }else {
+                    runOnUiThread(()->{
+                        Toast.makeText(EditProfileActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+        });
+
     }
 
     private void handleSelectedImage(Uri uri) {

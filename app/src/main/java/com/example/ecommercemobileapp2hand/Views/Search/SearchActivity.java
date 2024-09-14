@@ -533,29 +533,37 @@ public class SearchActivity extends AppCompatActivity {
         btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
         RecyclerView recyleGender = dialogView.findViewById(R.id.recy_gender);
-        ArrayList<ProductObject> lstGender=ProductObjectHandler.getData();
-        genderAdapter=new GenderAdapter(lstGender, getApplicationContext(), btnGender.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
+        ProductObjectHandler.getData(new ProductObjectHandler.Callback<ArrayList<ProductObject>>() {
             @Override
-            public void onGenderSelected(String selectedGender) {
-                btnGender.setText(selectedGender);
-                if (!filterChangedGender) {
-                        numberFilter += 1;
-                        filter.setText(String.valueOf(numberFilter));
-                }
-                if(selectedGender.equalsIgnoreCase("Men"))
-                {
-                    genderFilter="Men";
-                    filterChangedGender = true;
-                }
-                else
-                {
-                    genderFilter="Women";
-                    filterChangedGender = true;
-                }
-                bottomSheetDialog.dismiss();
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+            public void onResult(ArrayList<ProductObject> result) {
+                ArrayList<ProductObject> lstGender= result;
+                runOnUiThread(()->{
+                    genderAdapter=new GenderAdapter(lstGender, getApplicationContext(), btnGender.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
+                        @Override
+                        public void onGenderSelected(String selectedGender) {
+                            btnGender.setText(selectedGender);
+                            if (!filterChangedGender) {
+                                numberFilter += 1;
+                                filter.setText(String.valueOf(numberFilter));
+                            }
+                            if(selectedGender.equalsIgnoreCase("Men"))
+                            {
+                                genderFilter="Men";
+                                filterChangedGender = true;
+                            }
+                            else
+                            {
+                                genderFilter="Women";
+                                filterChangedGender = true;
+                            }
+                            bottomSheetDialog.dismiss();
+                            filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+                        }
+                    });
+                });
             }
         });
+
         bottomSheetDialog.findViewById(R.id.btn_clear_overlay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

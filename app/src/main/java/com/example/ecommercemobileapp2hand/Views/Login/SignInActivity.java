@@ -154,24 +154,34 @@ public class SignInActivity extends AppCompatActivity {
         if (user != null) {
             String email = user.getEmail();
             if (email != null) {
-                service.submit(()->{
-                    UserAccount userAccount = UserAccountHandler.getUserAccount(email);
-                    UserAccountHandler userAccountHandler = new UserAccountHandler();
-                    boolean emailExists = userAccountHandler.checkEmailExists(email);
-                    if(userAccount!=null){
+              UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
+                    @Override
+                    public void onResult(UserAccount result) {
+                        UserAccount userAccount =result;
                         runOnUiThread(()->{
-                            Intent intent = emailExists ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
-                            saveLoginState(email);
-                            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-                            intent.putExtra("UserAccount", userAccount);
-                            intent.putExtra("email", email);
-                            intent.putExtra("displayName", user.getDisplayName());
-                            startActivity(intent);
-                            finish();
+                            UserAccountHandler userAccountHandler = new UserAccountHandler();
+                            userAccountHandler.checkEmailExists(email, new UserAccountHandler.Callback<Boolean>() {
+                                @Override
+                                public void onResult(Boolean result) {
+                                    if(userAccount!=null){
+                                        runOnUiThread(()->{
+                                            Intent intent = result ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
+                                            saveLoginState(email);
+                                            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                                            intent.putExtra("UserAccount", userAccount);
+                                            intent.putExtra("email", email);
+                                            intent.putExtra("displayName", user.getDisplayName());
+                                            startActivity(intent);
+                                            finish();
+                                        });
+                                    }
+                                }
+                            });
+
                         });
                     }
-
                 });
+
 
             } else {
                 Toast.makeText(this, "Email is null", Toast.LENGTH_SHORT).show();

@@ -126,36 +126,40 @@ public class UpdateAdressActivity extends AppCompatActivity {
     }
     void deleteAddress()
     {
-        service.submit(()->{
-            boolean isDelete = UserAddressHandler.deleteAddressById(addressId);
-            this.runOnUiThread(()->{
-                if (isDelete)
-                {
-                    Toast.makeText(getApplicationContext(), "Địa chỉ đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Cập nhật địa chỉ thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
-    }
-    void updateAddress() {
-        if (isValid()) {
-            service.submit(() -> {
-                String street = String.valueOf(editTextStreet.getText());
-                String city = String.valueOf(editTextCity.getText());
-                String phone = String.valueOf(editTextPhone.getText());
-                String state = String.valueOf(editTextState.getText());
-                String zip = String.valueOf(editTextZipCode.getText());
-                boolean isUpdated = UserAddressHandler.updateAddressById(addressId, street, city, state, zip, phone);
-                this.runOnUiThread(() -> {
-                    if (isUpdated) {
-                        finish();
+        UserAddressHandler.deleteAddressById(addressId, new UserAddressHandler.Callback<Boolean>() {
+            @Override
+            public void onResult(Boolean result) {
+                runOnUiThread(()->{
+                    if (result)
+                    {
                         Toast.makeText(getApplicationContext(), "Địa chỉ đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(), "Cập nhật địa chỉ thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        });
+    }
+    void updateAddress() {
+        if (isValid()) {
+            String street = String.valueOf(editTextStreet.getText());
+            String city = String.valueOf(editTextCity.getText());
+            String phone = String.valueOf(editTextPhone.getText());
+            String state = String.valueOf(editTextState.getText());
+            String zip = String.valueOf(editTextZipCode.getText());
+            UserAddressHandler.updateAddressById(addressId, street, city, state, zip, phone, new UserAddressHandler.Callback<Boolean>() {
+                @Override
+                public void onResult(Boolean result) {
+                    runOnUiThread(() -> {
+                        if (result) {
+                            finish();
+                            Toast.makeText(getApplicationContext(), "Địa chỉ đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Cập nhật địa chỉ thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             });
         }
     }

@@ -63,13 +63,14 @@ public class AddAddressActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(service == null || service.isShutdown()){
+        if (service == null || service.isShutdown()) {
             service = Executors.newSingleThreadExecutor();
         }
         addEvents();
         validateInput();
         addAddress();
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -85,44 +86,47 @@ public class AddAddressActivity extends AppCompatActivity {
             }
         }
     }
-    private void addControls()
-    {
+
+    private void addControls() {
         imgBack = findViewById(R.id.imgBack);
         edtStreetAddress = findViewById(R.id.edtStreetAddress);
         edtCity = findViewById(R.id.edtCity);
-        edtState= findViewById(R.id.edtState);
-        edtZipCode= findViewById(R.id.edtZipCode);
+        edtState = findViewById(R.id.edtState);
+        edtZipCode = findViewById(R.id.edtZipCode);
         btnSaveAddress = findViewById(R.id.btnSaveAddress);
     }
 
-    private void addAddress(){
+    private void addAddress() {
         btnSaveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String streetAddress=edtStreetAddress.getText().toString();
-                String city=edtCity.getText().toString();
-                String state=edtState.getText().toString();
-                String zipCode=edtZipCode.getText().toString();
-                service.execute(()->{
-                    boolean rs = UserAddressHandler.insertAddress(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(),streetAddress,city,state,zipCode,"null");
-                    runOnUiThread(()->{
-                        if(rs){
-                            Toast.makeText(getApplicationContext(),"Address Added Successfully",Toast.LENGTH_SHORT).show();
+                String streetAddress = edtStreetAddress.getText().toString();
+                String city = edtCity.getText().toString();
+                String state = edtState.getText().toString();
+                String zipCode = edtZipCode.getText().toString();
 
-                            service.shutdown();
-                            finish();
-                        }else{
-                            Toast.makeText(getApplicationContext(),"Address Added Failed",Toast.LENGTH_SHORT).show();
+                UserAddressHandler.insertAddress(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), streetAddress, city, state, zipCode, "null", new UserAddressHandler.Callback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean result) {
+                        if (result) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(getApplicationContext(), "Address Added Successfully", Toast.LENGTH_SHORT).show();
+                                finish();
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                Toast.makeText(getApplicationContext(), "Address Added Failed", Toast.LENGTH_SHORT).show();
+                            });
                         }
-                    });
+                    }
                 });
+
             }
         });
     }
 
 
-    private void addEvents()
-    {
+    private void addEvents() {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,18 +136,19 @@ public class AddAddressActivity extends AppCompatActivity {
         btnSaveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String streetAddress=edtStreetAddress.getText().toString();
-                String city=edtCity.getText().toString();
-                String state=edtState.getText().toString();
-                String zipCode=edtZipCode.getText().toString();
-                if (!isEmpty(streetAddress,city,state,zipCode)){
-                    Toast.makeText(AddAddressActivity.this,"thành công",Toast.LENGTH_SHORT).show();
+                String streetAddress = edtStreetAddress.getText().toString();
+                String city = edtCity.getText().toString();
+                String state = edtState.getText().toString();
+                String zipCode = edtZipCode.getText().toString();
+                if (!isEmpty(streetAddress, city, state, zipCode)) {
+                    Toast.makeText(AddAddressActivity.this, "thành công", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(AddAddressActivity.this,"thất bại",Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddAddressActivity.this, "thất bại", Toast.LENGTH_SHORT).show();
             }
         });
     }
-    private void validateInput(){
+
+    private void validateInput() {
         String allowRegex = "^[a-zA-Z0-9 /]$";
         InputFilter filter = new InputFilter() {
             @Override
@@ -162,12 +167,14 @@ public class AddAddressActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
-                if (edtStreetAddress.getText().toString().isEmpty()){
+                if (edtStreetAddress.getText().toString().isEmpty()) {
                     edtStreetAddress.setError("Street address is required");
                 }
             }
@@ -176,12 +183,14 @@ public class AddAddressActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
-                if (edtState.getText().toString().isEmpty()){
+                if (edtState.getText().toString().isEmpty()) {
                     edtState.setError("State is required");
                 }
             }
@@ -190,12 +199,14 @@ public class AddAddressActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
-                if (edtCity.getText().toString().isEmpty()){
+                if (edtCity.getText().toString().isEmpty()) {
                     edtCity.setError("City is required");
                 }
             }
@@ -204,19 +215,22 @@ public class AddAddressActivity extends AppCompatActivity {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
+
             @Override
             public void afterTextChanged(Editable editable) {
-                if (edtZipCode.getText().toString().isEmpty()){
+                if (edtZipCode.getText().toString().isEmpty()) {
                     edtZipCode.setError("Zip code is required");
                 }
             }
         });
     }
-    private boolean isEmpty(String streetAddress,String city,String state,String zipCode){
-        if (streetAddress.isEmpty()||city.isEmpty()||state.isEmpty()||zipCode.isEmpty()){
+
+    private boolean isEmpty(String streetAddress, String city, String state, String zipCode) {
+        if (streetAddress.isEmpty() || city.isEmpty() || state.isEmpty() || zipCode.isEmpty()) {
             return true;
         }
         return false;

@@ -10,12 +10,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CategoriesHandler {
     private static DBConnect dbConnect = new DBConnect();
    // private static Connection conn ;
-    private static ExecutorService service = Executors.newCachedThreadPool();
+
     public static void getData(Callback<ArrayList<ProductCategory>> callback){
+        ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{
             ArrayList<ProductCategory> list = new ArrayList<>();
             Connection conn = dbConnect.connectionClass();
@@ -45,10 +47,20 @@ public class CategoriesHandler {
                 }
             }
             callback.onResult(list);
+            shutDownExecutor(service);
         });
 
     }
-
+    private static void shutDownExecutor(ExecutorService executorService) {
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
+    }
     public interface Callback<T> {
         void onResult(T result);
     }
