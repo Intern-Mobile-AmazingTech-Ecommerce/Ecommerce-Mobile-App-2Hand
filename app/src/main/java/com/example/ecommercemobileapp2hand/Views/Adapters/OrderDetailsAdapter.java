@@ -17,10 +17,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.ProductReviewHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserOrderProductsHandler;
+import com.example.ecommercemobileapp2hand.Models.ProductReview;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserOrderProducts;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.ProductPage.ProductPage;
@@ -28,6 +34,7 @@ import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -90,7 +97,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
             holder.btnReview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showReviewOverlay();
+                    showReviewOverlay(UserOrderProductsHandler.getProductDetailsID(details.getProduct_id(), details.getProduct_color_name(), details.getSize_name()));
                 }
             });
         }
@@ -135,7 +142,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
             this.btnReview = itemView.findViewById(R.id.btnReview);
         }
     }
-    private void showReviewOverlay() {
+    private void showReviewOverlay(int product_detail_id) {
         View view = LayoutInflater.from(context).inflate(R.layout.review_overlay, null);
 
         final Dialog dialog = new Dialog(context);
@@ -163,6 +170,30 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserAccount userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
+                if (!edt_review.getText().toString().isEmpty() && ratingBar.getRating() != 0)
+                {
+                    LocalDateTime now = LocalDateTime.now();
+                    ProductReview review = new ProductReview(-1, userAccount.getUserId(), product_detail_id, edt_review.getText().toString(), now, (int)ratingBar.getRating());
+                    ProductReviewHandler.insertReview(review);
+                    dialog.dismiss();
+                }
+                else
+                {
+                    if (edt_review.getText().toString().isEmpty())
+                    {
+                        edt_review.setError("Review is required");
+                    }
+                    if (ratingBar.getRating() == 0) {
+                        Toast.makeText(context, "Please provide a rating", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
 

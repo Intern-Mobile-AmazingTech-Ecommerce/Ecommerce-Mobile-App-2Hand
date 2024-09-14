@@ -79,4 +79,32 @@ public class UserOrderProductsHandler {
         }
         return 0;
     }
+    public static int getProductDetailsID(int productid, String colorname, String sizename) {
+        conn = dbConnect.connectionClass();
+        if (conn != null) {
+            try {
+                // Gọi stored procedure với 3 tham số
+                CallableStatement cstmt = conn.prepareCall("{ call getProductDetailsID (?, ?, ?) }");
+                cstmt.setInt(1, productid);
+                cstmt.setString(2, colorname);
+                cstmt.setString(3, sizename);
+
+                ResultSet rs = cstmt.executeQuery();
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                rs.close();
+                cstmt.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return -1;
+    }
 }
