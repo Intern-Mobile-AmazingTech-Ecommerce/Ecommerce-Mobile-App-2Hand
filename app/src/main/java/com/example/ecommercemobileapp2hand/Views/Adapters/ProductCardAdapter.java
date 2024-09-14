@@ -145,7 +145,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 Bundle bundle = new Bundle();
 
                 if(currentWishListID != -1){
-                    Product ProDetails = ProductHandler.getDataByProductID(finalDetails.getProduct_id());
+                    Product ProDetails = ProductHandler.getDataByProductID(pro.getProduct_id());
                     bundle.putParcelable("lstDetails", ProDetails);
 
                 }else {

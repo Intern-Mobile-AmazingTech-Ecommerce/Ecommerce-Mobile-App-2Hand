@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -73,6 +75,8 @@ public class HomeFragment extends Fragment {
 
     private SharedPreferences sharedPreferences;
     private MaterialButton btnSearch;
+
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -146,7 +150,6 @@ public class HomeFragment extends Fragment {
         addEvent();
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -205,6 +208,7 @@ public class HomeFragment extends Fragment {
                    recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
                    recyclerViewCategories.getLayoutManager().setItemPrefetchEnabled(true);
                    recyclerViewCategories.setAdapter(categoriesAdapter);
+
                }
            });
         });
@@ -248,6 +252,7 @@ public class HomeFragment extends Fragment {
         recyclerViewTopSelling.setLayoutManager(layoutManager);
         recyclerViewTopSelling.getLayoutManager().setItemPrefetchEnabled(true);
         recyclerViewTopSelling.setAdapter(TopSellingAdapter);
+
 
     }
 

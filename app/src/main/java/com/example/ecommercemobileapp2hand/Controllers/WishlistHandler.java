@@ -45,24 +45,26 @@ public class WishlistHandler {
                     p.setThumbnail(rs.getString(3));
                     p.setBase_price(rs.getBigDecimal(4));
                     p.setSold(rs.getBigDecimal(5));
-                    Timestamp timestamp = rs.getTimestamp(6);
+                    p.setIsFreeship(6);
+                    Timestamp timestamp = rs.getTimestamp(7);
                     if (timestamp != null) {
                         LocalDateTime localDateTime = timestamp.toInstant()
                                 .atZone(ZoneId.systemDefault())
                                 .toLocalDateTime();
                         p.setCreated_at(localDateTime);
                     }
+                    p.setCoupon_id(8);
                     //Object
                     ProductObject obj = new ProductObject();
-                    obj.setProduct_object_id(7);
-                    obj.setObject_name(rs.getString(8));
+                    obj.setProduct_object_id(9);
+                    obj.setObject_name(rs.getString(10));
                     p.setProductObject(obj);
                     //Category
                     ProductCategory category = new ProductCategory();
-                    category.setProduct_category_id(rs.getInt(9));
-                    category.setProduct_category_name(rs.getString(10));
-                    category.setProduct_category_description(rs.getString(11));
-                    category.setProduct_category_thumbnail(rs.getString(12));
+                    category.setProduct_category_id(rs.getInt(11));
+                    category.setProduct_category_name(rs.getString(12));
+                    category.setProduct_category_description(rs.getString(13));
+                    category.setProduct_category_thumbnail(rs.getString(14));
                     p.setProductCategory(category);
 
                     //Array Pro Details
