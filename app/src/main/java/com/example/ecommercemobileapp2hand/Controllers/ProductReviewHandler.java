@@ -5,12 +5,14 @@ import com.example.ecommercemobileapp2hand.Models.ProductReview;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ProductReviewHandler {
@@ -54,5 +56,37 @@ public class ProductReviewHandler {
         }
 
         return list;
+    }
+    public static boolean insertReview(ProductReview review)
+    {
+        conn = dbConnect.connectionClass();
+        try{
+            String sql = "Insert into product_review values (?,?,?,?,?)";
+            if(conn!=null){
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                preparedStatement.setString(1, review.getUser_id());
+                preparedStatement.setInt(2, review.getProduct_details_id());
+                preparedStatement.setString(3, review.getReview_content());
+                preparedStatement.setInt(4, review.getRating());
+
+                Timestamp timestamp = Timestamp.valueOf(review.getCreated_at().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                preparedStatement.setTimestamp(5, timestamp);
+
+                int rs = preparedStatement.executeUpdate();
+                return rs > 0;
+            }
+
+
+        }catch (SQLException e){
+            throw new RuntimeException(e.getMessage());
+
+        }finally {
+            try{
+                conn.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }
