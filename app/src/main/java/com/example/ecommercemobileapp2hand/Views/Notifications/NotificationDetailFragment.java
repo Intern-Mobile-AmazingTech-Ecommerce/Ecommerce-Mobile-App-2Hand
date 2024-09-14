@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import com.example.ecommercemobileapp2hand.Controllers.NotificationsHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Models.Notifications;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.NotificationsAdapter;
@@ -72,21 +73,6 @@ public class NotificationDetailFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    private void getUserAccount()
-    {
-        Future<?> task = service.submit(()->{
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-            String email = sharedPreferences.getString("userEmail","");
-            userAccount = UserAccountHandler.getUserAccountByEmail(email);
-        });
-        try {
-            task.get();
-
-        }catch (Exception e)
-        {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,57 +97,40 @@ public class NotificationDetailFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getUserAccount();
+        userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
         if (userAccount != null) {
             fetchNotifications();
         } else {
             navigateToNoNotifications();
         }
     }
-    public void onDestroy() {
-        super.onDestroy();
-        if (service != null && !service.isShutdown()) {
-            service.shutdown();
-            try {
-                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
-                    service.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                service.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
+
     @Override
     public void onPause(){
         super.onPause();
         NotificationsHandler.markAllNotificationsAsViewed();
     }
     private void fetchNotifications() {
-        Future<?> task = service.submit(()->{
-            notificationsList = NotificationsHandler.getNotifications(userAccount.getUserId());
-            getActivity().runOnUiThread(()->{
-                if (notificationsList == null || notificationsList.isEmpty()) {
-                    navigateToNoNotifications();
-                } else {
-                    if (adapter == null) {
-                        adapter = new NotificationsAdapter(notificationsList);
-                        recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
-                        recyclerViewNotifications.setAdapter(adapter);
+        NotificationsHandler.getNotifications(userAccount.getUserId(), new NotificationsHandler.Callback<ArrayList<Notifications>>() {
+            @Override
+            public void onResult(ArrayList<Notifications> result) {
+                notificationsList = result;
+                getActivity().runOnUiThread(()->{
+                    if (notificationsList == null || notificationsList.isEmpty()) {
+                        navigateToNoNotifications();
                     } else {
-                        adapter.setNotificationsList(notificationsList);
-                        adapter.notifyDataSetChanged();
+                        if (adapter == null) {
+                            adapter = new NotificationsAdapter(notificationsList);
+                            recyclerViewNotifications.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
+                            recyclerViewNotifications.setAdapter(adapter);
+                        } else {
+                            adapter.setNotificationsList(notificationsList);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
-                }
-            });
+                });
+            }
         });
-        try {
-            task.get();
-
-        }catch (Exception e)
-        {
-            throw new RuntimeException(e.getMessage());
-        }
 
     }
     private void navigateToNoNotifications() {

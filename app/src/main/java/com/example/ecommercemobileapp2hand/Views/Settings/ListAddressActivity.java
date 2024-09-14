@@ -87,18 +87,25 @@ public class ListAddressActivity extends AppCompatActivity {
             UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
             if (user != null) {
                 String userId = user.getUserId();
-                lstAddress = UserAddressHandler.getListAdressByUserId(userId);
-
-                if (lstAddress != null && !lstAddress.isEmpty()) {
-                    runOnUiThread(() -> {
-                        addressAdapter = new AddressAdapter(lstAddress, ListAddressActivity.this);
-                        recy_address.setLayoutManager(new LinearLayoutManager(ListAddressActivity.this));
-                        recy_address.setAdapter(addressAdapter);
-                    });
-                }
-            } else {
-                runOnUiThread(() -> {
+                 UserAddressHandler.getListAdressByUserId(userId, new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
+                    @Override
+                    public void onResult(ArrayList<UserAddress> result) {
+                        lstAddress = result;
+                        if (lstAddress != null && !lstAddress.isEmpty()) {
+                            runOnUiThread(() -> {
+                                addressAdapter = new AddressAdapter(lstAddress, ListAddressActivity.this);
+                                recy_address.setLayoutManager(new LinearLayoutManager(ListAddressActivity.this));
+                                recy_address.setAdapter(addressAdapter);
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                Toast.makeText(ListAddressActivity.this, "No address found", Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    }
                 });
+
+
             }
         });
 }

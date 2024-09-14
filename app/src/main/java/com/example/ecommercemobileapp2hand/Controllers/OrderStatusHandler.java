@@ -9,6 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class OrderStatusHandler {
     private static DBConnect dbConnect = new DBConnect();
@@ -103,5 +106,18 @@ public class OrderStatusHandler {
             e.printStackTrace();
         }
         return false;
+    }
+    private static void shutDownExecutor(ExecutorService executorService) {
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executorService.shutdownNow();
+        }
+    }
+    public interface Callback<T> {
+        void onResult(T result);
     }
 }

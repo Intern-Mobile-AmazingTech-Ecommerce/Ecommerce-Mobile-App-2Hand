@@ -58,21 +58,7 @@ public class WishlistDetail extends AppCompatActivity {
         addEvents();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (service != null && !service.isShutdown()) {
-            service.shutdown();
-            try {
-                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
-                    service.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                service.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
+
 
     private void addControls() {
         recyclerView = findViewById(R.id.recyWishListProduct);
@@ -88,36 +74,41 @@ public class WishlistDetail extends AppCompatActivity {
         );
 
         btn_clear.setOnClickListener(view -> {
-            service.execute(() -> {
-                WishlistHandler.clearWishlist(wishList_ID);
-                runOnUiThread(() -> {
-                    imgList.clear();
-                    adapter.notifyDataSetChanged();
-                    tvBlank.setVisibility(View.VISIBLE);
-                });
+            WishlistHandler.clearWishlist(wishList_ID, new WishlistHandler.Callback<Boolean>() {
+                @Override
+                public void onResult(Boolean result) {
+                    runOnUiThread(() -> {
+                        imgList.clear();
+                        adapter.notifyDataSetChanged();
+                        tvBlank.setVisibility(View.VISIBLE);
+                    });
+                }
             });
         });
     }
 
     private void getData() {
-        service.execute(() -> {
-            imgList = WishlistHandler.getWishListDetailByWishListID(wishList_ID);
-            runOnUiThread(() -> {
-                if (imgList.isEmpty()) {
-                    tvBlank.setVisibility(View.VISIBLE);
-                } else {
-                    tvBlank.setVisibility(View.GONE);
-                }
-                adapter = new ProductCardAdapter(imgList, WishlistDetail.this, new ProductCardAdapter.FavoriteClickedListener() {
-                    @Override
-                    public void onDoneClicked() {
-
+        WishlistHandler.getWishListDetailByWishListID(wishList_ID, new WishlistHandler.Callback<ArrayList<Product>>() {
+            @Override
+            public void onResult(ArrayList<Product> result) {
+                imgList = result;
+                runOnUiThread(() -> {
+                    if (imgList.isEmpty()) {
+                        tvBlank.setVisibility(View.VISIBLE);
+                    } else {
+                        tvBlank.setVisibility(View.GONE);
                     }
-                },wishList_ID );
-                RecyclerView.LayoutManager layoutManager = new GridLayoutManager(WishlistDetail.this, 2);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(adapter);
-            });
+                    adapter = new ProductCardAdapter(imgList, WishlistDetail.this, new ProductCardAdapter.FavoriteClickedListener() {
+                        @Override
+                        public void onDoneClicked() {
+
+                        }
+                    },wishList_ID );
+                    RecyclerView.LayoutManager layoutManager = new GridLayoutManager(WishlistDetail.this, 2);
+                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.setAdapter(adapter);
+                });
+            }
         });
     }
 

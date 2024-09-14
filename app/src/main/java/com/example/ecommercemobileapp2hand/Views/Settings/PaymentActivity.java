@@ -85,26 +85,25 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     void loadListCard() {
-        service.execute(() -> {
-            SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
 //            String email = sharedPreferences.getString("userEmail", "");
 //            UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
-            UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
-            if (user != null) {
-                String userId = user.getUserId();
-                lstCard = UserCardsHandler.getListCardByUserId(userId);
-
-                if (lstCard != null && !lstCard.isEmpty()) {
-                    runOnUiThread(() -> {
-                        cardAdapter = new CardAdapter(lstCard, PaymentActivity.this);
-                        recy_cards.setLayoutManager(new LinearLayoutManager(this));
-                        recy_cards.setAdapter(cardAdapter);
-                    });
+        UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
+        if (user != null) {
+            String userId = user.getUserId();
+            UserCardsHandler.getListCardByUserId(userId, new UserCardsHandler.Callback<ArrayList<UserCards>>() {
+                @Override
+                public void onResult(ArrayList<UserCards> result) {
+                    lstCard = result;
+                    if (lstCard != null && !lstCard.isEmpty()) {
+                        runOnUiThread(() -> {
+                            cardAdapter = new CardAdapter(lstCard, PaymentActivity.this);
+                            recy_cards.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                            recy_cards.setAdapter(cardAdapter);
+                        });
+                    }
                 }
-            } else {
-                runOnUiThread(() -> {
-                });
-            }
-        });
+            });
+        }
     }
 }

@@ -43,7 +43,15 @@ public class OrderCardAdapter extends RecyclerView.Adapter<OrderCardAdapter.MyVi
         UserOrder order = lstorders.get(position);
 
         holder.tv_id_order.setText("#" + order.getUser_order_id());
-        holder.tv_amount_detail_order.setText(UserOrderProductsHandler.getAmountItems(order.getUser_order_id()) + " items");
+        UserOrderProductsHandler.getAmountItems(order.getUser_order_id(), new UserOrderProductsHandler.Callback<Integer>() {
+            @Override
+            public void onResult(Integer result) {
+                ((android.app.Activity)context).runOnUiThread(()->{
+                    holder.tv_amount_detail_order.setText(result + " items");
+                });
+
+            }
+        });
 
         holder.cardview_order.setOnClickListener(new View.OnClickListener() {
             @Override

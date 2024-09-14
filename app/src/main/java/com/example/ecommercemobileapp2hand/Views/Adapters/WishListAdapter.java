@@ -87,16 +87,37 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
                         boolean rs;
                         boolean isChecked = holder.cbAdded.isChecked();
                         if(isChecked){
-                            rs = WishlistHandler.insertToWishlist(item.getWishlist_id(),is_product_added);
+                           WishlistHandler.insertToWishlist(item.getWishlist_id(), is_product_added, new WishlistHandler.Callback<Boolean>() {
+                                @Override
+                                public void onResult(Boolean result) {
+                                    if(result){
+                                        ((android.app.Activity) context).runOnUiThread(()->{
+                                            Toast.makeText(context, "Added to wishlist", Toast.LENGTH_SHORT).show();
+                                        });
+                                    }else {
+                                        ((android.app.Activity) context).runOnUiThread(()->{
+                                            holder.cbAdded.setChecked(!isChecked);
+                                        });
+                                    }
+                                }
+                            });
                         }else {
-                            rs = WishlistHandler.removeFromWishlist(item.getWishlist_id(),is_product_added);
+                             WishlistHandler.removeFromWishlist(item.getWishlist_id(), is_product_added, new WishlistHandler.Callback<Boolean>() {
+                                @Override
+                                public void onResult(Boolean result) {
+                                    if(result){
+                                        ((android.app.Activity) context).runOnUiThread(()->{
+                                            Toast.makeText(context, "Removed from wishlist", Toast.LENGTH_SHORT).show();
+                                        });
+                                    }else {
+                                        ((android.app.Activity) context).runOnUiThread(()->{
+                                            holder.cbAdded.setChecked(!isChecked);
+                                        });
+                                    }
+                                }
+                            });
                         }
-                        ((android.app.Activity) context).runOnUiThread(() -> {
-                            if(!rs){
-                                holder.cbAdded.setChecked(!isChecked);
-                            }
 
-                        });
                     });
                 }
             });
@@ -113,8 +134,35 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
                     .setTitle("Delete Wishlist")
                     .setMessage("Are you sure you want to delete this wishlist?")
                     .setPositiveButton("Yes", (dialog, which) -> {
-                        WishlistHandler.clearWishlist(item.getWishlist_id());
-                        WishlistHandler.removeWishlist(item.getWishlist_id());
+                        WishlistHandler.clearWishlist(item.getWishlist_id(), new WishlistHandler.Callback<Boolean>() {
+                            @Override
+                            public void onResult(Boolean result) {
+                                if(result){
+                                    ((android.app.Activity) context).runOnUiThread(()->{
+                                        Toast.makeText(context, "Wishlist deleted", Toast.LENGTH_SHORT).show();
+                                    });
+                                }else {
+                                    ((android.app.Activity) context).runOnUiThread(()->{
+                                        Toast.makeText(context, "Failed to delete wishlist", Toast.LENGTH_SHORT).show();
+                                    });
+                                }
+                            }
+                        });
+                        WishlistHandler.removeWishlist(item.getWishlist_id(), new WishlistHandler.Callback<Boolean>() {
+                            @Override
+                            public void onResult(Boolean result) {
+                                if(result){
+                                    ((android.app.Activity) context).runOnUiThread(()->{
+                                        wishlistItems.remove(item);
+                                        notifyDataSetChanged();
+                                    });
+                                }else {
+                                    ((android.app.Activity) context).runOnUiThread(()->{
+                                        Toast.makeText(context, "Failed to delete wishlist", Toast.LENGTH_SHORT).show();
+                                    });
+                                }
+                            }
+                        });
                         Intent intent=new Intent(context, WishlistActivity.class);
                     })
                     .setNegativeButton("No", null)

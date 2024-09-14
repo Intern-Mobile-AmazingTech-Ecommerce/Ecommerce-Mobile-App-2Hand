@@ -61,19 +61,21 @@ import java.util.concurrent.Future;
 public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.MyViewHolder> {
     ArrayList<Product> lstPro;
     Context context;
-    ArrayList<ProductDetails> lstDetails;
+
     private FavoriteClickedListener listener;
-    private ExecutorService service;
-    private int currentWishListID =-1;
+    private int currentWishListID = -1;
+
     public ProductCardAdapter(ArrayList<Product> lstPro, Context context) {
         this.lstPro = lstPro;
         this.context = context;
     }
+
     public ProductCardAdapter(ArrayList<Product> lstPro, Context context, FavoriteClickedListener listener) {
         this.lstPro = lstPro;
         this.context = context;
         this.listener = listener;
     }
+
     public ProductCardAdapter(ArrayList<Product> lstPro, Context context, FavoriteClickedListener listener, int currentWishListID) {
         this.lstPro = lstPro;
         this.context = context;
@@ -92,6 +94,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         lstPro.set(position, updatedProduct);
         notifyItemChanged(position);
     }
+
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -101,9 +104,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        if(service == null || service.isShutdown()){
-            service = Executors.newCachedThreadPool();
-        }
+
         Product pro = lstPro.get(position);
         //First Sale Details
         ProductDetails details = new ProductDetails();
@@ -119,8 +120,8 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 @Override
                 public void onResult(String result) {
                     String imgUrl = result;
-                    ((android.app.Activity)context).runOnUiThread(()->{
-                        Glide.with(context).load(imgUrl).override(159,220).into(holder.img_Product);
+                    ((android.app.Activity) context).runOnUiThread(() -> {
+                        Glide.with(context).load(imgUrl).override(159, 220).into(holder.img_Product);
                     });
                 }
             });
@@ -129,8 +130,8 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 @Override
                 public void onResult(String result) {
                     String imgUrl = result;
-                    ((android.app.Activity)context).runOnUiThread(()->{
-                        Glide.with(context).load(imgUrl).override(159,220).into(holder.img_Product);
+                    ((android.app.Activity) context).runOnUiThread(() -> {
+                        Glide.with(context).load(imgUrl).override(159, 220).into(holder.img_Product);
                     });
                 }
             });
@@ -157,12 +158,12 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 Intent intent = new Intent(context, ProductPage.class);
                 Bundle bundle = new Bundle();
 
-                if(currentWishListID != -1){
-                   ProductHandler.getDataByProductID(pro.getProduct_id(), new ProductHandler.Callback<Product>() {
+                if (currentWishListID != -1) {
+                    ProductHandler.getDataByProductID(pro.getProduct_id(), new ProductHandler.Callback<Product>() {
                         @Override
                         public void onResult(Product result) {
                             Product ProDetails = result;
-                            ((android.app.Activity)context).runOnUiThread(()->{
+                            ((android.app.Activity) context).runOnUiThread(() -> {
                                 bundle.putParcelable("lstDetails", ProDetails);
                                 if (firstSaleDetails.isPresent()) {
                                     bundle.putParcelable("currentSale", finalDetails);
@@ -174,7 +175,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                     });
 
 
-                }else {
+                } else {
                     bundle.putParcelable("lstDetails", pro);
                     if (firstSaleDetails.isPresent()) {
                         bundle.putParcelable("currentSale", finalDetails);
@@ -186,63 +187,71 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
             }
         });
-        boolean result = WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-        if(result){
-            holder.img_Heart.setIconResource(R.drawable.red_heart);
-            holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.RED));
-        }else {
-            holder.img_Heart.setIconResource(R.drawable.black_heart);
-            holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.BLACK));
-        }
-        if(currentWishListID != -1){
-            holder.img_Heart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(result){
-                        service.submit(()->{
-                            boolean isRemoved = WishlistHandler.removeFromWishlist(currentWishListID,finalDetails.getProduct_details_id());
-                            ((android.app.Activity)context).runOnUiThread(()->{
-                                if(isRemoved){
-                                    notifyDataSetChanged();
-                                    Toast.makeText(context,"Product Removed From Wishlist Successfully",Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Toast.makeText(context,"Product Removed From Wishlist Failed",Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        });
-                        service.shutdown();
-                    }else {
-                        service.submit(()->{
-                            boolean isInserted = WishlistHandler.insertToWishlist(currentWishListID,finalDetails.getProduct_details_id());
-                            ((android.app.Activity)context).runOnUiThread(()->{
-                                if(isInserted){
-                                    notifyDataSetChanged();
-                                    Toast.makeText(context,"Product inserted into Wishlist Successfully",Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Toast.makeText(context,"Product inserted into Wishlist Failed",Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        });
-                        service.shutdown();
+        WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), new WishlistHandler.Callback<Boolean>() {
+            @Override
+            public void onResult(Boolean result) {
+                ((Activity) context).runOnUiThread(() -> {
+                    if (result) {
+                        holder.img_Heart.setIconResource(R.drawable.red_heart);
+                        holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.RED));
+                    } else {
+                        holder.img_Heart.setIconResource(R.drawable.black_heart);
+                        holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.BLACK));
                     }
+                    if (currentWishListID != -1) {
+                        holder.img_Heart.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (result) {
+                                    WishlistHandler.removeFromWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
+                                        @Override
+                                        public void onResult(Boolean result) {
+                                            ((android.app.Activity) context).runOnUiThread(() -> {
+                                                if (result) {
+                                                    notifyDataSetChanged();
+                                                    Toast.makeText(context, "Product Removed From Wishlist Successfully", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(context, "Product Removed From Wishlist Failed", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    WishlistHandler.insertToWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
+                                        @Override
+                                        public void onResult(Boolean result) {
+                                            ((android.app.Activity) context).runOnUiThread(() -> {
+                                                if (result) {
+                                                    notifyDataSetChanged();
+                                                    Toast.makeText(context, "Product inserted into Wishlist Successfully", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(context, "Product inserted into Wishlist Failed", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
 
-                }
-            });
-        }else {
-            holder.img_Heart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showAddToWLOverlay(finalDetails,holder.getAdapterPosition());
-                }
-            });
-        }
+                            }
+                        });
+                    } else {
+                        holder.img_Heart.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                showAddToWLOverlay(finalDetails, holder.getAdapterPosition());
+                            }
+                        });
+                    }
+                });
+            }
+        });
 
 
     }
 
     @Override
     public int getItemCount() {
-        return lstPro != null ? lstPro.size():0;
+        return lstPro != null ? lstPro.size() : 0;
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
@@ -262,7 +271,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         }
     }
 
-    private void showAddToWLOverlay(ProductDetails currentDetails,int position) {
+    private void showAddToWLOverlay(ProductDetails currentDetails, int position) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
@@ -282,11 +291,11 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         btnDone = dialogView.findViewById(R.id.btnDone);
         recyWL = dialogView.findViewById(R.id.recy_wl);
         ExecutorService loadingWishlist = Executors.newCachedThreadPool();
-        loadingWishlist.execute(()->{
+        loadingWishlist.execute(() -> {
             ArrayList<Wishlist> wishlists = WishlistHandler.getWishListByUserID(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-            ((android.app.Activity)context).runOnUiThread(()->{
+            ((android.app.Activity) context).runOnUiThread(() -> {
                 WishListAdapter wishListAdapter = new WishListAdapter(context, wishlists, currentDetails.getProduct_details_id());
-                recyWL.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
+                recyWL.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
                 recyWL.setAdapter(wishListAdapter);
             });
         });
@@ -295,17 +304,16 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
             @Override
             public void onClick(View v) {
                 bottomSheetDialog.dismiss();
-                loadingWishlist.submit(()->{
+                loadingWishlist.submit(() -> {
 //                    boolean result = WishlistHandler.checkProductDetailsExistsInWishlistByUserID(currentDetails.getProduct_details_id(), UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-                    ((android.app.Activity)context).runOnUiThread(()->{
-                        if(listener != null){
-                            listener.onDoneClicked();
-                        }
+                    if (listener != null) {
+                        listener.onDoneClicked();
+                    }
 
-                    });
-                    Product updatedProduct = lstPro.get(position);
-
-                    updateProduct(position, updatedProduct);
+                    if (listener == null && position != -1) {
+                        Product updatedProduct = lstPro.get(position);
+                        updateProduct(position, updatedProduct);
+                    }
 
 
                 });
@@ -323,11 +331,11 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         btnNewWL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showAddWLOverlay(()->{
-                    loadingWishlist.execute(()->{
+                showAddWLOverlay(() -> {
+                    loadingWishlist.execute(() -> {
                         ArrayList<Wishlist> updatedWishlists = WishlistHandler.getWishListByUserID(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-                        ((android.app.Activity)context).runOnUiThread(() -> {
-                            WishListAdapter updatedWishListAdapter = new WishListAdapter(context, updatedWishlists, currentDetails.getProduct_details_id() );
+                        ((android.app.Activity) context).runOnUiThread(() -> {
+                            WishListAdapter updatedWishListAdapter = new WishListAdapter(context, updatedWishlists, currentDetails.getProduct_details_id());
                             recyWL.setAdapter(updatedWishListAdapter);
                         });
                     });
@@ -355,23 +363,28 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(edtNameWL.getText().length() > 0){
+                if (edtNameWL.getText().length() > 0) {
 
-                    insertWishlist.execute(()->{
-                        boolean result = WishlistHandler.addNewWishlist(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(),edtNameWL.getText().toString());
-                        ((android.app.Activity)context).runOnUiThread(()->{
-                            if(result){
-                                Toast.makeText(context,"New Wishlist added Successfully",Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(context,"New Wishlist added Failed",Toast.LENGTH_SHORT).show();
-                            }
-                            if (onDismissCallback != null) {
-                                onDismissCallback.run();
+                    insertWishlist.execute(() -> {
+                      WishlistHandler.addNewWishlist(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), edtNameWL.getText().toString(), new WishlistHandler.Callback<Boolean>() {
+                            @Override
+                            public void onResult(Boolean result) {
+                                ((android.app.Activity) context).runOnUiThread(() -> {
+                                    if (result) {
+                                        Toast.makeText(context, "New Wishlist added Successfully", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(context, "New Wishlist added Failed", Toast.LENGTH_SHORT).show();
+                                    }
+                                    if (onDismissCallback != null) {
+                                        onDismissCallback.run();
+                                    }
+                                });
                             }
                         });
+
                     });
 
-                }else {
+                } else {
                     if (onDismissCallback != null) {
                         onDismissCallback.run();
                     }
@@ -390,7 +403,8 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         });
         bottomSheetDialog.show();
     }
-    public interface FavoriteClickedListener{
+
+    public interface FavoriteClickedListener {
         void onDoneClicked();
     }
 }

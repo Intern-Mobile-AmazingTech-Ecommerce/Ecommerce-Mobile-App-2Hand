@@ -131,20 +131,22 @@ public class UpdateCardActivity extends AppCompatActivity {
     }
     void updateCard() {
         if (validateInput()) {
-            service.submit(() -> {
-                String cardNumber = String.valueOf(editTextCardNumber.getText());
-                String ccv = String.valueOf(editTextCCV.getText());
-                String exp = String.valueOf(editTextExp.getText());
-                String cardHolder = String.valueOf(editTextCardHolder.getText());
-                boolean isUpdated = UserCardsHandler.updateByCardId(cardId, cardNumber, ccv, exp, cardHolder);
-                this.runOnUiThread(() -> {
-                    if (isUpdated) {
-                        finish();
-                        Toast.makeText(getApplicationContext(), "Card đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Cập nhật card thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            String cardNumber = String.valueOf(editTextCardNumber.getText());
+            String ccv = String.valueOf(editTextCCV.getText());
+            String exp = String.valueOf(editTextExp.getText());
+            String cardHolder = String.valueOf(editTextCardHolder.getText());
+            UserCardsHandler.updateByCardId(cardId, cardNumber, ccv, exp, cardHolder, new UserCardsHandler.Callback<Boolean>() {
+                @Override
+                public void onResult(Boolean result) {
+                    runOnUiThread(() -> {
+                        if (result) {
+                            finish();
+                            Toast.makeText(getApplicationContext(), "Card đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Cập nhật card thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             });
         } else {
             Toast.makeText(this, "Vui lòng kiểm tra lại các trường thông tin", Toast.LENGTH_SHORT).show();

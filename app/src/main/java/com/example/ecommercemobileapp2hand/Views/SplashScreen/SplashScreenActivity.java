@@ -40,16 +40,26 @@ public class SplashScreenActivity extends AppCompatActivity {
                 String email = firebaseUser.getEmail();
                 if (email != null && !email.isEmpty()) {
                     // kiểm tra
-                    boolean emailExists = userAccountHandler.checkEmailExists(email);
+                    userAccountHandler.checkEmailExists(email, new UserAccountHandler.Callback<Boolean>() {
+                        @Override
+                        public void onResult(Boolean result) {
+                            if (result) {
+                                UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
+                                    @Override
+                                    public void onResult(UserAccount result) {
+                                        UserAccount userAccount = result;
+                                        runOnUiThread(()->{
+                                            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                                            startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                                        });
+                                    }
+                                });
 
-                    if (emailExists) {
-                        UserAccount userAccount = UserAccountHandler.getUserAccount(email);
-                        UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-
-                        startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
-                    } else {firebaseAuth.signOut();
-                        startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
-                    }
+                            } else {firebaseAuth.signOut();
+                                startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
+                            }
+                        }
+                    });
                 } else {
                     firebaseAuth.signOut();
                     startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));

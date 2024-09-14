@@ -108,7 +108,15 @@ public class TrackOrderAcitivity extends AppCompatActivity {
         tv_shippingdetails = findViewById(R.id.tv_shippingdetails);
 
         tv_orderid.setText(tv_orderid.getText() + "#" + order.getUser_order_id());
-        tv_amount_order.setText(String.valueOf(UserOrderProductsHandler.getAmountItems(order.getUser_order_id()) + " items"));
+        UserOrderProductsHandler.getAmountItems(order.getUser_order_id(), new UserOrderProductsHandler.Callback<Integer>() {
+            @Override
+            public void onResult(Integer result) {
+                runOnUiThread(()->{
+                    tv_amount_order.setText(String.valueOf(result + " items"));
+                });
+
+            }
+        });
 
         String s1 = "";
         for (UserAddress address : userAccount.getLstAddress())

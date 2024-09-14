@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Reviews;
 import com.example.ecommercemobileapp2hand.Models.ProductReview;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
@@ -32,6 +33,7 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
     private ArrayList<ProductReview> reviewsList;
     private Context context;
     private ExecutorService service = Executors.newCachedThreadPool();
+
     public RecycleReviewAdapter(ArrayList<ProductReview> reviewsList, Context context) {
         this.reviewsList = reviewsList;
         this.context = context;
@@ -40,7 +42,7 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_review,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_review, parent, false);
 
         return new MyViewHolder(view);
     }
@@ -48,37 +50,31 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ProductReview reviews = reviewsList.get(position);
-        service.submit(()->{
 
-            UserAccount userAccount = UserAccountHandler.getUserAccountByuserID(reviews.getUser_id());
-
-            ((android.app.Activity)context).runOnUiThread(()->{
-                if(userAccount.getImgUrl() != null){
-                    Util.getCloudinaryImageUrl(context, userAccount.getImgUrl(), -1, -1, new Util.Callback<String>() {
-                        @Override
-                        public void onResult(String result) {
-                            String imgUrl = result;
-                            ((android.app.Activity)context).runOnUiThread(()->{
-                                Glide.with(context).load(imgUrl).into(holder.imgAvt);
-                            });
-                        }
+        UserAccount userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
+        if (userAccount.getImgUrl() != null) {
+            Util.getCloudinaryImageUrl(context, userAccount.getImgUrl(), -1, -1, new Util.Callback<String>() {
+                @Override
+                public void onResult(String result) {
+                    String imgUrl = result;
+                    ((android.app.Activity) context).runOnUiThread(() -> {
+                        Glide.with(context).load(imgUrl).into(holder.imgAvt);
                     });
-
-                }else {
-                    Bitmap bitmap = Util.convertStringToBitmapFromAccess(context.getApplicationContext(),"avt.png");
-                    holder.imgAvt.setImageBitmap(bitmap);
                 }
-                holder.tvCustomerName.setText(userAccount.getFullName());
-                holder.tvDays.setText(getDayDifference(reviews.getCreated_at()));
-                holder.ratingBar.setRating(reviews.getRating());
-                holder.tvReviewContent.setText(reviews.getReview_content());
             });
-        });
 
-
+        } else {
+            Bitmap bitmap = Util.convertStringToBitmapFromAccess(context.getApplicationContext(), "avt.png");
+            holder.imgAvt.setImageBitmap(bitmap);
+        }
+        holder.tvCustomerName.setText(userAccount.getFullName());
+        holder.tvDays.setText(getDayDifference(reviews.getCreated_at()));
+        holder.ratingBar.setRating(reviews.getRating());
+        holder.tvReviewContent.setText(reviews.getReview_content());
 
 
     }
+
     public static String getDayDifference(LocalDateTime date) {
         LocalDateTime today = LocalDateTime.now();
         long daysBetween = ChronoUnit.DAYS.between(date, today);
@@ -91,15 +87,17 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
             return daysBetween + "days ago";
         }
     }
+
     @Override
     public int getItemCount() {
         return reviewsList != null ? reviewsList.size() : 0;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvt;
         RatingBar ratingBar;
-        TextView tvCustomerName,tvReviewContent,tvDays;
+        TextView tvCustomerName, tvReviewContent, tvDays;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             imgAvt = itemView.findViewById(R.id.img_Avatar);

@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> listObj;
     private UserAccount userAccount;
     private SharedPreferences sharedPreferences;
-
+    private String firstURL;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
     private void getIt()
     {
         Intent intent = getIntent();
-        userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
+        userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
+        firstURL = userAccount.getImgUrl();
     }
     @Override
     protected void onResume() {
@@ -188,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             btnAvt.setVisibility(GONE);
             btnBag.setVisibility(GONE);
             tvFragmentName.setVisibility(View.GONE);
+
             LoadFragment(new SettingsFragment());
             bottomNavigationView.setSelectedItemId(R.id.itemSettings);
         } else if (intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))) {
@@ -209,11 +211,16 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.itemHome) {
+                    if(firstURL != userAccount.getImgUrl()){
+                        firstURL = userAccount.getImgUrl();
+                        loadAvt();
+                    }
                     LoadFragment(new HomeFragment());
                     btnObject.setVisibility(View.VISIBLE);
                     btnAvt.setVisibility(View.VISIBLE);
                     btnBag.setVisibility(View.VISIBLE);
                     tvFragmentName.setVisibility(View.GONE);
+
                     return true;
                 } else if (id == R.id.itemNotifications) {
 
@@ -268,8 +275,11 @@ public class MainActivity extends AppCompatActivity {
 
         bottomSheetDialog.setContentView(dialogView);
         TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
+        TextView btn_clear = dialogView.findViewById(R.id.btn_clear_overlay);
+        btn_clear.setVisibility(GONE);
         overlayTitle.setText(type);
         ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -277,34 +287,42 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        GenderAdapter genderAdapter;
+
 
         RecyclerView recy_gender = dialogView.findViewById(R.id.recy_gender);
 
-        ArrayList<ProductObject> genderArr = ProductObjectHandler.getData();
-
-        genderAdapter = new GenderAdapter(genderArr, MainActivity.this, btnObject.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
+         ProductObjectHandler.getData(new ProductObjectHandler.Callback<ArrayList<ProductObject>>() {
             @Override
-            public void onGenderSelected(String selectedGender) {
-                btnObject.setText(selectedGender);
-                sharedPreferences = getSharedPreferences("my_userID",MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("gender_key", selectedGender);
-                Boolean isSaved = editor.commit();
+            public void onResult(ArrayList<ProductObject> result) {
+                ArrayList<ProductObject> genderArr = result;
+                runOnUiThread(()->{
+                    GenderAdapter genderAdapter = new GenderAdapter(genderArr, MainActivity.this, btnObject.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
+                        @Override
+                        public void onGenderSelected(String selectedGender) {
+                            btnObject.setText(selectedGender);
+                            sharedPreferences = getSharedPreferences("my_userID",MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("gender_key", selectedGender);
+                            Boolean isSaved = editor.commit();
 //                FragmentManager fragmentManager = getSupportFragmentManager();
 //                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
-                if (isSaved) {
-                    LoadFragment(new HomeFragment());
-                }
-                bottomSheetDialog.dismiss();
+                            if (isSaved) {
+                                LoadFragment(new HomeFragment());
+                            }
+                            bottomSheetDialog.dismiss();
+                        }
+                    });
+
+                    recy_gender.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+                    recy_gender.setItemAnimator(new DefaultItemAnimator());
+
+                    recy_gender.setAdapter(genderAdapter);
+                });
             }
         });
 
-        recy_gender.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recy_gender.setItemAnimator(new DefaultItemAnimator());
-
-        recy_gender.setAdapter(genderAdapter);
 
         bottomSheetDialog.show();
+
     }
 }

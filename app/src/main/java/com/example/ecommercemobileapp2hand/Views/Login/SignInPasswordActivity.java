@@ -92,20 +92,28 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                     editor.putBoolean(KEY_IS_LOGGED_IN, true);
                                     editor.apply();
 
-                                    UserAccount userAccount = UserAccountHandler.getUserAccount(email);
-                                    UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-                                    //truyền thông tin user qua MainActivity
-                                    FirebaseUser user = firebaseAuth.getCurrentUser();
-                                    if (user != null) {
-                                        intent.putExtra("UserAccount", userAccount);
-                                        intent.putExtra("email", user.getEmail());
-                                        intent.putExtra("displayName", user.getDisplayName());
-                                        intent.putExtra("user_id",user.getUid());
-                                    }
+                                    UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
+                                        @Override
+                                        public void onResult(UserAccount result) {
+                                            UserAccount userAccount = result;
+                                            runOnUiThread(()->{
+                                                UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                                                //truyền thông tin user qua MainActivity
+                                                FirebaseUser user = firebaseAuth.getCurrentUser();
+                                                if (user != null) {
+                                                    intent.putExtra("UserAccount", userAccount);
+                                                    intent.putExtra("email", user.getEmail());
+                                                    intent.putExtra("displayName", user.getDisplayName());
+                                                    intent.putExtra("user_id",user.getUid());
+                                                }
 
-                                    startActivity(intent);
-                                    finish();
-                                    Toast.makeText(SignInPasswordActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                                startActivity(intent);
+                                                finish();
+                                                Toast.makeText(SignInPasswordActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                            });
+                                        }
+                                    });
+
                                 } else {
                                     showProgress(false);
                                     showDialog("Đăng nhập thất bại", "Email hoặc mật khẩu không hợp lệ");

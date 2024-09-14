@@ -40,7 +40,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.MyViewHolder>{
+public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.MyViewHolder> {
     private Future<?> currentTask;
     ArrayList<UserOrderProducts> lstOrderDetails;
     Context context;
@@ -66,7 +66,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
             @Override
             public void onResult(String result) {
                 String url = result;
-                ((android.app.Activity)context).runOnUiThread(()->{
+                ((android.app.Activity) context).runOnUiThread(() -> {
                     Picasso.get().load(url).into(holder.imgPro);
                 });
             }
@@ -75,34 +75,36 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         holder.tv_SizeColor.setText(details.getProduct_color_name() + ", Size " + details.getSize_name());
 
         holder.tvAmount.setText("x" + String.valueOf(details.getAmount()));
-        if (details.getSale_price() != null && details.getSale_price().compareTo(BigDecimal.ZERO) > 0)
-        {
+        if (details.getSale_price() != null && details.getSale_price().compareTo(BigDecimal.ZERO) > 0) {
             holder.tv_BasePrice.setText("$" + String.valueOf(details.getBase_price()));
             holder.tv_SalePrice.setText("$" + String.valueOf(details.getSale_price()));
 
             // Gạch ngang giá gốc
             holder.tv_BasePrice.setPaintFlags(holder.tv_BasePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
-        else
-        {
+        } else {
             holder.tv_BasePrice.setVisibility(View.GONE);
             holder.tv_SalePrice.setText("$" + String.valueOf(details.getSale_price()));
         }
         BigDecimal totalPrice = details.getSale_price().multiply(BigDecimal.valueOf(details.getAmount()));
         holder.tvTotalPricePro.setText("Subtotal: $" + totalPrice);
 
-        if (checkDeliverd)
-        {
+        if (checkDeliverd) {
             holder.btnReview.setVisibility(View.VISIBLE);
             holder.btnReview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showReviewOverlay(UserOrderProductsHandler.getProductDetailsID(details.getProduct_id(), details.getProduct_color_name(), details.getSize_name()));
+                    UserOrderProductsHandler.getProductDetailsID(details.getProduct_id(), details.getProduct_color_name(), details.getSize_name(), new UserOrderProductsHandler.Callback<Integer>() {
+                        @Override
+                        public void onResult(Integer result) {
+                            ((android.app.Activity) context).runOnUiThread(() -> {
+                                showReviewOverlay(result);
+                            });
+                        }
+                    });
+
                 }
             });
-        }
-        else
-        {
+        } else {
             holder.btnReview.setVisibility(View.INVISIBLE);
         }
     }
@@ -110,7 +112,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
     @Override
     public void onViewRecycled(@NonNull MyViewHolder holder) {
         super.onViewRecycled(holder);
-        if(currentTask!=null){
+        if (currentTask != null) {
             currentTask.cancel(true);
         }
     }
@@ -120,8 +122,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         return lstOrderDetails != null ? lstOrderDetails.size() : 0;
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder
-    {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         private ImageView imgPro;
         private TextView tv_ProductName;
         private TextView tv_SizeColor;
@@ -130,6 +131,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         private TextView tv_SalePrice;
         private TextView tvTotalPricePro;
         private Button btnReview;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             this.imgPro = itemView.findViewById(R.id.imgPro);
@@ -142,6 +144,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
             this.btnReview = itemView.findViewById(R.id.btnReview);
         }
     }
+
     private void showReviewOverlay(int product_detail_id) {
         View view = LayoutInflater.from(context).inflate(R.layout.review_overlay, null);
 
@@ -149,8 +152,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         dialog.setContentView(view);
 
         Window window = dialog.getWindow();
-        if (window == null)
-        {
+        if (window == null) {
             return;
         }
 
@@ -177,17 +179,25 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
             @Override
             public void onClick(View v) {
                 UserAccount userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
-                if (!edt_review.getText().toString().isEmpty() && ratingBar.getRating() != 0)
-                {
+                if (!edt_review.getText().toString().isEmpty() && ratingBar.getRating() != 0) {
                     LocalDateTime now = LocalDateTime.now();
-                    ProductReview review = new ProductReview(-1, userAccount.getUserId(), product_detail_id, edt_review.getText().toString(), now, (int)ratingBar.getRating());
-                    ProductReviewHandler.insertReview(review);
+                    ProductReview review = new ProductReview(-1, userAccount.getUserId(), product_detail_id, edt_review.getText().toString(), now, (int) ratingBar.getRating());
+                    ProductReviewHandler.insertReview(review, new ProductReviewHandler.Callback<Boolean>() {
+                        @Override
+                        public void onResult(Boolean result) {
+                            ((android.app.Activity) context).runOnUiThread(() -> {
+                                if (result) {
+                                    Toast.makeText(context, "Review submitted", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context, "Failed to submit review", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
+                    });
                     dialog.dismiss();
-                }
-                else
-                {
-                    if (edt_review.getText().toString().isEmpty())
-                    {
+                } else {
+                    if (edt_review.getText().toString().isEmpty()) {
                         edt_review.setError("Review is required");
                     }
                     if (ratingBar.getRating() == 0) {
