@@ -95,7 +95,7 @@ public class SearchActivity extends AppCompatActivity {
     private TextView btn_clear_overlay;
     private int numberFilter = 0;
     private GenderAdapter genderAdapter;
-
+    private Integer isFreeShip=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,7 +204,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("SearchQuery", "Current query: " + newText);
-                filterList(newText, "", null, LocalDateTime.MIN, "", "");
+                filterList(newText, genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
                 return false;
             }
         });
@@ -240,7 +240,7 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    void filterList(String text, String genderFilter, Boolean sortByPriceAsc, LocalDateTime thirtyDaysAgo, String onSale, String price) {
+    void filterList(String text, String genderFilter, Boolean sortByPriceAsc, LocalDateTime thirtyDaysAgo, String onSale, String price,Integer isFreeshipFilter) {
         // Reset lstPro to the original list before filtering
         ArrayList<Product> filterList = new ArrayList<>(originalProductList);
 
@@ -249,6 +249,7 @@ public class SearchActivity extends AppCompatActivity {
                 .filter(product -> onSale.isEmpty() || product.getProductDetailsArrayList()
                         .stream()
                         .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0))
+                .filter(product -> isFreeshipFilter == null || product.getIsFreeship() == isFreeshipFilter)
                 .filter(product -> product.getCreated_at().isAfter(thirtyDaysAgo))
                 .sorted((p1, p2) -> {
                     BigDecimal salePrice1 = getMinSalePrice(p1);
@@ -564,7 +565,7 @@ public class SearchActivity extends AppCompatActivity {
                     filterChangedGender = true;
                 }
                 bottomSheetDialog.dismiss();
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
             }
         });
         bottomSheetDialog.findViewById(R.id.btn_clear_overlay).setOnClickListener(new View.OnClickListener() {
@@ -577,7 +578,7 @@ public class SearchActivity extends AppCompatActivity {
                         numberFilter -= 1;
                         filter.setText(String.valueOf(numberFilter));
                     }
-                    filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                    filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
                     bottomSheetDialog.dismiss();
             }
         });
@@ -636,7 +637,7 @@ public class SearchActivity extends AppCompatActivity {
                         btnSortBy.setText("Recommended");
                     }
                     bottomSheetDialog.dismiss();
-                    filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                    filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
 
             }
         }, btnSortBy.getText().toString());
@@ -653,7 +654,7 @@ public class SearchActivity extends AppCompatActivity {
                     numberFilter -= 1;
                     filter.setText(String.valueOf(numberFilter));
                 }
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
                 bottomSheetDialog.dismiss();
             }
         });
@@ -693,11 +694,21 @@ public class SearchActivity extends AppCompatActivity {
                 }
                 if (selectedSortBy.equalsIgnoreCase("On sale")) {
                     onSale = "On Sale";
-                    btnDeals.setText(onSale);
+                    isFreeShip=null;
+                    btnDeals.setText(selectedSortBy);
                     filterChangeDeal = true;
                 }
+                else if(selectedSortBy.equalsIgnoreCase("Free Shipping Eligible"))
+                {
+                    onSale="";
+                    isFreeShip=1;
+                    btnDeals.setText(selectedSortBy);
+                    filterChangeDeal = true;
+
+                }
+
                 bottomSheetDialog.dismiss();
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
 
             }
         }, btnDeals.getText().toString());
@@ -707,13 +718,14 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onSale = "";
+                isFreeShip=null;
                 btnDeals.setText("Deals");
                 filterChangeDeal = false;
                 if (numberFilter > 0) {
                     numberFilter -= 1;
                     filter.setText(String.valueOf(numberFilter));
                 }
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
                 bottomSheetDialog.dismiss();
             }
         });
@@ -761,7 +773,7 @@ public class SearchActivity extends AppCompatActivity {
                     filterChangedPrice = true;
                 }
                 bottomSheetDialog.dismiss();
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
 
             }
         }, btnPrice.getText().toString());
@@ -777,7 +789,7 @@ public class SearchActivity extends AppCompatActivity {
                     numberFilter -= 1;
                     filter.setText(String.valueOf(numberFilter));
                 }
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
                 bottomSheetDialog.dismiss();
             }
         });
