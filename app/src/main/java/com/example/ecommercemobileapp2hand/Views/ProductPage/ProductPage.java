@@ -377,6 +377,7 @@ public class ProductPage extends AppCompatActivity {
                 imgSliderApdater = new RecycleProductImageAdapter(imgList, this);
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
                 recycleImgSlider.setLayoutManager(layoutManager);
+                recycleImgSlider.getLayoutManager().setItemPrefetchEnabled(true);
                 recycleImgSlider.setAdapter(imgSliderApdater);
             }
         });
@@ -389,6 +390,7 @@ public class ProductPage extends AppCompatActivity {
         reviewAdapter = new RecycleReviewAdapter(reviewsList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         recycleReviews.setLayoutManager(layoutManager);
+        recycleReviews.getLayoutManager().setItemPrefetchEnabled(true);
         recycleReviews.setAdapter(reviewAdapter);
     }
 

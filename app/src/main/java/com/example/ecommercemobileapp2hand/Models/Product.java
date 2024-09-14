@@ -15,13 +15,13 @@ import java.util.Date;
 
 public class Product implements Parcelable {
 
-
     private int product_id;
     private String product_name;
-
     private String thumbnail;
     private BigDecimal base_price;
+    private int isFreeship;
     private LocalDateTime created_at;
+    private int coupon_id;
     private ProductObject productObject;
     private ProductCategory productCategory;
     @JsonProperty ("product_details_array")
@@ -39,20 +39,35 @@ public class Product implements Parcelable {
     public Product() {
     }
 
-    public Product(int product_id, String product_name, String thumbnail, BigDecimal base_price, LocalDateTime created_at, ProductObject productObject, ProductCategory productCategory, ArrayList<ProductDetails> productDetailsArrayList, BigDecimal sold) {
+    public int getCoupon_id() {
+        return coupon_id;
+    }
+
+    public void setCoupon_id(int coupon_id) {
+        this.coupon_id = coupon_id;
+    }
+
+    public int getIsFreeship() {
+        return isFreeship;
+    }
+
+    public void setIsFreeship(int isFreeship) {
+        this.isFreeship = isFreeship;
+    }
+
+    public Product(int product_id, String product_name, String thumbnail, BigDecimal base_price, int isFreeship, LocalDateTime created_at, int coupon_id, ProductObject productObject, ProductCategory productCategory, ArrayList<ProductDetails> productDetailsArrayList, BigDecimal sold) {
         this.product_id = product_id;
         this.product_name = product_name;
         this.thumbnail = thumbnail;
         this.base_price = base_price;
+        this.isFreeship = isFreeship;
         this.created_at = created_at;
+        this.coupon_id = coupon_id;
         this.productObject = productObject;
         this.productCategory = productCategory;
         this.productDetailsArrayList = productDetailsArrayList;
         this.sold = sold;
     }
-
-
-
 
     public ArrayList<ProductDetails> getProductDetailsArrayList() {
         return productDetailsArrayList;
@@ -125,7 +140,9 @@ public class Product implements Parcelable {
         product_name = in.readString();
         thumbnail = in.readString();
         base_price = new BigDecimal(in.readString());
+        isFreeship = in.readInt();
         created_at = LocalDateTime.parse(in.readString());
+        coupon_id = in.readInt();
         productObject = in.readParcelable(ProductObject.class.getClassLoader());
         productCategory = in.readParcelable(ProductCategory.class.getClassLoader());
         productDetailsArrayList = in.createTypedArrayList(ProductDetails.CREATOR);
@@ -143,8 +160,10 @@ public class Product implements Parcelable {
         dest.writeString(product_name);
         dest.writeString(thumbnail);
         dest.writeString(base_price.toString());
+        dest.writeInt(isFreeship);
         // Chuyển đổi LocalDateTime thành chuỗi
         dest.writeString(created_at.toString());
+        dest.writeInt(coupon_id);
         dest.writeParcelable(productObject, flags);
         dest.writeParcelable(productCategory, flags);
         dest.writeTypedList(productDetailsArrayList);

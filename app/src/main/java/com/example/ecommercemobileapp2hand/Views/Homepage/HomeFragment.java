@@ -203,6 +203,7 @@ public class HomeFragment extends Fragment {
                    ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
                    categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
                    recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+                   recyclerViewCategories.getLayoutManager().setItemPrefetchEnabled(true);
                    recyclerViewCategories.setAdapter(categoriesAdapter);
                }
            });
@@ -245,6 +246,7 @@ public class HomeFragment extends Fragment {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewTopSelling.setLayoutManager(layoutManager);
+        recyclerViewTopSelling.getLayoutManager().setItemPrefetchEnabled(true);
         recyclerViewTopSelling.setAdapter(TopSellingAdapter);
 
     }
@@ -264,6 +266,7 @@ public class HomeFragment extends Fragment {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewNewIn.setLayoutManager(layoutManager);
+        recyclerViewNewIn.getLayoutManager().setItemPrefetchEnabled(true);
         recyclerViewNewIn.setAdapter(NewInAdapter);
 
     }
