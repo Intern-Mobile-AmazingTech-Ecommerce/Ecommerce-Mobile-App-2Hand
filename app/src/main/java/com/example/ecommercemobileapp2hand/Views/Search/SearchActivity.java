@@ -29,12 +29,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.ProductObjectHandler;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Controllers.CategoriesHandler;
 import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
 import com.example.ecommercemobileapp2hand.Models.FakeModels.Category;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductCategory;
+import com.example.ecommercemobileapp2hand.Models.ProductObject;
 import com.example.ecommercemobileapp2hand.Models.Singleton.ProductManager;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CategoriesAdapter;
@@ -92,6 +94,7 @@ public class SearchActivity extends AppCompatActivity {
     private String price = "";
     private TextView btn_clear_overlay;
     private int numberFilter = 0;
+    private GenderAdapter genderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,25 +217,25 @@ public class SearchActivity extends AppCompatActivity {
         btnSortBy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSortByOverlay("Sort by");
+                showSortByOverlay();
             }
         });
         btnGender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSortByOverlay("Gender");
+                showGenderOverlay();
             }
         });
         btnDeals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSortByOverlay("Deals");
+                showDealsOverlay();
             }
         });
         btnPrice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSortByOverlay("Price");
+                showPriceOverlay();
             }
         });
     }
@@ -361,61 +364,263 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    private void showSortByOverlay(String type) {
+//    private void showSortByOverlay(String type) {
+//        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+//        LayoutInflater inflater = this.getLayoutInflater();
+//        View dialogView =inflater.inflate(R.layout.sortby_overlay, null);
+//
+//        bottomSheetDialog.setContentView(dialogView);
+//
+//        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
+//        overlayTitle.setText(type);
+//
+//        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+//        btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
+//
+//        RecyclerView recyleSortBy = dialogView.findViewById(R.id.recy_overlay);
+//        SortByAdapter sortByAdapter = getSortByAdapter(type, bottomSheetDialog);
+//        recyleSortBy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+//        recyleSortBy.setItemAnimator(new DefaultItemAnimator());
+//        recyleSortBy.setAdapter(sortByAdapter);
+//        bottomSheetDialog.show();
+//    }
+
+//    private @NonNull SortByAdapter getSortByAdapter(String type, BottomSheetDialog dialog) {
+//        ArrayList<String> sortByArr=getStrings(type);
+//        SortByAdapter sortByAdapter = new SortByAdapter(sortByArr, getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
+//            @Override
+//            public void onSortBySelected(String selectedSortBy) {
+//                //Add filter function
+//                if (type.contains("Gender")) {
+////                    if (!filterChangedGender) {
+////                        numberFilter += 1;
+////                        filter.setText(String.valueOf(numberFilter));
+////                    }
+////                    if (selectedSortBy.equalsIgnoreCase("Men")) {
+////                        genderFilter = "Men";
+////                        filterChangedGender = true;
+////                    } else {
+////                        genderFilter = "Women";
+////                        filterChangedGender = true;
+////                    }
+////                    btnGender.setText(genderFilter);
+////                    dialog.dismiss();
+//                } else if (type.contains("Sort by")) {
+//
+//                    if (!filterChangeSortBy) {
+//                        numberFilter += 1;
+//                        filter.setText(String.valueOf(numberFilter));
+//
+//                    }
+//                    if (selectedSortBy.equalsIgnoreCase("Lowest-Highest Price")) {
+//                        //Toast.makeText(getApplicationContext(),"low to high price", Toast.LENGTH_SHORT).show();
+//                        sortByPriceAsc = true;
+//                        btnSortBy.setText("Lowest-Highest Price");
+//                        filterChangeSortBy = true;
+//                    } else if (selectedSortBy.equalsIgnoreCase("Highest-Lowest Price")) {
+//                        //Toast.makeText(getApplicationContext(),"high to low price", Toast.LENGTH_SHORT).show();
+//                        sortByPriceAsc = false;
+//                        filterChangeSortBy = true;
+//                        btnSortBy.setText("Highest-Lowest Price");
+//                    } else if (selectedSortBy.equalsIgnoreCase("Newest")) {
+//                        //Toast.makeText(getApplicationContext(),"newest", Toast.LENGTH_SHORT).show();
+//                        sortByPriceAsc = null;
+//                        thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS);
+//                        btnSortBy.setText("Newest");
+//                        filterChangeSortBy = true;
+//                    } else {
+//                        //Toast.makeText(getApplicationContext(),"rec", Toast.LENGTH_SHORT).show();
+//                        sortByPriceAsc = null;
+//                        filterChangeSortBy = true;
+//                        btnSortBy.setText("Recommended");
+//                    }
+//                    dialog.dismiss();
+//                } else if (type.contains("Deals")) {
+//
+//                    if (!filterChangeDeal) {
+//                        numberFilter += 1;
+//                        filter.setText(String.valueOf(numberFilter));
+//
+//                    }
+//                    if (selectedSortBy.equalsIgnoreCase("On sale")) {
+//                        onSale = "On Sale";
+//                        btnDeals.setText(onSale);
+//                        filterChangeDeal = true;
+//                    }
+//                    dialog.dismiss();
+//                } else if (type.contains("Price")) {
+//                    if (!filterChangedPrice) {
+//                        numberFilter += 1;
+//                        filter.setText(String.valueOf(numberFilter));
+//
+//                    }
+//
+//                    if (selectedSortBy.equalsIgnoreCase("Min")) {
+//                        price = "Min";
+//                        filterChangedPrice = true;
+//
+//                    } else if (selectedSortBy.equalsIgnoreCase("Max")) {
+//                        price = "Max";
+//                        filterChangedPrice = true;
+//                    }
+//                    btnPrice.setText(price);
+//                    dialog.dismiss();
+//                }
+//
+//
+//                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+//            }
+//        }, genderFilter);
+//        dialog.findViewById(R.id.btn_clear_overlay).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                if (type.contains("Deals")) {
+//                    onSale = "";
+//                    btnDeals.setText("Deals");
+//                    filterChangeDeal = false;
+//
+//                } else if (type.contains("Price")) {
+//                    price = "";
+//                    btnPrice.setText("Price");
+//                    filterChangedPrice = false;
+////                } else if (type.contains("Gender")) {
+////                    genderFilter = ""; // Clear gender filter
+////                    btnGender.setText("Gender");
+////                    filterChangedGender = false;
+////                } else if (type.contains("Sort by")) {
+//                    sortByPriceAsc = null;
+//                    btnSortBy.setText("Sort by");
+//                    thirtyDaysAgo = LocalDateTime.MIN;
+//                    filterChangeSortBy = false;
+//                }
+//                if (numberFilter > 0) {
+//                    numberFilter -= 1;
+//                    filter.setText(String.valueOf(numberFilter));
+//                }
+//                // Call filterList to update results based on cleared filters
+//                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+//                dialog.dismiss();
+//            }
+//        });
+//        return sortByAdapter;
+//    }
+
+
+//    private static @NonNull ArrayList<String> getStrings(String type) {
+//        ArrayList<String> sortByArr = new ArrayList<>();
+//        if (type.contains("Sort by")) {
+//            sortByArr.add(0, "Recommended");
+//            sortByArr.add(1, "Newest");
+//            sortByArr.add(2, "Lowest-Highest Price");
+//            sortByArr.add(3, "Highest-Lowest Price");
+////        } else if (type.contains("Gender")) {
+////            sortByArr.add(0, "Men");
+////            sortByArr.add(1, "Women");
+////
+////        } else if (type.contains("Deals")) {
+//            sortByArr.add(0, "On sale");
+//            sortByArr.add(0, "Free ship");
+//        } else {
+//            sortByArr.add(0, "Min");
+//            sortByArr.add(1, "Max");
+//        }
+//        return sortByArr;
+//    }
+
+    //Tách overlay
+    //overlay gender
+    private void showGenderOverlay() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.sortby_overlay, null);
+        View dialogView =inflater.inflate(R.layout.gender_overlay, null);
+
         bottomSheetDialog.setContentView(dialogView);
 
         TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
-        overlayTitle.setText(type);
+        overlayTitle.setText("Gender");
+
+        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        RecyclerView recyleGender = dialogView.findViewById(R.id.recy_gender);
+        ArrayList<ProductObject> lstGender=ProductObjectHandler.getData();
+        genderAdapter=new GenderAdapter(lstGender, getApplicationContext(), btnGender.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
+            @Override
+            public void onGenderSelected(String selectedGender) {
+                btnGender.setText(selectedGender);
+                if (!filterChangedGender) {
+                        numberFilter += 1;
+                        filter.setText(String.valueOf(numberFilter));
+                }
+                if(selectedGender.equalsIgnoreCase("Men"))
+                {
+                    genderFilter="Men";
+                    filterChangedGender = true;
+                }
+                else
+                {
+                    genderFilter="Women";
+                    filterChangedGender = true;
+                }
+                bottomSheetDialog.dismiss();
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+            }
+        });
+        bottomSheetDialog.findViewById(R.id.btn_clear_overlay).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    genderFilter = "";
+                    btnGender.setText("Gender");
+                    filterChangedGender = false;
+                    if (numberFilter > 0) {
+                        numberFilter -= 1;
+                        filter.setText(String.valueOf(numberFilter));
+                    }
+                    filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                    bottomSheetDialog.dismiss();
+            }
+        });
+        recyleGender.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyleGender.setItemAnimator(new DefaultItemAnimator());
+        recyleGender.setAdapter(genderAdapter);
+        bottomSheetDialog.show();
+    }
+    //overlay sortby
+    private void showSortByOverlay() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView =inflater.inflate(R.layout.sortby_overlay, null);
+
+        bottomSheetDialog.setContentView(dialogView);
+
+        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
+        overlayTitle.setText("Sort by");
 
         ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
         btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
         RecyclerView recyleSortBy = dialogView.findViewById(R.id.recy_overlay);
-        SortByAdapter sortByAdapter = getSortByAdapter(type, bottomSheetDialog);
-        recyleSortBy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyleSortBy.setItemAnimator(new DefaultItemAnimator());
-        recyleSortBy.setAdapter(sortByAdapter);
-        bottomSheetDialog.show();
-    }
-
-    private @NonNull SortByAdapter getSortByAdapter(String type, BottomSheetDialog dialog) {
-        ArrayList<String> sortByArr = getStrings(type);
-
-        SortByAdapter sortByAdapter = new SortByAdapter(sortByArr, getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
+        ArrayList<String> lstSortby=new ArrayList<>();
+        lstSortby.add(0, "Recommended");
+        lstSortby.add(1, "Newest");
+        lstSortby.add(2, "Lowest-Highest Price");
+        lstSortby.add(3, "Highest-Lowest Price");
+        SortByAdapter sortByAdapter = new SortByAdapter(lstSortby, getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
             @Override
             public void onSortBySelected(String selectedSortBy) {
-                //Add filter function
-                if (type.contains("Gender")) {
-                    if (!filterChangedGender) {
-                        numberFilter += 1;
-                        filter.setText(String.valueOf(numberFilter));
-                    }
-                    if (selectedSortBy.equalsIgnoreCase("Men")) {
-                        genderFilter = "Men";
-                        filterChangedGender = true;
-                    } else {
-                        genderFilter = "Women";
-                        filterChangedGender = true;
-                    }
-                    btnGender.setText(genderFilter);
-                    dialog.dismiss();
-                } else if (type.contains("Sort by")) {
 
+                    btnSortBy.setText(selectedSortBy);
                     if (!filterChangeSortBy) {
                         numberFilter += 1;
                         filter.setText(String.valueOf(numberFilter));
 
                     }
                     if (selectedSortBy.equalsIgnoreCase("Lowest-Highest Price")) {
-                        //Toast.makeText(getApplicationContext(),"low to high price", Toast.LENGTH_SHORT).show();
                         sortByPriceAsc = true;
                         btnSortBy.setText("Lowest-Highest Price");
                         filterChangeSortBy = true;
                     } else if (selectedSortBy.equalsIgnoreCase("Highest-Lowest Price")) {
-                        //Toast.makeText(getApplicationContext(),"high to low price", Toast.LENGTH_SHORT).show();
                         sortByPriceAsc = false;
                         filterChangeSortBy = true;
                         btnSortBy.setText("Highest-Lowest Price");
@@ -426,100 +631,159 @@ public class SearchActivity extends AppCompatActivity {
                         btnSortBy.setText("Newest");
                         filterChangeSortBy = true;
                     } else {
-                        //Toast.makeText(getApplicationContext(),"rec", Toast.LENGTH_SHORT).show();
                         sortByPriceAsc = null;
                         filterChangeSortBy = true;
                         btnSortBy.setText("Recommended");
                     }
-                    dialog.dismiss();
-                } else if (type.contains("Deals")) {
+                    bottomSheetDialog.dismiss();
+                    filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
 
-                    if (!filterChangeDeal) {
-                        numberFilter += 1;
-                        filter.setText(String.valueOf(numberFilter));
-
-                    }
-                    if (selectedSortBy.equalsIgnoreCase("On sale")) {
-                        onSale = "On Sale";
-                        btnDeals.setText(onSale);
-                        filterChangeDeal = true;
-                    }
-                    dialog.dismiss();
-                } else if (type.contains("Price")) {
-                    if (!filterChangedPrice) {
-                        numberFilter += 1;
-                        filter.setText(String.valueOf(numberFilter));
-
-                    }
-
-                    if (selectedSortBy.equalsIgnoreCase("Min")) {
-                        price = "Min";
-                        filterChangedPrice = true;
-
-                    } else if (selectedSortBy.equalsIgnoreCase("Max")) {
-                        price = "Max";
-                        filterChangedPrice = true;
-                    }
-                    btnPrice.setText(price);
-                    dialog.dismiss();
-                }
-
-
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
             }
-        }, genderFilter);
-        dialog.findViewById(R.id.btn_clear_overlay).setOnClickListener(new View.OnClickListener() {
+        }, btnSortBy.getText().toString());
+
+
+        bottomSheetDialog.findViewById(R.id.btn_clear_overlay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (type.contains("Deals")) {
-                    onSale = "";
-                    btnDeals.setText("Deals");
-                    filterChangeDeal = false;
-
-                } else if (type.contains("Price")) {
-                    price = "";
-                    btnPrice.setText("Price");
-                    filterChangedPrice = false;
-                } else if (type.contains("Gender")) {
-                    genderFilter = ""; // Clear gender filter
-                    btnGender.setText("Gender");
-                    filterChangedGender = false;
-                } else if (type.contains("Sort by")) {
-                    sortByPriceAsc = null;
-                    btnSortBy.setText("Sort by");
-                    thirtyDaysAgo = LocalDateTime.MIN;
-                    filterChangeSortBy = false;
-                }
+                sortByPriceAsc = null;
+                btnSortBy.setText("Sort by");
+                thirtyDaysAgo = LocalDateTime.MIN;
+                filterChangeSortBy = false;
                 if (numberFilter > 0) {
                     numberFilter -= 1;
                     filter.setText(String.valueOf(numberFilter));
                 }
-                // Call filterList to update results based on cleared filters
                 filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
-                dialog.dismiss();
+                bottomSheetDialog.dismiss();
             }
         });
-        return sortByAdapter;
+        recyleSortBy.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyleSortBy.setItemAnimator(new DefaultItemAnimator());
+        recyleSortBy.setAdapter(sortByAdapter);
+        bottomSheetDialog.show();
     }
+    //overlay deals
+    private void showDealsOverlay() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView =inflater.inflate(R.layout.deals_overlay, null);
+
+        bottomSheetDialog.setContentView(dialogView);
+
+        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
+        overlayTitle.setText("Deals");
+
+        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        RecyclerView recyleDeals = dialogView.findViewById(R.id.recy_deals);
+        ArrayList<String> lstDeals=new ArrayList<>();
+        lstDeals.add(0, "On Sale");
+        lstDeals.add(1, "Free Shipping Eligible");
+
+        SortByAdapter dealsAdapter = new SortByAdapter(lstDeals, getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
+            @Override
+            public void onSortBySelected(String selectedSortBy) {
+
+                btnDeals.setText(selectedSortBy);
+                if (!filterChangeDeal) {
+                    numberFilter += 1;
+                    filter.setText(String.valueOf(numberFilter));
+
+                }
+                if (selectedSortBy.equalsIgnoreCase("On sale")) {
+                    onSale = "On Sale";
+                    btnDeals.setText(onSale);
+                    filterChangeDeal = true;
+                }
+                bottomSheetDialog.dismiss();
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+
+            }
+        }, btnDeals.getText().toString());
 
 
-    private static @NonNull ArrayList<String> getStrings(String type) {
-        ArrayList<String> sortByArr = new ArrayList<>();
-        if (type.contains("Sort by")) {
-            sortByArr.add(0, "Recommended");
-            sortByArr.add(1, "Newest");
-            sortByArr.add(2, "Lowest-Highest Price");
-            sortByArr.add(3, "Highest-Lowest Price");
-        } else if (type.contains("Gender")) {
-            sortByArr.add(0, "Men");
-            sortByArr.add(1, "Women");
-        } else if (type.contains("Deals")) {
-            sortByArr.add(0, "On sale");
-        } else {
-            sortByArr.add(0, "Min");
-            sortByArr.add(1, "Max");
-        }
-        return sortByArr;
+        bottomSheetDialog.findViewById(R.id.btn_clear_overlay).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSale = "";
+                btnDeals.setText("Deals");
+                filterChangeDeal = false;
+                if (numberFilter > 0) {
+                    numberFilter -= 1;
+                    filter.setText(String.valueOf(numberFilter));
+                }
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                bottomSheetDialog.dismiss();
+            }
+        });
+        recyleDeals.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyleDeals.setItemAnimator(new DefaultItemAnimator());
+        recyleDeals.setAdapter(dealsAdapter);
+        bottomSheetDialog.show();
+    }
+    //overlay price
+    private void showPriceOverlay() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView =inflater.inflate(R.layout.price_overlay, null);
+
+        bottomSheetDialog.setContentView(dialogView);
+
+        TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
+        overlayTitle.setText("Price");
+
+        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        RecyclerView recylePrice = dialogView.findViewById(R.id.recy_price);
+        ArrayList<String> lstPrice=new ArrayList<>();
+        lstPrice.add(0, "Min");
+        lstPrice.add(1, "Max");
+
+        SortByAdapter priceAdapter = new SortByAdapter(lstPrice, getApplicationContext(), new SortByAdapter.OnSortBySelectedListener() {
+            @Override
+            public void onSortBySelected(String selectedSortBy) {
+
+                btnPrice.setText(selectedSortBy);
+                if (!filterChangedPrice) {
+                    numberFilter += 1;
+                    filter.setText(String.valueOf(numberFilter));
+
+                }
+
+                if (selectedSortBy.equalsIgnoreCase("Min")) {
+                    price = "Min";
+                    filterChangedPrice = true;
+
+                } else if (selectedSortBy.equalsIgnoreCase("Max")) {
+                    price = "Max";
+                    filterChangedPrice = true;
+                }
+                bottomSheetDialog.dismiss();
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+
+            }
+        }, btnPrice.getText().toString());
+
+
+        bottomSheetDialog.findViewById(R.id.btn_clear_overlay).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                price = "";
+                btnPrice.setText("Price");
+                filterChangedPrice = false;
+                if (numberFilter > 0) {
+                    numberFilter -= 1;
+                    filter.setText(String.valueOf(numberFilter));
+                }
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price);
+                bottomSheetDialog.dismiss();
+            }
+        });
+        recylePrice.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recylePrice.setItemAnimator(new DefaultItemAnimator());
+        recylePrice.setAdapter(priceAdapter);
+        bottomSheetDialog.show();
     }
 }

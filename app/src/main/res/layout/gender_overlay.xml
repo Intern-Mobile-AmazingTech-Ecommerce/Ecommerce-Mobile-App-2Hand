@@ -18,6 +18,16 @@
             android:layout_height="wrap_content"
             android:paddingHorizontal="24dp"
             android:paddingVertical="14dp">
+            <TextView
+                android:id="@+id/btn_clear_overlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="Clear"
+                android:layout_centerVertical="true"
+                android:textSize="16dp"
+                android:fontFamily="@font/circularstdmedium500"
+                style="@style/TEXT"/>
 
             <TextView
                 android:id="@+id/overlay_title"
@@ -54,8 +64,10 @@
                 style="@style/SCREEN"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
                 android:paddingHorizontal="24dp"
                 android:paddingBottom="20dp" />
+
         </ScrollView>
     </RelativeLayout>
 
