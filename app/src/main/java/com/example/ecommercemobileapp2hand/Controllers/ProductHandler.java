@@ -20,235 +20,315 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ProductHandler {
     private static DBConnect dbConnect = new DBConnect();
-    private static Connection conn;
     static ObjectMapper objectMapper = new ObjectMapper();
+    private static ExecutorService service = Executors.newCachedThreadPool();
 
-    public static ArrayList<Product> getData() {
+    static {
         objectMapper.registerModule(new JavaTimeModule());
-        conn = dbConnect.connectionClass();
-        ArrayList<Product> list = new ArrayList<>();
-        if (conn != null) {
-            try {
-                CallableStatement cstmt = conn.prepareCall("call GetProductDetails");
-                ResultSet rs = cstmt.executeQuery();
-                while (rs.next()) {
-                    Product p = new Product();
-                    p.setProduct_id(rs.getInt(1));
-                    p.setProduct_name(rs.getString(2));
-                    p.setThumbnail(rs.getString(3));
-                    p.setBase_price(rs.getBigDecimal(4));
-                    p.setSold(rs.getBigDecimal(5));
-                    p.setIsFreeship(rs.getInt(6));
+    }
+    public static void getData(Callback<ArrayList<Product>> callback) {
+        service.execute(()->{
+            Connection conn = dbConnect.connectionClass();
+            ArrayList<Product> list = new ArrayList<>();
+            if(conn!=null){
+                try{
+                    CallableStatement cstmt = conn.prepareCall("call GetProductDetails");
+                    ResultSet rs = cstmt.executeQuery();
+                    while (rs.next()) {
+                        Product p = new Product();
+                        p.setProduct_id(rs.getInt(1));
+                        p.setProduct_name(rs.getString(2));
+                        p.setThumbnail(rs.getString(3));
+                        p.setBase_price(rs.getBigDecimal(4));
+                        p.setSold(rs.getBigDecimal(5));
+                        p.setIsFreeship(rs.getInt(6));
 
-                    Timestamp timestamp = rs.getTimestamp(7);
+                        Timestamp timestamp = rs.getTimestamp(7);
 
-                    if (timestamp != null) {
-                        LocalDateTime localDateTime = timestamp.toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime();
-                        p.setCreated_at(localDateTime);
+                        if (timestamp != null) {
+                            LocalDateTime localDateTime = timestamp.toInstant()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDateTime();
+                            p.setCreated_at(localDateTime);
+                        }
+
+                        p.setCoupon_id(rs.getInt(8));
+                        //Object
+                        ProductObject obj = new ProductObject();
+                        obj.setProduct_object_id(9);
+                        obj.setObject_name(rs.getString(10));
+                        p.setProductObject(obj);
+                        //Category
+                        ProductCategory category = new ProductCategory();
+                        category.setProduct_category_id(rs.getInt(11));
+                        category.setProduct_category_name(rs.getString(12));
+                        category.setProduct_category_description(rs.getString(13));
+                        category.setProduct_category_thumbnail(rs.getString(14));
+                        p.setProductCategory(category);
+
+
+                        //Array Pro Details
+                        String productDetailsJson = rs.getString("product_details_array");
+                        ArrayList<ProductDetails> productDetails = objectMapper.readValue(
+                                productDetailsJson,
+                                new TypeReference<ArrayList<ProductDetails>>() {
+                                }
+                        );
+                        p.setProductDetailsArrayList(productDetails);
+                        list.add(p);
                     }
-
-                    p.setCoupon_id(rs.getInt(8));
-                    //Object
-                    ProductObject obj = new ProductObject();
-                    obj.setProduct_object_id(9);
-                    obj.setObject_name(rs.getString(10));
-                    p.setProductObject(obj);
-                    //Category
-                    ProductCategory category = new ProductCategory();
-                    category.setProduct_category_id(rs.getInt(11));
-                    category.setProduct_category_name(rs.getString(12));
-                    category.setProduct_category_description(rs.getString(13));
-                    category.setProduct_category_thumbnail(rs.getString(14));
-                    p.setProductCategory(category);
-
-
-                    //Array Pro Details
-                    String productDetailsJson = rs.getString("product_details_array");
-                    ArrayList<ProductDetails> productDetails = objectMapper.readValue(
-                            productDetailsJson,
-                            new TypeReference<ArrayList<ProductDetails>>() {
-                            }
-                    );
-                    p.setProductDetailsArrayList(productDetails);
-                    list.add(p);
-
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } catch (JsonMappingException e) {
-                throw new RuntimeException(e);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            } finally {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                }catch (SQLException e){
+                    throw new RuntimeException(e);
+                }catch (JsonMappingException e) {
+                    throw new RuntimeException(e);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }finally {
+                    try {
+                        if(conn!=null){
+                            conn.close();
+                        }
+                    }catch (SQLException e){
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
-        return list;
+            callback.onResult(list);
+        });
+
     }
 
-    public static ArrayList<Product> getDataByObjectName(String objName) {
-        conn = dbConnect.connectionClass();
-        objectMapper.registerModule(new JavaTimeModule());
-        ArrayList<Product> list = new ArrayList<>();
-        if (conn != null) {
+    public static void getDataByObjectName(String objName,Callback<ArrayList<Product>> callback) {
+        service.execute(()->{
+            Connection conn = dbConnect.connectionClass();
+            ArrayList<Product> list = new ArrayList<>();
+            if(conn!=null){
+                try{
 
-            try {
-                CallableStatement cstmt = conn.prepareCall("call GetProductDetailsByObjectName(?)");
-                cstmt.setString(1, objName);
-                ResultSet rs = cstmt.executeQuery();
-                while (rs.next()) {
-                    Product p = new Product();
-                    p.setProduct_id(rs.getInt(1));
-                    p.setProduct_name(rs.getString(2));
-                    p.setThumbnail(rs.getString(3));
-                    p.setBase_price(rs.getBigDecimal(4));
-                    p.setSold(rs.getBigDecimal(5));
-                    p.setIsFreeship(rs.getInt(6));
+                    CallableStatement cstmt = conn.prepareCall("call GetProductDetailsByObjectName(?)");
+                    cstmt.setString(1, objName);
+                    ResultSet rs = cstmt.executeQuery();
+                    while (rs.next()) {
+                        Product p = new Product();
+                        p.setProduct_id(rs.getInt(1));
+                        p.setProduct_name(rs.getString(2));
+                        p.setThumbnail(rs.getString(3));
+                        p.setBase_price(rs.getBigDecimal(4));
+                        p.setSold(rs.getBigDecimal(5));
+                        p.setIsFreeship(rs.getInt(6));
 
-                    Timestamp timestamp = rs.getTimestamp(7);
+                        Timestamp timestamp = rs.getTimestamp(7);
 
-                    if (timestamp != null) {
-                        LocalDateTime localDateTime = timestamp.toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime();
-                        p.setCreated_at(localDateTime);
+                        if (timestamp != null) {
+                            LocalDateTime localDateTime = timestamp.toInstant()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDateTime();
+                            p.setCreated_at(localDateTime);
+                        }
+
+                        p.setCoupon_id(rs.getInt(8));
+                        //Object
+                        ProductObject obj = new ProductObject();
+                        obj.setProduct_object_id(9);
+                        obj.setObject_name(rs.getString(10));
+                        p.setProductObject(obj);
+                        //Category
+                        ProductCategory category = new ProductCategory();
+                        category.setProduct_category_id(rs.getInt(11));
+                        category.setProduct_category_name(rs.getString(12));
+                        category.setProduct_category_description(rs.getString(13));
+                        category.setProduct_category_thumbnail(rs.getString(14));
+                        p.setProductCategory(category);
+
+
+
+                        //Array Pro Details
+                        String productDetailsJson = rs.getString("product_details_array");
+                        ArrayList<ProductDetails> productDetails = objectMapper.readValue(
+                                productDetailsJson,
+                                new TypeReference<ArrayList<ProductDetails>>() {
+                                }
+                        );
+                        p.setProductDetailsArrayList(productDetails);
+                        list.add(p);
                     }
-
-                    p.setCoupon_id(rs.getInt(8));
-                    //Object
-                    ProductObject obj = new ProductObject();
-                    obj.setProduct_object_id(9);
-                    obj.setObject_name(rs.getString(10));
-                    p.setProductObject(obj);
-                    //Category
-                    ProductCategory category = new ProductCategory();
-                    category.setProduct_category_id(rs.getInt(11));
-                    category.setProduct_category_name(rs.getString(12));
-                    category.setProduct_category_description(rs.getString(13));
-                    category.setProduct_category_thumbnail(rs.getString(14));
-                    p.setProductCategory(category);
-
-
-
-                    //Array Pro Details
-                    String productDetailsJson = rs.getString("product_details_array");
-                    ArrayList<ProductDetails> productDetails = objectMapper.readValue(
-                            productDetailsJson,
-                            new TypeReference<ArrayList<ProductDetails>>() {
-                            }
-                    );
-                    p.setProductDetailsArrayList(productDetails);
-                    list.add(p);
-
+                }catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } catch (JsonMappingException e) {
-                throw new RuntimeException(e);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            } finally {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                catch (JsonMappingException e) {
+                    throw new RuntimeException(e);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }finally {
+                    try {
+                        if (conn != null)
+                            conn.close();
+                    }catch (SQLException e){
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
-        return list;
+            callback.onResult(list);
+        });
+
     }
 
-    public static ArrayList<Product> getDataByObjectNameAndCategoryID(String objName, int catID) {
-        conn = dbConnect.connectionClass();
-        ArrayList<Product> list = new ArrayList<>();
-        objectMapper.registerModule(new JavaTimeModule());
-        if (conn != null) {
+    public static void getDataByObjectNameAndCategoryID(String objName, int catID,Callback<ArrayList<Product>> callback) {
+        service.execute(()->{
+            Connection conn = dbConnect.connectionClass();
+            ArrayList<Product> list = new ArrayList<>();
+            if(conn!=null){
+                try{
+                    CallableStatement cstmt = conn.prepareCall("call GetProductDetailsByObjectNameAndCategoryID(?,?)");
+                    cstmt.setString(1, objName);
+                    cstmt.setInt(2, catID);
+                    ResultSet rs = cstmt.executeQuery();
+                    while (rs.next()) {
+                        Product p = new Product();
+                        p.setProduct_id(rs.getInt(1));
+                        p.setProduct_name(rs.getString(2));
+                        p.setThumbnail(rs.getString(3));
+                        p.setBase_price(rs.getBigDecimal(4));
+                        p.setSold(rs.getBigDecimal(5));
+                        p.setIsFreeship(rs.getInt(6));
 
-            try {
-                CallableStatement cstmt = conn.prepareCall("call GetProductDetailsByObjectNameAndCategoryID(?,?)");
-                cstmt.setString(1, objName);
-                cstmt.setInt(2, catID);
-                ResultSet rs = cstmt.executeQuery();
-                while (rs.next()) {
-                    Product p = new Product();
-                    p.setProduct_id(rs.getInt(1));
-                    p.setProduct_name(rs.getString(2));
-                    p.setThumbnail(rs.getString(3));
-                    p.setBase_price(rs.getBigDecimal(4));
-                    p.setSold(rs.getBigDecimal(5));
-                    p.setIsFreeship(rs.getInt(6));
+                        Timestamp timestamp = rs.getTimestamp(7);
 
-                    Timestamp timestamp = rs.getTimestamp(7);
+                        if (timestamp != null) {
+                            LocalDateTime localDateTime = timestamp.toInstant()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDateTime();
+                            p.setCreated_at(localDateTime);
+                        }
 
-                    if (timestamp != null) {
-                        LocalDateTime localDateTime = timestamp.toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime();
-                        p.setCreated_at(localDateTime);
+                        p.setCoupon_id(rs.getInt(8));
+                        //Object
+                        ProductObject obj = new ProductObject();
+                        obj.setProduct_object_id(9);
+                        obj.setObject_name(rs.getString(10));
+                        p.setProductObject(obj);
+                        //Category
+                        ProductCategory category = new ProductCategory();
+                        category.setProduct_category_id(rs.getInt(11));
+                        category.setProduct_category_name(rs.getString(12));
+                        category.setProduct_category_description(rs.getString(13));
+                        category.setProduct_category_thumbnail(rs.getString(14));
+                        p.setProductCategory(category);
+
+
+                        //Array Pro Details
+                        String productDetailsJson = rs.getString("product_details_array");
+                        ArrayList<ProductDetails> productDetails = objectMapper.readValue(
+                                productDetailsJson,
+                                new TypeReference<ArrayList<ProductDetails>>() {
+                                }
+                        );
+
+                        p.setProductDetailsArrayList(productDetails);
+                        list.add(p);
                     }
-
-                    p.setCoupon_id(rs.getInt(8));
-                    //Object
-                    ProductObject obj = new ProductObject();
-                    obj.setProduct_object_id(9);
-                    obj.setObject_name(rs.getString(10));
-                    p.setProductObject(obj);
-                    //Category
-                    ProductCategory category = new ProductCategory();
-                    category.setProduct_category_id(rs.getInt(11));
-                    category.setProduct_category_name(rs.getString(12));
-                    category.setProduct_category_description(rs.getString(13));
-                    category.setProduct_category_thumbnail(rs.getString(14));
-                    p.setProductCategory(category);
-
-
-
-                    //Array Pro Details
-                    String productDetailsJson = rs.getString("product_details_array");
-                    ArrayList<ProductDetails> productDetails = objectMapper.readValue(
-                            productDetailsJson,
-                            new TypeReference<ArrayList<ProductDetails>>() {
-                            }
-                    );
-
-                    p.setProductDetailsArrayList(productDetails);
-                    list.add(p);
-
+                }catch (SQLException e){
+                    throw new RuntimeException(e);
+                }catch (JsonMappingException e) {
+                    throw new RuntimeException(e);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }finally {
+                    try {
+                        conn.close();
+                    }catch (SQLException e){
+                        e.printStackTrace();
+                    }
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } catch (JsonMappingException e) {
-                throw new RuntimeException(e);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            } finally {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+
             }
-        }
-        return list;
+            callback.onResult(list);
+        });
+
     }
 
-    public static Product getDataByProductID(int productID) {
-        conn = dbConnect.connectionClass();
-        ArrayList<Product> list = new ArrayList<>();
-        objectMapper.registerModule(new JavaTimeModule());
+//    public static void getDataByProductID(int productID,Callback<Product> callback) {
+//        service.execute(()->{
+//           Connection conn = dbConnect.connectionClass();
+//            if (conn != null) {
+//
+//                try {
+//                    CallableStatement cstmt = conn.prepareCall("call  GetProductDetailsByProductID(?)");
+//                    cstmt.setInt(1, productID);
+//                    ResultSet rs = cstmt.executeQuery();
+//                    if (rs.next()) {
+//                        Product p = new Product();
+//                        p.setProduct_id(rs.getInt(1));
+//                        p.setProduct_name(rs.getString(2));
+//                        p.setThumbnail(rs.getString(3));
+//                        p.setBase_price(rs.getBigDecimal(4));
+//                        p.setSold(rs.getBigDecimal(5));
+//                        p.setIsFreeship(rs.getInt(6));
+//
+//                        Timestamp timestamp = rs.getTimestamp(7);
+//
+//                        if (timestamp != null) {
+//                            LocalDateTime localDateTime = timestamp.toInstant()
+//                                    .atZone(ZoneId.systemDefault())
+//                                    .toLocalDateTime();
+//                            p.setCreated_at(localDateTime);
+//                        }
+//
+//                        p.setCoupon_id(rs.getInt(8));
+//                        //Object
+//                        ProductObject obj = new ProductObject();
+//                        obj.setProduct_object_id(9);
+//                        obj.setObject_name(rs.getString(10));
+//                        p.setProductObject(obj);
+//                        //Category
+//                        ProductCategory category = new ProductCategory();
+//                        category.setProduct_category_id(rs.getInt(11));
+//                        category.setProduct_category_name(rs.getString(12));
+//                        category.setProduct_category_description(rs.getString(13));
+//                        category.setProduct_category_thumbnail(rs.getString(14));
+//                        p.setProductCategory(category);
+//
+//
+//
+//                        //Array Pro Details
+//                        String productDetailsJson = rs.getString("product_details_array");
+//                        ArrayList<ProductDetails> productDetails = objectMapper.readValue(
+//                                productDetailsJson,
+//                                new TypeReference<ArrayList<ProductDetails>>() {
+//                                }
+//                        );
+//                        p.setProductDetailsArrayList(productDetails);
+//                        callback.onResult(p);
+//
+//                    }
+//                } catch (SQLException e) {
+//                    throw new RuntimeException(e);
+//                } catch (JsonMappingException e) {
+//                    throw new RuntimeException(e);
+//                } catch (JsonProcessingException e) {
+//                    throw new RuntimeException(e);
+//                } finally {
+//                    try {
+//                        conn.close();
+//                    } catch (SQLException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        });
+//
+//    }
+public static void getDataByProductID(int productID, Callback<Product> callback) {
+    service.execute(() -> {
+        Connection conn = dbConnect.connectionClass();
         if (conn != null) {
-
             try {
-                CallableStatement cstmt = conn.prepareCall("call  GetProductDetailsByProductID(?)");
+                CallableStatement cstmt = conn.prepareCall("call GetProductDetailsByProductID(?)");
                 cstmt.setInt(1, productID);
                 ResultSet rs = cstmt.executeQuery();
                 if (rs.next()) {
@@ -261,7 +341,6 @@ public class ProductHandler {
                     p.setIsFreeship(rs.getInt(6));
 
                     Timestamp timestamp = rs.getTimestamp(7);
-
                     if (timestamp != null) {
                         LocalDateTime localDateTime = timestamp.toInstant()
                                 .atZone(ZoneId.systemDefault())
@@ -270,12 +349,12 @@ public class ProductHandler {
                     }
 
                     p.setCoupon_id(rs.getInt(8));
-                    //Object
+                    // Object
                     ProductObject obj = new ProductObject();
-                    obj.setProduct_object_id(9);
+                    obj.setProduct_object_id(rs.getInt(9));
                     obj.setObject_name(rs.getString(10));
                     p.setProductObject(obj);
-                    //Category
+                    // Category
                     ProductCategory category = new ProductCategory();
                     category.setProduct_category_id(rs.getInt(11));
                     category.setProduct_category_name(rs.getString(12));
@@ -283,9 +362,7 @@ public class ProductHandler {
                     category.setProduct_category_thumbnail(rs.getString(14));
                     p.setProductCategory(category);
 
-
-
-                    //Array Pro Details
+                    // Array Pro Details
                     String productDetailsJson = rs.getString("product_details_array");
                     ArrayList<ProductDetails> productDetails = objectMapper.readValue(
                             productDetailsJson,
@@ -293,23 +370,27 @@ public class ProductHandler {
                             }
                     );
                     p.setProductDetailsArrayList(productDetails);
-                    return p;
-
+                    callback.onResult(p);
                 }
-            } catch (SQLException e) {
+            }
+            catch (JsonMappingException e){
                 throw new RuntimeException(e);
-            } catch (JsonMappingException e) {
-                throw new RuntimeException(e);
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
+            }
+            catch (SQLException | JsonProcessingException e) {
+                e.printStackTrace();
             } finally {
                 try {
-                    conn.close();
+                    if (conn != null) {
+                        conn.close();
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
         }
-        return new Product();
+    });
+}
+    public interface Callback<T> {
+        void onResult(T result);
     }
 }

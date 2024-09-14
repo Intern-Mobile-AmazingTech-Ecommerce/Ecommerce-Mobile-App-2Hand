@@ -92,18 +92,16 @@ public class CategoriesActivity extends AppCompatActivity {
     }
     private void loadRecycleViewCategories(){
         // Initialize category list
-        service.execute(()->{
-            categoryList = new ArrayList<>();
-            categoryList = CategoriesManager.instance.getProductCategories();
-            runOnUiThread(()->{
-                if(categoryList != null && !categoryList.isEmpty()){
-                    categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
-                    recyclerViewCategories.setLayoutManager(layoutManager);
-                    recyclerViewCategories.setAdapter(categoriesAdapter);
-                }
+        categoryList = new ArrayList<>();
+        categoryList = CategoriesManager.instance.getProductCategories();
+        runOnUiThread(()->{
+            if(categoryList != null && !categoryList.isEmpty()){
+                categoriesAdapter = new CategoriesAdapter(categoryList, this,R.layout.item_category);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(),RecyclerView.VERTICAL,false);
+                recyclerViewCategories.setLayoutManager(layoutManager);
+                recyclerViewCategories.setAdapter(categoriesAdapter);
+            }
 
-            });
         });
 
 

@@ -54,7 +54,7 @@ import com.google.android.material.button.MaterialButton;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-    private ExecutorService service;
+
     private String gender;
     private TextView tvSeeAll;
     private ArrayList<Product> lstPro;
@@ -143,46 +143,29 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (service == null || service.isShutdown()) {
-            service = Executors.newCachedThreadPool();
-        }
         bgTask();
         addEvent();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (service != null && !service.isShutdown()) {
-            service.shutdown();
-            try {
-                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
-                    service.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                service.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
 
     private void loadListPro(String gen) {
-        service.submit(()->{
-            lstPro = ProductHandler.getDataByObjectName(gen);
-            ProductManager.getInstance().setLstPro(lstPro);
-            getActivity().runOnUiThread(()->{
-                loadTopSellingProductsData();
-                loadNewInProductsData();
-            });
+        ProductHandler.getDataByObjectName(gen, new ProductHandler.Callback<ArrayList<Product>>() {
+            @Override
+            public void onResult(ArrayList<Product> result) {
+                lstPro = result;
+                ProductManager.getInstance().setLstPro(lstPro);
+                getActivity().runOnUiThread(()->{
+                    loadTopSellingProductsData();
+                    loadNewInProductsData();
+                });
+            }
         });
 
     }
 
     private void bgTask() {
-
         loadListPro(gender);
         loadCategoriesData();
-        service.shutdown();
     }
     private void addControl(View view) {
 
@@ -197,21 +180,25 @@ public class HomeFragment extends Fragment {
 
     private void loadCategoriesData() {
 
-        service.submit(()->{
-            categoryList = CategoriesHandler.getData();
-            CategoriesManager.getInstance().setProductCategories(categoryList);
-           getActivity().runOnUiThread(()->{
-               if (!categoryList.isEmpty() && categoryList != null) {
+        CategoriesHandler.getData(new CategoriesHandler.Callback<ArrayList<ProductCategory>>() {
+            @Override
+            public void onResult(ArrayList<ProductCategory> result) {
+                categoryList = result;
+                CategoriesManager.getInstance().setProductCategories(categoryList);
+                getActivity().runOnUiThread(()->{
 
-                   ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
-                   categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
-                   recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
-                   recyclerViewCategories.getLayoutManager().setItemPrefetchEnabled(true);
-                   recyclerViewCategories.setAdapter(categoriesAdapter);
+                    if (!categoryList.isEmpty() && categoryList != null) {
 
-               }
-           });
+                        ArrayList<ProductCategory> categories = categoryList.size() > 5 ? new ArrayList<>(categoryList.subList(0, 5)) : categoryList;
+                        categoriesAdapter = new CategoriesAdapter(categories, getContext(), R.layout.custom_recycle_categories_homepage);
+                        recyclerViewCategories.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+                        recyclerViewCategories.getLayoutManager().setItemPrefetchEnabled(true);
+                        recyclerViewCategories.setAdapter(categoriesAdapter);
+                    }
+                });
+            }
         });
+
 
     }
     public void ResetProduct(){

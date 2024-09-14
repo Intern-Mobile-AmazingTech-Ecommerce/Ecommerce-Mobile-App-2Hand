@@ -112,19 +112,24 @@ public class CategoryProductActivity extends AppCompatActivity {
     private void loadRecycleCategoryProduct() {
 
         if (Category != null) {
-            service.execute(() -> {
-                lstPro = ProductHandler.getDataByObjectNameAndCategoryID(gender, Category.getProduct_category_id());
-                runOnUiThread(() -> {
-                    if (lstPro != null && !lstPro.isEmpty()) {
-                        proAdapter = new ProductCardAdapter(lstPro, CategoryProductActivity.this);
-                        tvCategoryName.setText(Category.getProduct_category_name() + " (" + lstPro.size() + ")");
-                        recyCategoryProduct.setLayoutManager(new GridLayoutManager(this, 2));
-                        recyCategoryProduct.setItemAnimator(new DefaultItemAnimator());
-                        recyCategoryProduct.setAdapter(proAdapter);
-                    }
 
-                });
+            ProductHandler.getDataByObjectNameAndCategoryID(gender, Category.getProduct_category_id(), new ProductHandler.Callback<ArrayList<Product>>() {
+                @Override
+                public void onResult(ArrayList<Product> result) {
+                    runOnUiThread(() -> {
+                        lstPro = result;
+                        if (lstPro != null && !lstPro.isEmpty()) {
+                            proAdapter = new ProductCardAdapter(lstPro, CategoryProductActivity.this);
+                            tvCategoryName.setText(Category.getProduct_category_name() + " (" + lstPro.size() + ")");
+                            recyCategoryProduct.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+                            recyCategoryProduct.setItemAnimator(new DefaultItemAnimator());
+                            recyCategoryProduct.setAdapter(proAdapter);
+                        }
+
+                    });
+                }
             });
+
         } else if (topSellingList.size() > 0) {
             proAdapter = new ProductCardAdapter(topSellingList, CategoryProductActivity.this);
             tvCategoryName.setText("Top Selling (" + topSellingList.size() + ")");

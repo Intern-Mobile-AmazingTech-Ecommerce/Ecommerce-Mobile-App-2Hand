@@ -34,7 +34,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.MyViewHolder>{
-    private ExecutorService service = Executors.newCachedThreadPool();
     private Future<?> currentTask;
     ArrayList<UserOrderProducts> lstOrderDetails;
     Context context;
@@ -56,14 +55,15 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         UserOrderProducts details = lstOrderDetails.get(position);
-
-        currentTask = service.submit(()->{
-            String url = Util.getCloudinaryImageUrl(context,  details.getThumbnail(), -1, -1);
-            ((android.app.Activity)context).runOnUiThread(()->{
-                Picasso.get().load(url).into(holder.imgPro);
-            });
+        Util.getCloudinaryImageUrl(context, details.getThumbnail(), -1, -1, new Util.Callback<String>() {
+            @Override
+            public void onResult(String result) {
+                String url = result;
+                ((android.app.Activity)context).runOnUiThread(()->{
+                    Picasso.get().load(url).into(holder.imgPro);
+                });
+            }
         });
-
         holder.tv_ProductName.setText(details.getProduct_name());
         holder.tv_SizeColor.setText(details.getProduct_color_name() + ", Size " + details.getSize_name());
 

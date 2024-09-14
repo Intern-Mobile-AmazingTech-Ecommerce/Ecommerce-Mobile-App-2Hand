@@ -121,35 +121,24 @@ public class SearchActivity extends AppCompatActivity {
         loadListPro();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (service != null && !service.isShutdown()) {
-            service.shutdown();
-            try {
-                if (!service.awaitTermination(60, TimeUnit.SECONDS)) {
-                    service.shutdownNow();
-                }
-            } catch (InterruptedException e) {
-                service.shutdownNow();
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
     private void loadListPro() {
-        service.execute(() -> {
-            lstPro = ProductHandler.getData();;
-            originalProductList = new ArrayList<>(lstPro);
-            runOnUiThread(() -> {
+        ProductHandler.getData(new ProductHandler.Callback<ArrayList<Product>>() {
+            @Override
+            public void onResult(ArrayList<Product> result) {
+                lstPro = result;
+                originalProductList = new ArrayList<>(lstPro);
+                runOnUiThread(() -> {
 
-                if (lstPro != null && !lstPro.isEmpty()) {
-                    proAdapter = new ProductCardAdapter(lstPro, SearchActivity.this);
-                    recyViewSearchPro.setLayoutManager(new GridLayoutManager(this, 2));
-                    recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
-                    recyViewSearchPro.setAdapter(proAdapter);
-                }
-            });
+                    if (lstPro != null && !lstPro.isEmpty()) {
+                        proAdapter = new ProductCardAdapter(lstPro, SearchActivity.this);
+                        recyViewSearchPro.setLayoutManager(new GridLayoutManager(SearchActivity.this, 2));
+                        recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
+                        recyViewSearchPro.setAdapter(proAdapter);
+                    }
+                });
+            }
         });
+
     }
 
     void addControls() {
@@ -178,20 +167,19 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void loadRecycleViewCategories() {
-        service.execute(() -> {
-            categoryList = new ArrayList<>();
-            categoryList = CategoriesHandler.getData();
-            runOnUiThread(() -> {
-                if (categoryList != null && !categoryList.isEmpty()) {
-                    categoriesAdapter = new CategoriesAdapter(categoryList, this, R.layout.item_category);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false);
-                    recyViewCateSearch.setLayoutManager(layoutManager);
-                    recyViewCateSearch.setAdapter(categoriesAdapter);
-                }
-
-            });
+        CategoriesHandler.getData(new CategoriesHandler.Callback<ArrayList<ProductCategory>>() {
+            @Override
+            public void onResult(ArrayList<ProductCategory> result) {
+                categoryList = result;
+                runOnUiThread(() -> {
+                    if (categoryList != null && !categoryList.isEmpty()) {
+                        categoriesAdapter = new CategoriesAdapter(categoryList, SearchActivity.this, R.layout.item_category);
+                        recyViewCateSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext(), RecyclerView.VERTICAL, false));
+                        recyViewCateSearch.setAdapter(categoriesAdapter);
+                    }
+                });
+            }
         });
-
     }
 
     void addEvent() {

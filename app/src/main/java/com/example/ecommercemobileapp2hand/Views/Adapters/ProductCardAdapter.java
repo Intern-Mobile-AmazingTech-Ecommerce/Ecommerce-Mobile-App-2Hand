@@ -115,16 +115,29 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
         if (firstSaleDetails.isPresent()) {
             details = firstSaleDetails.get();
-            url = Util.getCloudinaryImageUrl(context, details.getImgDetailsArrayList().get(0).getImg_url(), 159, 220);
+            Util.getCloudinaryImageUrl(context, details.getImgDetailsArrayList().get(0).getImg_url(), 159, 220, new Util.Callback<String>() {
+                @Override
+                public void onResult(String result) {
+                    String imgUrl = result;
+                    ((android.app.Activity)context).runOnUiThread(()->{
+                        Glide.with(context).load(imgUrl).override(159,220).into(holder.img_Product);
+                    });
+                }
+            });
         } else {
-            url = Util.getCloudinaryImageUrl(context, pro.getThumbnail(), 159, 220);
+            Util.getCloudinaryImageUrl(context, pro.getThumbnail(), 159, 220, new Util.Callback<String>() {
+                @Override
+                public void onResult(String result) {
+                    String imgUrl = result;
+                    ((android.app.Activity)context).runOnUiThread(()->{
+                        Glide.with(context).load(imgUrl).override(159,220).into(holder.img_Product);
+                    });
+                }
+            });
         }
-        String finalUrl = url;
         ProductDetails finalDetails = details;
         holder.tvProductName.setText(pro.getProduct_name());
         holder.tvSalePrice.setVisibility(View.VISIBLE);
-        Glide.with(context) .load(finalUrl).apply(new RequestOptions().override(159, 220)).into(holder.img_Product);
-
 
         if (firstSaleDetails.isPresent()) {
             Log.d("IMG_URL DETAILS" + finalDetails.getProduct_details_id(), finalDetails.getImgDetailsArrayList().get(0).getImg_url());
@@ -145,18 +158,32 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 Bundle bundle = new Bundle();
 
                 if(currentWishListID != -1){
-                    Product ProDetails = ProductHandler.getDataByProductID(pro.getProduct_id());
-                    bundle.putParcelable("lstDetails", ProDetails);
+                   ProductHandler.getDataByProductID(pro.getProduct_id(), new ProductHandler.Callback<Product>() {
+                        @Override
+                        public void onResult(Product result) {
+                            Product ProDetails = result;
+                            ((android.app.Activity)context).runOnUiThread(()->{
+                                bundle.putParcelable("lstDetails", ProDetails);
+                                if (firstSaleDetails.isPresent()) {
+                                    bundle.putParcelable("currentSale", finalDetails);
+                                }
+                                intent.putExtras(bundle);
+                                context.startActivity(intent);
+                            });
+                        }
+                    });
+
 
                 }else {
                     bundle.putParcelable("lstDetails", pro);
+                    if (firstSaleDetails.isPresent()) {
+                        bundle.putParcelable("currentSale", finalDetails);
+                    }
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
                 }
 
-                if (firstSaleDetails.isPresent()) {
-                    bundle.putParcelable("currentSale", finalDetails);
-                }
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+
             }
         });
         boolean result = WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), UserAccountManager.getInstance().getCurrentUserAccount().getUserId());

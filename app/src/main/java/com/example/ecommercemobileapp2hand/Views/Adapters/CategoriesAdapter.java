@@ -51,11 +51,17 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Vi
     public void onBindViewHolder(ViewHolder holder, int position) {
         ProductCategory category = categories.get(position);
         holder.textViewCategoryName.setText(category.getProduct_category_name());
-        String imgUrl = Util.getCloudinaryImageUrl(context, category.getProduct_category_thumbnail(), 592, 592);
 
-        Glide.with(context).load(imgUrl).override(592,592).into(holder.imageViewCategoryIcon);
-
-
+        Util.getCloudinaryImageUrl(context, category.getProduct_category_thumbnail(), 592, 592, new Util.Callback<String>() {
+            @Override
+            public void onResult(String result) {
+                String imgUrl = result;
+                ((android.app.Activity)context).runOnUiThread(()->{
+                    Glide.with(context).load(imgUrl).override(592,592).into(holder.imageViewCategoryIcon);
+                });
+            }
+        });
+        
         holder.relative_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
