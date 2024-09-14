@@ -88,8 +88,8 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         diffResult.dispatchUpdatesTo(this);
     }
 
-    public void updateItem(int position, Product item) {
-        lstPro.set(position, item);
+    public void updateProduct(int position, Product updatedProduct) {
+        lstPro.set(position, updatedProduct);
         notifyItemChanged(position);
     }
     @NonNull
@@ -205,7 +205,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
             holder.img_Heart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showAddToWLOverlay(finalDetails);
+                    showAddToWLOverlay(finalDetails,holder.getAdapterPosition());
                 }
             });
         }
@@ -235,7 +235,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         }
     }
 
-    private void showAddToWLOverlay(ProductDetails currentDetails) {
+    private void showAddToWLOverlay(ProductDetails currentDetails,int position) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.wishlist_overlay, null);
@@ -274,7 +274,11 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                         if(listener != null){
                             listener.onDoneClicked();
                         }
+
                     });
+                    Product updatedProduct = lstPro.get(position);
+
+                    updateProduct(position, updatedProduct);
 
 
                 });
