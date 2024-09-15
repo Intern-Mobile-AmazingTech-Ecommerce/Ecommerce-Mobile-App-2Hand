@@ -107,29 +107,30 @@ public class OnboardingActivity extends AppCompatActivity {
                 String firstName = intent.getStringExtra("firstName");
                 String lastName = intent.getStringExtra("lastName");
 
+                UserAccountHandler.saveUserToDB(firstName, lastName, email, gender, ageRange);
                 ExecutorService service = Executors.newCachedThreadPool();
-                service.execute(()->{
-                    UserAccountHandler.saveUserToDB(firstName, lastName, email, gender, ageRange);
-                });
+                SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("gender_key", gender);
+                editor.putString("age_range_key", ageRange);
+                editor.putBoolean("onboardingCompleted", true);
+                editor.apply();
+                intent = new Intent(OnboardingActivity.this, MainActivity.class);
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    intent.putExtra("email", user.getEmail());
+                    intent.putExtra("firstName",firstName);
+                    intent.putExtra("lastName",lastName);
+//                    intent.putExtra("firstName", user.getDisplayName().split(" ")[0]);
+//                    intent.putExtra("lastName", user.getDisplayName().split(" ").length > 1 ? user.getDisplayName().split(" ")[1] : "");
+                }
+                startActivity(intent);
+                finish();
+//                service.shutdown();
 
             }
 
-            SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("gender_key", gender);
-            editor.putString("age_range_key", ageRange);
-            editor.putBoolean("onboardingCompleted", true);
-            editor.apply();
 
-            intent = new Intent(OnboardingActivity.this, MainActivity.class);
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                intent.putExtra("email", user.getEmail());
-                intent.putExtra("firstName", user.getDisplayName().split(" ")[0]);
-                intent.putExtra("lastName", user.getDisplayName().split(" ").length > 1 ? user.getDisplayName().split(" ")[1] : "");
-            }
-            startActivity(intent);
-            finish();
         });
 
     }

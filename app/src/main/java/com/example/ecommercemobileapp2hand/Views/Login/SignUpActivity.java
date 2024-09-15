@@ -159,6 +159,8 @@ public class SignUpActivity extends AppCompatActivity {
                                     intent.putExtra("email", email);
                                     intent.putExtra("firstName", firstName);
                                     intent.putExtra("lastName", lastName);
+                                    String displayName = firstName + " " + lastName;
+                                    UserAccountHandler.saveUserAccount(email, displayName, "Google");
                                     startActivity(intent);
                                     finish();
                                     Toast.makeText(SignUpActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
