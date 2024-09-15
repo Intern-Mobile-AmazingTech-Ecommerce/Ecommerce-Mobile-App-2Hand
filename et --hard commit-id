@@ -1,0 +1,58 @@
+[33m03bd1be[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmy[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/khuong[m[33m, [m[1;31morigin/Phuc[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/Dung[m[33m, [m[1;32mmain[m[33m)[m HEAD@{0}: checkout: moving from my to my
+[33m03bd1be[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmy[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/khuong[m[33m, [m[1;31morigin/Phuc[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/Dung[m[33m, [m[1;32mmain[m[33m)[m HEAD@{1}: reset: moving to HEAD
+[33m03bd1be[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmy[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/khuong[m[33m, [m[1;31morigin/Phuc[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;31morigin/Dung[m[33m, [m[1;32mmain[m[33m)[m HEAD@{2}: pull origin main: Fast-forward
+[33ma87f5aa[m[33m ([m[1;31morigin/Vinh[m[33m)[m HEAD@{3}: checkout: moving from my to my
+[33ma87f5aa[m[33m ([m[1;31morigin/Vinh[m[33m)[m HEAD@{4}: pull origin main: Fast-forward
+[33ma0e5287[m HEAD@{5}: checkout: moving from my to my
+[33ma0e5287[m HEAD@{6}: pull origin main: Fast-forward
+[33m90edfae[m[33m ([m[1;31morigin/my[m[33m)[m HEAD@{7}: checkout: moving from my to my
+[33m90edfae[m[33m ([m[1;31morigin/my[m[33m)[m HEAD@{8}: pull origin main: Fast-forward
+[33m4b8c79f[m HEAD@{9}: checkout: moving from my to my
+[33m4b8c79f[m HEAD@{10}: pull origin main: Fast-forward
+[33m43f4961[m HEAD@{11}: checkout: moving from my to my
+[33m43f4961[m HEAD@{12}: pull origin main: Fast-forward
+[33m102d1ca[m HEAD@{13}: checkout: moving from my to my
+[33m102d1ca[m HEAD@{14}: pull origin main: Fast-forward
+[33m22f4eda[m HEAD@{15}: checkout: moving from my to my
+[33m22f4eda[m HEAD@{16}: pull origin main: Fast-forward
+[33m9622cae[m HEAD@{17}: checkout: moving from my to my
+[33m9622cae[m HEAD@{18}: pull origin main: Fast-forward
+[33m9144f2c[m HEAD@{19}: checkout: moving from my to my
+[33m9144f2c[m HEAD@{20}: pull origin main: Fast-forward
+[33me9216dd[m HEAD@{21}: checkout: moving from my to my
+[33me9216dd[m HEAD@{22}: pull origin main: Fast-forward
+[33m761a1bc[m HEAD@{23}: checkout: moving from my to my
+[33m761a1bc[m HEAD@{24}: pull origin main: Fast-forward
+[33m0923ded[m HEAD@{25}: checkout: moving from my to my
+[33m0923ded[m HEAD@{26}: pull origin main: Fast-forward
+[33m7571b10[m HEAD@{27}: checkout: moving from my to my
+[33m7571b10[m HEAD@{28}: checkout: moving from my to my
+[33m7571b10[m HEAD@{29}: pull origin main: Fast-forward
+[33m6272fa0[m HEAD@{30}: checkout: moving from my to my
+[33m6272fa0[m HEAD@{31}: pull origin main: Fast-forward
+[33m06bcb6b[m HEAD@{32}: checkout: moving from my to my
+[33m06bcb6b[m HEAD@{33}: pull origin main: Fast-forward
+[33m994350f[m HEAD@{34}: checkout: moving from my to my
+[33m994350f[m HEAD@{35}: pull origin main: Fast-forward
+[33me60871d[m HEAD@{36}: checkout: moving from my to my
+[33me60871d[m HEAD@{37}: checkout: moving from my to my
+[33me60871d[m HEAD@{38}: checkout: moving from my to my
+[33me60871d[m HEAD@{39}: pull origin main: Fast-forward
+[33m0642378[m HEAD@{40}: checkout: moving from my to my
+[33m0642378[m HEAD@{41}: pull origin main: Fast-forward
+[33m44f4577[m HEAD@{42}: checkout: moving from my to my
+[33m44f4577[m HEAD@{43}: pull origin main: Fast-forward
+[33m21b3e2e[m HEAD@{44}: reset: moving to HEAD
+[33m21b3e2e[m HEAD@{45}: checkout: moving from my to my
+[33m21b3e2e[m HEAD@{46}: checkout: moving from my to my
+[33m21b3e2e[m HEAD@{47}: pull origin main: Fast-forward
+[33m5b55d78[m HEAD@{48}: checkout: moving from my to my
+[33m5b55d78[m HEAD@{49}: commit: onboarding
+[33m55687f7[m HEAD@{50}: checkout: moving from my to my
+[33m55687f7[m HEAD@{51}: pull origin main: Fast-forward
+[33m9734c4f[m HEAD@{52}: pull origin main: Fast-forward
+[33me64dc2e[m HEAD@{53}: checkout: moving from my to my
+[33me64dc2e[m HEAD@{54}: commit (merge): Merge branch 'main' of https://github.com/Intern-Mobile-AmazingTech-ECommerce/Ecommerce-Mobile-App-2hand into my
+[33m90263dd[m HEAD@{55}: commit: xx
+[33mc85c3af[m HEAD@{56}: checkout: moving from main to my
+[33mc85c3af[m HEAD@{57}: clone: from https://github.com/Intern-Mobile-AmazingTech-ECommerce/Ecommerce-Mobile-App-2hand.git
