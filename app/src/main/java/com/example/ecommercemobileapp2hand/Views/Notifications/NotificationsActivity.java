@@ -128,4 +128,6 @@ public class NotificationsActivity extends AppCompatActivity {
         linearLayoutNoNotifi.setVisibility(View.GONE);
         linearLayoutListNotifi.setVisibility(View.VISIBLE);
     }
+
+
 }
