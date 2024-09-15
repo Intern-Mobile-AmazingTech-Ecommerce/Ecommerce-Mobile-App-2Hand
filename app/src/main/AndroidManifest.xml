@@ -23,6 +23,12 @@
         android:theme="@style/Theme.EcommerceMobileApp2Hand"
         tools:targetApi="34">
         <activity
+            android:name=".Views.Checkout.ChooseCardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.Checkout.ChooseAddressActivity"
+            android:exported="false" />
+        <activity
             android:name=".Views.Settings.UpdateCardActivity"
             android:exported="false" />
         <activity
@@ -201,16 +207,15 @@
             <intent-filter>
                 <action android:name="ORDER_STATUS_CHANGED" />
             </intent-filter>
-        </receiver>
-<!--        <receiver-->
-<!--            android:name=".Views.BroadcastReceiver.NotificationBroadcastReceiver"-->
-<!--            android:exported="false"-->
-<!--            android:screenOrientation="portrait"-->
-<!--            tools:ignore="DiscouragedApi">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="GLOBAL_NOTIFICATION" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
+        </receiver> <!-- <receiver -->
+        <!-- android:name=".Views.BroadcastReceiver.NotificationBroadcastReceiver" -->
+        <!-- android:exported="false" -->
+        <!-- android:screenOrientation="portrait" -->
+        <!-- tools:ignore="DiscouragedApi"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="GLOBAL_NOTIFICATION" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <service
             android:name=".Views.FirebaseMessagingService.MyFirebaseMessagingService"
             android:exported="false"
@@ -219,9 +224,7 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-
-        <!-- Set the name of the channel for Android 8.0 and higher -->
+        </service> <!-- Set the name of the channel for Android 8.0 and higher -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
