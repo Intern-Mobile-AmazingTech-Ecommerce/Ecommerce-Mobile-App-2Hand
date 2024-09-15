@@ -103,9 +103,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void getIt()
     {
-        Intent intent = getIntent();
         userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
-        firstURL = userAccount.getImgUrl();
+        if (userAccount != null) {
+            firstURL = userAccount.getImgUrl();
+        } else {
+            // Handle the case where userAccount is null
+            firstURL = null;
+        }
     }
     @Override
     protected void onResume() {
@@ -137,9 +141,9 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //    }
     private void loadAvt(){
-        if(UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl() != null){
-            ExecutorService service = Executors.newCachedThreadPool();
-            Util.getCloudinaryImageUrl(getApplicationContext(), UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl(), -1, -1, new Util.Callback<String>() {
+        String imgUrl = UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl();
+        if(imgUrl != null && !imgUrl.isEmpty()){
+            Util.getCloudinaryImageUrl(getApplicationContext(), imgUrl, -1, -1, new Util.Callback<String>() {
                 @Override
                 public void onResult(String result) {
                     String url = result;
@@ -150,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-        }else {
+        } else {
             Bitmap bitmap = Util.convertStringToBitmapFromAccess(this,"avt.png");
             btnAvt.setImageBitmap(bitmap);
         }

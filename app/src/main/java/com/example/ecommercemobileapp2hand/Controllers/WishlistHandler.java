@@ -192,28 +192,33 @@ public class WishlistHandler {
     public static void checkProductDetailsExistsInWishlistByUserID(int product_details_id, String userID,Callback<Boolean> callback){
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{
-           Connection conn = dbConnect.connectionClass();
+            Connection conn = null;
+            ResultSet resultSet = null;
             PreparedStatement stmt = null;
             try{
-                if(conn!=null){
-                    String sql = "select COUNT(*)\n" +
-                            "from wishlist_product wp \n" +
-                            "inner join wishlist w on w.wishlist_id = wp.wishlist_id\n" +
-                            "where product_details_id = ? and w.user_id = ?";
-                    stmt = conn.prepareStatement(sql);
-                    stmt.setInt(1, product_details_id);
-                    stmt.setString(2, userID);
-                    ResultSet rs = stmt.executeQuery();
-                    if(rs.next()){
-                        callback.onResult(rs.getInt(1) > 0);
-                    }
+                conn = dbConnect.connectionClass();
+                if (conn == null || conn.isClosed()) {
+                    throw new SQLException("Connection is closed or null");
+                }
+                String sql = "select COUNT(*)\n" +
+                        "from wishlist_product wp \n" +
+                        "inner join wishlist w on w.wishlist_id = wp.wishlist_id\n" +
+                        "where product_details_id = ? and w.user_id = ?";
+                stmt = conn.prepareStatement(sql);
+                stmt.setInt(1, product_details_id);
+                stmt.setString(2, userID);
+                ResultSet rs = stmt.executeQuery();
+                if(rs.next()){
+                    callback.onResult(rs.getInt(1) > 0);
                 }
 
             }catch (SQLException e){
                 throw new RuntimeException(e);
             }finally {
                 try{
-                    if(conn!=null) {
+                    if (resultSet != null) resultSet.close();
+                    if (stmt != null) stmt.close();
+                    if(conn!=null && !conn.isClosed()) {
                         conn.close();
                     }
                 }catch (SQLException e){
