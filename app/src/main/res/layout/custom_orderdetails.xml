@@ -131,7 +131,7 @@
                 android:layout_weight="1.7"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/purple"
-                android:text="Evaluate" />
+                android:text="Review" />
 
             <TextView
                 android:id="@+id/tvTotalPricePro"
