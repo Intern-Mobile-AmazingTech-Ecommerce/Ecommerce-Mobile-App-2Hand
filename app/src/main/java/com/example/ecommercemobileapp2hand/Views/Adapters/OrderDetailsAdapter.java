@@ -41,7 +41,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapter.MyViewHolder> {
-    private Future<?> currentTask;
+
     ArrayList<UserOrderProducts> lstOrderDetails;
     Context context;
     boolean checkDeliverd;
@@ -103,7 +103,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
                             @Override
                             public void onResult(Integer result) {
                                 ((android.app.Activity) context).runOnUiThread(() -> {
-                                    showReviewOverlay(result, details.getUser_order_id());
+                                    showReviewOverlay(result, details);
                                 });
                             }
                         });
@@ -116,13 +116,6 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         }
     }
 
-    @Override
-    public void onViewRecycled(@NonNull MyViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (currentTask != null) {
-            currentTask.cancel(true);
-        }
-    }
 
     @Override
     public int getItemCount() {
@@ -152,7 +145,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         }
     }
 
-    private void showReviewOverlay(int product_detail_id, int user_order_id) {
+    private void showReviewOverlay(int product_detail_id, UserOrderProducts userOrderProducts) {
         View view = LayoutInflater.from(context).inflate(R.layout.review_overlay, null);
 
         final Dialog dialog = new Dialog(context);
@@ -194,19 +187,18 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
                         public void onResult(Boolean result) {
                             ((android.app.Activity) context).runOnUiThread(() -> {
                                 if (result) {
-                                    UserOrderProductsHandler.updateIsReviewed(user_order_id, product_detail_id, true, new UserOrderProductsHandler.Callback<Boolean>() {
+                                    UserOrderProductsHandler.updateIsReviewed(userOrderProducts.getUser_order_id(), product_detail_id, true, new UserOrderProductsHandler.Callback<Boolean>() {
                                         @Override
                                         public void onResult(Boolean result) {
-                                            if (result) {
-                                                ((android.app.Activity)context).runOnUiThread(() -> {
+                                            ((android.app.Activity) context).runOnUiThread(() -> {
+                                                if (result) {
                                                     Toast.makeText(context, "Review submitted", Toast.LENGTH_SHORT).show();
+                                                    userOrderProducts.setReviewed(true);
                                                     notifyDataSetChanged();
-                                                });
-                                            } else {
-                                                ((android.app.Activity)context).runOnUiThread(() -> {
+                                                } else {
                                                     Toast.makeText(context, "Failed to submit review", Toast.LENGTH_SHORT).show();
-                                                });
-                                            }
+                                                }
+                                            });
                                         }
                                     });
                                 } else
