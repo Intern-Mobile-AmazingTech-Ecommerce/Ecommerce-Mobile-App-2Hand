@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,23 +30,27 @@ import java.util.concurrent.Future;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressViewHolder>
 {
+    private int selectedPosition = -1;
     private ArrayList<UserAddress> userAddressList ;
     private Context context;
+    private int layout;
+    private int userAddressID=-1;
 
-    public AddressAdapter(ArrayList<UserAddress> userAddressList, Context context) {
+    public AddressAdapter(ArrayList<UserAddress> userAddressList, Context context,int layout) {
         this.userAddressList = userAddressList;
         this.context = context;
+        this.layout =layout;
     }
 
     @NonNull
     @Override
     public AdressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_address,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout,parent,false);
         return new AdressViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdressViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AdressViewHolder holder,int position) {
         UserAddress address = userAddressList.get(position);
         holder.textViewAdress.setText(address.getStringAddress());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -58,10 +63,28 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
                 intent.putExtra("phone",address.getUser_address_phone());
                 intent.putExtra("state",address.getUser_address_state());
                 intent.putExtra("zip",address.getUser_address_zipcode());;
-                System.out.println("iddddd"+address.getUser_address_id());
                 context.startActivity(intent);
             }
         });
+        if (layout==R.layout.custom_item_choose_address){
+            if(position == selectedPosition){
+                holder.rdbtnChoose.setText("Active");
+            }
+            else{
+                holder.rdbtnChoose.setText("Inactive");
+            }
+            holder.rdbtnChoose.setChecked(position== selectedPosition);
+            holder.rdbtnChoose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.rdbtnChoose.setTag("Active");
+                    selectedPosition = holder.getAdapterPosition();
+                    notifyDataSetChanged();
+                    userAddressID=address.getUser_address_id();
+
+                }
+            });
+        }
     }
 
     @Override
@@ -72,10 +95,15 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
     public static class AdressViewHolder extends RecyclerView.ViewHolder
     {
         TextView textViewAdress;
+        RadioButton rdbtnChoose;
         public AdressViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewAdress = itemView.findViewById(R.id.textViewAddress);
+            rdbtnChoose=itemView.findViewById(R.id.rdbtnChoose);
         }
+    }
+    public int getSelectedUserAddressID(){
+        return userAddressID;
     }
 
 }

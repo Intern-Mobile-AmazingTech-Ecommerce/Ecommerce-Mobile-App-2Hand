@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.Settings;
+package com.example.ecommercemobileapp2hand.Views.Checkout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,51 +16,52 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
-import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserCardsHandler;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
-import com.example.ecommercemobileapp2hand.Models.UserAddress;
+import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
-import com.example.ecommercemobileapp2hand.Views.Adapters.AddressAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.CardAdapter;
+import com.example.ecommercemobileapp2hand.Views.Settings.AddCardActivity;
+import com.example.ecommercemobileapp2hand.Views.Settings.PaymentActivity;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ListAddressActivity extends AppCompatActivity {
+public class ChooseCardActivity extends AppCompatActivity {
     ExecutorService service = Executors.newSingleThreadExecutor();
     private ImageView imgBack;
-    private RecyclerView recy_address;
-    private CardView cv_address;
-    private ArrayList<UserAddress> lstAddress;
-    private AddressAdapter addressAdapter;
+    private RecyclerView recy_cards;
+    private CardView cv_cards;
+    private ArrayList<UserCards> lstCard;
+    private CardAdapter cardAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_list_address);
+        setContentView(R.layout.activity_choose_card);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
         addControls();
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         addEvents();
-        loadListAddress();
+        loadListCard();
     }
 
     private void addControls()
     {
         imgBack = findViewById(R.id.imgBack);
-        recy_address = findViewById(R.id.recy_address);
-        cv_address = findViewById(R.id.cv_address);
+        recy_cards = findViewById(R.id.recy_cards);
+        cv_cards = findViewById(R.id.cv_cards);
+
     }
     private void addEvents()
     {
@@ -71,15 +71,16 @@ public class ListAddressActivity extends AppCompatActivity {
                 finish();
             }
         });
-        cv_address.setOnClickListener(new View.OnClickListener() {
+        cv_cards.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ListAddressActivity.this, AddAddressActivity.class);
+                Intent intent = new Intent(ChooseCardActivity.this, AddCardActivity.class);
                 startActivity(intent);
             }
         });
     }
-     private void loadListAddress() {
+
+    void loadListCard() {
         service.execute(() -> {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
 //            String email = sharedPreferences.getString("userEmail", "");
@@ -87,19 +88,19 @@ public class ListAddressActivity extends AppCompatActivity {
             UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
             if (user != null) {
                 String userId = user.getUserId();
-                 UserAddressHandler.getListAdressByUserId(userId, new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
+                UserCardsHandler.getListCardByUserId(userId, new UserCardsHandler.Callback<ArrayList<UserCards>>() {
                     @Override
-                    public void onResult(ArrayList<UserAddress> result) {
-                        lstAddress = result;
-                        if (lstAddress != null && !lstAddress.isEmpty()) {
+                    public void onResult(ArrayList<UserCards> result) {
+                        lstCard =result;
+                        if (lstCard != null && !lstCard.isEmpty()) {
                             runOnUiThread(() -> {
-                                addressAdapter = new AddressAdapter(lstAddress, ListAddressActivity.this,R.layout.item_address);
-                                recy_address.setLayoutManager(new LinearLayoutManager(ListAddressActivity.this));
-                                recy_address.setAdapter(addressAdapter);
+                                cardAdapter = new CardAdapter(lstCard, ChooseCardActivity.this,R.layout.custom_item_choose_card);
+                                recy_cards.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                                recy_cards.setAdapter(cardAdapter);
                             });
-                        } else {
+                        }
+                        else {
                             runOnUiThread(() -> {
-                                Toast.makeText(ListAddressActivity.this, "No address found", Toast.LENGTH_SHORT).show();
                             });
                         }
                     }
@@ -108,6 +109,5 @@ public class ListAddressActivity extends AppCompatActivity {
 
             }
         });
-}
-
+    }
 }

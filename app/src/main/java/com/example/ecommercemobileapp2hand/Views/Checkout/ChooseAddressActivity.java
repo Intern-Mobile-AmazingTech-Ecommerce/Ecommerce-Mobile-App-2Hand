@@ -1,4 +1,4 @@
-package com.example.ecommercemobileapp2hand.Views.Settings;
+package com.example.ecommercemobileapp2hand.Views.Checkout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,19 +16,20 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.AddressAdapter;
+import com.example.ecommercemobileapp2hand.Views.Settings.AddAddressActivity;
+import com.example.ecommercemobileapp2hand.Views.Settings.ListAddressActivity;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ListAddressActivity extends AppCompatActivity {
+public class ChooseAddressActivity extends AppCompatActivity {
     ExecutorService service = Executors.newSingleThreadExecutor();
     private ImageView imgBack;
     private RecyclerView recy_address;
@@ -40,16 +40,14 @@ public class ListAddressActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_list_address);
+        setContentView(R.layout.activity_choose_address);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
         addControls();
-
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -74,12 +72,12 @@ public class ListAddressActivity extends AppCompatActivity {
         cv_address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ListAddressActivity.this, AddAddressActivity.class);
+                Intent intent = new Intent(ChooseAddressActivity.this, AddAddressActivity.class);
                 startActivity(intent);
             }
         });
     }
-     private void loadListAddress() {
+    private void loadListAddress() {
         service.execute(() -> {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
 //            String email = sharedPreferences.getString("userEmail", "");
@@ -87,27 +85,25 @@ public class ListAddressActivity extends AppCompatActivity {
             UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
             if (user != null) {
                 String userId = user.getUserId();
-                 UserAddressHandler.getListAdressByUserId(userId, new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
+                UserAddressHandler.getListAdressByUserId(userId, new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
                     @Override
                     public void onResult(ArrayList<UserAddress> result) {
-                        lstAddress = result;
+                        lstAddress =result;
                         if (lstAddress != null && !lstAddress.isEmpty()) {
                             runOnUiThread(() -> {
-                                addressAdapter = new AddressAdapter(lstAddress, ListAddressActivity.this,R.layout.item_address);
-                                recy_address.setLayoutManager(new LinearLayoutManager(ListAddressActivity.this));
+                                addressAdapter = new AddressAdapter(lstAddress, ChooseAddressActivity.this,R.layout.custom_item_choose_address);
+                                recy_address.setLayoutManager(new LinearLayoutManager(ChooseAddressActivity.this));
                                 recy_address.setAdapter(addressAdapter);
                             });
-                        } else {
+                        }
+                        else {
                             runOnUiThread(() -> {
-                                Toast.makeText(ListAddressActivity.this, "No address found", Toast.LENGTH_SHORT).show();
                             });
                         }
                     }
                 });
 
-
             }
         });
-}
-
+    }
 }
