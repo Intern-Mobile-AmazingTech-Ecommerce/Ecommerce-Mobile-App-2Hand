@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Checkout;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -80,11 +81,8 @@ public class CheckoutPaymentFragment extends Fragment {
         img_payment_arrowright.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment newFragment = new CheckoutPaymentOnFragment();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_Payment, newFragment); // R.id.fragment_container is the ID of your container in the activity
-                transaction.addToBackStack(null);
-                transaction.commit();
+                Intent intent= new Intent(getContext(),ChooseCardActivity.class);
+                startActivity(intent);
             }
         });
     }

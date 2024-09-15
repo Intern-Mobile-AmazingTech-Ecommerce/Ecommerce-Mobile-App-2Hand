@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,19 +23,22 @@ import androidx.annotation.NonNull;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
 
+    private int selectedPosition = -1;
     private List<UserCards> cardList;
     private Context context;
+    private int layout;
 
-    public CardAdapter(List<UserCards> cardList, Context context) {
+    public CardAdapter(List<UserCards> cardList, Context context,int layout) {
         this.cardList = cardList;
         this.context = context;
+        this.layout=layout;
     }
 
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_card, parent, false);
+                .inflate(layout, parent, false);
         return new CardViewHolder(view);
     }
 
@@ -55,6 +59,23 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
                 context.startActivity(intent);
             }
         });
+        if (layout==R.layout.custom_item_choose_card){
+            if(position == selectedPosition){
+                holder.rdbtnChoose.setText("Active");
+            }
+            else{
+                holder.rdbtnChoose.setText("Inactive");
+            }
+            holder.rdbtnChoose.setChecked(position== selectedPosition);
+            holder.rdbtnChoose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.rdbtnChoose.setText("Active");
+                    selectedPosition = holder.getAdapterPosition();
+                    notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     @Override
@@ -64,12 +85,12 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
         TextView cardNumberTextView;
-
+        RadioButton rdbtnChoose;
 
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
             cardNumberTextView = itemView.findViewById(R.id.tvCardNumber);
-
+            rdbtnChoose=itemView.findViewById(R.id.rdbtnChoose);
         }
     }
 }

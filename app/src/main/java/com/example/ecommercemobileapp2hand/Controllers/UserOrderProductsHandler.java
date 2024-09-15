@@ -175,6 +175,28 @@ public class UserOrderProductsHandler {
             executorService.shutdownNow();
         }
     }
+    public static boolean createUserOrderProduct(int userOrderID,int productDetailSizeID,int amount){
+        conn = dbConnect.connectionClass();
+        if(conn!=null) {
+            try
+            {
+                CallableStatement cstmt = conn.prepareCall("call CreateUserOrderProduct(?,?,?)");
+                cstmt.setInt(1, userOrderID);
+                cstmt.setInt(2,productDetailSizeID);
+                cstmt.setInt(3,amount);
+                cstmt.executeUpdate();
+            } catch (SQLException e) {
+                return false;
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
 
     public interface Callback<T> {
         void onResult(T result);

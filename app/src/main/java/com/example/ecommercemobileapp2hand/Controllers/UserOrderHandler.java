@@ -4,6 +4,7 @@ import com.example.ecommercemobileapp2hand.Models.OrderStatus;
 import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,6 +68,31 @@ public class UserOrderHandler {
             shutDownExecutor(service);
         });
 
+    }
+    public static int createUserOrder(String userID,int userAddressID){
+        conn = dbConnect.connectionClass();
+        int userOrderID=-1;
+        if(conn!=null) {
+            try
+            {
+                CallableStatement cstmt = conn.prepareCall("call CreateUserOrder(?,?)");
+                cstmt.setString(1, userID);
+                cstmt.setInt(2,userAddressID);
+                ResultSet rs = cstmt.executeQuery();
+                if (rs.next()){
+                    userOrderID=rs.getInt(1);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return userOrderID;
     }
 
     private static void shutDownExecutor(ExecutorService executorService) {

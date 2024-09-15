@@ -29,6 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.ecommercemobileapp2hand.Controllers.ProductObjectHandler;
+import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
+import com.example.ecommercemobileapp2hand.Models.Bag;
 import com.example.ecommercemobileapp2hand.Models.ProductObject;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
@@ -36,6 +38,7 @@ import com.example.ecommercemobileapp2hand.R;
 
 import com.example.ecommercemobileapp2hand.Views.Adapters.GenderAdapter;
 import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
+import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationDetailFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFragment;
@@ -103,9 +106,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void getIt()
     {
-        Intent intent = getIntent();
         userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
-        firstURL = userAccount.getImgUrl();
+        if (userAccount != null) {
+            firstURL = userAccount.getImgUrl();
+        } else {
+            // Handle the case where userAccount is null
+            firstURL = null;
+        }
     }
     @Override
     protected void onResume() {
@@ -137,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //    }
     private void loadAvt(){
-        if(UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl() != null){
-            ExecutorService service = Executors.newCachedThreadPool();
-            Util.getCloudinaryImageUrl(getApplicationContext(), UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl(), -1, -1, new Util.Callback<String>() {
+        String imgUrl = UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl();
+        if(imgUrl != null && !imgUrl.isEmpty()){
+            Util.getCloudinaryImageUrl(getApplicationContext(), imgUrl, -1, -1, new Util.Callback<String>() {
                 @Override
                 public void onResult(String result) {
                     String url = result;
@@ -150,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-        }else {
+        } else {
             Bitmap bitmap = Util.convertStringToBitmapFromAccess(this,"avt.png");
             btnAvt.setImageBitmap(bitmap);
         }
@@ -176,8 +183,16 @@ public class MainActivity extends AppCompatActivity {
         btnBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myintent = new Intent(MainActivity.this, Cart.class);
-                startActivity(myintent);
+                ArrayList<Bag> listBag= BagHandler.getData(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+                if (!listBag.isEmpty()){
+                    Intent myintent = new Intent(MainActivity.this, Cart.class);
+                    startActivity(myintent);
+                }
+                else{
+                    Intent myintent = new Intent(MainActivity.this, EmptyCart.class);
+                    startActivity(myintent);
+                }
+
             }
         });
     }

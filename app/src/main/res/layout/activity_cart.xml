@@ -26,6 +26,7 @@
         style="@style/cart_label"/>
 
     <TextView
+        android:id="@+id/removeAll"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="284dp"
@@ -72,7 +73,7 @@
 
             <TextView
                 android:gravity="right"
-                android:id="@+id/textView14"
+                android:id="@+id/txtSubtotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -98,11 +99,11 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/txtShippingCost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="$8.00"
+                android:text="$0.00"
                 style="@style/cart_fee" />
         </LinearLayout>
 
@@ -124,7 +125,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/txtTax"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -149,7 +150,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/textView17"
+                android:id="@+id/txtTotal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
