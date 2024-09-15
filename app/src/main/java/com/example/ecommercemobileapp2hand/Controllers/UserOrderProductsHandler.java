@@ -145,7 +145,7 @@ public class UserOrderProductsHandler {
                         pstmt.setInt(3, productDetailsSizeId);
 
                         int rowsAffected = pstmt.executeUpdate();
-                        result = rowsAffected > 0;
+                        callback.onResult(rowsAffected > 0);
                         pstmt.close();
                     } catch (SQLException e) {
                         e.printStackTrace();
@@ -160,7 +160,7 @@ public class UserOrderProductsHandler {
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
-                callback.onResult(result);
+
                 shutDownExecutor(service);
             }
         });
