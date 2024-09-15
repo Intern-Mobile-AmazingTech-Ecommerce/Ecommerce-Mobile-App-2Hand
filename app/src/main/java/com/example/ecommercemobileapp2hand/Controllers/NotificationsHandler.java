@@ -18,9 +18,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class NotificationsHandler {
-    public static void getNotifications(String userId,Callback<ArrayList<Notifications>> callback) {
+    public static void getNotifications(String userId, Callback<ArrayList<Notifications>> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
-        service.submit(()->{
+        service.submit(() -> {
             ArrayList<Notifications> notificationsList = new ArrayList<>();
             Connection conn = null;
             PreparedStatement pstmt = null;
@@ -28,8 +28,8 @@ public class NotificationsHandler {
             try {
                 conn = new DBConnect().connectionClass();
                 if (conn != null) {
-                    // Select notifications for the current user or admin (user_id = 1)
-                    String query = "SELECT * FROM notifications WHERE user_id = ?  ORDER BY created_at DESC";
+                    // Select notifications for the current user only
+                    String query = "SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC";
                     pstmt = conn.prepareStatement(query);
                     pstmt.setString(1, userId);  // Bind the user_id parameter
                     rs = pstmt.executeQuery();
@@ -59,8 +59,8 @@ public class NotificationsHandler {
             callback.onResult(notificationsList);
             shutDownExecutor(service);
         });
-
     }
+
 
     public static ArrayList<Notifications> initNotificationList2() {
         return new ArrayList<>();

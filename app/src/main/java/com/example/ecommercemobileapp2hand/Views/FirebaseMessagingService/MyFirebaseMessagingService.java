@@ -37,18 +37,11 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // Kiểm tra nếu tin nhắn có data
 
-        Log.d("MyFirebaseMessagingService", "Tin nhắn đã nhận: " + remoteMessage.getData().toString());
+//        Log.d("MyFirebaseMessagingService", "Tin nhắn đã nhận: " + remoteMessage.getData().toString());
         if (remoteMessage.getData().size() > 0) {
             handleDataMessage(remoteMessage);
         }
-        else if (remoteMessage.getNotification() != null) {
 
-            String title = remoteMessage.getNotification().getTitle();
-            String body = remoteMessage.getNotification().getBody();
-            handleSystemEventMessage(title, body);
-
-
-        }
 
     }
     private void handleDataMessage(RemoteMessage remoteMessage) {
@@ -63,11 +56,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
         UserOrderHandler.updateOrderStatus(Integer.parseInt(userOrderId), Integer.parseInt(orderStatusId), new UserOrderHandler.Callback<Boolean>() {
             @Override
             public void onResult(Boolean result) {
-                if (result) {
-                    Log.d("MyFirebaseMessagingService", "Đã cập nhật trạng thái đơn hàng thành công.");
-                } else {
-                    Log.d("MyFirebaseMessagingService", "Cập nhật trạng thái đơn hàng thất bại.");
-                }
+
             }
         });
         // Tạo đối tượng thông báo mới
@@ -102,58 +91,9 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
                 return "Unknown Status";
         }
     }
-    private void handleSystemEventMessage(String title, String body) {
-        service.execute(() -> {
-            List<String> userIds = NotificationsHandler.getAllUserIds();
 
-            for (String userId : userIds) {
-                // Tạo thông báo mới cho mỗi user_id
-                Notifications notification = new Notifications();
-                notification.setNotifications_content(body);
-                notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
-                notification.setUser_id(userId);  // Ghi thông báo cho từng user_id
-                notification.setViewed(false);
 
-                // Lưu thông báo vào cơ sở dữ liệu
-                NotificationsHandler.saveNotification(notification);
-            }
-            // Gửi thông báo cho admin
-            sendNotification(title, body);
-        });
-    }
 
-    private void sendNotification(String messageTitle, String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("navigateTo", "NotificationsDetailFragment");
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
-
-        RemoteViews notificationLayout = new RemoteViews(getPackageName(), R.layout.notificationsmall_layout);
-        RemoteViews notificationLayoutExpanded = new RemoteViews(getPackageName(), R.layout.notificationlarge_layout);
-        notificationLayout.setTextViewText(R.id.notification_title, messageTitle);
-
-        notificationLayoutExpanded.setTextViewText(R.id.notification_title, messageTitle);
-        notificationLayoutExpanded.setTextViewText(R.id.notification_body, messageBody);
-        String channelId = "default_channel";
-
-        Notification customNotification = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.notificationbing)
-                .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                .setCustomContentView(notificationLayout)
-                .setCustomBigContentView(notificationLayoutExpanded)
-                .setContentIntent(pendingIntent)
-                .build();
-
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId, "Thông báo", NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
-        notificationManager.notify(666, customNotification);
-
-    }
     private void sendOrderStatusNotification(String messageTitle, String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -192,8 +132,5 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
         // Show the notification
         notificationManager.notify(666, customNotification);
     }
-    @Override
-    public void onNewToken(String token) {
-        Log.d("MyFirebaseMessagingService", "FCM Token: " + token);
-    }
+
 }
