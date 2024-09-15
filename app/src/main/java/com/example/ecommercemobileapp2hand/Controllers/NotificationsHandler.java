@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +29,7 @@ public class NotificationsHandler {
                 conn = new DBConnect().connectionClass();
                 if (conn != null) {
                     // Select notifications for the current user or admin (user_id = 1)
-                    String query = "SELECT * FROM notifications WHERE user_id = ? OR user_id = '1' ORDER BY created_at DESC";
+                    String query = "SELECT * FROM notifications WHERE user_id = ?  ORDER BY created_at DESC";
                     pstmt = conn.prepareStatement(query);
                     pstmt.setString(1, userId);  // Bind the user_id parameter
                     rs = pstmt.executeQuery();
@@ -86,6 +87,7 @@ public class NotificationsHandler {
             }
         }
     }
+
     public static void saveNotification(Notifications notification) {
         Connection conn = null;
         Statement stmt = null;
@@ -121,6 +123,37 @@ public class NotificationsHandler {
     }
     public interface Callback<T> {
         void onResult(T result);
+    }
+    public static List<String> getAllUserIds() {
+        List<String> userIds = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = new DBConnect().connectionClass();
+            if (conn != null) {
+                String query = "SELECT user_id FROM user_account";
+                pstmt = conn.prepareStatement(query);
+                rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    userIds.add(rs.getString("user_id"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return userIds;
     }
 }
 

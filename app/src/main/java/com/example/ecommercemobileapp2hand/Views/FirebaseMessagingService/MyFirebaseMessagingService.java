@@ -22,6 +22,8 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.example.ecommercemobileapp2hand.Controllers.NotificationsHandler;
 import com.example.ecommercemobileapp2hand.Models.Notifications;
+
+import java.util.List;
 import java.util.Objects;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -102,24 +104,24 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
     }
     private void handleSystemEventMessage(String title, String body) {
         service.execute(() -> {
-            // Tạo intent phát broadcast cho thông báo sự kiện
-//            Intent broadcastIntent = new Intent();
-//            broadcastIntent.setAction("GLOBAL_NOTIFICATION");
-//            broadcastIntent.putExtra("title", title);
-//            broadcastIntent.putExtra("body", body);
-//            // Phát broadcast cho hệ thống
-//            sendBroadcast(broadcastIntent);
-            Notifications notification = new Notifications();
-            notification.setNotifications_content(body);
-            notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
-            notification.setUser_id("1");  // Admin userId
-            notification.setViewed(false);
-            // Lưu thông báo vào cơ sở dữ liệu
-            NotificationsHandler.saveNotification(notification);
+            List<String> userIds = NotificationsHandler.getAllUserIds();
+
+            for (String userId : userIds) {
+                // Tạo thông báo mới cho mỗi user_id
+                Notifications notification = new Notifications();
+                notification.setNotifications_content(body);
+                notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+                notification.setUser_id(userId);  // Ghi thông báo cho từng user_id
+                notification.setViewed(false);
+
+                // Lưu thông báo vào cơ sở dữ liệu
+                NotificationsHandler.saveNotification(notification);
+            }
             // Gửi thông báo cho admin
             sendNotification(title, body);
         });
     }
+
     private void sendNotification(String messageTitle, String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
