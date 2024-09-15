@@ -36,6 +36,7 @@ import com.example.ecommercemobileapp2hand.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -131,13 +132,10 @@ public class EditProfileActivity extends AppCompatActivity {
                 return;
             }
 
-            if (imageUrl != null) {
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.execute(() -> uploadImage(firstName, lastName, phoneNumber));
-                finish();
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                uploadImage(firstName, lastName, phoneNumber);
             } else {
                 updateUserDetails(firstName, lastName, phoneNumber, null);
-                finish();
             }
         });
 
@@ -157,33 +155,45 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void uploadImage(String firstName, String lastName, String phoneNumber) {
-        try {
-            Uri uri = Uri.parse(imageUrl);
-            InputStream inputStream = getContentResolver().openInputStream(uri);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                InputStream inputStream;
+                if (imageUrl.startsWith("content://")) {
+                    Uri uri = Uri.parse(imageUrl);
+                    inputStream = getContentResolver().openInputStream(uri);
+                } else {
+                    URL url = new URL(imageUrl);
+                    inputStream = url.openStream();
+                }
 
-            if (inputStream != null) {
-                Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
+                if (inputStream != null) {
+                    Cloudinary cloudinary = CloudinaryConfig.getCloudinary();
 
-                String publicId = "EcommerceApp/" + System.currentTimeMillis();
+                    String publicId = "EcommerceApp/" + System.currentTimeMillis();
 
-                Map<String, Object> uploadParams = ObjectUtils.asMap("public_id", publicId, "overwrite", true);
+                    Map<String, Object> uploadParams = ObjectUtils.asMap("public_id", publicId, "overwrite", true);
 
-                Map<String, Object> uploadResult = cloudinary.uploader().upload(inputStream, uploadParams);
+                    Map<String, Object> uploadResult = cloudinary.uploader().upload(inputStream, uploadParams);
 
-                String uploadedImageUrl = (String) uploadResult.get("url");
-                String fileName = uploadedImageUrl.substring(uploadedImageUrl.lastIndexOf("/") + 1);
+                    String uploadedImageUrl = (String) uploadResult.get("url");
+                    String fileName = uploadedImageUrl.substring(uploadedImageUrl.lastIndexOf("/") + 1);
 
-                String formattedFileName = "EcommerceApp/" + fileName;
+                    String formattedFileName = "EcommerceApp/" + fileName;
 
-                runOnUiThread(() -> updateUserDetails(firstName, lastName, phoneNumber, formattedFileName));
-            } else {
-                runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Cannot open image", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> updateUserDetails(firstName, lastName, phoneNumber, formattedFileName));
+                    Log.d("EditProfileActivity", "Uploaded image: " + uploadedImageUrl);
+                } else {
+                    runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Cannot open image", Toast.LENGTH_SHORT).show());
+                    Log.e("EditProfileActivity", "Cannot open image");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Error uploading image", Toast.LENGTH_SHORT).show());
+                Log.e("EditProfileActivity", "Error uploading image: " + e.getMessage());
             }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Error uploading image", Toast.LENGTH_SHORT).show());
-        }
+        });
     }
 
     private void updateUserDetails(String firstName, String lastName, String phoneNumber, String uploadedImageUrl) {

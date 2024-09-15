@@ -37,6 +37,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
     String email;
     ImageButton btnReturn;
     private FirebaseAuth firebaseAuth;
+    SignInActivity signInActivity;
     private static final String PREFS_NAME = "user_prefs";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
     @Override
@@ -101,6 +102,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                                 //truyền thông tin user qua MainActivity
                                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                                 if (user != null) {
+                                                    signInActivity.onLoginSuccess(user.getEmail());
                                                     intent.putExtra("UserAccount", userAccount);
                                                     intent.putExtra("email", user.getEmail());
                                                     intent.putExtra("displayName", user.getDisplayName());

@@ -104,33 +104,26 @@ public class OnboardingActivity extends AppCompatActivity {
             Intent intent = getIntent();
             if (intent != null) {
                 String email = intent.getStringExtra("email");
-                String firstName = intent.getStringExtra("firstName");
-                String lastName = intent.getStringExtra("lastName");
+                String displayName = intent.getStringExtra("displayName");
+
+                String[] nameParts = displayName.split(" ", 2);
+                String firstName = nameParts.length > 0 ? nameParts[0] : "";
+                String lastName = nameParts.length > 1 ? nameParts[1] : "";
 
                 UserAccountHandler.saveUserToDB(firstName, lastName, email, gender, ageRange);
-                ExecutorService service = Executors.newCachedThreadPool();
+
                 SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("gender_key", gender);
                 editor.putString("age_range_key", ageRange);
                 editor.putBoolean("onboardingCompleted", true);
                 editor.apply();
-                intent = new Intent(OnboardingActivity.this, MainActivity.class);
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    intent.putExtra("email", user.getEmail());
-                    intent.putExtra("firstName",firstName);
-                    intent.putExtra("lastName",lastName);
-//                    intent.putExtra("firstName", user.getDisplayName().split(" ")[0]);
-//                    intent.putExtra("lastName", user.getDisplayName().split(" ").length > 1 ? user.getDisplayName().split(" ")[1] : "");
-                }
-                startActivity(intent);
+
+                Intent mainIntent = new Intent(OnboardingActivity.this, MainActivity.class);
+                mainIntent.putExtra("email", email);
+                startActivity(mainIntent);
                 finish();
-//                service.shutdown();
-
             }
-
-
         });
 
     }
