@@ -89,21 +89,28 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         holder.tvTotalPricePro.setText("Subtotal: $" + totalPrice);
 
         if (checkDeliverd) {
-            holder.btnReview.setVisibility(View.VISIBLE);
-            holder.btnReview.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    UserOrderProductsHandler.getProductDetailsID(details.getProduct_id(), details.getProduct_color_name(), details.getSize_name(), new UserOrderProductsHandler.Callback<Integer>() {
-                        @Override
-                        public void onResult(Integer result) {
-                            ((android.app.Activity) context).runOnUiThread(() -> {
-                                showReviewOverlay(result);
-                            });
-                        }
-                    });
+            if (details.isReviewed() == true) {
+                holder.btnReview.setText("Reviewed");
+                holder.btnReview.setEnabled(false);
+            }
+            else
+            {
+                holder.btnReview.setVisibility(View.VISIBLE);
+                holder.btnReview.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UserOrderProductsHandler.getProductDetailsID(details.getProduct_id(), details.getProduct_color_name(), details.getSize_name(), new UserOrderProductsHandler.Callback<Integer>() {
+                            @Override
+                            public void onResult(Integer result) {
+                                ((android.app.Activity) context).runOnUiThread(() -> {
+                                    showReviewOverlay(result, details.getUser_order_id());
+                                });
+                            }
+                        });
 
-                }
-            });
+                    }
+                });
+            }
         } else {
             holder.btnReview.setVisibility(View.INVISIBLE);
         }
@@ -145,7 +152,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         }
     }
 
-    private void showReviewOverlay(int product_detail_id) {
+    private void showReviewOverlay(int product_detail_id, int user_order_id) {
         View view = LayoutInflater.from(context).inflate(R.layout.review_overlay, null);
 
         final Dialog dialog = new Dialog(context);
@@ -187,8 +194,23 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
                         public void onResult(Boolean result) {
                             ((android.app.Activity) context).runOnUiThread(() -> {
                                 if (result) {
-                                    Toast.makeText(context, "Review submitted", Toast.LENGTH_SHORT).show();
-                                } else {
+                                    UserOrderProductsHandler.updateIsReviewed(user_order_id, product_detail_id, true, new UserOrderProductsHandler.Callback<Boolean>() {
+                                        @Override
+                                        public void onResult(Boolean result) {
+                                            if (result) {
+                                                ((android.app.Activity)context).runOnUiThread(() -> {
+                                                    Toast.makeText(context, "Review submitted", Toast.LENGTH_SHORT).show();
+                                                    notifyDataSetChanged();
+                                                });
+                                            } else {
+                                                ((android.app.Activity)context).runOnUiThread(() -> {
+                                                    Toast.makeText(context, "Failed to submit review", Toast.LENGTH_SHORT).show();
+                                                });
+                                            }
+                                        }
+                                    });
+                                } else
+                                {
                                     Toast.makeText(context, "Failed to submit review", Toast.LENGTH_SHORT).show();
                                 }
                             });

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 public class UserOrderProducts implements Serializable {
+    private int user_order_id;
     private int product_id;
     private String product_name;
     private String thumbnail;
@@ -13,10 +14,13 @@ public class UserOrderProducts implements Serializable {
     private BigDecimal base_price;
     private BigDecimal sale_price;
     private BigDecimal total_pricepro;
+    private boolean isReviewed;
+
 
     public UserOrderProducts(){}
 
-    public UserOrderProducts(int product_id, String product_name, String thumbnail, String product_color_name, String size_name, int amount, BigDecimal base_price, BigDecimal sale_price, BigDecimal total_pricepro) {
+    public UserOrderProducts(int user_order_id, int product_id, String product_name, String thumbnail, String product_color_name, String size_name, int amount, BigDecimal base_price, BigDecimal sale_price, BigDecimal total_pricepro, boolean isReviewed) {
+        this.user_order_id = user_order_id;
         this.product_id = product_id;
         this.product_name = product_name;
         this.thumbnail = thumbnail;
@@ -26,6 +30,15 @@ public class UserOrderProducts implements Serializable {
         this.base_price = base_price;
         this.sale_price = sale_price;
         this.total_pricepro = total_pricepro;
+        this.isReviewed = isReviewed;
+    }
+
+    public int getUser_order_id() {
+        return user_order_id;
+    }
+
+    public void setUser_order_id(int user_order_id) {
+        this.user_order_id = user_order_id;
     }
 
     public int getProduct_id() {
@@ -98,5 +111,13 @@ public class UserOrderProducts implements Serializable {
 
     public void setTotal_pricepro(BigDecimal total_pricepro) {
         this.total_pricepro = total_pricepro;
+    }
+
+    public boolean isReviewed() {
+        return isReviewed;
+    }
+
+    public void setReviewed(boolean reviewed) {
+        isReviewed = reviewed;
     }
 }

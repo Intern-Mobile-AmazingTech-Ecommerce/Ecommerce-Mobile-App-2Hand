@@ -5,6 +5,7 @@ import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,7 +33,7 @@ public class UserOrderProductsHandler {
                     ResultSet rs = cstmt.executeQuery();
                     while (rs.next())
                     {
-                        UserOrderProducts userOrderProducts = new UserOrderProducts(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getBigDecimal(7), rs.getBigDecimal(8), rs.getBigDecimal(9));
+                        UserOrderProducts userOrderProducts = new UserOrderProducts(rs.getInt(1) ,rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7), rs.getBigDecimal(8), rs.getBigDecimal(9), rs.getBigDecimal(10), rs.getBoolean(11));
 
                         userOrderProductsList.add(userOrderProducts);
                     }
@@ -128,7 +129,41 @@ public class UserOrderProductsHandler {
             }
 
         });
+    }
+    public static void updateIsReviewed(int userOrderId, int productDetailsSizeId, boolean isReviewed, Callback<Boolean> callback) {
+        ExecutorService service = Executors.newCachedThreadPool();
+        service.execute(() -> {
+            Connection conn = null;
+            boolean result = false;
+            try {
+                conn = dbConnect.connectionClass();
+                if (conn != null) {
+                    try {
+                        PreparedStatement pstmt = conn.prepareStatement("UPDATE user_order_products SET isReviewed = ? WHERE user_order_id = ? AND product_details_size_id = ?");
+                        pstmt.setBoolean(1, isReviewed);
+                        pstmt.setInt(2, userOrderId);
+                        pstmt.setInt(3, productDetailsSizeId);
 
+                        int rowsAffected = pstmt.executeUpdate();
+                        result = rowsAffected > 0;
+                        pstmt.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            conn.close();
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                callback.onResult(result);
+                shutDownExecutor(service);
+            }
+        });
     }
     private static void shutDownExecutor(ExecutorService executorService) {
         executorService.shutdown();
