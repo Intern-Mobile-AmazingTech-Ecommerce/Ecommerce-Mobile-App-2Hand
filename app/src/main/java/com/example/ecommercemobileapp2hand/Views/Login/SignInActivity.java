@@ -154,35 +154,28 @@ public class SignInActivity extends AppCompatActivity {
         if (user != null) {
             String email = user.getEmail();
             if (email != null) {
-              UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
+                UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
                     @Override
                     public void onResult(UserAccount result) {
-                        UserAccount userAccount =result;
-                        runOnUiThread(()->{
-                            UserAccountHandler userAccountHandler = new UserAccountHandler();
-                            userAccountHandler.checkEmailExists(email, new UserAccountHandler.Callback<Boolean>() {
-                                @Override
-                                public void onResult(Boolean result) {
-                                    if(userAccount!=null){
-                                        runOnUiThread(()->{
-                                            Intent intent = result ? new Intent(SignInActivity.this, MainActivity.class) : new Intent(SignInActivity.this, OnboardingActivity.class);
-                                            saveLoginState(email);
-                                            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-                                            intent.putExtra("UserAccount", userAccount);
-                                            intent.putExtra("email", email);
-                                            intent.putExtra("displayName", user.getDisplayName());
-                                            startActivity(intent);
-                                            finish();
-                                        });
-                                    }
-                                }
-                            });
-
+                        runOnUiThread(() -> {
+                            if (result == null) {
+                                Intent intent = new Intent(SignInActivity.this, OnboardingActivity.class);
+                                intent.putExtra("email", email);
+                                intent.putExtra("displayName", user.getDisplayName());
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+                                UserAccountManager.getInstance().setCurrentUserAccount(result);
+                                intent.putExtra("UserAccount", result);
+                                intent.putExtra("email", email);
+                                intent.putExtra("displayName", user.getDisplayName());
+                                startActivity(intent);
+                                finish();
+                            }
                         });
                     }
                 });
-
-
             } else {
                 Toast.makeText(this, "Email is null", Toast.LENGTH_SHORT).show();
             }
@@ -190,7 +183,6 @@ public class SignInActivity extends AppCompatActivity {
             Toast.makeText(this, "User is null", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -201,10 +193,11 @@ public class SignInActivity extends AppCompatActivity {
                     String email = user.getEmail();
                     String displayName = user.getDisplayName();
                     service.submit(()->{
-                        UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
+                        //UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
                         runOnUiThread(()->{
                             Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                             handleSignInResult(user);
+                            onLoginSuccess(email);
                         });
                     });
 
@@ -228,8 +221,9 @@ public class SignInActivity extends AppCompatActivity {
                         if (user != null) {
                             String email = user.getEmail();
                             String displayName = user.getDisplayName();
-                            UserAccountHandler.saveUserAccount(email, displayName, "Google");
+                            //UserAccountHandler.saveUserAccount(email, displayName, "Google");
                             handleSignInResult(user);
+                            onLoginSuccess(email);
                         }
                     } else {
                         Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
@@ -241,13 +235,18 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    private void saveLoginState(String email) {
-        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+    public void onLoginSuccess(String email) {
+        SharedPreferences sharedPreferences = getSharedPreferences("USER_PREFS", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("isLoggedIn", true);
+        editor.putBoolean("loggedIn", true);
         editor.putString("email", email);
         editor.apply();
+
+        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -189,46 +189,43 @@ public class WishlistHandler {
         return false;
     }
 
-    public static void checkProductDetailsExistsInWishlistByUserID(int product_details_id, String userID,Callback<Boolean> callback){
+    public static void checkProductDetailsExistsInWishlistByUserID(int product_details_id, String userID, Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
-        service.execute(()->{
+        service.execute(() -> {
             Connection conn = null;
             ResultSet resultSet = null;
             PreparedStatement stmt = null;
-            try{
+            try {
                 conn = dbConnect.connectionClass();
                 if (conn == null || conn.isClosed()) {
                     throw new SQLException("Connection is closed or null");
                 }
-                String sql = "select COUNT(*)\n" +
-                        "from wishlist_product wp \n" +
-                        "inner join wishlist w on w.wishlist_id = wp.wishlist_id\n" +
-                        "where product_details_id = ? and w.user_id = ?";
+                String sql = "SELECT COUNT(*) " +
+                             "FROM wishlist_product wp " +
+                             "INNER JOIN wishlist w ON w.wishlist_id = wp.wishlist_id " +
+                             "WHERE product_details_id = ? AND w.user_id = ?";
                 stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, product_details_id);
                 stmt.setString(2, userID);
-                ResultSet rs = stmt.executeQuery();
-                if(rs.next()){
-                    callback.onResult(rs.getInt(1) > 0);
+                resultSet = stmt.executeQuery();
+                if (resultSet.next()) {
+                    callback.onResult(resultSet.getInt(1) > 0);
                 }
-
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 throw new RuntimeException(e);
-            }finally {
-                try{
+            } finally {
+                try {
                     if (resultSet != null) resultSet.close();
                     if (stmt != null) stmt.close();
-                    if(conn!=null && !conn.isClosed()) {
-                        conn.close();
-                    }
-                }catch (SQLException e){
+                    if (conn != null && !conn.isClosed()) conn.close();
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
             shutDownExecutor(service);
         });
-
     }
+
     public static void insertToWishlist(int wishlist_id,int product_details_id,Callback<Boolean> callback){
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{

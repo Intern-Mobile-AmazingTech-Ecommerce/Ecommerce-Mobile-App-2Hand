@@ -149,24 +149,32 @@ public class UserAccountHandler {
     }
 
 
-    //cập nhật tt chi tiết của user
     public static void updateUserAccountDetails(String firstName, String lastName, String phoneNumber, String imgUrl, String email, Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
 
-        service.execute(()->{
+        service.execute(() -> {
             Connection conn = null;
             PreparedStatement pstmt = null;
             try {
                 conn = dbConnect.connectionClass();
                 if (conn != null) {
-                    String updateQuery = "UPDATE user_account SET first_name = ?, last_name = ?, phone_number = ?, img_url = ? WHERE email = ?";
-                    pstmt = conn.prepareStatement(updateQuery);
-
-                    pstmt.setString(1, firstName);
-                    pstmt.setString(2, lastName);
-                    pstmt.setString(3, phoneNumber);
-                    pstmt.setString(4, imgUrl);
-                    pstmt.setString(5, email);
+                    String updateQuery;
+                    if (imgUrl == null || imgUrl.isEmpty()) {
+                        updateQuery = "UPDATE user_account SET first_name = ?, last_name = ?, phone_number = ? WHERE email = ?";
+                        pstmt = conn.prepareStatement(updateQuery);
+                        pstmt.setString(1, firstName);
+                        pstmt.setString(2, lastName);
+                        pstmt.setString(3, phoneNumber);
+                        pstmt.setString(4, email);
+                    } else {
+                        updateQuery = "UPDATE user_account SET first_name = ?, last_name = ?, phone_number = ?, img_url = ? WHERE email = ?";
+                        pstmt = conn.prepareStatement(updateQuery);
+                        pstmt.setString(1, firstName);
+                        pstmt.setString(2, lastName);
+                        pstmt.setString(3, phoneNumber);
+                        pstmt.setString(4, imgUrl);
+                        pstmt.setString(5, email);
+                    }
 
                     int rowsUpdated = pstmt.executeUpdate();
                     callback.onResult(rowsUpdated > 0);
@@ -185,7 +193,6 @@ public class UserAccountHandler {
             }
             shutDownExecutor(service);
         });
-
     }
 
     //kt email đã tồn tại chưa
