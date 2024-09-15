@@ -1,47 +1,111 @@
 package com.example.ecommercemobileapp2hand.Controllers;
 
+import android.widget.Toast;
+
 import com.example.ecommercemobileapp2hand.Models.Bag;
+import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
 
 public class BagHandler {
     private static DBConnect dbConnect = new DBConnect();
     private static Connection conn;
 
-//    public static ArrayList<Bag> getData()
-//    {
-//        ArrayList<Bag> lst = new ArrayList<>();
-//        conn = dbConnect.connectionClass();
-//        if(conn!=null) {
-//            String query = "Select * from bag";
-//            try
-//            {
-//                Statement stmt = conn.createStatement();
-//                ResultSet rs = stmt.executeQuery(query);
-//                while (rs.next())
-//                {
-//
-//                    Bag bag = new Bag(rs.getInt(1), rs.getInt(2), rs.getInt(3),rs.getInt(4));
-//                    lst.add(bag);
-//                }
-//            } catch (SQLException e) {
-//                throw new RuntimeException(e);
-//            } finally {
-//                try {
-//                    conn.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        return lst;
-//    }
+    public static ArrayList<Bag> getData(String userID)
+    {
+        ArrayList<Bag> lst = new ArrayList<>();
+        conn = dbConnect.connectionClass();
+        if(conn!=null) {
+            try
+            {
+                CallableStatement cstmt = conn.prepareCall("call CheckUserBag(?)");
+                cstmt.setString(1, userID);
+                ResultSet rs = cstmt.executeQuery();
+                while (rs.next())
+                {
+                    Bag bag =new Bag();
+                    bag.setBag_id(rs.getInt(1));
+                    bag.setUser_id(rs.getString(2));
+                    bag.setProduct_details_size_id(rs.getInt(3));
+                    bag.setProduct_details_id(rs.getInt(4));
+                    bag.setAmount(rs.getInt(5));
+                    bag.setSize(rs.getString(6));
+                    bag.setProduct_id(rs.getInt(7));
+                    bag.setProduct_name(rs.getString(8));
+                    bag.setColor(rs.getString(9));
+                    bag.setImage(rs.getString(10));
+                    bag.setBasePrice(rs.getBigDecimal(11));
+                    bag.setSalePrice(rs.getBigDecimal(12));
+                    lst.add(bag);
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return lst;
+    }
+    public static boolean updateProductAmount(String userID,int productDetailSizeID, int amount){
+        conn = dbConnect.connectionClass();
+        if(conn!=null) {
+            try
+            {
+                CallableStatement cstmt = conn.prepareCall("call UpdateUserBagAmount(?,?,?)");
+                cstmt.setString(1, userID);
+                cstmt.setInt(2, productDetailSizeID);
+                cstmt.setInt(3, amount);
+                cstmt.executeUpdate();
+
+            } catch (SQLException e) {
+                return false;
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+    public static boolean deleteUserBag(String userID){
+        conn = dbConnect.connectionClass();
+        if(conn!=null) {
+            try
+            {
+                CallableStatement cstmt = conn.prepareCall("call DeleteUserBag(?)");
+                cstmt.setString(1,userID);
+                ResultSet rs=cstmt.executeQuery();
+            } catch (SQLException e) {
+                return false;
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
     public static void addBag(Bag bag,Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{

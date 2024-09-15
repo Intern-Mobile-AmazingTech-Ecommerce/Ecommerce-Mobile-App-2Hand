@@ -97,7 +97,7 @@ public class PaymentActivity extends AppCompatActivity {
                     lstCard = result;
                     if (lstCard != null && !lstCard.isEmpty()) {
                         runOnUiThread(() -> {
-                            cardAdapter = new CardAdapter(lstCard, PaymentActivity.this);
+                            cardAdapter = new CardAdapter(lstCard, PaymentActivity.this,R.layout.item_card);
                             recy_cards.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                             recy_cards.setAdapter(cardAdapter);
                         });

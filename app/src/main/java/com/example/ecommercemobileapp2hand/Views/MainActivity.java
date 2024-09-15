@@ -29,6 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.ecommercemobileapp2hand.Controllers.ProductObjectHandler;
+import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
+import com.example.ecommercemobileapp2hand.Models.Bag;
 import com.example.ecommercemobileapp2hand.Models.ProductObject;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
@@ -36,6 +38,7 @@ import com.example.ecommercemobileapp2hand.R;
 
 import com.example.ecommercemobileapp2hand.Views.Adapters.GenderAdapter;
 import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
+import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationDetailFragment;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationsFragment;
@@ -180,8 +183,16 @@ public class MainActivity extends AppCompatActivity {
         btnBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myintent = new Intent(MainActivity.this, Cart.class);
-                startActivity(myintent);
+                ArrayList<Bag> listBag= BagHandler.getData(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+                if (!listBag.isEmpty()){
+                    Intent myintent = new Intent(MainActivity.this, Cart.class);
+                    startActivity(myintent);
+                }
+                else{
+                    Intent myintent = new Intent(MainActivity.this, EmptyCart.class);
+                    startActivity(myintent);
+                }
+
             }
         });
     }
