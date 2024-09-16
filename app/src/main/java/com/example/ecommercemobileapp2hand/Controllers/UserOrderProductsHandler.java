@@ -33,7 +33,7 @@ public class UserOrderProductsHandler {
                     ResultSet rs = cstmt.executeQuery();
                     while (rs.next())
                     {
-                        UserOrderProducts userOrderProducts = new UserOrderProducts(rs.getInt(1) ,rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7), rs.getBigDecimal(8), rs.getBigDecimal(9), rs.getBigDecimal(10), rs.getBoolean(11));
+                        UserOrderProducts userOrderProducts = new UserOrderProducts(rs.getInt(1) ,rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getInt(9), rs.getBigDecimal(10), rs.getBigDecimal(11), rs.getBigDecimal(12), rs.getBoolean(13));
 
                         userOrderProductsList.add(userOrderProducts);
                     }
