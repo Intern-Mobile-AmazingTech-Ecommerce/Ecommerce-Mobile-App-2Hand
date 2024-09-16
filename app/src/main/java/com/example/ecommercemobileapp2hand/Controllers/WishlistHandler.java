@@ -30,12 +30,12 @@ import java.util.concurrent.TimeUnit;
 
 public class WishlistHandler {
     private static DBConnect dbConnect = new DBConnect();
-    private static Connection conn ;
+
     static ObjectMapper objectMapper = new ObjectMapper();
     public static void getWishListDetailByWishListID(int wishListID, Callback<ArrayList<Product>> callback){
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{
-            conn = dbConnect.connectionClass();
+           Connection conn = dbConnect.connectionClass();
             objectMapper.registerModule(new JavaTimeModule());
             ArrayList<Product> list = new ArrayList<>();
             if(conn!=null){
@@ -105,7 +105,7 @@ public class WishlistHandler {
 
     }
     public static ArrayList<Wishlist> getWishListByUserID(String userID){
-        conn = dbConnect.connectionClass();
+        Connection conn = dbConnect.connectionClass();
         ArrayList<Wishlist> list = new ArrayList<>();
         objectMapper.registerModule(new JavaTimeModule());
         if(conn!=null){
@@ -136,7 +136,7 @@ public class WishlistHandler {
     public static void addNewWishlist(String UserID,String wishListName, Callback<Boolean> callback){
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{
-            conn = dbConnect.connectionClass();
+            Connection conn = dbConnect.connectionClass();
             try{
                 if(conn != null){
                     String sql = "Insert Into wishlist VALUES (?,?)";
@@ -160,7 +160,7 @@ public class WishlistHandler {
 
     }
     public static boolean checkProductDetailsExistsInWishlist(int product_details_id, int wishlist_id){
-        conn = dbConnect.connectionClass();
+        Connection conn = dbConnect.connectionClass();
         PreparedStatement stmt = null;
         try{
             if(conn!=null){
@@ -190,11 +190,13 @@ public class WishlistHandler {
     }
 
     public static void checkProductDetailsExistsInWishlistByUserID(int product_details_id, String userID, Callback<Boolean> callback) {
-        ExecutorService service = Executors.newCachedThreadPool();
+
+        ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             Connection conn = null;
             ResultSet resultSet = null;
             PreparedStatement stmt = null;
+
             try {
                 conn = dbConnect.connectionClass();
                 if (conn == null || conn.isClosed()) {
@@ -222,14 +224,14 @@ public class WishlistHandler {
                     e.printStackTrace();
                 }
             }
-            shutDownExecutor(service);
+//            shutDownExecutor(service);
         });
     }
 
     public static void insertToWishlist(int wishlist_id,int product_details_id,Callback<Boolean> callback){
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{
-            conn = dbConnect.connectionClass();
+           Connection conn = dbConnect.connectionClass();
             PreparedStatement preparedStatement = null;
             try{
                 if(conn!=null){
@@ -256,7 +258,7 @@ public class WishlistHandler {
     public static void removeFromWishlist(int wishlist_id,int product_details_id, Callback<Boolean> callback){
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{
-            conn = dbConnect.connectionClass();
+           Connection conn = dbConnect.connectionClass();
             PreparedStatement preparedStatement = null;
             try{
                 if(conn!=null){
@@ -284,7 +286,7 @@ public class WishlistHandler {
     public static void clearWishlist(int wishList_ID, Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{
-            conn = dbConnect.connectionClass();
+           Connection conn = dbConnect.connectionClass();
             PreparedStatement preparedStatement = null;
             try {
                 if (conn != null) {
@@ -315,7 +317,7 @@ public class WishlistHandler {
     {
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{
-            conn = dbConnect.connectionClass();
+          Connection  conn = dbConnect.connectionClass();
             PreparedStatement preparedStatement = null;
             try {
                 if (conn != null) {
@@ -355,6 +357,15 @@ public class WishlistHandler {
             }
         } catch (InterruptedException e) {
             executorService.shutdownNow();
+        }
+    }
+    public static boolean isConnectionValid() {
+        Connection connection = dbConnect.connectionClass();
+        try {
+            return connection != null && !connection.isClosed();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
     public interface Callback<T> {

@@ -183,68 +183,72 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }
-
-
             }
         });
-        WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), new WishlistHandler.Callback<Boolean>() {
-            @Override
-            public void onResult(Boolean result) {
-                ((Activity) context).runOnUiThread(() -> {
-                    if (result) {
-                        holder.img_Heart.setIconResource(R.drawable.red_heart);
-                        holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.RED));
-                    } else {
-                        holder.img_Heart.setIconResource(R.drawable.black_heart);
-                        holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.BLACK));
-                    }
-                    if (currentWishListID != -1) {
-                        holder.img_Heart.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                if (result) {
-                                    WishlistHandler.removeFromWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
-                                        @Override
-                                        public void onResult(Boolean result) {
-                                            ((android.app.Activity) context).runOnUiThread(() -> {
-                                                if (result) {
-                                                    notifyDataSetChanged();
-                                                    Toast.makeText(context, "Product Removed From Wishlist Successfully", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(context, "Product Removed From Wishlist Failed", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    WishlistHandler.insertToWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
-                                        @Override
-                                        public void onResult(Boolean result) {
-                                            ((android.app.Activity) context).runOnUiThread(() -> {
-                                                if (result) {
-                                                    notifyDataSetChanged();
-                                                    Toast.makeText(context, "Product inserted into Wishlist Successfully", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(context, "Product inserted into Wishlist Failed", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                    });
+        if(WishlistHandler.isConnectionValid()){
+            WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), new WishlistHandler.Callback<Boolean>() {
+                @Override
+                public void onResult(Boolean result) {
+                    ((Activity) context).runOnUiThread(() -> {
+                        if (result) {
+                            holder.img_Heart.setIconResource(R.drawable.red_heart);
+                            holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.RED));
+                        } else {
+                            holder.img_Heart.setIconResource(R.drawable.black_heart);
+                            holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.BLACK));
+                        }
+                        if (currentWishListID != -1) {
+                            holder.img_Heart.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (result) {
+                                        WishlistHandler.removeFromWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
+                                            @Override
+                                            public void onResult(Boolean result) {
+                                                ((android.app.Activity) context).runOnUiThread(() -> {
+                                                    if (result) {
+                                                        notifyDataSetChanged();
+                                                        Toast.makeText(context, "Product Removed From Wishlist Successfully", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(context, "Product Removed From Wishlist Failed", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        WishlistHandler.insertToWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
+                                            @Override
+                                            public void onResult(Boolean result) {
+                                                ((android.app.Activity) context).runOnUiThread(() -> {
+                                                    if (result) {
+                                                        notifyDataSetChanged();
+                                                        Toast.makeText(context, "Product inserted into Wishlist Successfully", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(context, "Product inserted into Wishlist Failed", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+
                                 }
+                            });
+                        } else {
+                            holder.img_Heart.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    showAddToWLOverlay(finalDetails, holder.getAdapterPosition());
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }else
+        {
+            Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
+        }
 
-                            }
-                        });
-                    } else {
-                        holder.img_Heart.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                showAddToWLOverlay(finalDetails, holder.getAdapterPosition());
-                            }
-                        });
-                    }
-                });
-            }
-        });
 
 
     }
