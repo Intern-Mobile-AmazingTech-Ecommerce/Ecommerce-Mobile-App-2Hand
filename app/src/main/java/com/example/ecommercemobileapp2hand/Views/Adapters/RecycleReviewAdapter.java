@@ -76,15 +76,26 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
     }
 
     public static String getDayDifference(LocalDateTime date) {
-        LocalDateTime today = LocalDateTime.now();
-        long daysBetween = ChronoUnit.DAYS.between(date, today);
+        LocalDateTime now = LocalDateTime.now();
+
+        long daysBetween = ChronoUnit.DAYS.between(date, now);
+        long hoursBetween = ChronoUnit.HOURS.between(date, now);
+        long minutesBetween = ChronoUnit.MINUTES.between(date, now);
 
         if (daysBetween == 0) {
-            return "Today";
+            if (hoursBetween == 0) {
+                if (minutesBetween < 1) {
+                    return "Just now";
+                } else {
+                    return minutesBetween + " minutes ago";
+                }
+            } else {
+                return hoursBetween + " hours ago";
+            }
         } else if (daysBetween == 1) {
-            return "1day ago";
+            return "1 day ago";
         } else {
-            return daysBetween + "days ago";
+            return daysBetween + " days ago";
         }
     }
 
