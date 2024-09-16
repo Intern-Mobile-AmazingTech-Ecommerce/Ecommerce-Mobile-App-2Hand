@@ -179,13 +179,13 @@ public class ProductDetails implements Parcelable {
         this.sale_price = sale_price;
     }
 
-    public Double getAverageRatings(){
+    public String getAverageRatings(){
         if(getProductReviews() != null){
             OptionalDouble optionalDouble = getProductReviews().stream().mapToDouble(ProductReview::getRating).average();
             if(optionalDouble.isPresent())
-                return  optionalDouble.getAsDouble();
+                return String.format("%.1f", optionalDouble.getAsDouble());
         }
-        return Double.valueOf("0");
+        return "0.0";
     }
     @Override
     public int describeContents() {

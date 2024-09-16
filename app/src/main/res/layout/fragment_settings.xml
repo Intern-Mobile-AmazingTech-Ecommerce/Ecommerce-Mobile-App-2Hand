@@ -69,7 +69,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
         <LinearLayout
             android:id="@+id/options_list"
             android:layout_width="match_parent"
@@ -114,12 +115,12 @@
 
             <Switch
                 android:id="@+id/switcher"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
                 style="@style/setting_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:text="Turn On/Off Night Mode"
-                android:drawableEnd="@null"/>
+                android:drawableEnd="@null"
+                android:text="Turn On/Off Night Mode" />
             <TextView
                 android:id="@+id/tvSignOut"
                 android:layout_width="match_parent"

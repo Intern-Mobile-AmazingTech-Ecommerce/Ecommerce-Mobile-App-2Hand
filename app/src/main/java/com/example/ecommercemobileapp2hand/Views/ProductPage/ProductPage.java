@@ -193,7 +193,7 @@ public class ProductPage extends AppCompatActivity {
         }
 
         tvTotalReviews.setText(String.valueOf(curr.getProductReviews() != null ? curr.getProductReviews().size() : 0) +" Reviews");
-        tvRatingPoints.setText(curr.getAverageRatings().toString()+" Ratings");
+        tvRatingPoints.setText(curr.getAverageRatings() + " Ratings");
         isFavorite(curr);
     }
     private void isFavorite(ProductDetails curr){
@@ -444,41 +444,6 @@ public class ProductPage extends AppCompatActivity {
         recyclerSize.setAdapter(recycleSizeAdapter);
         bottomSheetDialog.show();
 
-    }
-
-    private void showReviewOverlay() {
-        View view = LayoutInflater.from(ProductPage.this).inflate(R.layout.review_overlay, null);
-
-        final Dialog dialog = new Dialog(ProductPage.this);
-        dialog.setContentView(view);
-
-        Window window = dialog.getWindow();
-        if (window == null)
-        {
-            return;
-        }
-
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowattri = window.getAttributes();
-        windowattri.gravity = Gravity.BOTTOM;
-        window.setAttributes(windowattri);
-
-        RatingBar ratingBar = dialog.findViewById(R.id.ratingBar);
-        Button btnSubmit = dialog.findViewById(R.id.btnSubmit);
-        EditText edt_review = dialog.findViewById(R.id.edt_review);
-
-        ImageButton btnClose = dialog.findViewById(R.id.btn_close);
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.show();
     }
 
     private void showAddToWLOverlay() {

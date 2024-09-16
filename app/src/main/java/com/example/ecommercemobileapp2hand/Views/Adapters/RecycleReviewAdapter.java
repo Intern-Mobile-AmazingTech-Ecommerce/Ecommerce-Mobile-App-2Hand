@@ -25,6 +25,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,6 +39,13 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
     public RecycleReviewAdapter(ArrayList<ProductReview> reviewsList, Context context) {
         this.reviewsList = reviewsList;
         this.context = context;
+
+        Collections.sort(this.reviewsList, new Comparator<ProductReview>() {
+            @Override
+            public int compare(ProductReview review1, ProductReview review2) {
+                return review2.getCreated_at().compareTo(review1.getCreated_at());
+            }
+        });
     }
 
     @NonNull
