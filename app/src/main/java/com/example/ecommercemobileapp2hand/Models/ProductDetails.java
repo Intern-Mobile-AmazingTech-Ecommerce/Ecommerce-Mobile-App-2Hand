@@ -185,7 +185,7 @@ public class ProductDetails implements Parcelable {
             if(optionalDouble.isPresent())
                 return String.format("%.1f", optionalDouble.getAsDouble());
         }
-        return "0.0";
+        return "0";
     }
     @Override
     public int describeContents() {

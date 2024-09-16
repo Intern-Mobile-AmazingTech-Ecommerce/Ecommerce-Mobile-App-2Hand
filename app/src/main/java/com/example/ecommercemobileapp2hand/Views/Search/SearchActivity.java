@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,6 +97,10 @@ public class SearchActivity extends AppCompatActivity {
     private int numberFilter = 0;
     private GenderAdapter genderAdapter;
     private Integer isFreeShip=null;
+    private static final long DEBOUNCE_DELAY = 300; // 300ms delay
+    private Handler searchHandler = new Handler();
+    private Runnable searchRunnable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,7 +197,13 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("SearchQuery", "Current query: " + newText);
-                filterList(newText, genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+
+                if (searchRunnable != null) {
+                    searchHandler.removeCallbacks(searchRunnable);
+                }
+
+                searchRunnable = () -> filterList(newText, genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
+                searchHandler.postDelayed(searchRunnable, DEBOUNCE_DELAY);
                 return false;
             }
         });
@@ -229,31 +240,38 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     void filterList(String text, String genderFilter, Boolean sortByPriceAsc, LocalDateTime thirtyDaysAgo, String onSale, String price,Integer isFreeshipFilter) {
-        // Reset lstPro to the original list before filtering
-        ArrayList<Product> filterList = new ArrayList<>(originalProductList);
+        service.execute(()->{
+            // Reset lstPro to the original list before filtering
+            ArrayList<Product> filterList = new ArrayList<>(originalProductList);
 
-        // Apply filtering logic as before
-        filterList = filterList.stream().filter(product -> genderFilter.isEmpty() || product.getProductObject().getObject_name().equalsIgnoreCase(genderFilter))
-                .filter(product -> onSale.isEmpty() || product.getProductDetailsArrayList()
-                        .stream()
-                        .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0))
-                .filter(product -> isFreeshipFilter == null || product.getIsFreeship() == isFreeshipFilter)
-                .filter(product -> product.getCreated_at().isAfter(thirtyDaysAgo))
-                .sorted((p1, p2) -> {
-                    BigDecimal salePrice1 = getMinSalePrice(p1);
-                    BigDecimal salePrice2 = getMinSalePrice(p2);
+            // Apply filtering logic as before
+            filterList = filterList.stream().filter(product -> genderFilter.isEmpty() || product.getProductObject().getObject_name().equalsIgnoreCase(genderFilter))
+                    .filter(product -> onSale.isEmpty() || product.getProductDetailsArrayList()
+                            .stream()
+                            .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0))
+                    .filter(product -> isFreeshipFilter == null || product.getIsFreeship() == isFreeshipFilter)
+                    .filter(product -> product.getCreated_at().isAfter(thirtyDaysAgo))
+                    .sorted((p1, p2) -> {
+                        BigDecimal salePrice1 = getMinSalePrice(p1);
+                        BigDecimal salePrice2 = getMinSalePrice(p2);
 
-                    if (sortByPriceAsc != null) {
-                        return sortByPriceAsc ? salePrice1.compareTo(salePrice2) : salePrice2.compareTo(salePrice1);
-                    } else {
-                        return Integer.compare(p1.getProduct_id(), p2.getProduct_id());
-                    }
-                })
-                .collect(Collectors.toCollection(ArrayList::new));
+                        if (sortByPriceAsc != null) {
+                            return sortByPriceAsc ? salePrice1.compareTo(salePrice2) : salePrice2.compareTo(salePrice1);
+                        } else {
+                            return Integer.compare(p1.getProduct_id(), p2.getProduct_id());
+                        }
+                    })
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            ArrayList<Product> finalFilterList = filterList;
+            runOnUiThread(()->{
+                updateUIWithFilterResults(text, finalFilterList);
+            });
+
+            // Clear any potential adapter caching (if applicable)
+        });
 
 
-        updateUIWithFilterResults(text, filterList);
-        // Clear any potential adapter caching (if applicable)
 
     }
     private BigDecimal getMinSalePrice(Product product) {
@@ -267,90 +285,88 @@ public class SearchActivity extends AppCompatActivity {
                 .orElse(BigDecimal.ZERO);
     }
     private void updateUIWithFilterResults(String text, ArrayList<Product> filterList) {
-        runOnUiThread(() -> {
-            ArrayList<Product> updatedFilterList = new ArrayList<>(filterList); // Create a new list to hold filtered results
+        ArrayList<Product> updatedFilterList = new ArrayList<>(filterList); // Create a new list to hold filtered results
 
-            if (!price.isEmpty()) {
-                if (price.equals("Min")) {
-                    Optional<BigDecimal> minSale = updatedFilterList.stream()
-                            .flatMap(product -> product.getProductDetailsArrayList().stream())
-                            .map(ProductDetails::getSale_price)
-                            .filter(salePrice -> salePrice.compareTo(BigDecimal.ZERO) != 0)
-                            .min(Comparator.naturalOrder());
+        if (!price.isEmpty()) {
+            if (price.equals("Min")) {
+                Optional<BigDecimal> minSale = updatedFilterList.stream()
+                        .flatMap(product -> product.getProductDetailsArrayList().stream())
+                        .map(ProductDetails::getSale_price)
+                        .filter(salePrice -> salePrice.compareTo(BigDecimal.ZERO) != 0)
+                        .min(Comparator.naturalOrder());
 
-                    Optional<BigDecimal> minNotSale = updatedFilterList.stream()
-                            .filter(product -> product.getBase_price().compareTo(minSale.get()) <= 0)
-                            .map(Product::getBase_price)
-                            .filter(Objects::nonNull)
-                            .min(Comparator.naturalOrder());
+                Optional<BigDecimal> minNotSale = updatedFilterList.stream()
+                        .filter(product -> product.getBase_price().compareTo(minSale.get()) <= 0)
+                        .map(Product::getBase_price)
+                        .filter(Objects::nonNull)
+                        .min(Comparator.naturalOrder());
 
-                    if (minNotSale.isPresent()) {
-                        BigDecimal minValue = minNotSale.get();
-                        updatedFilterList = updatedFilterList.stream()
-                                .filter(product -> product.getBase_price().compareTo(minValue) <= 0)
-                                .collect(Collectors.toCollection(ArrayList::new));
-                    } else {
-                        BigDecimal minValue = minSale.get();
-                        updatedFilterList = updatedFilterList.stream()
-                                .filter(product -> product.getProductDetailsArrayList()
-                                        .stream()
-                                        .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0 && productDetails.getSale_price().compareTo(minValue) <= 0))
-                                .collect(Collectors.toCollection(ArrayList::new));
-                    }
-                } else if (price.equals("Max")) {
-                    Optional<BigDecimal> maxSale = updatedFilterList.stream()
-                            .flatMap(product -> product.getProductDetailsArrayList().stream())
-                            .map(ProductDetails::getSale_price)
-                            .filter(salePrice -> salePrice.compareTo(BigDecimal.ZERO) != 0)
-                            .max(Comparator.naturalOrder());
-
-                    Optional<BigDecimal> maxNotSale = updatedFilterList.stream()
-                            .filter(product -> product.getBase_price().compareTo(maxSale.get()) >= 0 && product.getProductDetailsArrayList().stream().anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) == 0))
-                            .map(Product::getBase_price)
-                            .filter(Objects::nonNull)
-                            .max(Comparator.naturalOrder());
-
-                    if (maxNotSale.isPresent()) {
-                        BigDecimal maxValue = maxNotSale.get();
-                        updatedFilterList = updatedFilterList.stream()
-                                .filter(product -> product.getBase_price().compareTo(maxValue) >= 0)
-                                .collect(Collectors.toCollection(ArrayList::new));
-                    } else {
-                        BigDecimal maxValue = maxSale.get();
-                        updatedFilterList = updatedFilterList.stream()
-                                .filter(product -> product.getProductDetailsArrayList()
-                                        .stream()
-                                        .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0 && productDetails.getSale_price().compareTo(maxValue) >= 0))
-                                .collect(Collectors.toCollection(ArrayList::new));
-                    }
-                }
-            }
-
-            // Update UI based on updatedFilterList
-            if (text.isEmpty()) {
-                categoryContainer.setVisibility(View.VISIBLE);
-                linearLayoutSearch.setVisibility(View.GONE);
-                productContainer.setVisibility(View.GONE);
-            } else if (updatedFilterList.isEmpty()) {
-                linearLayoutSearch.setVisibility(View.VISIBLE);
-                categoryContainer.setVisibility(View.GONE);
-                productContainer.setVisibility(View.GONE);
-            } else {
-                productContainer.setVisibility(View.VISIBLE);
-                categoryContainer.setVisibility(View.GONE);
-                linearLayoutSearch.setVisibility(View.GONE);
-                if (proAdapter == null) {
-                    proAdapter = new ProductCardAdapter(updatedFilterList, SearchActivity.this);
-                    recyViewSearchPro.setLayoutManager(new GridLayoutManager(this, 2));
-                    recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
-                    recyViewSearchPro.setAdapter(proAdapter);
+                if (minNotSale.isPresent()) {
+                    BigDecimal minValue = minNotSale.get();
+                    updatedFilterList = updatedFilterList.stream()
+                            .filter(product -> product.getBase_price().compareTo(minValue) <= 0)
+                            .collect(Collectors.toCollection(ArrayList::new));
                 } else {
-                    proAdapter.setFilteredList(updatedFilterList);
-                    proAdapter.notifyDataSetChanged();
+                    BigDecimal minValue = minSale.get();
+                    updatedFilterList = updatedFilterList.stream()
+                            .filter(product -> product.getProductDetailsArrayList()
+                                    .stream()
+                                    .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0 && productDetails.getSale_price().compareTo(minValue) <= 0))
+                            .collect(Collectors.toCollection(ArrayList::new));
                 }
-                tvResult.setText(updatedFilterList.size() + " Result Found");
+            } else if (price.equals("Max")) {
+                Optional<BigDecimal> maxSale = updatedFilterList.stream()
+                        .flatMap(product -> product.getProductDetailsArrayList().stream())
+                        .map(ProductDetails::getSale_price)
+                        .filter(salePrice -> salePrice.compareTo(BigDecimal.ZERO) != 0)
+                        .max(Comparator.naturalOrder());
+
+                Optional<BigDecimal> maxNotSale = updatedFilterList.stream()
+                        .filter(product -> product.getBase_price().compareTo(maxSale.get()) >= 0 && product.getProductDetailsArrayList().stream().anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) == 0))
+                        .map(Product::getBase_price)
+                        .filter(Objects::nonNull)
+                        .max(Comparator.naturalOrder());
+
+                if (maxNotSale.isPresent()) {
+                    BigDecimal maxValue = maxNotSale.get();
+                    updatedFilterList = updatedFilterList.stream()
+                            .filter(product -> product.getBase_price().compareTo(maxValue) >= 0)
+                            .collect(Collectors.toCollection(ArrayList::new));
+                } else {
+                    BigDecimal maxValue = maxSale.get();
+                    updatedFilterList = updatedFilterList.stream()
+                            .filter(product -> product.getProductDetailsArrayList()
+                                    .stream()
+                                    .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0 && productDetails.getSale_price().compareTo(maxValue) >= 0))
+                            .collect(Collectors.toCollection(ArrayList::new));
+                }
             }
-        });
+        }
+
+        // Update UI based on updatedFilterList
+        if (text.isEmpty()) {
+            categoryContainer.setVisibility(View.VISIBLE);
+            linearLayoutSearch.setVisibility(View.GONE);
+            productContainer.setVisibility(View.GONE);
+        } else if (updatedFilterList.isEmpty()) {
+            linearLayoutSearch.setVisibility(View.VISIBLE);
+            categoryContainer.setVisibility(View.GONE);
+            productContainer.setVisibility(View.GONE);
+        } else {
+            productContainer.setVisibility(View.VISIBLE);
+            categoryContainer.setVisibility(View.GONE);
+            linearLayoutSearch.setVisibility(View.GONE);
+            if (proAdapter == null) {
+                proAdapter = new ProductCardAdapter(updatedFilterList, SearchActivity.this);
+                recyViewSearchPro.setLayoutManager(new GridLayoutManager(this, 2));
+                recyViewSearchPro.setItemAnimator(new DefaultItemAnimator());
+                recyViewSearchPro.setAdapter(proAdapter);
+            } else {
+                proAdapter.setFilteredList(updatedFilterList);
+                proAdapter.notifyDataSetChanged();
+            }
+            tvResult.setText(updatedFilterList.size() + " Result Found");
+        }
     }
 
 //    private void showSortByOverlay(String type) {
