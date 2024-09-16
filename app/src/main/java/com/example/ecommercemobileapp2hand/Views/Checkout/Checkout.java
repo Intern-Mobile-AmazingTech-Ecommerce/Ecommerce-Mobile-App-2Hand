@@ -22,12 +22,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserCardsHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserOrderHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserOrderProductsHandler;
 import com.example.ecommercemobileapp2hand.Models.Bag;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserAddress;
+import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
 
 import java.util.ArrayList;
@@ -39,6 +42,9 @@ public class Checkout extends AppCompatActivity {
     private ArrayList<Bag> listOrder=new ArrayList<Bag>();
     private UserAccount userAccount;
     private UserAddress userAddress;
+    private UserCards userCard;
+    private CheckoutAddressFragment addressFragment = new CheckoutAddressFragment();
+    private CheckoutPaymentFragment paymentFragment = new CheckoutPaymentFragment();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,11 +56,28 @@ public class Checkout extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        if (savedInstanceState == null) {
-            loadFragmentAddress(new CheckoutAddressFragment());
-            loadFragmentPayment(new CheckoutPaymentFragment());
+        userAccount= UserAccountManager.instance.getCurrentUserAccount();
+        UserAddressHandler.getListAdressByUserId(userAccount.getUserId(), new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
+            @Override
+            public void onResult(ArrayList<UserAddress> result) {
+                if (!result.isEmpty()){
+                    userAddress=result.get(0);
+                    addressFragment= CheckoutAddressFragment.newInstance(userAddress.getUser_address_street());
+                }
+                loadFragmentAddress(addressFragment);
+            }
+        });
+        UserCardsHandler.getListCardByUserId(userAccount.getUserId(), new UserCardsHandler.Callback<ArrayList<UserCards>>() {
+            @Override
+            public void onResult(ArrayList<UserCards> result) {
+                if (!result.isEmpty()){
+                    userCard=result.get(0);
+                    paymentFragment= CheckoutPaymentFragment.newInstance(userCard.getUser_card_number());
+                }
+                loadFragmentPayment(paymentFragment);
+            }
+        });
 
-        }
     }
     private void addControl(){
         imgBack = findViewById(R.id.imgBack);
@@ -84,8 +107,7 @@ public class Checkout extends AppCompatActivity {
         btnPlaceOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userAccount= UserAccountManager.instance.getCurrentUserAccount();
-                int userOrderID= UserOrderHandler.createUserOrder(userAccount.getUserId(),7);
+                int userOrderID= UserOrderHandler.createUserOrder(userAccount.getUserId(),userAddress.getUser_address_id());
                 if (userOrderID>0){
                     for(Bag bag : listOrder){
                         UserOrderProductsHandler.createUserOrderProduct(userOrderID,bag.getProduct_details_size_id(),bag.getAmount());
@@ -93,12 +115,8 @@ public class Checkout extends AppCompatActivity {
                     Intent orderSuccess=new Intent(Checkout.this, OrderPlaceSuccessfullyActivity.class);
                     startActivity(orderSuccess);
                 }
-
             }
         });
-    }
-    private void getUserAddress(){
-
     }
 
     private void loadFragmentAddress(Fragment fragment) {

@@ -93,7 +93,7 @@ public class BagHandler {
             {
                 CallableStatement cstmt = conn.prepareCall("call DeleteUserBag(?)");
                 cstmt.setString(1,userID);
-                ResultSet rs=cstmt.executeQuery();
+                cstmt.executeUpdate();
             } catch (SQLException e) {
                 return false;
             } finally {
