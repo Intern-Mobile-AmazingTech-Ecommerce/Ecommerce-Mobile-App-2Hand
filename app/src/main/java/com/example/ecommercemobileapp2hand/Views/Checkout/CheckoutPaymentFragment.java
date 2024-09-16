@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.ecommercemobileapp2hand.R;
 
@@ -24,11 +25,10 @@ public class CheckoutPaymentFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
+    private TextView tv_Payment;
 
     public CheckoutPaymentFragment() {
         // Required empty public constructor
@@ -39,15 +39,13 @@ public class CheckoutPaymentFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment CheckoutPaymentFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CheckoutPaymentFragment newInstance(String param1, String param2) {
+    public static CheckoutPaymentFragment newInstance(String param1) {
         CheckoutPaymentFragment fragment = new CheckoutPaymentFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,7 +55,6 @@ public class CheckoutPaymentFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -76,8 +73,12 @@ public class CheckoutPaymentFragment extends Fragment {
     }
     private void addControls(View view){
         img_payment_arrowright = view.findViewById(R.id.img_payment_arrowright);
+        tv_Payment=view.findViewById(R.id.tvPayment);
     }
     private  void addEvents(){
+        if (mParam1!=null){
+            tv_Payment.setText(mParam1);
+        }
         img_payment_arrowright.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -86,7 +86,7 @@ public class Cart extends AppCompatActivity {
         removeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BagHandler.deleteUserBag(mylist.get(1).getUser_id());
+                BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
                 loadUserBag();
             }
         });
@@ -99,7 +99,6 @@ public class Cart extends AppCompatActivity {
 //            String email = sharedPreferences.getString("userEmail", "");
             UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
             mylist = BagHandler.getData(user.getUserId());
-
             if (mylist != null && !mylist.isEmpty()) {
                 runOnUiThread(() -> {
                     myadapter = new Adapter_Cart(Cart.this , R.layout.layout_cart,mylist);
