@@ -37,8 +37,12 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
     private ExecutorService service = Executors.newCachedThreadPool();
 
     public RecycleReviewAdapter(ArrayList<ProductReview> reviewsList, Context context) {
-        this.reviewsList = reviewsList;
         this.context = context;
+        if (reviewsList == null) {
+            this.reviewsList = new ArrayList<>();
+        } else {
+            this.reviewsList = reviewsList;
+        }
 
         Collections.sort(this.reviewsList, new Comparator<ProductReview>() {
             @Override
