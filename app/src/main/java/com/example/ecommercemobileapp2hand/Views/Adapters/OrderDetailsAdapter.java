@@ -99,15 +99,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
                 holder.btnReview.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UserOrderProductsHandler.getProductDetailsID(details.getProduct_id(), details.getProduct_color_name(), details.getSize_name(), new UserOrderProductsHandler.Callback<Integer>() {
-                            @Override
-                            public void onResult(Integer result) {
-                                ((android.app.Activity) context).runOnUiThread(() -> {
-                                    showReviewOverlay(result, details);
-                                });
-                            }
-                        });
-
+                        showReviewOverlay(details);
                     }
                 });
             }
@@ -145,7 +137,7 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
         }
     }
 
-    private void showReviewOverlay(int product_detail_id, UserOrderProducts userOrderProducts) {
+    private void showReviewOverlay(UserOrderProducts userOrderProducts) {
         View view = LayoutInflater.from(context).inflate(R.layout.review_overlay, null);
 
         final Dialog dialog = new Dialog(context);
@@ -181,13 +173,13 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
                 UserAccount userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
                 if (!edt_review.getText().toString().isEmpty() && ratingBar.getRating() != 0) {
                     LocalDateTime now = LocalDateTime.now();
-                    ProductReview review = new ProductReview(-1, userAccount.getUserId(), product_detail_id, edt_review.getText().toString(), now, (int) ratingBar.getRating());
+                    ProductReview review = new ProductReview(-1, userAccount.getUserId(), userOrderProducts.getProduct_detail_id(), edt_review.getText().toString(), now, (int) ratingBar.getRating());
                     ProductReviewHandler.insertReview(review, new ProductReviewHandler.Callback<Boolean>() {
                         @Override
                         public void onResult(Boolean result) {
                             ((android.app.Activity) context).runOnUiThread(() -> {
                                 if (result) {
-                                    UserOrderProductsHandler.updateIsReviewed(userOrderProducts.getUser_order_id(), product_detail_id, true, new UserOrderProductsHandler.Callback<Boolean>() {
+                                    UserOrderProductsHandler.updateIsReviewed(userOrderProducts.getUser_order_id(), userOrderProducts.getProduct_detail_size_id(), true, new UserOrderProductsHandler.Callback<Boolean>() {
                                         @Override
                                         public void onResult(Boolean result) {
                                             ((android.app.Activity) context).runOnUiThread(() -> {

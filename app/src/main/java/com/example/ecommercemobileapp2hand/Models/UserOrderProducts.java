@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 public class UserOrderProducts implements Serializable {
     private int user_order_id;
     private int product_id;
+    private int product_detail_id;
+    private int product_detail_size_id;
     private String product_name;
     private String thumbnail;
     private String product_color_name;
@@ -19,9 +21,11 @@ public class UserOrderProducts implements Serializable {
 
     public UserOrderProducts(){}
 
-    public UserOrderProducts(int user_order_id, int product_id, String product_name, String thumbnail, String product_color_name, String size_name, int amount, BigDecimal base_price, BigDecimal sale_price, BigDecimal total_pricepro, boolean isReviewed) {
+    public UserOrderProducts(int user_order_id, int product_id, int product_detail_id, int product_detail_size_id, String product_name, String thumbnail, String product_color_name, String size_name, int amount, BigDecimal base_price, BigDecimal sale_price, BigDecimal total_pricepro, boolean isReviewed) {
         this.user_order_id = user_order_id;
         this.product_id = product_id;
+        this.product_detail_id = product_detail_id;
+        this.product_detail_size_id = product_detail_size_id;
         this.product_name = product_name;
         this.thumbnail = thumbnail;
         this.product_color_name = product_color_name;
@@ -47,6 +51,22 @@ public class UserOrderProducts implements Serializable {
 
     public void setProduct_id(int product_id) {
         this.product_id = product_id;
+    }
+
+    public int getProduct_detail_id() {
+        return product_detail_id;
+    }
+
+    public void setProduct_detail_id(int product_detail_id) {
+        this.product_detail_id = product_detail_id;
+    }
+
+    public int getProduct_detail_size_id() {
+        return product_detail_size_id;
+    }
+
+    public void setProduct_detail_size_id(int product_detail_size_id) {
+        this.product_detail_size_id = product_detail_size_id;
     }
 
     public String getProduct_name() {
