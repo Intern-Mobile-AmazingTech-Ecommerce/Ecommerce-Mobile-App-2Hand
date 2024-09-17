@@ -19,7 +19,7 @@ public class Product implements Parcelable {
     private String product_name;
     private String thumbnail;
     private BigDecimal base_price;
-    private int isFreeship;
+    private Boolean isFreeship;
     private LocalDateTime created_at;
     private int coupon_id;
     private ProductObject productObject;
@@ -51,15 +51,15 @@ public class Product implements Parcelable {
         this.coupon_id = coupon_id;
     }
 
-    public int getIsFreeship() {
+    public Boolean getIsFreeship() {
         return isFreeship;
     }
 
-    public void setIsFreeship(int isFreeship) {
+    public void setIsFreeship(Boolean isFreeship) {
         this.isFreeship = isFreeship;
     }
 
-    public Product(int product_id, String product_name, String thumbnail, BigDecimal base_price, int isFreeship, LocalDateTime created_at, int coupon_id, ProductObject productObject, ProductCategory productCategory, ArrayList<ProductDetails> productDetailsArrayList, BigDecimal sold) {
+    public Product(int product_id, String product_name, String thumbnail, BigDecimal base_price, Boolean isFreeship, LocalDateTime created_at, int coupon_id, ProductObject productObject, ProductCategory productCategory, ArrayList<ProductDetails> productDetailsArrayList, BigDecimal sold) {
         this.product_id = product_id;
         this.product_name = product_name;
         this.thumbnail = thumbnail;
@@ -144,7 +144,7 @@ public class Product implements Parcelable {
         product_name = in.readString();
         thumbnail = in.readString();
         base_price = new BigDecimal(in.readString());
-        isFreeship = in.readInt();
+        isFreeship = in.readBoolean();
         created_at = LocalDateTime.parse(in.readString());
         coupon_id = in.readInt();
         productObject = in.readParcelable(ProductObject.class.getClassLoader());
@@ -164,7 +164,7 @@ public class Product implements Parcelable {
         dest.writeString(product_name);
         dest.writeString(thumbnail);
         dest.writeString(base_price.toString());
-        dest.writeInt(isFreeship);
+        dest.writeBoolean(isFreeship);
         // Chuyển đổi LocalDateTime thành chuỗi
         dest.writeString(created_at.toString());
         dest.writeInt(coupon_id);
