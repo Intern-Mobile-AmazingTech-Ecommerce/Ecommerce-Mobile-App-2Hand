@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
@@ -30,24 +33,42 @@ public class SplashScreenActivity extends AppCompatActivity {
             return insets;
         });
 
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("UserAccount")) {
-            userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
-        }
+//        Intent intent = getIntent();
+//        if (intent != null && intent.hasExtra("UserAccount")) {
+////            userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
+//        }
 
         new Handler().postDelayed(() -> {
             SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
             String email = getEmailFromSharedPreferences();
 
-            if (isLoggedIn) {
-                Intent mainIntent = new Intent(SplashScreenActivity.this, MainActivity.class);
-                mainIntent.putExtra("email", email);
-                startActivity(mainIntent);
+            if (isLoggedIn && email != null) {
+                UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
+                    @Override
+                    public void onResult(UserAccount result) {
+                        runOnUiThread(()->{
+                            if(result != null){
+                                userAccount = result;
+                                UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                                Intent mainIntent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                                mainIntent.putExtra("email", email);
+                                startActivity(mainIntent);
+                                finish();
+                            }else {
+                                Toast.makeText(SplashScreenActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+                    }
+                });
+
             } else {
                 startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
+                finish();
             }
-            finish();
+
         }, 1000);
     }
 
