@@ -148,4 +148,40 @@ public class BagHandler {
     public interface Callback<T> {
         void onResult(T result);
     }
+    // Method to add a product to the bag using the stored procedure
+    public static void addToBag(Bag bag, Callback<Boolean> callback) {
+        try {
+            // Get a connection to the database
+            conn = dbConnect.connectionClass();
+
+            // Create the SQL query to call the stored procedure
+            String query = "{CALL CheckProductBagDuplicated(?, ?, ?)}";
+
+            // Create a CallableStatement to execute the stored procedure
+            CallableStatement stmt = conn.prepareCall(query);
+            stmt.setString(1, bag.getUser_id());
+            stmt.setInt(2, bag.getProduct_details_size_id());
+            stmt.setInt(3, bag.getAmount());
+
+            // Execute the stored procedure
+            int rowsAffected = stmt.executeUpdate();
+            boolean result = rowsAffected > 0; // Check if any rows were affected
+
+            // Use the callback to return the result
+            if (callback != null) {
+                callback.onResult(result);
+            }
+
+            // Close the statement and connection
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if (callback != null) {
+                callback.onResult(false);  // Return false if an error occurs
+            }
+        }
+    }
+
+
 }
