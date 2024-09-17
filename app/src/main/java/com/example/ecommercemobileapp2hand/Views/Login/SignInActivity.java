@@ -236,9 +236,9 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void onLoginSuccess(String email) {
-        SharedPreferences sharedPreferences = getSharedPreferences("USER_PREFS", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("loggedIn", true);
+        editor.putBoolean("isLoggedIn", true);
         editor.putString("email", email);
         editor.apply();
 
