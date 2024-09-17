@@ -1,38 +1,43 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/SCREEN"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
-    <RelativeLayout
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_coupon_title"
-        style="@style/TEXT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Coupon"
-        android:fontFamily="@font/gabarito"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"/>
-
-    <ImageButton
-        android:id="@+id/btn_close_coupon_dialog"
-        style="@style/btn_close"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:backgroundTint="#00000000"
-        android:clipToOutline="true"/>
-</RelativeLayout>
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_coupons"
+    <LinearLayout
+        style="@style/SCREEN"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_coupon_title"
+                style="@style/TEXT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Coupon"
+                android:fontFamily="@font/gabarito"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"/>
+
+            <ImageButton
+                android:id="@+id/btn_close_coupon_dialog"
+                style="@style/btn_close"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:backgroundTint="#00000000"
+                android:clipToOutline="true"/>
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_coupons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+</ScrollView>

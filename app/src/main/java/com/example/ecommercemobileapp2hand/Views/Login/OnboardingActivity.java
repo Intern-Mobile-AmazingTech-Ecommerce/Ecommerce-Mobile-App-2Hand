@@ -106,26 +106,29 @@ public class OnboardingActivity extends AppCompatActivity {
                 String email = intent.getStringExtra("email");
                 String displayName = intent.getStringExtra("displayName");
 
-                String[] nameParts = displayName.split(" ", 2);
-                String firstName = nameParts.length > 0 ? nameParts[0] : "";
-                String lastName = nameParts.length > 1 ? nameParts[1] : "";
+                if (displayName != null) {
+                    String[] nameParts = displayName.split(" ", 2);
+                    String firstName = nameParts.length > 0 ? nameParts[0] : "";
+                    String lastName = nameParts.length > 1 ? nameParts[1] : "";
 
-                UserAccountHandler.saveUserToDB(firstName, lastName, email, gender, ageRange);
+                    UserAccountHandler.saveUserToDB(firstName, lastName, email, gender, ageRange);
 
-                SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("gender_key", gender);
-                editor.putString("age_range_key", ageRange);
-                editor.putBoolean("onboardingCompleted", true);
-                editor.apply();
+                    SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("gender_key", gender);
+                    editor.putString("age_range_key", ageRange);
+                    editor.putBoolean("onboardingCompleted", true);
+                    editor.apply();
 
-                Intent mainIntent = new Intent(OnboardingActivity.this, MainActivity.class);
-                mainIntent.putExtra("email", email);
-                startActivity(mainIntent);
-                finish();
+                    Intent mainIntent = new Intent(OnboardingActivity.this, MainActivity.class);
+                    mainIntent.putExtra("email", email);
+                    startActivity(mainIntent);
+                    finish();
+                } else {
+                    Log.e("OnboardingActivity", "Display name is null");
+                }
             }
         });
-
     }
 
     private List<Age> getList() {

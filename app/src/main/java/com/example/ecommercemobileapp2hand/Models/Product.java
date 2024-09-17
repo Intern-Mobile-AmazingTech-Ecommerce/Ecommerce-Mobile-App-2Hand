@@ -39,6 +39,10 @@ public class Product implements Parcelable {
     public Product() {
     }
 
+    public BigDecimal getPrice() {
+        return base_price;
+    }
+
     public int getCoupon_id() {
         return coupon_id;
     }

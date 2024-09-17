@@ -64,12 +64,13 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout actionBar;
     private FrameLayout frameLayout;
     private TextView tvFragmentName;
-    private ImageButton btnAvt,btnBag;
+    private ImageButton btnAvt, btnBag;
     private MaterialButton btnObject;
     private ArrayList<String> listObj;
     private UserAccount userAccount;
     private SharedPreferences sharedPreferences;
     private String firstURL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,14 +99,12 @@ public class MainActivity extends AppCompatActivity {
             sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("user_email", email);
-            editor.putString("user_id",userId);
+            editor.putString("user_id", userId);
             editor.apply();
         }
     }
 
-
-    private void getIt()
-    {
+    private void getIt() {
         userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
         if (userAccount != null) {
             firstURL = userAccount.getImgUrl();
@@ -114,55 +113,43 @@ public class MainActivity extends AppCompatActivity {
             firstURL = null;
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         addEvent();
         addCart();
         loadAvt();
-//        hideActionBar();
     }
 
-//    private void hideActionBar(){
-//        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.frameLayout);
-//
-//        btnAvt = findViewById(R.id.btnAvt);
-//        btnObject = findViewById(R.id.btnObject);
-//        btnBag = findViewById(R.id.btnBag);
-//
-//        Intent intent = getIntent();
-//        boolean hideActionBar = intent.getBooleanExtra("hideActionBar", false);
-//
-//        if (currentFragment instanceof SettingsFragment) {
-//           btnAvt.setVisibility(View.GONE);
-//           btnObject.setVisibility(View.GONE);
-//           btnBag.setVisibility(View.GONE);
-//        } else {
-//            btnAvt.setVisibility(View.VISIBLE);
-//            btnObject.setVisibility(View.VISIBLE);
-//            btnBag.setVisibility(View.VISIBLE);
-//        }
-//    }
-    private void loadAvt(){
-        String imgUrl = UserAccountManager.getInstance().getCurrentUserAccount().getImgUrl();
-        if(imgUrl != null && !imgUrl.isEmpty()){
-            Util.getCloudinaryImageUrl(getApplicationContext(), imgUrl, -1, -1, new Util.Callback<String>() {
-                @Override
-                public void onResult(String result) {
-                    String url = result;
-                    if(!url.isEmpty()){
-                        runOnUiThread(()->{
-                            Glide.with(getApplicationContext()).load(url).into(btnAvt);
-                        });
+    private void loadAvt() {
+        UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
+        if (user != null) {
+            String imgUrl = user.getImgUrl();
+            if (imgUrl != null && !imgUrl.isEmpty()) {
+                Util.getCloudinaryImageUrl(getApplicationContext(), imgUrl, -1, -1, new Util.Callback<String>() {
+                    @Override
+                    public void onResult(String result) {
+                        String url = result;
+                        if (!url.isEmpty()) {
+                            runOnUiThread(() -> {
+                                Glide.with(getApplicationContext()).load(url).into(btnAvt);
+                            });
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                Bitmap bitmap = Util.convertStringToBitmapFromAccess(this, "avt.png");
+                btnAvt.setImageBitmap(bitmap);
+            }
         } else {
-            Bitmap bitmap = Util.convertStringToBitmapFromAccess(this,"avt.png");
+            // Handle the case where user is null
+            Bitmap bitmap = Util.convertStringToBitmapFromAccess(this, "avt.png");
             btnAvt.setImageBitmap(bitmap);
         }
     }
-    private void addControl(){
+
+    private void addControl() {
         bottomNavigationView = findViewById(R.id.bottom_nav);
         actionBar = findViewById(R.id.action_bar);
         frameLayout = findViewById(R.id.frameLayout);
@@ -171,35 +158,33 @@ public class MainActivity extends AppCompatActivity {
         btnBag = findViewById(R.id.btnBag);
         btnObject = findViewById(R.id.btnObject);
         sharedPreferences = getSharedPreferences("my_userID", MODE_PRIVATE);
-        gender = sharedPreferences.getString("gender_key","");
-        if (gender.isEmpty()){
+        gender = sharedPreferences.getString("gender_key", "");
+        if (gender.isEmpty()) {
             gender = "Men";
         }
         btnObject.setText(gender);
-//        btnObject.setText(userAccount.getGender());
-
     }
-    private void addCart(){
+
+    private void addCart() {
         btnBag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<Bag> listBag= BagHandler.getData(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-                if (!listBag.isEmpty()){
+                ArrayList<Bag> listBag = BagHandler.getData(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+                if (!listBag.isEmpty()) {
                     Intent myintent = new Intent(MainActivity.this, Cart.class);
                     startActivity(myintent);
-                }
-                else{
+                } else {
                     Intent myintent = new Intent(MainActivity.this, EmptyCart.class);
                     startActivity(myintent);
                 }
-
             }
         });
     }
-    private void binding(){
+
+    private void binding() {
         Intent intent = getIntent();
         bottomNavigationView = findViewById(R.id.bottom_nav);
-        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo")) && intent.getBooleanExtra("ActionBarOFF",false) == true) {
+        if (intent != null && "SettingsFragment".equals(intent.getStringExtra("navigateTo")) && intent.getBooleanExtra("ActionBarOFF", false)) {
             btnObject.setVisibility(GONE);
             btnAvt.setVisibility(GONE);
             btnBag.setVisibility(GONE);
@@ -210,23 +195,21 @@ public class MainActivity extends AppCompatActivity {
         } else if (intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))) {
             LoadFragment(new OrdersFragment());
             bottomNavigationView.setSelectedItemId(R.id.itemOrders);
-        }
-        else if(intent != null && "NotificationsDetailFragment".equals(intent.getStringExtra("navigateTo"))){
+        } else if (intent != null && "NotificationsDetailFragment".equals(intent.getStringExtra("navigateTo"))) {
             LoadFragment(new NotificationsFragment());
             bottomNavigationView.setSelectedItemId(R.id.itemNotifications);
-        }
-        else{
+        } else {
             LoadFragment(new HomeFragment());
         }
     }
-    private void addEvent(){
 
+    private void addEvent() {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.itemHome) {
-                    if(firstURL != userAccount.getImgUrl()){
+                    if (firstURL != userAccount.getImgUrl()) {
                         firstURL = userAccount.getImgUrl();
                         loadAvt();
                     }
@@ -238,7 +221,6 @@ public class MainActivity extends AppCompatActivity {
 
                     return true;
                 } else if (id == R.id.itemNotifications) {
-
                     btnObject.setVisibility(GONE);
                     btnAvt.setVisibility(GONE);
                     btnBag.setVisibility(GONE);
@@ -273,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void LoadFragment(Fragment fragment){
+    private void LoadFragment(Fragment fragment) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("UserAccount", (Serializable) userAccount);
         fragment.setArguments(bundle);
@@ -283,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
         ft.addToBackStack(null);
         ft.commit();
     }
+
     private void showGenderOverlay(String type) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
@@ -302,25 +285,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         RecyclerView recy_gender = dialogView.findViewById(R.id.recy_gender);
 
-         ProductObjectHandler.getData(new ProductObjectHandler.Callback<ArrayList<ProductObject>>() {
+        ProductObjectHandler.getData(new ProductObjectHandler.Callback<ArrayList<ProductObject>>() {
             @Override
             public void onResult(ArrayList<ProductObject> result) {
                 ArrayList<ProductObject> genderArr = result;
-                runOnUiThread(()->{
+                runOnUiThread(() -> {
                     GenderAdapter genderAdapter = new GenderAdapter(genderArr, MainActivity.this, btnObject.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
                         @Override
                         public void onGenderSelected(String selectedGender) {
                             btnObject.setText(selectedGender);
-                            sharedPreferences = getSharedPreferences("my_userID",MODE_PRIVATE);
+                            sharedPreferences = getSharedPreferences("my_userID", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("gender_key", selectedGender);
                             Boolean isSaved = editor.commit();
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-//                HomeFragment homeFragment = (HomeFragment) fragmentManager.findFragmentById(R.id.frameLayout);
                             if (isSaved) {
                                 LoadFragment(new HomeFragment());
                             }
@@ -336,8 +315,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         bottomSheetDialog.show();
-
     }
 }

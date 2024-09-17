@@ -30,9 +30,9 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.CouponView
     @Override
     public void onBindViewHolder(@NonNull CouponViewHolder holder, int position) {
         Coupon coupon = couponList.get(position);
-        holder.tvCouponName.setText(coupon.getName());
         holder.tvCouponCode.setText(coupon.getCode());
-        holder.tvCouponDiscount.setText(coupon.getDiscountTypeOrPercentage());
+        String discountText = coupon.getDiscountValue().toString() + "%";
+        holder.tvCouponDiscount.setText(discountText);
         holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(coupon));
     }
 
@@ -42,11 +42,10 @@ public class CouponAdapter extends RecyclerView.Adapter<CouponAdapter.CouponView
     }
 
     static class CouponViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCouponName, tvCouponCode, tvCouponDiscount;
+        TextView tvCouponCode, tvCouponDiscount;
 
         public CouponViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvCouponName = itemView.findViewById(R.id.tvCouponName);
             tvCouponCode = itemView.findViewById(R.id.tvCouponCode);
             tvCouponDiscount = itemView.findViewById(R.id.tvCouponDiscount);
         }

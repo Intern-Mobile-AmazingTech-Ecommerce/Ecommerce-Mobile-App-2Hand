@@ -37,6 +37,7 @@ import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
@@ -104,15 +105,12 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
         Product pro = lstPro.get(position);
-        //First Sale Details
+        // First Sale Details
         ProductDetails details = new ProductDetails();
         Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
                 .filter(detail -> detail.getSale_price() != null && detail.getSale_price().compareTo(BigDecimal.ZERO) > 0)
                 .findFirst();
-        String url = "";
-
 
         if (firstSaleDetails.isPresent()) {
             details = firstSaleDetails.get();
@@ -120,7 +118,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 @Override
                 public void onResult(String result) {
                     String imgUrl = result;
-                    ((android.app.Activity) context).runOnUiThread(() -> {
+                    ((Activity) context).runOnUiThread(() -> {
                         Glide.with(context).load(imgUrl).override(159, 220).into(holder.img_Product);
                     });
                 }
@@ -130,82 +128,76 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 @Override
                 public void onResult(String result) {
                     String imgUrl = result;
-                    ((android.app.Activity) context).runOnUiThread(() -> {
+                    ((Activity) context).runOnUiThread(() -> {
                         Glide.with(context).load(imgUrl).override(159, 220).into(holder.img_Product);
                     });
                 }
             });
         }
+
         ProductDetails finalDetails = details;
         holder.tvProductName.setText(pro.getProduct_name());
         holder.tvSalePrice.setVisibility(View.VISIBLE);
 
         if (firstSaleDetails.isPresent()) {
-            Log.d("IMG_URL DETAILS" + finalDetails.getProduct_details_id(), finalDetails.getImgDetailsArrayList().get(0).getImg_url());
-            holder.tvSalePrice.setText("$" + String.valueOf(finalDetails.getSale_price()));
-            holder.tvPrice.setText("$" + String.valueOf(pro.getBase_price()));
-            // Gạch ngang giá gốc
+            holder.tvSalePrice.setText("$" + finalDetails.getSale_price().toString());
+            holder.tvPrice.setText("$" + pro.getBase_price().toString());
             holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             holder.tvPrice.setVisibility(View.GONE);
-            holder.tvSalePrice.setText("$" + String.valueOf(pro.getBase_price()));
+            holder.tvSalePrice.setText("$" + pro.getBase_price().toString());
         }
 
+        holder.productCard.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ProductPage.class);
+            Bundle bundle = new Bundle();
 
-        holder.productCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ProductPage.class);
-                Bundle bundle = new Bundle();
-
-                if (currentWishListID != -1) {
-                    ProductHandler.getDataByProductID(pro.getProduct_id(), new ProductHandler.Callback<Product>() {
-                        @Override
-                        public void onResult(Product result) {
-                            Product ProDetails = result;
-                            ((android.app.Activity) context).runOnUiThread(() -> {
-                                bundle.putParcelable("lstDetails", ProDetails);
-                                if (firstSaleDetails.isPresent()) {
-                                    bundle.putParcelable("currentSale", finalDetails);
-                                }
-                                intent.putExtras(bundle);
-                                context.startActivity(intent);
-                            });
-                        }
-                    });
-
-
-                } else {
-                    bundle.putParcelable("lstDetails", pro);
-                    if (firstSaleDetails.isPresent()) {
-                        bundle.putParcelable("currentSale", finalDetails);
+            if (currentWishListID != -1) {
+                ProductHandler.getDataByProductID(pro.getProduct_id(), new ProductHandler.Callback<Product>() {
+                    @Override
+                    public void onResult(Product result) {
+                        Product ProDetails = result;
+                        ((Activity) context).runOnUiThread(() -> {
+                            bundle.putParcelable("lstDetails", ProDetails);
+                            if (firstSaleDetails.isPresent()) {
+                                bundle.putParcelable("currentSale", finalDetails);
+                            }
+                            intent.putExtras(bundle);
+                            context.startActivity(intent);
+                        });
                     }
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
+                });
+            } else {
+                bundle.putParcelable("lstDetails", pro);
+                if (firstSaleDetails.isPresent()) {
+                    bundle.putParcelable("currentSale", finalDetails);
                 }
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             }
         });
-        if(WishlistHandler.isConnectionValid()){
-            WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), new WishlistHandler.Callback<Boolean>() {
-                @Override
-                public void onResult(Boolean result) {
-                    ((Activity) context).runOnUiThread(() -> {
-                        if (result) {
-                            holder.img_Heart.setIconResource(R.drawable.red_heart);
-                            holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.RED));
-                        } else {
-                            holder.img_Heart.setIconResource(R.drawable.black_heart);
-                            holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.BLACK));
-                        }
-                        if (currentWishListID != -1) {
-                            holder.img_Heart.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
+
+        UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
+        if (user != null) {
+            if (WishlistHandler.isConnectionValid()) {
+                WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), user.getUserId(), new WishlistHandler.Callback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean result) {
+                        ((Activity) context).runOnUiThread(() -> {
+                            if (result) {
+                                holder.img_Heart.setIconResource(R.drawable.red_heart);
+                                holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.RED));
+                            } else {
+                                holder.img_Heart.setIconResource(R.drawable.black_heart);
+                                holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.BLACK));
+                            }
+                            if (currentWishListID != -1) {
+                                holder.img_Heart.setOnClickListener(v -> {
                                     if (result) {
                                         WishlistHandler.removeFromWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
                                             @Override
                                             public void onResult(Boolean result) {
-                                                ((android.app.Activity) context).runOnUiThread(() -> {
+                                                ((Activity) context).runOnUiThread(() -> {
                                                     if (result) {
                                                         notifyDataSetChanged();
                                                         Toast.makeText(context, "Product Removed From Wishlist Successfully", Toast.LENGTH_SHORT).show();
@@ -219,7 +211,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                                         WishlistHandler.insertToWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
                                             @Override
                                             public void onResult(Boolean result) {
-                                                ((android.app.Activity) context).runOnUiThread(() -> {
+                                                ((Activity) context).runOnUiThread(() -> {
                                                     if (result) {
                                                         notifyDataSetChanged();
                                                         Toast.makeText(context, "Product inserted into Wishlist Successfully", Toast.LENGTH_SHORT).show();
@@ -230,27 +222,20 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                                             }
                                         });
                                     }
-
-                                }
-                            });
-                        } else {
-                            holder.img_Heart.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    showAddToWLOverlay(finalDetails, holder.getAdapterPosition());
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }else
-        {
-            Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                                });
+                            } else {
+                                holder.img_Heart.setOnClickListener(v -> showAddToWLOverlay(finalDetails, holder.getAdapterPosition()));
+                            }
+                        });
+                    }
+                });
+            } else {
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // Handle the case where user is null
+            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
         }
-
-
-
     }
 
     @Override
