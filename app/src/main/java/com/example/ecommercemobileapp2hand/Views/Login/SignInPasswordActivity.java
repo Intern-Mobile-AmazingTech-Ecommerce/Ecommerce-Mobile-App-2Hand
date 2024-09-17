@@ -37,9 +37,9 @@ public class SignInPasswordActivity extends AppCompatActivity {
     String email;
     ImageButton btnReturn;
     private FirebaseAuth firebaseAuth;
-    SignInActivity signInActivity;
     private static final String PREFS_NAME = "user_prefs";
     private static final String KEY_IS_LOGGED_IN = "isLoggedIn";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,17 +96,16 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                     UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
                                         @Override
                                         public void onResult(UserAccount result) {
-                                            UserAccount userAccount = result;
-                                            runOnUiThread(()->{
+                                            userAccount = result;
+                                            runOnUiThread(() -> {
                                                 UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-                                                //truyền thông tin user qua MainActivity
+                                                // truyền thông tin user qua MainActivity
                                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                                 if (user != null) {
-                                                    signInActivity.onLoginSuccess(user.getEmail());
                                                     intent.putExtra("UserAccount", userAccount);
                                                     intent.putExtra("email", user.getEmail());
                                                     intent.putExtra("displayName", user.getDisplayName());
-                                                    intent.putExtra("user_id",user.getUid());
+                                                    intent.putExtra("user_id", user.getUid());
                                                 }
 
                                                 startActivity(intent);
@@ -154,12 +153,9 @@ public class SignInPasswordActivity extends AppCompatActivity {
     }
 
     private void returnToSignIn() {
-        btnReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(SignInPasswordActivity.this, SignInActivity.class));
-                finish();
-            }
+        btnReturn.setOnClickListener(view -> {
+            startActivity(new Intent(SignInPasswordActivity.this, SignInActivity.class));
+            finish();
         });
     }
 }
