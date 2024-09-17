@@ -138,7 +138,7 @@
             tools:ignore="DiscouragedApi" />
         <activity
             android:name=".Views.Settings.AddAddressActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi" />
         <activity

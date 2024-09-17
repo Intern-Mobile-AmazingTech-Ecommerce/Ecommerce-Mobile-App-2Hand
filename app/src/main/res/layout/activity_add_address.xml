@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:fontFamily="@font/gabarito"
-            android:text="Add Address"
+            android:text="Edit Address"
             android:textFontWeight="700"
             android:textSize="16dp" />
     </RelativeLayout>
@@ -61,12 +61,25 @@
         android:inputType="text"
         style="@style/address_param_box" />
 
+    <EditText
+        android:id="@+id/edtPhone"
+        style="@style/address_param_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edtStreetAddress"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="75dp"
+        android:layout_marginBottom="12dp"
+        android:hint="Phone"
+        android:inputType="text" />
+
     <LinearLayout
         android:id="@+id/linearstatezip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/edtCity"
         android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="72dp"
         android:layout_marginBottom="12dp"
         android:orientation="horizontal">
 
@@ -92,12 +105,24 @@
 
     <Button
         android:id="@+id/btnSaveAddress"
-        android:layout_marginHorizontal="24dp"
+        style="@style/btn_continue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="34dp"
         android:layout_alignParentBottom="true"
-        android:text="Save"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="82dp"
+        android:backgroundTint="@color/purple"
+        android:text="Save" />
+
+    <Button
+        android:id="@+id/btnDeleteAddress"
         style="@style/btn_continue"
-        android:backgroundTint="@color/purple"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="34dp"
+        android:backgroundTint="@color/red"
+        android:text="Delete" />
+
 </RelativeLayout>
