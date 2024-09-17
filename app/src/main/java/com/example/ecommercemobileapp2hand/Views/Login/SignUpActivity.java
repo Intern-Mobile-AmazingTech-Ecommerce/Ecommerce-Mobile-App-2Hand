@@ -160,7 +160,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     intent.putExtra("firstName", firstName);
                                     intent.putExtra("lastName", lastName);
                                     String displayName = firstName + " " + lastName;
-                                    UserAccountHandler.saveUserAccount(email, displayName, "Google");
+                                    intent.putExtra("displayName", displayName); // Ensure displayName is passed
                                     startActivity(intent);
                                     finish();
                                     Toast.makeText(SignUpActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
@@ -169,7 +169,6 @@ public class SignUpActivity extends AppCompatActivity {
                                 }
                             }
                         });
-
             }
         });
     }

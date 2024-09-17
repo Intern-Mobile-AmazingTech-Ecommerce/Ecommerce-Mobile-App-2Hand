@@ -165,6 +165,11 @@ public class SettingsFragment extends Fragment {
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(),
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build());
 
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isLoggedIn", false);
+        editor.apply();
+
         googleSignInClient.signOut().addOnCompleteListener(task -> {
             LoginManager.getInstance().logOut();
             startActivity(new Intent(getActivity(), SignInActivity.class));
@@ -172,6 +177,8 @@ public class SettingsFragment extends Fragment {
             Toast.makeText(getActivity(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
         });
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -196,7 +203,7 @@ public class SettingsFragment extends Fragment {
     }
     private void nightModeSwitch(View view) {
         switcher = view.findViewById(R.id.switcher);
-        sharedPreferences = getActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
         nightMode = sharedPreferences.getBoolean("night", false);
 
         if (nightMode) {
@@ -211,7 +218,7 @@ public class SettingsFragment extends Fragment {
 
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.putExtra("navigateTo", "SettingsFragment");
-            intent.putExtra("ActionBarOFF",true);
+            intent.putExtra("ActionBarOFF", true);
             intent.putExtra("hideActionBar", true);
             startActivity(intent);
 
