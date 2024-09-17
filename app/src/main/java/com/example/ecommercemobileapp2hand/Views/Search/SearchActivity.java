@@ -96,7 +96,7 @@ public class SearchActivity extends AppCompatActivity {
     private TextView btn_clear_overlay;
     private int numberFilter = 0;
     private GenderAdapter genderAdapter;
-    private Integer isFreeShip=null;
+    private Boolean isFreeShip=null;
     private static final long DEBOUNCE_DELAY = 300; // 300ms delay
     private Handler searchHandler = new Handler();
     private Runnable searchRunnable;
@@ -239,7 +239,7 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    void filterList(String text, String genderFilter, Boolean sortByPriceAsc, LocalDateTime thirtyDaysAgo, String onSale, String price,Integer isFreeshipFilter) {
+    void filterList(String text, String genderFilter, Boolean sortByPriceAsc, LocalDateTime thirtyDaysAgo, String onSale, String price,Boolean isFreeshipFilter) {
         service.execute(()->{
             // Reset lstPro to the original list before filtering
             ArrayList<Product> filterList = new ArrayList<>(originalProductList);
@@ -713,7 +713,7 @@ public class SearchActivity extends AppCompatActivity {
                 else if(selectedSortBy.equalsIgnoreCase("Free Shipping Eligible"))
                 {
                     onSale="";
-                    isFreeShip=1;
+                    isFreeShip=true;
                     btnDeals.setText(selectedSortBy);
                     filterChangeDeal = true;
 

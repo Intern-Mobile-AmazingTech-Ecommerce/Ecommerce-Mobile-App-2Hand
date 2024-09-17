@@ -50,7 +50,7 @@ public class ProductHandler {
                         p.setThumbnail(rs.getString(3));
                         p.setBase_price(rs.getBigDecimal(4));
                         p.setSold(rs.getBigDecimal(5));
-                        p.setIsFreeship(rs.getInt(6));
+                        p.setIsFreeship(rs.getBoolean(6));
 
                         Timestamp timestamp = rs.getTimestamp(7);
 
@@ -126,7 +126,7 @@ public class ProductHandler {
                         p.setThumbnail(rs.getString(3));
                         p.setBase_price(rs.getBigDecimal(4));
                         p.setSold(rs.getBigDecimal(5));
-                        p.setIsFreeship(rs.getInt(6));
+                        p.setIsFreeship(rs.getBoolean(6));
 
                         Timestamp timestamp = rs.getTimestamp(7);
 
@@ -204,7 +204,7 @@ public class ProductHandler {
                         p.setThumbnail(rs.getString(3));
                         p.setBase_price(rs.getBigDecimal(4));
                         p.setSold(rs.getBigDecimal(5));
-                        p.setIsFreeship(rs.getInt(6));
+                        p.setIsFreeship(rs.getBoolean(6));
 
                         Timestamp timestamp = rs.getTimestamp(7);
 
@@ -278,7 +278,7 @@ public class ProductHandler {
                         p.setThumbnail(rs.getString(3));
                         p.setBase_price(rs.getBigDecimal(4));
                         p.setSold(rs.getBigDecimal(5));
-                        p.setIsFreeship(rs.getInt(6));
+                        p.setIsFreeship(rs.getBoolean(6));
 
                         Timestamp timestamp = rs.getTimestamp(7);
                         if (timestamp != null) {

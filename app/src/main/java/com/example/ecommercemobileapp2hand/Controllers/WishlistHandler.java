@@ -50,7 +50,7 @@ public class WishlistHandler {
                         p.setThumbnail(rs.getString(3));
                         p.setBase_price(rs.getBigDecimal(4));
                         p.setSold(rs.getBigDecimal(5));
-                        p.setIsFreeship(6);
+                        p.setIsFreeship(rs.getBoolean(6));
                         Timestamp timestamp = rs.getTimestamp(7);
                         if (timestamp != null) {
                             LocalDateTime localDateTime = timestamp.toInstant()
