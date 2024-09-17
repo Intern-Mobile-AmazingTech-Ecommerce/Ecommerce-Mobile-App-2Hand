@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="284dp"
-        android:layout_marginTop="93dp"
+        android:layout_marginTop="63dp"
         android:text="Remove All"
         style="@style/cart_remove_all"/>
 
@@ -39,9 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="100dp"
         android:layout_marginRight="24dp"
-        android:layout_marginBottom="350dp"
+        android:layout_marginBottom="380dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="8dp"/>
 
@@ -140,6 +140,31 @@
             android:layout_marginTop="12dp">
 
             <TextView
+                android:id="@+id/textViewDiscount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/circularstdmedium500"
+                android:text="Discount"
+                android:textColor="#8C8C8C"
+                android:textFontWeight="450"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/txtDiscount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$0.00"
+                style="@style/cart_fee"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <TextView
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -150,7 +175,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/txtTotal"
+                android:id="@+id/txtTotalPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -161,6 +186,8 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/frameLayout3"
+        style="@style/cart_enter_coupon"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_alignParentEnd="true"
@@ -168,60 +195,77 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
-        style="@style/cart_enter_coupon"
-        android:layout_marginBottom="140dp">
+        android:layout_marginBottom="160dp">
 
         <ImageView
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
             android:id="@+id/imageView5"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/discountshape" />
 
-        <TextView
-            android:id="@+id/textView11"
-            android:textColor="#8C8C8C"
-            android:layout_marginTop="18dp"
-            android:layout_marginLeft="53dp"
-            android:fontFamily="@font/circularstdmedium500"
+        <EditText
+            android:id="@+id/coupon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12dp"
-            android:text="Enter Coupon Code" />
+            android:layout_marginLeft="53dp"
+            android:layout_marginTop="18dp"
+            android:background="@null"
+            android:fontFamily="@font/circularstdmedium500"
+            android:hint="Enter Coupon Code"
+            android:textColor="#8C8C8C"
+            android:textSize="14dp" />
 
         <ImageButton
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginRight="9dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/button"
-            android:id="@+id/imageButton3"
+            android:id="@+id/applyCouponButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="9dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/button"
             app:srcCompat="@drawable/arrowright2_white" />
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/select_coupon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/frameLayout2"
+        android:layout_alignTop="@+id/frameLayout3"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="31dp"
+        android:layout_marginLeft="53dp"
+        android:layout_marginTop="63dp"
+        android:layout_marginBottom="38dp"
+        android:background="@null"
+        android:fontFamily="@font/circularstdmedium500"
+        android:text="Select Coupon Code"
+        android:textColor="#8C8C8C"
+        android:textSize="14dp" />
+
     <FrameLayout
+        android:id="@+id/frameLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        >
+        android:layout_alignParentBottom="true">
 
         <Button
-            android:backgroundTint="@color/purple"
-            android:layout_marginTop="14dp"
-            android:layout_marginRight="24dp"
-            android:layout_marginLeft="24dp"
-            android:layout_marginBottom="14dp"
             android:id="@+id/btnCheckout"
-            android:textColor="#ffffff"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:text="Checkout" />
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="14dp"
+            android:backgroundTint="@color/purple"
+            android:text="Checkout"
+            android:textColor="#ffffff" />
     </FrameLayout>
 
 </RelativeLayout>

@@ -52,22 +52,24 @@ public class SplashScreenActivity extends AppCompatActivity {
                                             UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
                                             startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
                                         });
+                                        finish();
                                     }
                                 });
 
                             } else {firebaseAuth.signOut();
                                 startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
+                                finish();
                             }
                         }
                     });
                 } else {
                     firebaseAuth.signOut();
                     startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
+                    finish();
                 }
             } else {
                 startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
             }
-            finish();
         }, 1000);
     }
 

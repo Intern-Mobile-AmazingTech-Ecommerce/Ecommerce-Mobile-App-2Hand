@@ -38,16 +38,13 @@ public class CouponDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: Dialog created");
         fetchCoupons();
     }
 
     private void fetchCoupons() {
-        Log.d(TAG, "fetchCoupons: Fetching coupons");
         CouponHandler.getCoupons(new CouponHandler.Callback<ArrayList<Coupon>>() {
             @Override
             public void onResult(ArrayList<Coupon> result) {
-                Log.d(TAG, "fetchCoupons: Coupons fetched, size: " + result.size());
                 ((Activity) context).runOnUiThread(() -> {
                     coupons.addAll(result);
                     setupDialog();
@@ -57,20 +54,16 @@ public class CouponDialog extends Dialog {
     }
 
     private void setupDialog() {
-        Log.d(TAG, "setupDialog: Setting up dialog");
         if (coupons.isEmpty()) {
-            Log.d(TAG, "setupDialog: No coupons available, showing empty dialog");
             setContentView(R.layout.empty_coupon_dialog);
             Button btnClose = findViewById(R.id.btn_close_coupon_dialog);
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "setupDialog: Close button clicked");
                     dismiss();
                 }
             });
         } else {
-            Log.d(TAG, "setupDialog: Coupons available, showing coupon dialog");
             setContentView(R.layout.coupon_dialog);
             RecyclerView recyclerView = findViewById(R.id.recycler_view_coupons);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -84,7 +77,6 @@ public class CouponDialog extends Dialog {
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "setupDialog: Close button clicked");
                     dismiss();
                 }
             });
@@ -98,7 +90,6 @@ public class CouponDialog extends Dialog {
             layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
             layoutParams.gravity = Gravity.BOTTOM;
             window.setAttributes(layoutParams);
-            Log.d(TAG, "setupDialog: Window attributes set");
         }
     }
 

@@ -16,8 +16,9 @@ public class Bag implements Serializable {
     private int amount;
     private String color;
     private String image;
+    private Product product;
 
-    public Bag(int bag_id, String user_id, int product_details_size_id, int product_details_id, int product_id, String product_name, BigDecimal basePrice, BigDecimal salePrice, String size, int amount, String color, String image) {
+    public Bag(int bag_id, String user_id, int product_details_size_id, int product_details_id, int product_id, String product_name, BigDecimal basePrice, BigDecimal salePrice, String size, int amount, String color, String image, Product product) {
         this.bag_id = bag_id;
         this.user_id = user_id;
         this.product_details_size_id = product_details_size_id;
@@ -30,6 +31,15 @@ public class Bag implements Serializable {
         this.amount = amount;
         this.color = color;
         this.image = image;
+        this.product = product;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public String getUser_id() {

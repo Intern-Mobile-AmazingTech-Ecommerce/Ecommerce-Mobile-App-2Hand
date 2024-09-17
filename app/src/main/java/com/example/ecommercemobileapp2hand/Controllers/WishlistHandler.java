@@ -190,7 +190,6 @@ public class WishlistHandler {
     }
 
     public static void checkProductDetailsExistsInWishlistByUserID(int product_details_id, String userID, Callback<Boolean> callback) {
-
         ExecutorService service = Executors.newSingleThreadExecutor();
         service.execute(() -> {
             Connection conn = null;
@@ -203,9 +202,9 @@ public class WishlistHandler {
                     throw new SQLException("Connection is closed or null");
                 }
                 String sql = "SELECT COUNT(*) " +
-                             "FROM wishlist_product wp " +
-                             "INNER JOIN wishlist w ON w.wishlist_id = wp.wishlist_id " +
-                             "WHERE product_details_id = ? AND w.user_id = ?";
+                        "FROM wishlist_product wp " +
+                        "INNER JOIN wishlist w ON w.wishlist_id = wp.wishlist_id " +
+                        "WHERE product_details_id = ? AND w.user_id = ?";
                 stmt = conn.prepareStatement(sql);
                 stmt.setInt(1, product_details_id);
                 stmt.setString(2, userID);
@@ -224,7 +223,7 @@ public class WishlistHandler {
                     e.printStackTrace();
                 }
             }
-//            shutDownExecutor(service);
+            shutDownExecutor(service);
         });
     }
 

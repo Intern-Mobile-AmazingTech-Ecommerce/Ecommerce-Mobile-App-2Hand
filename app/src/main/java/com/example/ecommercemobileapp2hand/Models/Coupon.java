@@ -27,6 +27,16 @@ public class Coupon {
         this.isActive = isActive;
     }
 
+    public Coupon(String code, String discountType, BigDecimal discountValue, BigDecimal minOrderValue, Date startDate, Date endDate, boolean isActive) {
+        this.code = code;
+        this.discountType = discountType;
+        this.discountValue = discountValue;
+        this.minOrderValue = minOrderValue;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.isActive = isActive;
+    }
+
     public int getCouponId() {
         return couponId;
     }
@@ -97,5 +107,9 @@ public class Coupon {
 
     public String getDiscountTypeOrPercentage() {
         return discountType + " " + discountValue.toString();
+    }
+
+    public String getType() {
+        return discountType;
     }
 }
