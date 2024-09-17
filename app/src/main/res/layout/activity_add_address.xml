@@ -66,9 +66,8 @@
         style="@style/address_param_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edtStreetAddress"
+        android:layout_below="@+id/edtCity"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="75dp"
         android:layout_marginBottom="12dp"
         android:hint="Phone"
         android:inputType="text" />
@@ -77,9 +76,8 @@
         android:id="@+id/linearstatezip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edtCity"
+        android:layout_below="@id/edtPhone"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="72dp"
         android:layout_marginBottom="12dp"
         android:orientation="horizontal">
 
