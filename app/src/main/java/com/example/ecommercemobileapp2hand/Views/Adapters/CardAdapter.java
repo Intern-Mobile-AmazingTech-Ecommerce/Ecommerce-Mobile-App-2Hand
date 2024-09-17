@@ -12,21 +12,28 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
+import com.example.ecommercemobileapp2hand.Models.Bag;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Checkout.Checkout;
 import com.example.ecommercemobileapp2hand.Views.Settings.PaymentActivity;
 import com.example.ecommercemobileapp2hand.Views.Settings.UpdateCardActivity;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
 
-    private int selectedPosition = -1;
+    //private int selectedPosition = 0;
     private List<UserCards> cardList;
     private Context context;
     private int layout;
+
 
     public CardAdapter(List<UserCards> cardList, Context context,int layout) {
         this.cardList = cardList;
@@ -59,23 +66,23 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
                 context.startActivity(intent);
             }
         });
-        if (layout==R.layout.custom_item_choose_card){
-            if(position == selectedPosition){
-                holder.rdbtnChoose.setText("Active");
-            }
-            else{
-                holder.rdbtnChoose.setText("Inactive");
-            }
-            holder.rdbtnChoose.setChecked(position== selectedPosition);
-            holder.rdbtnChoose.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    holder.rdbtnChoose.setText("Active");
-                    selectedPosition = holder.getAdapterPosition();
-                    notifyDataSetChanged();
-                }
-            });
-        }
+//        if (layout==R.layout.custom_item_choose_card){
+//            if(position == selectedPosition){
+//                holder.rdbtnChoose.setText("Active");
+//            }
+//            else{
+//                holder.rdbtnChoose.setText("Inactive");
+//            }
+//            holder.rdbtnChoose.setChecked(position== selectedPosition);
+//            holder.rdbtnChoose.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    holder.rdbtnChoose.setText("Active");
+//                    selectedPosition = holder.getAdapterPosition();
+//                    notifyDataSetChanged();
+//                }
+//            });
+//        }
     }
 
     @Override
@@ -85,12 +92,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
         TextView cardNumberTextView;
-        RadioButton rdbtnChoose;
+//        RadioButton rdbtnChoose;
 
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
             cardNumberTextView = itemView.findViewById(R.id.tvCardNumber);
-            rdbtnChoose=itemView.findViewById(R.id.rdbtnChoose);
+//            rdbtnChoose=itemView.findViewById(R.id.rdbtnChoose);
         }
     }
+
 }

@@ -33,18 +33,21 @@ import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class Checkout extends AppCompatActivity {
     private ImageView imgBack;
     private RelativeLayout btnPlaceOrder;
-    private TextView txtSubtotal,txtTotal,txtTax,txtShippingCost,txtPrice;
+    private TextView txtSubtotal,txtTotal,txtTax,txtShippingCost,txtPrice,txtDiscount;
     private ArrayList<Bag> listOrder=new ArrayList<Bag>();
     private UserAccount userAccount;
     private UserAddress userAddress;
     private UserCards userCard;
     private CheckoutAddressFragment addressFragment = new CheckoutAddressFragment();
     private CheckoutPaymentFragment paymentFragment = new CheckoutPaymentFragment();
+    private BigDecimal discount=BigDecimal.ZERO;
+    private int userAddressID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +60,24 @@ public class Checkout extends AppCompatActivity {
             return insets;
         });
         userAccount= UserAccountManager.instance.getCurrentUserAccount();
+
         UserAddressHandler.getListAdressByUserId(userAccount.getUserId(), new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
             @Override
             public void onResult(ArrayList<UserAddress> result) {
                 if (!result.isEmpty()){
-                    userAddress=result.get(0);
-                    addressFragment= CheckoutAddressFragment.newInstance(userAddress.getUser_address_street());
+                    if (userAddressID>0){
+                        for(UserAddress address : result){
+                            if (address.getUser_address_id()==userAddressID){
+                                userAddress=address;
+                                break;
+                            }
+                        }
+                    }
+                    else{
+                        userAddress=result.get(0);
+                    }
                 }
+                addressFragment= CheckoutAddressFragment.newInstance(userAddress.getUser_address_street(),String.valueOf(discount));
                 loadFragmentAddress(addressFragment);
             }
         });
@@ -86,6 +100,7 @@ public class Checkout extends AppCompatActivity {
         txtTax=findViewById(R.id.txtTax);
         txtTotal=findViewById(R.id.txtTotal);
         txtPrice=findViewById(R.id.txtPrice);
+        txtDiscount=findViewById(R.id.txtDiscount);
         btnPlaceOrder= findViewById(R.id.btnAddToBag);
     }
     @Override
@@ -98,16 +113,26 @@ public class Checkout extends AppCompatActivity {
         // Set the back button to handle click event
         imgBack.setOnClickListener(v -> onBackPressed());
         Intent intent = getIntent();
-        txtSubtotal.setText(intent.getStringExtra("subtotal"));
-        txtShippingCost.setText(intent.getStringExtra("shippingCost"));
-        txtTax.setText(intent.getStringExtra("tax"));
-        txtTotal.setText(intent.getStringExtra("total"));
-        txtPrice.setText(intent.getStringExtra("total"));
         listOrder=(ArrayList<Bag>) intent.getSerializableExtra("listOrder");
+        int checkUserAddress = intent.getIntExtra("addressID",0);
+        if (checkUserAddress>0){
+            userAddressID=checkUserAddress;
+        }
+        else{
+            userAddressID=-1;
+        }
+        discount=new BigDecimal(intent.getStringExtra("discount"));
+        setFee();
         btnPlaceOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int userOrderID= UserOrderHandler.createUserOrder(userAccount.getUserId(),userAddress.getUser_address_id());
+                int userOrderID;
+                if (userAddressID>0){
+                    userOrderID= UserOrderHandler.createUserOrder(userAccount.getUserId(),userAddressID);
+                }
+                else{
+                    userOrderID= UserOrderHandler.createUserOrder(userAccount.getUserId(),userAddress.getUser_address_id());
+                }
                 if (userOrderID>0){
                     for(Bag bag : listOrder){
                         UserOrderProductsHandler.createUserOrderProduct(userOrderID,bag.getProduct_details_size_id(),bag.getAmount());
@@ -130,5 +155,28 @@ public class Checkout extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_Payment, fragment);
         fragmentTransaction.commit();
+    }
+    private void setFee(){
+        BigDecimal subtotal=BigDecimal.ZERO;
+        BigDecimal tax=BigDecimal.ZERO;
+        BigDecimal shippingCost=BigDecimal.ZERO;
+        BigDecimal total;
+        BigDecimal price;
+        for (Bag bag : listOrder){
+            if (bag.getSalePrice().compareTo(BigDecimal.ZERO)>0){
+                price=bag.getSalePrice().multiply(BigDecimal.valueOf(bag.getAmount()));
+            }
+            else{
+                price =bag.getBasePrice().multiply(BigDecimal.valueOf(bag.getAmount()));
+            }
+            subtotal = subtotal.add(price);
+        }
+        total=subtotal.add(tax).add(shippingCost).subtract(discount);
+        txtSubtotal.setText("$"+String.valueOf(subtotal));
+        txtTax.setText("$"+String.valueOf(tax));
+        txtShippingCost.setText("$"+String.valueOf(shippingCost));
+        txtTotal.setText("$"+String.valueOf(total));
+        txtPrice.setText("$"+String.valueOf(total));
+        txtDiscount.setText("$"+String.valueOf(discount));
     }
 }

@@ -25,6 +25,7 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.AddressAdapter;
 import com.example.ecommercemobileapp2hand.Views.Settings.AddAddressActivity;
 import com.example.ecommercemobileapp2hand.Views.Settings.ListAddressActivity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,6 +37,7 @@ public class ChooseAddressActivity extends AppCompatActivity {
     private CardView cv_address;
     private ArrayList<UserAddress> lstAddress;
     private AddressAdapter addressAdapter;
+    private String discount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,7 @@ public class ChooseAddressActivity extends AppCompatActivity {
             return insets;
         });
         addControls();
+        getDiscount();
     }
     @Override
     protected void onResume() {
@@ -77,6 +80,10 @@ public class ChooseAddressActivity extends AppCompatActivity {
             }
         });
     }
+    private void getDiscount(){
+        Intent intent=getIntent();
+        discount=intent.getStringExtra("discount");
+    }
     private void loadListAddress() {
         service.execute(() -> {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
@@ -92,8 +99,10 @@ public class ChooseAddressActivity extends AppCompatActivity {
                         if (lstAddress != null && !lstAddress.isEmpty()) {
                             runOnUiThread(() -> {
                                 addressAdapter = new AddressAdapter(lstAddress, ChooseAddressActivity.this,R.layout.custom_item_choose_address);
+                                addressAdapter.setDiscount(discount);
                                 recy_address.setLayoutManager(new LinearLayoutManager(ChooseAddressActivity.this));
                                 recy_address.setAdapter(addressAdapter);
+
                             });
                         }
                         else {

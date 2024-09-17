@@ -94,7 +94,7 @@ public class ChooseCardActivity extends AppCompatActivity {
                         lstCard =result;
                         if (lstCard != null && !lstCard.isEmpty()) {
                             runOnUiThread(() -> {
-                                cardAdapter = new CardAdapter(lstCard, ChooseCardActivity.this,R.layout.custom_item_choose_card);
+                                cardAdapter = new CardAdapter(lstCard, ChooseCardActivity.this,R.layout.item_card);
                                 recy_cards.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                                 recy_cards.setAdapter(cardAdapter);
                             });

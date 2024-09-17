@@ -1,10 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#8E6CEF"
+    android:orientation="vertical"
     tools:context=".Views.Checkout.OrderPlaceSuccessfullyActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="86dp"
+        android:paddingBottom="68dp"
+        app:srcCompat="@drawable/imageordersuccess" />
+
+    <LinearLayout
+        style="@style/orderSuccessfully"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="29dp"
+        android:paddingTop="40dp"
+        android:paddingRight="29dp">
+
+        <TextView
+            android:id="@+id/textView12"
+            style="@style/textInOrderSuccessfully"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Order Placed" />
+
+        <TextView
+            android:id="@+id/textView14"
+            style="@style/textInOrderSuccessfully"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Successfully" />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="94dp"
+            android:fontFamily="@font/circularstdmedium500"
+            android:gravity="center"
+            android:lineHeight="20sp"
+            android:text="You will recieve an email confirmation"
+            android:textColor="@color/gray"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btnSeeOrderDetails"
+            android:layout_width="342dp"
+            android:layout_height="52dp"
+            android:layout_gravity="center"
+            style="@style/btn_continue"
+            android:backgroundTint="@color/purple"
+            android:text="See Order details" />
+    </LinearLayout>
+</LinearLayout>

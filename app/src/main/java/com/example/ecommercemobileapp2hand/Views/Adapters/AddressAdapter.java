@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.icu.text.SymbolTable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,29 +13,40 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
 import com.example.ecommercemobileapp2hand.Controllers.WishlistHandler;
+import com.example.ecommercemobileapp2hand.Models.Bag;
+import com.example.ecommercemobileapp2hand.Models.FakeModels.Order;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Checkout.Checkout;
 import com.example.ecommercemobileapp2hand.Views.Settings.UpdateAdressActivity;
 import com.example.ecommercemobileapp2hand.Views.Settings.WishlistDetail;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressViewHolder>
 {
-    private int selectedPosition = -1;
+    private int selectedPosition = 0;
     private ArrayList<UserAddress> userAddressList ;
     private Context context;
     private int layout;
-    private int userAddressID=-1;
+    private ArrayList<Bag> mylist;
+    private String discount;
 
     public AddressAdapter(ArrayList<UserAddress> userAddressList, Context context,int layout) {
         this.userAddressList = userAddressList;
@@ -46,6 +58,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
     @Override
     public AdressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(layout,parent,false);
+        mylist= BagHandler.getData(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
         return new AdressViewHolder(view);
     }
 
@@ -80,13 +93,15 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
                     holder.rdbtnChoose.setTag("Active");
                     selectedPosition = holder.getAdapterPosition();
                     notifyDataSetChanged();
-                    userAddressID=address.getUser_address_id();
-
+                    Intent intent = new Intent(context,Checkout.class);
+                    intent.putExtra("listOrder",mylist);
+                    intent.putExtra("addressID",address.getUser_address_id());
+                    intent.putExtra("discount",discount);
+                    context.startActivity(intent);
                 }
             });
         }
     }
-
     @Override
     public int getItemCount() {
         return userAddressList != null ? userAddressList.size() : 0;
@@ -102,8 +117,8 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
             rdbtnChoose=itemView.findViewById(R.id.rdbtnChoose);
         }
     }
-    public int getSelectedUserAddressID(){
-        return userAddressID;
-    }
 
+    public void setDiscount(String discount){
+        this.discount=discount;
+    }
 }
