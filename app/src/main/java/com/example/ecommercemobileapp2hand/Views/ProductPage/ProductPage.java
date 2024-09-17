@@ -322,7 +322,7 @@ public class ProductPage extends AppCompatActivity {
                 bag.setAmount(quantity);
                 try {
                     // Lưu vào cơ sở dữ liệu
-                    BagHandler.addBag(bag, new BagHandler.Callback<Boolean>() {
+                    BagHandler.addToBag(bag, new BagHandler.Callback<Boolean>() {
                         @Override
                         public void onResult(Boolean result) {
                             if (result) {
