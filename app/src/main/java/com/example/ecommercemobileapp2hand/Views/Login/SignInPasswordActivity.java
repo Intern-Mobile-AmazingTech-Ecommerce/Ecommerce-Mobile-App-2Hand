@@ -98,19 +98,24 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                         public void onResult(UserAccount result) {
                                             userAccount = result;
                                             runOnUiThread(() -> {
-                                                UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
-                                                // truyền thông tin user qua MainActivity
-                                                FirebaseUser user = firebaseAuth.getCurrentUser();
-                                                if (user != null) {
-                                                    intent.putExtra("UserAccount", userAccount);
-                                                    intent.putExtra("email", user.getEmail());
-                                                    intent.putExtra("displayName", user.getDisplayName());
-                                                    intent.putExtra("user_id", user.getUid());
+                                                if(result == null) {
+                                                    Toast.makeText(getApplicationContext(),"User Account not found",Toast.LENGTH_SHORT).show();
+                                                }else {
+                                                    UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                                                    // truyền thông tin user qua MainActivity
+                                                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                                                    if (user != null) {
+                                                        intent.putExtra("UserAccount", userAccount);
+                                                        intent.putExtra("email", user.getEmail());
+                                                        intent.putExtra("displayName", user.getDisplayName());
+                                                        intent.putExtra("user_id", user.getUid());
+                                                    }
+
+                                                    startActivity(intent);
+                                                    finish();
+                                                    Toast.makeText(SignInPasswordActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                                                 }
 
-                                                startActivity(intent);
-                                                finish();
-                                                Toast.makeText(SignInPasswordActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                                             });
                                         }
                                     });

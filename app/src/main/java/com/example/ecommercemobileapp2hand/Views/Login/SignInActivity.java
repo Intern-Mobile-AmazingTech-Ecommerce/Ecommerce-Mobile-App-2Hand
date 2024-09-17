@@ -159,11 +159,7 @@ public class SignInActivity extends AppCompatActivity {
                     public void onResult(UserAccount result) {
                         runOnUiThread(() -> {
                             if (result == null) {
-                                Intent intent = new Intent(SignInActivity.this, OnboardingActivity.class);
-                                intent.putExtra("email", email);
-                                intent.putExtra("displayName", user.getDisplayName());
-                                startActivity(intent);
-                                finish();
+                                Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
                             } else {
                                 Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                                 UserAccountManager.getInstance().setCurrentUserAccount(result);
