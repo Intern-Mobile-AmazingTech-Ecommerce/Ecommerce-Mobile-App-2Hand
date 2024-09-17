@@ -9,13 +9,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corners_background"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:padding="16dp"
         android:paddingStart="12dp"
         android:paddingEnd="9dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        style="@style/chooseFragmentBackground">
 
 
         <LinearLayout
@@ -27,18 +27,15 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12dp"
-                android:fontFamily="@font/circularstdmedium500"
                 android:text="Shipping Address"
-                android:textColor="@color/gray"
                 android:layout_marginBottom="10dp"
+                style="@style/chooseFragmentLabel"
                 />
             <TextView
                 android:id="@+id/txtShippingAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:fontFamily="@font/circularstdmedium500"
+                style="@style/chooseFragment"
                 android:text="Add Shipping Address" />
         </LinearLayout>
 
@@ -48,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/arrowright2" />
+            style="@style/img_end" />
     </LinearLayout>
 
 </FrameLayout>

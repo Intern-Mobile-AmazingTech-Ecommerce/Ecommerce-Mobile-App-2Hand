@@ -20,11 +20,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
 import com.example.ecommercemobileapp2hand.Controllers.CouponHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserCardsHandler;
 import com.example.ecommercemobileapp2hand.Models.Bag;
 import com.example.ecommercemobileapp2hand.Models.Coupon;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Models.UserAddress;
+import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.Adapter_Cart;
 import com.example.ecommercemobileapp2hand.Views.Checkout.Checkout;
@@ -50,7 +54,9 @@ public class Cart extends AppCompatActivity {
     ImageButton applyCouponButton;
     TextView selectCoupon;
     TextView txtDiscount;
-
+    UserAccount user;
+    UserAddress userAddress;
+    BigDecimal discountAmount = BigDecimal.ZERO;
     private static final String TAG = "Cart";
 
     @Override
@@ -71,11 +77,14 @@ public class Cart extends AppCompatActivity {
         btncheckout = findViewById(R.id.btnCheckout);
         btncheckout.setOnClickListener(view -> {
             Intent myintent = new Intent(Cart.this, Checkout.class);
-            myintent.putExtra("subtotal", txtSubtotal.getText().toString());
-            myintent.putExtra("tax", txtTax.getText().toString());
-            myintent.putExtra("shippingCost", txtShippingCost.getText().toString());
-            myintent.putExtra("total", txtTotal.getText().toString());
-            myintent.putExtra("listOrder", mylist);
+            myintent.putExtra("listOrder",mylist);
+            if (userAddress!=null){
+                myintent.putExtra("addressID",userAddress.getUser_address_id());
+            }
+            else{
+                myintent.putExtra("addressID",-1);
+            }
+            myintent.putExtra("discount",String.valueOf(discountAmount));
             startActivity(myintent);
         });
 
@@ -108,7 +117,6 @@ public class Cart extends AppCompatActivity {
                 subtotalStr = "0";
             }
             BigDecimal subtotal = new BigDecimal(subtotalStr);
-            BigDecimal discountAmount = BigDecimal.ZERO;
 
             if (!coupon.isActive()) {
                 Toast.makeText(this, "Coupon không hợp lệ", Toast.LENGTH_SHORT).show();
@@ -228,7 +236,15 @@ public class Cart extends AppCompatActivity {
 
     private void loadUserBag() {
         service.execute(() -> {
-            UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
+            user = UserAccountManager.getInstance().getCurrentUserAccount();
+            UserAddressHandler.getListAdressByUserId(user.getUserId(), new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
+                @Override
+                public void onResult(ArrayList<UserAddress> result) {
+                    if (!result.isEmpty()){
+                        userAddress=result.get(0);
+                    }
+                }
+            });
             if (user != null) {
                 mylist = BagHandler.getData(user.getUserId());
                 if (mylist != null && !mylist.isEmpty()) {

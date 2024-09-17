@@ -69,6 +69,35 @@ public class UserOrderHandler {
         });
 
     }
+    public static UserOrder GetLatestUserOrder (String userID){
+        conn = dbConnect.connectionClass();
+        UserOrder userOrder=new UserOrder();
+        if(conn!=null) {
+            try
+            {
+                CallableStatement cstmt = conn.prepareCall("call GetLatestOrder(?)");
+                cstmt.setString(1, userID);
+                ResultSet rs = cstmt.executeQuery();
+                if (rs.next()){
+                    userOrder.setUser_order_id(rs.getInt(1));
+                    userOrder.setUser_id(rs.getString(2));
+                    userOrder.setUser_address_id(rs.getInt(3));
+                    userOrder.setTotal_price(rs.getBigDecimal(4));
+                    userOrder.setOrder_status_id(rs.getInt(5));
+                    userOrder.setCreated_at(rs.getString(6));
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return userOrder;
+    }
     public static int createUserOrder(String userID,int userAddressID){
         conn = dbConnect.connectionClass();
         int userOrderID=-1;
