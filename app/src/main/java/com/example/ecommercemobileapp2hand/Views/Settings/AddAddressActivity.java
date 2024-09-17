@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 public class AddAddressActivity extends AppCompatActivity {
     private ExecutorService service;
     private ImageView imgBack;
-    private EditText edtStreetAddress, edtCity, edtState, edtZipCode;
+    private EditText edtStreetAddress, edtCity, edtState, edtZipCode, edtPhoneNumber;
     private Button btnSaveAddress;
     Connection connection;
 
@@ -94,6 +94,7 @@ public class AddAddressActivity extends AppCompatActivity {
         edtState = findViewById(R.id.edtState);
         edtZipCode = findViewById(R.id.edtZipCode);
         btnSaveAddress = findViewById(R.id.btnSaveAddress);
+        edtPhoneNumber = findViewById(R.id.edtPhone);
     }
 
     private void addAddress() {
@@ -104,8 +105,8 @@ public class AddAddressActivity extends AppCompatActivity {
                 String city = edtCity.getText().toString();
                 String state = edtState.getText().toString();
                 String zipCode = edtZipCode.getText().toString();
-
-                UserAddressHandler.insertAddress(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), streetAddress, city, state, zipCode, "null", new UserAddressHandler.Callback<Boolean>() {
+                String phone = edtPhoneNumber.getText().toString();
+                UserAddressHandler.insertAddress(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), streetAddress, city, state, zipCode, phone, new UserAddressHandler.Callback<Boolean>() {
                     @Override
                     public void onResult(Boolean result) {
                         if (result) {
