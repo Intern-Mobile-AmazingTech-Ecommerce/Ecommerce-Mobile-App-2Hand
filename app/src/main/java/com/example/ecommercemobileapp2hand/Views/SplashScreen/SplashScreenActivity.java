@@ -11,11 +11,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
+    private UserAccount userAccount; // Declare userAccount
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,16 +30,29 @@ public class SplashScreenActivity extends AppCompatActivity {
             return insets;
         });
 
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("UserAccount")) {
+            userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
+        }
+
         new Handler().postDelayed(() -> {
             SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+            String email = getEmailFromSharedPreferences();
 
             if (isLoggedIn) {
-                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                Intent mainIntent = new Intent(SplashScreenActivity.this, MainActivity.class);
+                mainIntent.putExtra("email", email);
+                startActivity(mainIntent);
             } else {
                 startActivity(new Intent(SplashScreenActivity.this, SignInActivity.class));
             }
             finish();
         }, 1000);
+    }
+
+    private String getEmailFromSharedPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
+        return sharedPreferences.getString("email", null);
     }
 }
