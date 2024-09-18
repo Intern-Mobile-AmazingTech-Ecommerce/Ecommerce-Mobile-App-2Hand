@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBConnect {
-    Connection conn = null;
+
     String username,password,  ip, port, database;
     public Connection connectionClass() {
         ip = "10.0.2.2";
@@ -15,7 +15,7 @@ public class DBConnect {
         username = "sa";
         password = "123456";
         port = "1433";
-
+        Connection conn = null;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
