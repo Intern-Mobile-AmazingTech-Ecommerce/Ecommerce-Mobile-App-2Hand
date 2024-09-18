@@ -141,7 +141,8 @@ public class AddAddressActivity extends AppCompatActivity {
                 String city = edtCity.getText().toString();
                 String state = edtState.getText().toString();
                 String zipCode = edtZipCode.getText().toString();
-                if (!isEmpty(streetAddress, city, state, zipCode)) {
+                String phoneNumber = edtPhoneNumber.getText().toString();
+                if (!isEmpty(streetAddress, city, state, zipCode,phoneNumber)) {
                     Toast.makeText(AddAddressActivity.this, "thành công", Toast.LENGTH_SHORT).show();
                 }
                 Toast.makeText(AddAddressActivity.this, "thất bại", Toast.LENGTH_SHORT).show();
@@ -196,6 +197,27 @@ public class AddAddressActivity extends AppCompatActivity {
                 }
             }
         });
+        edtPhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String phoneNumber = editable.toString();
+                if (isValidPhoneNumber(phoneNumber)) {
+                    edtPhoneNumber.setError(null);
+                } else {
+                    edtPhoneNumber.setError("Số điện thoại không hợp lệ");
+                }
+            }
+        });
         edtCity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -230,10 +252,13 @@ public class AddAddressActivity extends AppCompatActivity {
         });
     }
 
-    private boolean isEmpty(String streetAddress, String city, String state, String zipCode) {
-        if (streetAddress.isEmpty() || city.isEmpty() || state.isEmpty() || zipCode.isEmpty()) {
+    private boolean isEmpty(String streetAddress, String city, String state, String zipCode, String phoneNumber) {
+        if (streetAddress.isEmpty() || city.isEmpty() || state.isEmpty() || zipCode.isEmpty() || phoneNumber.isEmpty()) {
             return true;
         }
         return false;
+    }
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        return phoneNumber.length() == 10 && phoneNumber.matches("\\d+");
     }
 }
