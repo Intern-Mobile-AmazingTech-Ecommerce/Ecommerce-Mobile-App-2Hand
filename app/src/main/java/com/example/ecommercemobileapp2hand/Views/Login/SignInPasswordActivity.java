@@ -88,19 +88,17 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                 showProgress(true);
                                 if (task.isSuccessful()) {
                                     Intent intent = new Intent(SignInPasswordActivity.this, MainActivity.class);
-                                    SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putBoolean(KEY_IS_LOGGED_IN, true);
-                                    editor.apply();
+
 
                                     UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
                                         @Override
                                         public void onResult(UserAccount result) {
-                                            userAccount = result;
+
                                             runOnUiThread(() -> {
                                                 if(result == null) {
                                                     Toast.makeText(getApplicationContext(),"User Account not found",Toast.LENGTH_SHORT).show();
                                                 }else {
+                                                    userAccount = result;
                                                     UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
                                                     // truyền thông tin user qua MainActivity
                                                     FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -109,6 +107,11 @@ public class SignInPasswordActivity extends AppCompatActivity {
                                                         intent.putExtra("email", user.getEmail());
                                                         intent.putExtra("displayName", user.getDisplayName());
                                                         intent.putExtra("user_id", user.getUid());
+                                                        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                        editor.putBoolean(KEY_IS_LOGGED_IN, true);
+                                                        editor.putString("email",user.getEmail());
+                                                        editor.apply();
                                                     }
 
                                                     startActivity(intent);
