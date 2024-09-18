@@ -197,7 +197,7 @@ public class WishlistHandler {
             PreparedStatement stmt = null;
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
                 conn = dbConnect.connectionClass();
                 if (conn == null || conn.isClosed()) {
                     throw new SQLException("Connection is closed or null");

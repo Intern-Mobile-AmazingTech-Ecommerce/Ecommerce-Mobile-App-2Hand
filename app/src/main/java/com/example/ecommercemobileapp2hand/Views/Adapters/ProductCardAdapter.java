@@ -170,7 +170,6 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         if (user != null) {
 
             if (WishlistHandler.isConnectionValid()) {
-
                 WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), user.getUserId(), new WishlistHandler.Callback<Boolean>() {
                     @Override
                     public void onResult(Boolean result) {

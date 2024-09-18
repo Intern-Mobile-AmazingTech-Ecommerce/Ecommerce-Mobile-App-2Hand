@@ -37,6 +37,7 @@ public class ProductHandler {
     public static void getData(Callback<ArrayList<Product>> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(() -> {
+
             Connection conn = dbConnect.connectionClass();
             ArrayList<Product> list = new ArrayList<>();
             if (conn != null) {
