@@ -58,7 +58,6 @@ public class UserOrderProductsHandler {
             callback.onResult(userOrderProductsList);
             shutDownExecutor(service);
         });
-
     }
 
     public static void getAmountItems(int id, Callback<Integer> callback)

@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Controllers;
 
 import com.example.ecommercemobileapp2hand.Models.OrderStatus;
 import com.example.ecommercemobileapp2hand.Models.UserOrder;
+import com.example.ecommercemobileapp2hand.Models.UserOrderProducts;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 
 import java.sql.CallableStatement;
@@ -123,7 +124,47 @@ public class UserOrderHandler {
         }
         return userOrderID;
     }
+    public static void getOrderByUserID(String userid, UserOrderHandler.Callback<ArrayList<UserOrder>> callback)
+    {
+        ExecutorService service = Executors.newCachedThreadPool();
+        service.execute(()->{
+            ArrayList<UserOrder> userOrderList = new ArrayList<>();
+            conn = dbConnect.connectionClass();
+            if (conn != null)
+            {
+                try
+                {
+                    CallableStatement cstmt = conn.prepareCall("{ call GetOrderByUserID (?) }");
+                    cstmt.setString(1, userid);
+                    ResultSet rs = cstmt.executeQuery();
+                    while (rs.next())
+                    {
+                        UserOrder userOrder = new UserOrder(rs.getInt(1) ,rs.getString(2), rs.getInt(3), rs.getBigDecimal(4), rs.getInt(5) , rs.getString(6));
 
+                        userOrderList.add(userOrder);
+                    }
+                    rs.close();
+                    cstmt.close();
+                }
+                catch (SQLException e)
+                {
+                    throw new RuntimeException(e);
+                }
+                finally
+                {
+                    try
+                    {
+                        conn.close();
+                    } catch (SQLException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            callback.onResult(userOrderList);
+            shutDownExecutor(service);
+        });
+    }
     private static void shutDownExecutor(ExecutorService executorService) {
         executorService.shutdown();
         try {
