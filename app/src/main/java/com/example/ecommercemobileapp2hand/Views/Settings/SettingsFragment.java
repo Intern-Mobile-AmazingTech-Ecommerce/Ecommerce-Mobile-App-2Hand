@@ -146,7 +146,7 @@ public class SettingsFragment extends Fragment {
                                         .error(R.drawable.user)
                                         .into(imageUser);
                             } else {
-                                imageUser.setImageResource(R.drawable.user);
+                                imageUser.setImageResource(R.drawable.avt);
                             }
                         } else {
                             Log.e(TAG, "Không tìm thấy thông tin người dùng.");

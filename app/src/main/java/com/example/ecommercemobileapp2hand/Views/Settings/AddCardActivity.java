@@ -30,6 +30,8 @@ import com.example.ecommercemobileapp2hand.R;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -135,9 +137,9 @@ public class AddCardActivity extends AppCompatActivity {
                 String exp=edtEXP.getText().toString();
                 String cardHolderName=edtCardholderName.getText().toString();
                 if (!isEmpty(cardNumber,ccv,exp,cardHolderName)){
-                    Toast.makeText(AddCardActivity.this,"thành công",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddCardActivity.this,"Success",Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(AddCardActivity.this,"thất bại",Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddCardActivity.this,"Failed",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -173,8 +175,13 @@ public class AddCardActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (edtCardNumber.getText().toString().isEmpty()){
-                    edtCardNumber.setError("Trường này không được bỏ trống");
+                String cardNumber = edtCardNumber.getText().toString();
+                if (cardNumber.isEmpty()) {
+                    edtCardNumber.setError("This field cannot be left blank");
+                    return;
+                }
+                if (cardNumber.length() != 16) {
+                    edtCardNumber.setError("Card number must be exactly 16 digits");
                 }
             }
         });
@@ -192,10 +199,10 @@ public class AddCardActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (edtCCV.getText().toString().isEmpty()){
-                    edtCCV.setError("Trường này không được bỏ trống");
+                    edtCCV.setError("This field cannot be left blank");
                 }
                 if (edtCCV.getText().toString().length()!=3){
-                    edtCCV.setError("Trường này chỉ chứa 3 số");
+                    edtCCV.setError("This field contains only 3 numbers");
                 }
             }
         });
@@ -212,8 +219,24 @@ public class AddCardActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (edtEXP.getText().toString().isEmpty()){
-                    edtEXP.setError("Trường này không được bỏ trống");
+                String expDate = edtEXP.getText().toString();
+                if (expDate.isEmpty()) {
+                    edtEXP.setError("This field cannot be left blank");
+                    return;
+                }
+
+                String regex = "^\\d{2}-\\d{2}-\\d{4}$";
+                if (!expDate.matches(regex)) {
+                    edtEXP.setError("Invalid format. Please enter date in dd-MM-YYYY.");
+                    return;
+                }
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                dateFormat.setLenient(false);
+                try {
+                    dateFormat.parse(expDate);
+                } catch (ParseException e) {
+                    edtEXP.setError("Invalid date.");
                 }
             }
         });
@@ -230,7 +253,7 @@ public class AddCardActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (edtCardholderName.getText().toString().isEmpty()){
-                    edtCardholderName.setError("Trường này không được bỏ trống");
+                    edtCardholderName.setError("This field cannot be left blank");
                 }
             }
         });
