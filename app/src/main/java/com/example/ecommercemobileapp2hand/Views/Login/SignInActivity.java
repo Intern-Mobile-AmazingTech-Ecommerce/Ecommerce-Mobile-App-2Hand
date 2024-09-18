@@ -217,7 +217,7 @@ public class SignInActivity extends AppCompatActivity {
                         if (user != null) {
                             String email = user.getEmail();
                             String displayName = user.getDisplayName();
-                            //UserAccountHandler.saveUserAccount(email, displayName, "Google");
+                            UserAccountHandler.saveUserAccount(email, displayName, "Google");
                             handleSignInResult(user);
                             onLoginSuccess(email);
                         }
