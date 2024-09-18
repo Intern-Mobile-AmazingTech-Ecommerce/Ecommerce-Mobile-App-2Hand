@@ -16,5 +16,5 @@
         android:layout_height="80dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/logo" />
+        android:background="@drawable/logo_2" />
 </RelativeLayout>

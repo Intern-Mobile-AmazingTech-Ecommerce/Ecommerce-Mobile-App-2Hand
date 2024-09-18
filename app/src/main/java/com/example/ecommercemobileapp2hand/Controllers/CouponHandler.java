@@ -33,7 +33,7 @@ public class CouponHandler {
                     ResultSet rs = stmt.executeQuery(query);
                     while (rs.next()) {
                         Coupon coupon = new Coupon();
-                        coupon.setCouponId(rs.getInt("coupon_id")); // Adjusted column name
+                        coupon.setCouponId(rs.getInt("coupon_id"));
                         coupon.setCode(rs.getString("code"));
                         coupon.setDiscountType(rs.getString("discount_type"));
                         coupon.setDiscountValue(rs.getBigDecimal("discount_value"));
@@ -68,36 +68,37 @@ public class CouponHandler {
     }
 
     public static Coupon getDiscountValueFromDatabase(String couponCode) {
-    String query = "SELECT code, discount_type, discount_value, min_order_value, start_date, end_date, is_active FROM Coupons WHERE code = ?";
-    Coupon coupon = null;
+        String query = "SELECT coupon_id, code, discount_type, discount_value, min_order_value, start_date, end_date, is_active FROM Coupons WHERE code = ?";
+        Coupon coupon = null;
 
-    try (Connection conn = dbConnect.connectionClass();
-         PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (Connection conn = dbConnect.connectionClass();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
 
-        pstmt.setString(1, couponCode);
+            pstmt.setString(1, couponCode);
 
-        try (ResultSet rs = pstmt.executeQuery()) {
-            if (rs.next()) {
-                String code = rs.getString("code");
-                String discountType = rs.getString("discount_type");
-                BigDecimal discountValue = rs.getBigDecimal("discount_value");
-                BigDecimal minOrderValue = rs.getBigDecimal("min_order_value");
-                Date startDate = rs.getDate("start_date");
-                Date endDate = rs.getDate("end_date");
-                boolean isActive = rs.getBoolean("is_active");
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int couponId = rs.getInt("coupon_id");
+                    String code = rs.getString("code");
+                    String discountType = rs.getString("discount_type");
+                    BigDecimal discountValue = rs.getBigDecimal("discount_value");
+                    BigDecimal minOrderValue = rs.getBigDecimal("min_order_value");
+                    Date startDate = rs.getDate("start_date");
+                    Date endDate = rs.getDate("end_date");
+                    boolean isActive = rs.getBoolean("is_active");
 
-                java.sql.Date sqlStartDate = startDate != null ? new java.sql.Date(startDate.getTime()) : null;
-                java.sql.Date sqlEndDate = endDate != null ? new java.sql.Date(endDate.getTime()) : null;
+                    java.sql.Date sqlStartDate = startDate != null ? new java.sql.Date(startDate.getTime()) : null;
+                    java.sql.Date sqlEndDate = endDate != null ? new java.sql.Date(endDate.getTime()) : null;
 
-                coupon = new Coupon(code, discountType, discountValue, minOrderValue, sqlStartDate, sqlEndDate, isActive);
+                    coupon = new Coupon(couponId, code, discountType, discountValue, minOrderValue, sqlStartDate, sqlEndDate, isActive);
+                }
             }
+        } catch (SQLException e) {
+            Log.e(TAG, "SQL Exception: " + e.getMessage(), e);
         }
-    } catch (SQLException e) {
-        Log.e(TAG, "SQL Exception: " + e.getMessage(), e);
-    }
 
-    return coupon;
-}
+        return coupon;
+    }
 
     private static void shutDownExecutor(ExecutorService executorService) {
         executorService.shutdown();
