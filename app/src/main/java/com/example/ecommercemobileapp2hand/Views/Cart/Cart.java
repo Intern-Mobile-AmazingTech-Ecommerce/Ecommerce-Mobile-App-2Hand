@@ -257,7 +257,7 @@ public class Cart extends AppCompatActivity {
                     startActivity(intent);
                 }
             } else {
-                runOnUiThread(() -> Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show());
+
             }
         });
     }

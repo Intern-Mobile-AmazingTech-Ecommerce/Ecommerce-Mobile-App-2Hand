@@ -240,7 +240,6 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
                 }
             } else {
                 // Handle the case where user is null
-                Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
             }
         }, 2000);
 
