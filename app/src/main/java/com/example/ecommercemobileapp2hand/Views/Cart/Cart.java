@@ -20,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
 import com.example.ecommercemobileapp2hand.Controllers.CouponHandler;
+import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserCardsHandler;
 import com.example.ecommercemobileapp2hand.Models.Bag;
@@ -57,6 +58,7 @@ public class Cart extends AppCompatActivity {
     UserAccount user;
     UserAddress userAddress;
     BigDecimal discountAmount = BigDecimal.ZERO;
+    Product product = new Product();
     private static final String TAG = "Cart";
 
     @Override
@@ -217,7 +219,6 @@ public class Cart extends AppCompatActivity {
         for (Bag item : mylist) {
             Product product = item.getProduct();
             if (product != null && product.getCoupon_id() == coupon.getCouponId()) {
-                // Nếu sản phẩm có coupon tương ứng, áp dụng giảm giá
                 BigDecimal productPrice = product.getPrice();
                 BigDecimal productDiscount = productPrice.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
                 discountAmount = discountAmount.add(productDiscount);
@@ -241,13 +242,22 @@ public class Cart extends AppCompatActivity {
                 @Override
                 public void onResult(ArrayList<UserAddress> result) {
                     if (!result.isEmpty()){
-                        userAddress=result.get(0);
+                        userAddress = result.get(0);
                     }
                 }
             });
             if (user != null) {
                 mylist = BagHandler.getData(user.getUserId());
                 if (mylist != null && !mylist.isEmpty()) {
+                    for (Bag item : mylist) {
+                        ProductHandler.getDataByProductID(item.getProduct_id(), new ProductHandler.Callback<Product>() {
+                        @Override
+                        public void onResult(Product product) {
+                            item.setProduct(product);
+                        }
+                    });
+                        item.setProduct(product);
+                    }
                     runOnUiThread(() -> {
                         myadapter = new Adapter_Cart(Cart.this, R.layout.layout_cart, mylist);
                         lv.setAdapter(myadapter);
@@ -256,8 +266,6 @@ public class Cart extends AppCompatActivity {
                     Intent intent = new Intent(Cart.this, EmptyCart.class);
                     startActivity(intent);
                 }
-            } else {
-
             }
         });
     }

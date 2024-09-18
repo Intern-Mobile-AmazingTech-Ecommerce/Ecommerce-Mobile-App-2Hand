@@ -143,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
                 btnAvt.setImageBitmap(bitmap);
             }
         } else {
-            // Handle the case where user is null
             Bitmap bitmap = Util.convertStringToBitmapFromAccess(this, "avt.png");
             btnAvt.setImageBitmap(bitmap);
         }
