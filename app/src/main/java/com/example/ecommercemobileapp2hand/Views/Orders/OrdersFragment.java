@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 
 import com.example.ecommercemobileapp2hand.Controllers.OrderStatusHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserOrderHandler;
 import com.example.ecommercemobileapp2hand.Models.OrderStatus;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
@@ -47,7 +48,6 @@ public class OrdersFragment extends Fragment {
     private Future<?> task;
     private ChipGroup chipGroup;
     private RecyclerView recyOrders;
-    private ArrayList<UserOrder> lstorders;
     private OrderCardAdapter orderCardAdapter;
     private LinearLayout linear_order1, linear_order2;
     private ImageView img_empty_order;
@@ -71,14 +71,6 @@ public class OrdersFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-//        // Nhận tt user từ Bundle
-//        Bundle bundle = getArguments();
-//        if (bundle != null) {
-//            UserAccount userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
-//            if (userAccount != null) {
-//                String email = userAccount.getEmail();
-//            }
-//        }
 
     }
 
@@ -103,7 +95,7 @@ public class OrdersFragment extends Fragment {
         if(service == null || service.isShutdown()){
             service = Executors.newCachedThreadPool();
         }
-        bgTask();
+        loadOrdersList();
     }
     @Override
     public void onDestroy() {
@@ -120,32 +112,6 @@ public class OrdersFragment extends Fragment {
             }
         }
     }
-    private void bgTask(){
-        getActivity().runOnUiThread(()->{
-            lstorders = userAccount.getLstOrder() != null ? userAccount.getLstOrder() : new ArrayList<>();
-            if (lstorders.isEmpty())
-            {
-                linear_order1.setGravity(Gravity.CENTER);
-                chipGroup.setVisibility(View.GONE);
-                recyOrders.setVisibility(View.GONE);
-                linear_order2.setVisibility(View.VISIBLE);
-
-                btn_explore.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), CategoriesActivity.class);
-                        startActivity(intent);
-                    }
-                });
-            }
-            else
-            {
-                loadOrderStatus();
-            }
-        });
-
-
-    }
     private void addControl(View view){
         chipGroup = view.findViewById(R.id.chipgroup);
         recyOrders = view.findViewById(R.id.recyOrders);
@@ -161,6 +127,51 @@ public class OrdersFragment extends Fragment {
                 if(!oderstatus.isEmpty() && oderstatus != null)
                 {
                     createChips(oderstatus);
+                }
+            });
+        });
+    }
+    public void loadOrdersList()
+    {
+        task = service.submit(() -> {
+            UserOrderHandler.getOrderByUserID(userAccount.getUserId(), new UserOrderHandler.Callback<ArrayList<UserOrder>>() {
+                @Override
+                public void onResult(ArrayList<UserOrder> result) {
+                    if (result == null) {
+                        return;
+                    }
+                    userAccount.setLstOrder(result);
+                    getActivity().runOnUiThread(() -> {
+                        if (userAccount.getLstOrder().isEmpty()) {
+                            linear_order1.setGravity(Gravity.CENTER);
+                            chipGroup.setVisibility(View.GONE);
+                            recyOrders.setVisibility(View.GONE);
+                            linear_order2.setVisibility(View.VISIBLE);
+
+                            btn_explore.setOnClickListener(v -> {
+                                Intent intent = new Intent(getContext(), CategoriesActivity.class);
+                                startActivity(intent);
+                            });
+                        } else {
+                            loadOrderStatus();
+                        }
+                    });
+                }
+            });
+        });
+    }
+    public void updateUserOrderList() {
+        if(service == null || service.isShutdown()){
+            service = Executors.newCachedThreadPool();
+        }
+
+        task = service.submit(() -> {
+            UserOrderHandler.getOrderByUserID(userAccount.getUserId(), new UserOrderHandler.Callback<ArrayList<UserOrder>>() {
+                @Override
+                public void onResult(ArrayList<UserOrder> result) {
+                    if (result != null) {
+                        userAccount.setLstOrder(result);
+                    }
                 }
             });
         });
@@ -216,6 +227,8 @@ public class OrdersFragment extends Fragment {
                         chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#8E6CEF")));
                         checkstatus = chip.getText().toString();
 
+                        updateUserOrderList();
+
                         ArrayList<UserOrder> filter = new ArrayList<>();
                         for (OrderStatus ordstt : oderstatus)
                         {
@@ -253,7 +266,7 @@ public class OrdersFragment extends Fragment {
     private ArrayList<UserOrder> filterOrder(OrderStatus ord)
     {
         ArrayList<UserOrder> filter = new ArrayList<>();
-        for (UserOrder order : lstorders)
+        for (UserOrder order : userAccount.getLstOrder())
         {
             if (ord.getOrder_status_name().equals("Processing"))
             {
