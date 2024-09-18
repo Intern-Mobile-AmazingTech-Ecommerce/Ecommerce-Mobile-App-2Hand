@@ -8,6 +8,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -91,36 +93,40 @@ public class UserCardsHandler {
         });
 
     }
-    public static void insertCard(String userID,String cardNumber,String ccv,String exp,String holderName, Callback<Boolean> callback){
+    public static void insertCard(String userID, String cardNumber, String ccv, String exp, String holderName, Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
-        service.execute(()->{
+        service.execute(() -> {
             Connection conn = dbConnect.connectionClass();
-            conn = dbConnect.connectionClass();
 
-            try{
+            try {
+                SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String expFormatted = outputFormat.format(inputFormat.parse(exp)); // Chuyển đổi ngày
+
                 String sql = "Insert into user_cards values(?,?,?,?,?)";
-                if(conn!=null){
+                if (conn != null) {
                     PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                    preparedStatement.setString(1,userID);
-                    preparedStatement.setString(2,cardNumber);
-                    preparedStatement.setString(3,ccv);
-                    preparedStatement.setString(4,exp);
-                    preparedStatement.setString(5,holderName);
+                    preparedStatement.setString(1, userID);
+                    preparedStatement.setString(2, cardNumber);
+                    preparedStatement.setString(3, ccv);
+                    preparedStatement.setString(4, expFormatted);  // Sử dụng exp đã được định dạng lại
+                    preparedStatement.setString(5, holderName);
                     int rs = preparedStatement.executeUpdate();
-                   callback.onResult(rs > 0);
+                    callback.onResult(rs > 0);
                 }
-            }catch (SQLException e){
+            } catch (SQLException | ParseException e) {
                 throw new RuntimeException(e.getMessage());
-            }finally {
-                try{
-                    conn.close();
-                }catch (SQLException e){
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
             shutDownExecutor(service);
         });
-
     }
     public static boolean deleteCardById(int cardId) {
         Connection conn = dbConnect.connectionClass();

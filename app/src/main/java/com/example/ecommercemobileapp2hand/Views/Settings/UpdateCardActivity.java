@@ -23,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.ecommercemobileapp2hand.Controllers.UserCardsHandler;
 import com.example.ecommercemobileapp2hand.R;
 
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -77,7 +78,17 @@ public class UpdateCardActivity extends AppCompatActivity {
         editTextCCV.setText(ccv);
         editTextCardNumber.setText(cardNumber);
         editTextCardHolder.setText(cardHolder);
-        editTextExp.setText(exp);
+
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String expFormatted = outputFormat.format(inputFormat.parse(exp));
+
+            editTextExp.setText(expFormatted);
+        } catch (Exception e) {
+            e.printStackTrace();
+            editTextExp.setText(exp);
+        }
     }
     void addEvents()
     {
@@ -97,14 +108,14 @@ public class UpdateCardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 builder.setTitle("Warning!!!")
-                        .setMessage("Bạn có muốn xoá card này ?")
-                        .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                        .setMessage("Do you want to delete this card?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 deleteCard();
                             }
                         })
-                        .setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
@@ -121,10 +132,10 @@ public class UpdateCardActivity extends AppCompatActivity {
             this.runOnUiThread(()->{
                 if (isDelete)
                 {
-                    Toast.makeText(getApplicationContext(), "Card đã được xoá thành công!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Delete card success", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Xoá card thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Delete card fail", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -141,15 +152,15 @@ public class UpdateCardActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         if (result) {
                             finish();
-                            Toast.makeText(getApplicationContext(), "Card đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Update card success", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Cập nhật card thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Update card fail", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
             });
         } else {
-            Toast.makeText(this, "Vui lòng kiểm tra lại các trường thông tin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please check the information fields again", Toast.LENGTH_SHORT).show();
         }
     }
     boolean validateInput() {
@@ -158,34 +169,34 @@ public class UpdateCardActivity extends AppCompatActivity {
         // Card Holder Validation
         String cardHolderText = editTextCardHolder.getText().toString();
         if (cardHolderText.isEmpty() || !cardHolderText.matches("^[a-zA-Z ]+$")) {
-            editTextCardHolder.setError("Trường này không được bỏ trống và chỉ chứa chữ cái");
+            editTextCardHolder.setError("This field cannot be left blank and must contain only letters");
             isValid = false;
         }
 
         // Expiration Date Validation
         String expText = editTextExp.getText().toString();
         if (expText.isEmpty() || !expText.matches("^[0-9/-]+$")) {
-            editTextExp.setError("Trường này không được bỏ trống và phải đúng định dạng");
+            editTextExp.setError("This field cannot be left blank and must contain only letters");
             isValid = false;
         }
 
         // Card Number Validation
         String cardNumberText = editTextCardNumber.getText().toString();
         if (cardNumberText.isEmpty()) {
-            editTextCardNumber.setError("Trường này không được bỏ trống");
+            editTextCardNumber.setError("This field cannot be left blank");
             isValid = false;
         }
 
         // CCV Validation
         String ccvText = editTextCCV.getText().toString();
         if (ccvText.isEmpty() || ccvText.length() != 3) {
-            editTextCCV.setError("Trường này không được bỏ trống và chỉ chứa 3 số");
+            editTextCCV.setError("This field cannot be left blank and only contains 3 numbers");
             isValid = false;
         }
 
         // Show toast for overall validation
         if (!isValid) {
-            Toast.makeText(this, "Vui lòng kiểm tra lại các trường thông tin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please check the information fields again", Toast.LENGTH_SHORT).show();
         }
 
         return isValid;
