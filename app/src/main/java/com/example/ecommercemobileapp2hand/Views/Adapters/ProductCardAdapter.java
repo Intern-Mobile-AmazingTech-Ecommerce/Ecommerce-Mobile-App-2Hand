@@ -225,10 +225,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
             } else {
                 Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            // Handle the case where user is null
-            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
-        }
+        } 
 
 
     }
