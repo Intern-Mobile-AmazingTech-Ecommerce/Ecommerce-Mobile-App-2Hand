@@ -197,6 +197,7 @@ public class WishlistHandler {
             PreparedStatement stmt = null;
 
             try {
+                Thread.sleep(500);
                 conn = dbConnect.connectionClass();
                 if (conn == null || conn.isClosed()) {
                     throw new SQLException("Connection is closed or null");
@@ -213,6 +214,8 @@ public class WishlistHandler {
                     callback.onResult(resultSet.getInt(1) > 0);
                 }
             } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } finally {
                 try {
