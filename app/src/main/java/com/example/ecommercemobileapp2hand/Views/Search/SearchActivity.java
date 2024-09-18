@@ -276,7 +276,7 @@ public class SearchActivity extends AppCompatActivity {
     }
     private BigDecimal getMinSalePrice(Product product) {
         if (product.getProductDetailsArrayList() == null || product.getProductDetailsArrayList().isEmpty()) {
-            return BigDecimal.ZERO; // Default value if no product details are available
+            return BigDecimal.ZERO;
         }
         return product.getProductDetailsArrayList().stream()
                 .filter(details -> details.getSale_price() != null)
@@ -295,24 +295,26 @@ public class SearchActivity extends AppCompatActivity {
                         .filter(salePrice -> salePrice.compareTo(BigDecimal.ZERO) != 0)
                         .min(Comparator.naturalOrder());
 
-                Optional<BigDecimal> minNotSale = updatedFilterList.stream()
-                        .filter(product -> product.getBase_price().compareTo(minSale.get()) <= 0)
-                        .map(Product::getBase_price)
-                        .filter(Objects::nonNull)
-                        .min(Comparator.naturalOrder());
-
-                if (minNotSale.isPresent()) {
-                    BigDecimal minValue = minNotSale.get();
-                    updatedFilterList = updatedFilterList.stream()
-                            .filter(product -> product.getBase_price().compareTo(minValue) <= 0)
-                            .collect(Collectors.toCollection(ArrayList::new));
-                } else {
+                if (minSale.isPresent()) {
                     BigDecimal minValue = minSale.get();
-                    updatedFilterList = updatedFilterList.stream()
-                            .filter(product -> product.getProductDetailsArrayList()
-                                    .stream()
-                                    .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0 && productDetails.getSale_price().compareTo(minValue) <= 0))
-                            .collect(Collectors.toCollection(ArrayList::new));
+                    Optional<BigDecimal> minNotSale = updatedFilterList.stream()
+                            .filter(product -> product.getBase_price().compareTo(minValue) <= 0)
+                            .map(Product::getBase_price)
+                            .filter(Objects::nonNull)
+                            .min(Comparator.naturalOrder());
+
+                    if (minNotSale.isPresent()) {
+                        BigDecimal minNotSaleValue = minNotSale.get();
+                        updatedFilterList = updatedFilterList.stream()
+                                .filter(product -> product.getBase_price().compareTo(minNotSaleValue) <= 0)
+                                .collect(Collectors.toCollection(ArrayList::new));
+                    } else {
+                        updatedFilterList = updatedFilterList.stream()
+                                .filter(product -> product.getProductDetailsArrayList()
+                                        .stream()
+                                        .anyMatch(productDetails -> productDetails.getSale_price().compareTo(minValue) <= 0))
+                                .collect(Collectors.toCollection(ArrayList::new));
+                    }
                 }
             } else if (price.equals("Max")) {
                 Optional<BigDecimal> maxSale = updatedFilterList.stream()
@@ -321,26 +323,29 @@ public class SearchActivity extends AppCompatActivity {
                         .filter(salePrice -> salePrice.compareTo(BigDecimal.ZERO) != 0)
                         .max(Comparator.naturalOrder());
 
-                Optional<BigDecimal> maxNotSale = updatedFilterList.stream()
-                        .filter(product -> product.getBase_price().compareTo(maxSale.get()) >= 0 && product.getProductDetailsArrayList().stream().anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) == 0))
-                        .map(Product::getBase_price)
-                        .filter(Objects::nonNull)
-                        .max(Comparator.naturalOrder());
-
-                if (maxNotSale.isPresent()) {
-                    BigDecimal maxValue = maxNotSale.get();
-                    updatedFilterList = updatedFilterList.stream()
-                            .filter(product -> product.getBase_price().compareTo(maxValue) >= 0)
-                            .collect(Collectors.toCollection(ArrayList::new));
-                } else {
+                if (maxSale.isPresent()) {
                     BigDecimal maxValue = maxSale.get();
-                    updatedFilterList = updatedFilterList.stream()
-                            .filter(product -> product.getProductDetailsArrayList()
-                                    .stream()
-                                    .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0 && productDetails.getSale_price().compareTo(maxValue) >= 0))
-                            .collect(Collectors.toCollection(ArrayList::new));
+                    Optional<BigDecimal> maxNotSale = updatedFilterList.stream()
+                            .filter(product -> product.getBase_price().compareTo(maxValue) >= 0 && product.getProductDetailsArrayList().stream().anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) == 0))
+                            .map(Product::getBase_price)
+                            .filter(Objects::nonNull)
+                            .max(Comparator.naturalOrder());
+
+                    if (maxNotSale.isPresent()) {
+                        BigDecimal maxNotSaleValue = maxNotSale.get();
+                        updatedFilterList = updatedFilterList.stream()
+                                .filter(product -> product.getBase_price().compareTo(maxNotSaleValue) >= 0)
+                                .collect(Collectors.toCollection(ArrayList::new));
+                    } else {
+                        updatedFilterList = updatedFilterList.stream()
+                                .filter(product -> product.getProductDetailsArrayList()
+                                        .stream()
+                                        .anyMatch(productDetails -> productDetails.getSale_price().compareTo(maxValue) >= 0))
+                                .collect(Collectors.toCollection(ArrayList::new));
+                    }
                 }
             }
+
         }
 
         // Update UI based on updatedFilterList
@@ -538,23 +543,23 @@ public class SearchActivity extends AppCompatActivity {
     private void showGenderOverlay() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         LayoutInflater inflater = this.getLayoutInflater();
-        View dialogView =inflater.inflate(R.layout.gender_overlay, null);
-
+        View dialogView = inflater.inflate(R.layout.gender_overlay, null);
         bottomSheetDialog.setContentView(dialogView);
-
         TextView overlayTitle = dialogView.findViewById(R.id.overlay_title);
         overlayTitle.setText("Gender");
-
         ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
         btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
-
-        RecyclerView recyleGender = dialogView.findViewById(R.id.recy_gender);
+        RecyclerView recycleGender = dialogView.findViewById(R.id.recy_gender);
+        recycleGender.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recycleGender.setItemAnimator(new DefaultItemAnimator());
         ProductObjectHandler.getData(new ProductObjectHandler.Callback<ArrayList<ProductObject>>() {
             @Override
             public void onResult(ArrayList<ProductObject> result) {
-                ArrayList<ProductObject> lstGender= result;
-                runOnUiThread(()->{
-                    genderAdapter=new GenderAdapter(lstGender, getApplicationContext(), btnGender.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
+                ArrayList<ProductObject> lstGender = result;
+
+                // Set up the adapter once data is available
+                runOnUiThread(() -> {
+                    genderAdapter = new GenderAdapter(lstGender, getApplicationContext(), btnGender.getText().toString(), new GenderAdapter.OnGenderSelectedListener() {
                         @Override
                         public void onGenderSelected(String selectedGender) {
                             btnGender.setText(selectedGender);
@@ -562,20 +567,20 @@ public class SearchActivity extends AppCompatActivity {
                                 numberFilter += 1;
                                 filter.setText(String.valueOf(numberFilter));
                             }
-                            if(selectedGender.equalsIgnoreCase("Men"))
-                            {
-                                genderFilter="Men";
-                                filterChangedGender = true;
+                            if (selectedGender.equalsIgnoreCase("Men")) {
+                                genderFilter = "Men";
+                            } else {
+                                genderFilter = "Women";
                             }
-                            else
-                            {
-                                genderFilter="Women";
-                                filterChangedGender = true;
-                            }
+                            filterChangedGender = true;
                             bottomSheetDialog.dismiss();
-                            filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+
+                            // Call the filter list with updated data
+                            filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
                         }
                     });
+                    recycleGender.setAdapter(genderAdapter);
+                    genderAdapter.notifyDataSetChanged();
                 });
             }
         });
@@ -583,22 +588,21 @@ public class SearchActivity extends AppCompatActivity {
         bottomSheetDialog.findViewById(R.id.btn_clear_overlay).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    genderFilter = "";
-                    btnGender.setText("Gender");
-                    filterChangedGender = false;
-                    if (numberFilter > 0) {
-                        numberFilter -= 1;
-                        filter.setText(String.valueOf(numberFilter));
-                    }
-                    filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
-                    bottomSheetDialog.dismiss();
+                genderFilter = "";
+                btnGender.setText("Gender");
+                filterChangedGender = false;
+                if (numberFilter > 0) {
+                    numberFilter -= 1;
+                    filter.setText(String.valueOf(numberFilter));
+                }
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
+                bottomSheetDialog.dismiss();
             }
         });
-        recyleGender.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyleGender.setItemAnimator(new DefaultItemAnimator());
-        recyleGender.setAdapter(genderAdapter);
+
         bottomSheetDialog.show();
     }
+
     //overlay sortby
     private void showSortByOverlay() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
