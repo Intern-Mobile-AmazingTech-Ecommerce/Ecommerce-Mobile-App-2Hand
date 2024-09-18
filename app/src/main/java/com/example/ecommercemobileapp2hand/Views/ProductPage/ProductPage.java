@@ -337,7 +337,7 @@ public class ProductPage extends AppCompatActivity {
                                 });
                             } else {
                                 runOnUiThread(() -> {
-                                    Toast.makeText(ProductPage.this, "Failed to add to bag.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ProductPage.this, "This product is not in stock.", Toast.LENGTH_SHORT).show();
                                 });
                             }
                         }
