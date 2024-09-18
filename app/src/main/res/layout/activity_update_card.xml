@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:fontFamily="@font/gabarito"
-            android:text="Add Card"
+            android:text="Update Card"
             android:textFontWeight="700"
             android:textSize="16dp" />
     </RelativeLayout>

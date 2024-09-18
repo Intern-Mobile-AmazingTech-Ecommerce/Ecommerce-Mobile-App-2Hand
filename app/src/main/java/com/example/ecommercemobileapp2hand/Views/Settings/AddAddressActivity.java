@@ -143,9 +143,9 @@ public class AddAddressActivity extends AppCompatActivity {
                 String zipCode = edtZipCode.getText().toString();
                 String phoneNumber = edtPhoneNumber.getText().toString();
                 if (!isEmpty(streetAddress, city, state, zipCode,phoneNumber)) {
-                    Toast.makeText(AddAddressActivity.this, "thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddAddressActivity.this, "Success", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(AddAddressActivity.this, "thất bại", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddAddressActivity.this, "Fail", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -197,6 +197,15 @@ public class AddAddressActivity extends AppCompatActivity {
                 }
             }
         });
+        edtPhoneNumber.setFilters(new InputFilter[]{new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
+                if (charSequence != null && charSequence.toString().matches("^[0-9]$")) {
+                    return null;
+                }
+                return "";
+            }
+        }});
         edtPhoneNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -211,10 +220,15 @@ public class AddAddressActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 String phoneNumber = editable.toString();
-                if (isValidPhoneNumber(phoneNumber)) {
-                    edtPhoneNumber.setError(null);
+
+                if (phoneNumber.isEmpty()) {
+                    edtPhoneNumber.setError("Phone number cannot be empty");
+                } else if (!phoneNumber.matches("\\d*")) {
+                    edtPhoneNumber.setError("Only numbers are allowed");
+                } else if (phoneNumber.length() != 10) {
+                    edtPhoneNumber.setError("Phone number must be exactly 10 digits");
                 } else {
-                    edtPhoneNumber.setError("Số điện thoại không hợp lệ");
+                    edtPhoneNumber.setError(null);
                 }
             }
         });
