@@ -9,7 +9,8 @@
     android:layout_marginBottom="20dp"
     app:cardCornerRadius="8px"
     app:cardElevation="0dp"
-    android:id="@+id/cardProduct">
+    android:id="@+id/cardProduct"
+  >
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -17,11 +18,12 @@
         android:layout_height="match_parent"
         android:scaleX="0.2"
         android:scaleY="0.2"
-        android:visibility="visible"
+        android:visibility="gone"
         android:indeterminateTint="@color/purple"
         android:indeterminate="true"
         />
     <LinearLayout
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -103,6 +105,7 @@
         android:padding="4dp"
         app:icon="@drawable/black_heart"
         style="@style/icon_favorite" />
+
 
 
 </androidx.cardview.widget.CardView>

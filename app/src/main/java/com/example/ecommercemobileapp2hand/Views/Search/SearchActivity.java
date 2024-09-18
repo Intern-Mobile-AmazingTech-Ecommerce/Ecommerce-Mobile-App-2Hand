@@ -97,7 +97,7 @@ public class SearchActivity extends AppCompatActivity {
     private int numberFilter = 0;
     private GenderAdapter genderAdapter;
     private Boolean isFreeShip=null;
-    private static final long DEBOUNCE_DELAY = 300; // 300ms delay
+    private static final long DEBOUNCE_DELAY = 1000; // 300ms delay
     private Handler searchHandler = new Handler();
     private Runnable searchRunnable;
 
@@ -202,8 +202,14 @@ public class SearchActivity extends AppCompatActivity {
                     searchHandler.removeCallbacks(searchRunnable);
                 }
 
-                searchRunnable = () -> filterList(newText, genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
-                searchHandler.postDelayed(searchRunnable, DEBOUNCE_DELAY);
+                if (!newText.trim().isEmpty()) {
+                    searchRunnable = () -> filterList(newText, genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
+                    if (searchHandler != null) {
+                        searchHandler.postDelayed(searchRunnable, DEBOUNCE_DELAY);
+                    }
+                }else {
+                    filterList("", genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
+                }
                 return false;
             }
         });

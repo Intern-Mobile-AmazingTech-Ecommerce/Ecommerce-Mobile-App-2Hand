@@ -130,7 +130,7 @@ public class ProductPage extends AppCompatActivity {
         } else {
             currentDetails = product.getProductDetailsArrayList().get(0);
         }
-        currentSize = currentDetails.getSizeArrayList() != null ? currentDetails.getSizeArrayList().get(0) : new ProductDetailsSize();
+
         colorList = product.getProductDetailsArrayList().stream().map(productDetails -> productDetails.getProductColor()).distinct().collect(Collectors.toCollection(ArrayList::new));
 
     }
@@ -152,6 +152,7 @@ public class ProductPage extends AppCompatActivity {
 
     @SuppressLint("ResourceType")
     private void bindingData(ProductDetails curr) {
+        currentSize = curr.getSizeArrayList() != null ? curr.getSizeArrayList().stream().filter(size -> size.getStock() > 0).findFirst().orElse(new ProductDetailsSize()) : new ProductDetailsSize();
         loadRecycleViewImgSlider(curr);
         loadListViewReviews(curr);
         tvProductName.setText(product.getProduct_name());
@@ -179,7 +180,7 @@ public class ProductPage extends AppCompatActivity {
             tvTotalPrice.setText("$" + String.valueOf(product.getBase_price().toString()));
             productPrice = product.getBase_price();
         }
-        tvSize.setText(curr.getSizeArrayList() != null ? curr.getSizeArrayList().get(0).getSize().getSize_name() : "None");
+        tvSize.setText(!currentSize.getSize().getSize_name().isEmpty() ? currentSize.getSize().getSize_name() : "None");
         //Size
         int totalStockOfSize = curr.getSizeArrayList() != null ? curr.getSizeArrayList().stream().mapToInt(ProductDetailsSize::getStock).sum() : 0;
         if (totalStockOfSize == 0 || curr.getSizeArrayList() == null) {
@@ -197,7 +198,9 @@ public class ProductPage extends AppCompatActivity {
         isFavorite(curr);
     }
     private void isFavorite(ProductDetails curr){
-
+    new Handler().postDelayed(new Runnable() {
+        @Override
+        public void run() {
             WishlistHandler.checkProductDetailsExistsInWishlistByUserID(curr.getProduct_details_id(), userAccount.getUserId(), new WishlistHandler.Callback<Boolean>() {
                 @Override
                 public void onResult(Boolean result) {
@@ -223,6 +226,9 @@ public class ProductPage extends AppCompatActivity {
                     });
                 }
             });
+
+        }
+    },2000);
 
 
 

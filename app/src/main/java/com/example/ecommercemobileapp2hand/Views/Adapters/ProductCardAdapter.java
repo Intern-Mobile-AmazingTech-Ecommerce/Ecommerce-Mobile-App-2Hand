@@ -107,141 +107,126 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+
+        Product pro = lstPro.get(position);
+        // First Sale Details
+
+        Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
+                .filter(detail -> detail.getSale_price() != null && detail.getSale_price().compareTo(BigDecimal.ZERO) > 0)
+                .findFirst();
+        ProductDetails details = firstSaleDetails.isPresent() ? firstSaleDetails.get() : pro.getProductDetailsArrayList().get(0);
+        Util.getCloudinaryImageUrl(context, details.getImgDetailsArrayList().get(0).getImg_url(), 159, 220, new Util.Callback<String>() {
+            @Override
+            public void onResult(String result) {
+                String imgUrl = result;
+                ((Activity) context).runOnUiThread(() -> {
+                    Glide.with(context).load(imgUrl).override(159, 220).into(holder.img_Product);
+                });
+            }
+        });
+        ProductDetails finalDetails = details;
+        holder.tvProductName.setText(pro.getProduct_name());
+        holder.tvSalePrice.setVisibility(View.VISIBLE);
+
+        if (firstSaleDetails.isPresent()) {
+            holder.tvSalePrice.setText("$" + finalDetails.getSale_price().toString());
+            holder.tvPrice.setText("$" + pro.getBase_price().toString());
+            holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        } else {
+            holder.tvPrice.setVisibility(View.GONE);
+            holder.tvSalePrice.setText("$" + pro.getBase_price().toString());
+        }
+
+        holder.productCard.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ProductPage.class);
+            Bundle bundle = new Bundle();
+
+            if (currentWishListID != -1) {
+                ProductHandler.getDataByProductID(pro.getProduct_id(), new ProductHandler.Callback<Product>() {
+                    @Override
+                    public void onResult(Product result) {
+                        Product ProDetails = result;
+                        ((Activity) context).runOnUiThread(() -> {
+                            bundle.putParcelable("lstDetails", ProDetails);
+                            if (firstSaleDetails.isPresent()) {
+                                bundle.putParcelable("currentSale", finalDetails);
+                            }
+                            intent.putExtras(bundle);
+                            context.startActivity(intent);
+                        });
+                    }
+                });
+            } else {
+                bundle.putParcelable("lstDetails", pro);
+                if (firstSaleDetails.isPresent()) {
+                    bundle.putParcelable("currentSale", finalDetails);
+                }
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
         holder.progressBar.setVisibility(View.VISIBLE);
+        UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
+        if (user != null) {
 
-        new Handler().postDelayed(() -> {
-            holder.progressBar.setVisibility(View.GONE);
-            Product pro = lstPro.get(position);
-            // First Sale Details
-            ProductDetails details = new ProductDetails();
-            Optional<ProductDetails> firstSaleDetails = pro.getProductDetailsArrayList().stream()
-                    .filter(detail -> detail.getSale_price() != null && detail.getSale_price().compareTo(BigDecimal.ZERO) > 0)
-                    .findFirst();
-
-            if (firstSaleDetails.isPresent()) {
-                details = firstSaleDetails.get();
-                Util.getCloudinaryImageUrl(context, details.getImgDetailsArrayList().get(0).getImg_url(), 159, 220, new Util.Callback<String>() {
+            if (WishlistHandler.isConnectionValid()) {
+                WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), user.getUserId(), new WishlistHandler.Callback<Boolean>() {
                     @Override
-                    public void onResult(String result) {
-                        String imgUrl = result;
+                    public void onResult(Boolean result) {
                         ((Activity) context).runOnUiThread(() -> {
-                            Glide.with(context).load(imgUrl).override(159, 220).into(holder.img_Product);
+
+                            if (result) {
+                                holder.img_Heart.setIconResource(R.drawable.red_heart);
+                                holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.RED));
+                            } else {
+                                holder.img_Heart.setIconResource(R.drawable.black_heart);
+                                holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.BLACK));
+                            }
+                            if (currentWishListID != -1) {
+                                holder.img_Heart.setOnClickListener(v -> {
+                                    if (result) {
+                                        WishlistHandler.removeFromWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
+                                            @Override
+                                            public void onResult(Boolean result) {
+                                                ((Activity) context).runOnUiThread(() -> {
+                                                    if (result) {
+                                                        notifyDataSetChanged();
+                                                        Toast.makeText(context, "Product Removed From Wishlist Successfully", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(context, "Product Removed From Wishlist Failed", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        WishlistHandler.insertToWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
+                                            @Override
+                                            public void onResult(Boolean result) {
+                                                ((Activity) context).runOnUiThread(() -> {
+                                                    if (result) {
+                                                        notifyDataSetChanged();
+                                                        Toast.makeText(context, "Product inserted into Wishlist Successfully", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(context, "Product inserted into Wishlist Failed", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                holder.img_Heart.setOnClickListener(v -> showAddToWLOverlay(finalDetails, holder.getAdapterPosition()));
+                            }
+
                         });
+
                     }
                 });
             } else {
-                Util.getCloudinaryImageUrl(context, pro.getThumbnail(), 159, 220, new Util.Callback<String>() {
-                    @Override
-                    public void onResult(String result) {
-                        String imgUrl = result;
-                        ((Activity) context).runOnUiThread(() -> {
-                            Glide.with(context).load(imgUrl).override(159, 220).into(holder.img_Product);
-                        });
-                    }
-                });
+                Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
+        } 
 
-            ProductDetails finalDetails = details;
-            holder.tvProductName.setText(pro.getProduct_name());
-            holder.tvSalePrice.setVisibility(View.VISIBLE);
-
-            if (firstSaleDetails.isPresent()) {
-                holder.tvSalePrice.setText("$" + finalDetails.getSale_price().toString());
-                holder.tvPrice.setText("$" + pro.getBase_price().toString());
-                holder.tvPrice.setPaintFlags(holder.tvPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            } else {
-                holder.tvPrice.setVisibility(View.GONE);
-                holder.tvSalePrice.setText("$" + pro.getBase_price().toString());
-            }
-
-            holder.productCard.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ProductPage.class);
-                Bundle bundle = new Bundle();
-
-                if (currentWishListID != -1) {
-                    ProductHandler.getDataByProductID(pro.getProduct_id(), new ProductHandler.Callback<Product>() {
-                        @Override
-                        public void onResult(Product result) {
-                            Product ProDetails = result;
-                            ((Activity) context).runOnUiThread(() -> {
-                                bundle.putParcelable("lstDetails", ProDetails);
-                                if (firstSaleDetails.isPresent()) {
-                                    bundle.putParcelable("currentSale", finalDetails);
-                                }
-                                intent.putExtras(bundle);
-                                context.startActivity(intent);
-                            });
-                        }
-                    });
-                } else {
-                    bundle.putParcelable("lstDetails", pro);
-                    if (firstSaleDetails.isPresent()) {
-                        bundle.putParcelable("currentSale", finalDetails);
-                    }
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
-                }
-            });
-
-            UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
-            if (user != null) {
-                if (WishlistHandler.isConnectionValid()) {
-                    WishlistHandler.checkProductDetailsExistsInWishlistByUserID(finalDetails.getProduct_details_id(), user.getUserId(), new WishlistHandler.Callback<Boolean>() {
-                        @Override
-                        public void onResult(Boolean result) {
-                            ((Activity) context).runOnUiThread(() -> {
-                                if (result) {
-                                    holder.img_Heart.setIconResource(R.drawable.red_heart);
-                                    holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.RED));
-                                } else {
-                                    holder.img_Heart.setIconResource(R.drawable.black_heart);
-                                    holder.img_Heart.setIconTint(ColorStateList.valueOf(Color.BLACK));
-                                }
-                                if (currentWishListID != -1) {
-                                    holder.img_Heart.setOnClickListener(v -> {
-                                        if (result) {
-                                            WishlistHandler.removeFromWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
-                                                @Override
-                                                public void onResult(Boolean result) {
-                                                    ((Activity) context).runOnUiThread(() -> {
-                                                        if (result) {
-                                                            notifyDataSetChanged();
-                                                            Toast.makeText(context, "Product Removed From Wishlist Successfully", Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            Toast.makeText(context, "Product Removed From Wishlist Failed", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                        } else {
-                                            WishlistHandler.insertToWishlist(currentWishListID, finalDetails.getProduct_details_id(), new WishlistHandler.Callback<Boolean>() {
-                                                @Override
-                                                public void onResult(Boolean result) {
-                                                    ((Activity) context).runOnUiThread(() -> {
-                                                        if (result) {
-                                                            notifyDataSetChanged();
-                                                            Toast.makeText(context, "Product inserted into Wishlist Successfully", Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            Toast.makeText(context, "Product inserted into Wishlist Failed", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                }
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    holder.img_Heart.setOnClickListener(v -> showAddToWLOverlay(finalDetails, holder.getAdapterPosition()));
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                // Handle the case where user is null
-            }
-        }, 2000);
 
     }
 
@@ -256,6 +241,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         private TextView tvProductName, tvSalePrice, tvPrice;
         private MaterialButton img_Heart;
         private ProgressBar progressBar;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             this.productCard = itemView.findViewById(R.id.cardProduct);
@@ -358,12 +344,13 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
         btnCreate = dialogView.findViewById(R.id.btnCreate);
         ExecutorService insertWishlist = Executors.newSingleThreadExecutor();
         btnCreate.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 if (edtNameWL.getText().length() > 0) {
 
                     insertWishlist.execute(() -> {
-                      WishlistHandler.addNewWishlist(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), edtNameWL.getText().toString(), new WishlistHandler.Callback<Boolean>() {
+                        WishlistHandler.addNewWishlist(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), edtNameWL.getText().toString(), new WishlistHandler.Callback<Boolean>() {
                             @Override
                             public void onResult(Boolean result) {
                                 ((android.app.Activity) context).runOnUiThread(() -> {
