@@ -121,13 +121,14 @@ public class Cart extends AppCompatActivity {
             BigDecimal subtotal = new BigDecimal(subtotalStr);
 
             if (!coupon.isActive()) {
-                Toast.makeText(this, "Coupon không hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "\n" + "Coupon is not valid", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "\n" + "Coupon is not valid", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             Date currentDate = new Date(System.currentTimeMillis());
             if (currentDate.before(coupon.getStartDate()) || currentDate.after(coupon.getEndDate())) {
-                Toast.makeText(this, "Coupon đã hết hạn", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "\n" + "Coupon has expired", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -141,7 +142,7 @@ public class Cart extends AppCompatActivity {
                 if (subtotal.compareTo(minOrderValue) >= 0) {
                     discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
                 } else {
-                    Toast.makeText(this, "Giá trị đơn hàng phải trên $1000", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Order value must be over $1000", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -160,7 +161,7 @@ public class Cart extends AppCompatActivity {
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Lỗi định dạng số", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -202,12 +203,11 @@ public class Cart extends AppCompatActivity {
                         applyCoupon(coupon);
                         Log.d("Coupon", "Coupon applied: " + couponCode);
                     } else {
-                        Toast.makeText(this, "Không tìm thấy coupon", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Coupon not found", Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e) {
-                Log.e(TAG, "Error checking coupon: " + e.getMessage(), e);
-                runOnUiThread(() -> Toast.makeText(this, "Lỗi khi kiểm tra coupon", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(this, "Error checking coupon", Toast.LENGTH_SHORT).show());
             }
         });
     }
@@ -228,7 +228,7 @@ public class Cart extends AppCompatActivity {
         }
 
         if (hasNonDiscountedProducts) {
-            runOnUiThread(() -> Toast.makeText(this, "Một số sản phẩm trong giỏ hàng không áp dụng được coupon", Toast.LENGTH_SHORT).show());
+            runOnUiThread(() -> Toast.makeText(this, "Some products are not apply for this coupon", Toast.LENGTH_SHORT).show());
         }
 
         return discountAmount;

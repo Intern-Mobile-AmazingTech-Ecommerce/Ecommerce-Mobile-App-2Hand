@@ -77,7 +77,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
             String password = edtPassword.getText().toString();
 
             if (!isValidPassword(password)) {
-                edtPassword.setError("Mật khẩu phải có ít nhất 6 ký tự");
+                edtPassword.setError("\n" + "Password must have at least 6 characters");
                 return;
             }
 
@@ -116,7 +116,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
 
                                                     startActivity(intent);
                                                     finish();
-                                                    Toast.makeText(SignInPasswordActivity.this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(SignInPasswordActivity.this, "Login successfully", Toast.LENGTH_SHORT).show();
                                                 }
 
                                             });
@@ -125,7 +125,7 @@ public class SignInPasswordActivity extends AppCompatActivity {
 
                                 } else {
                                     showProgress(false);
-                                    showDialog("Đăng nhập thất bại", "Email hoặc mật khẩu không hợp lệ");
+                                    showDialog("Login Failed", "Invalid email or password");
                                 }
                             });
                 }, 3000);
