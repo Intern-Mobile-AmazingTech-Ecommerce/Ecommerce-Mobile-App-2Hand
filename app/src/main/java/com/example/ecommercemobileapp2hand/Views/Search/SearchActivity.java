@@ -150,6 +150,7 @@ public class SearchActivity extends AppCompatActivity {
         imgBack = binding.btnBack;
         searchView = binding.searchView;
         searchView.clearFocus();
+        tvResult = binding.tvResult;
         layoutFilter = binding.layoutFilter;
         recyViewSearchPro = binding.recyProductSearch;
 
@@ -157,6 +158,7 @@ public class SearchActivity extends AppCompatActivity {
         linearLayoutSearch = binding.linearLayoutSearch;
         textViewTitle = binding.titleSearch;
         tvResult = binding.tvResult;
+        scrollViewPro = binding.scrollViewProduct;
         //Container
         categoryContainer = binding.categoryContainer;
         productContainer = binding.productContainer;
@@ -247,6 +249,7 @@ public class SearchActivity extends AppCompatActivity {
 
     void filterList(String text, String genderFilter, Boolean sortByPriceAsc, LocalDateTime thirtyDaysAgo, String onSale, String price,Boolean isFreeshipFilter) {
         service.execute(()->{
+
             // Reset lstPro to the original list before filtering
             ArrayList<Product> filterList = new ArrayList<>(originalProductList);
 
@@ -270,7 +273,10 @@ public class SearchActivity extends AppCompatActivity {
                     .collect(Collectors.toCollection(ArrayList::new));
 
             ArrayList<Product> finalFilterList = filterList;
+
+
             runOnUiThread(()->{
+
                 updateUIWithFilterResults(text, finalFilterList);
             });
 
@@ -355,18 +361,27 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         // Update UI based on updatedFilterList
-        if (text.isEmpty()) {
+        if (text.isEmpty() ) {
             categoryContainer.setVisibility(View.VISIBLE);
             linearLayoutSearch.setVisibility(View.GONE);
             productContainer.setVisibility(View.GONE);
-        } else if (updatedFilterList.isEmpty()) {
+            scrollViewPro.setVisibility(View.GONE);
+            layoutFilter.setVisibility(View.GONE);
+            tvResult.setVisibility(View.GONE);
+        }else if (updatedFilterList.isEmpty()) {
             linearLayoutSearch.setVisibility(View.VISIBLE);
             categoryContainer.setVisibility(View.GONE);
-            productContainer.setVisibility(View.GONE);
-        } else {
+//            productContainer.setVisibility(View.GONE);
+            scrollViewPro.setVisibility(View.GONE);
+            layoutFilter.setVisibility(View.VISIBLE);
+            tvResult.setVisibility(View.GONE);
+        } else{
             productContainer.setVisibility(View.VISIBLE);
+            scrollViewPro.setVisibility(View.VISIBLE);
+            layoutFilter.setVisibility(View.VISIBLE);
             categoryContainer.setVisibility(View.GONE);
             linearLayoutSearch.setVisibility(View.GONE);
+            tvResult.setVisibility(View.VISIBLE);
             if (proAdapter == null) {
                 proAdapter = new ProductCardAdapter(updatedFilterList, SearchActivity.this);
                 recyViewSearchPro.setLayoutManager(new GridLayoutManager(this, 2));

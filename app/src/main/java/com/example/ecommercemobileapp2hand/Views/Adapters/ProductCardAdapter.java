@@ -225,7 +225,7 @@ public class ProductCardAdapter extends RecyclerView.Adapter<ProductCardAdapter.
             } else {
                 Toast.makeText(context, "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
-        } 
+        }
 
 
     }

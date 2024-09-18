@@ -197,10 +197,10 @@ public class WishlistHandler {
             PreparedStatement stmt = null;
 
             try {
-                Thread.sleep(1000);
                 conn = dbConnect.connectionClass();
+
                 if (conn == null || conn.isClosed()) {
-                    throw new SQLException("Connection is closed or null");
+                    shutDownExecutor(service);
                 }
                 String sql = "SELECT COUNT(*) " +
                         "FROM wishlist_product wp " +
@@ -215,18 +215,18 @@ public class WishlistHandler {
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } finally {
+            }  finally {
                 try {
                     if (resultSet != null) resultSet.close();
                     if (stmt != null) stmt.close();
                     if (conn != null && !conn.isClosed()) conn.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
+                } finally {
+                    shutDownExecutor(service);
                 }
             }
-            shutDownExecutor(service);
+
         });
     }
 
