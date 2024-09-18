@@ -160,7 +160,6 @@ public class SettingsFragment extends Fragment {
             Log.e(TAG, "Không tìm thấy email.");
         }
     }
-
     private void signOut() {
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(),
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build());
@@ -168,10 +167,11 @@ public class SettingsFragment extends Fragment {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isLoggedIn", false);
+        editor.putString("email", null);
         editor.apply();
-
         googleSignInClient.signOut().addOnCompleteListener(task -> {
             LoginManager.getInstance().logOut();
+            UserAccountManager.getInstance().setCurrentUserAccount(null);
             startActivity(new Intent(getActivity(), SignInActivity.class));
             requireActivity().finish();
             Toast.makeText(getActivity(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();

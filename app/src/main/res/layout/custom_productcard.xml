@@ -11,11 +11,19 @@
     app:cardElevation="0dp"
     android:id="@+id/cardProduct">
 
-
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleX="0.2"
+        android:scaleY="0.2"
+        android:visibility="visible"
+        android:indeterminateTint="@color/purple"
+        android:indeterminate="true"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:orientation="vertical"
         tools:ignore="MissingConstraints">
 
