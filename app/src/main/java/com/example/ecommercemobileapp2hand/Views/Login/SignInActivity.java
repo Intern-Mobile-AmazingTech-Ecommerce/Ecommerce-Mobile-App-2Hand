@@ -98,7 +98,7 @@ public class SignInActivity extends AppCompatActivity {
         btnContinue.setOnClickListener(v -> {
             String email = edtEmail.getText().toString();
             if (!isValidEmail(email)) {
-                edtEmail.setError("Email không hợp lệ");
+                edtEmail.setError("Invalid email");
                 return;
             }
             Intent intent = new Intent(SignInActivity.this, SignInPasswordActivity.class);
@@ -122,12 +122,12 @@ public class SignInActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                Toast.makeText(getApplicationContext(), "Đăng nhập bị huỷ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Login canceled", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException error) {
-                Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "Facebook login error", error);
             }
         });
@@ -189,18 +189,15 @@ public class SignInActivity extends AppCompatActivity {
                     String email = user.getEmail();
                     String displayName = user.getDisplayName();
                     service.submit(()->{
-                        //UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
                         runOnUiThread(()->{
-                            Toast.makeText(this, "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Login successfully", Toast.LENGTH_SHORT).show();
                             handleSignInResult(user);
                             onLoginSuccess(email);
                         });
                     });
-
-
                 }
             } else {
-                Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "\n" + "Login failed", Toast.LENGTH_LONG).show();
                 Log.e(TAG, "Facebook login error", task.getException());
             }
         });
@@ -222,12 +219,12 @@ public class SignInActivity extends AppCompatActivity {
                             onLoginSuccess(email);
                         }
                     } else {
-                        Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         } catch (ApiException e) {
-            Toast.makeText(this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
         }
     }
 

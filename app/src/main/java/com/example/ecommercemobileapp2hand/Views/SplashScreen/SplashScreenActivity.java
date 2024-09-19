@@ -20,7 +20,7 @@ import com.example.ecommercemobileapp2hand.Views.Login.SignInActivity;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
-    private UserAccount userAccount; // Declare userAccount
+    private UserAccount userAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

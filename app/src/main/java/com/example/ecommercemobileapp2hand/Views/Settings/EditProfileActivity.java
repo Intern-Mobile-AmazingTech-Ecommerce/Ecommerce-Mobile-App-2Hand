@@ -54,7 +54,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                // Callback được gọi sau khi người dùng chọn một phương tiện hoặc đóng trình chọn ảnh
                 if (uri != null) {
                     handleSelectedImage(uri);
                 } else {
@@ -118,17 +117,17 @@ public class EditProfileActivity extends AppCompatActivity {
             String phoneNumber = phoneNumberEditText.getText().toString().trim();
 
             if (!isValidName(firstName)) {
-                firstNameEditText.setError("Tên phải có ít nhất 2 ký tự");
+                firstNameEditText.setError("Must have at least 2 characters");
                 return;
             }
 
             if (!isValidName(lastName)) {
-                lastNameEditText.setError("Họ phải có ít nhất 2 ký tự");
+                lastNameEditText.setError("Must have at least 2 characters");
                 return;
             }
 
             if (!isValidPhoneNumber(phoneNumber)) {
-                phoneNumberEditText.setError("Số điện thoại không hợp lệ");
+                phoneNumberEditText.setError("Invalid phone number");
                 return;
             }
 
@@ -151,7 +150,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private boolean isValidPhoneNumber(String phoneNumber) {
-        return phoneNumber.matches("^\\+?\\d{1,3}[\\s-]?\\d{1,4}[\\s-]?\\d{4,10}$");
+        return phoneNumber.matches("^0\\d{9}$");
     }
 
     private void uploadImage(String firstName, String lastName, String phoneNumber) {
@@ -182,16 +181,13 @@ public class EditProfileActivity extends AppCompatActivity {
                     String formattedFileName = "EcommerceApp/" + fileName;
 
                     runOnUiThread(() -> updateUserDetails(firstName, lastName, phoneNumber, formattedFileName));
-                    Log.d("EditProfileActivity", "Uploaded image: " + uploadedImageUrl);
                 } else {
                     runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Cannot open image", Toast.LENGTH_SHORT).show());
-                    Log.e("EditProfileActivity", "Cannot open image");
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(EditProfileActivity.this, "Error uploading image", Toast.LENGTH_SHORT).show());
-                Log.e("EditProfileActivity", "Error uploading image: " + e.getMessage());
             }
         });
     }
@@ -208,12 +204,12 @@ public class EditProfileActivity extends AppCompatActivity {
                         resultIntent.putExtra("updatedPhoneNumber", phoneNumber);
                         resultIntent.putExtra("updatedImageUrl", uploadedImageUrl);
                         setResult(Activity.RESULT_OK, resultIntent);
-                        Toast.makeText(EditProfileActivity.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditProfileActivity.this, "Updated successfully", Toast.LENGTH_SHORT).show();
                     });
 
                 }else {
                     runOnUiThread(()->{
-                        Toast.makeText(EditProfileActivity.this, "Cập nhật thất bại", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditProfileActivity.this, "Update failed", Toast.LENGTH_SHORT).show();
                     });
                 }
             }
@@ -234,7 +230,6 @@ public class EditProfileActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "Error selecting image: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("EditProfileActivity", "Error selecting image: " + e.getMessage());
         }
     }
 }

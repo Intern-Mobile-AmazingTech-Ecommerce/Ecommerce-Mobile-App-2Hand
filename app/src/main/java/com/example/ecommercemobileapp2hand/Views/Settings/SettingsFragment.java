@@ -149,7 +149,7 @@ public class SettingsFragment extends Fragment {
                                 imageUser.setImageResource(R.drawable.avt);
                             }
                         } else {
-                            Log.e(TAG, "Không tìm thấy thông tin người dùng.");
+                            Log.e(TAG, "User info not found");
                         }
                     });
                 }
@@ -157,7 +157,7 @@ public class SettingsFragment extends Fragment {
 //            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
 
         } else {
-            Log.e(TAG, "Không tìm thấy email.");
+            Log.e(TAG, "Email not found");
         }
     }
     private void signOut() {
@@ -174,7 +174,7 @@ public class SettingsFragment extends Fragment {
             UserAccountManager.getInstance().setCurrentUserAccount(null);
             startActivity(new Intent(getActivity(), SignInActivity.class));
             requireActivity().finish();
-            Toast.makeText(getActivity(), "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "SignOut successfully", Toast.LENGTH_SHORT).show();
         });
     }
 

@@ -101,22 +101,22 @@ public class SignUpActivity extends AppCompatActivity {
                 String password = ((EditText) findViewById(R.id.password)).getText().toString();
 
                 if (!isFieldNotEmpty(firstName)) {
-                    ((EditText) findViewById(R.id.firstname)).setError("Không được để trống");
+                    ((EditText) findViewById(R.id.firstname)).setError("cannot be blank");
                     return;
                 }
 
                 if (!isAlphabet(firstName)) {
-                    ((EditText) findViewById(R.id.firstname)).setError("Không hợp lệ");
+                    ((EditText) findViewById(R.id.firstname)).setError("Invalid");
                     return;
                 }
 
                 if (!isValidName(firstName)) {
-                    ((EditText) findViewById(R.id.firstname)).setError("Phải có ít nhất 2 kí tự");
+                    ((EditText) findViewById(R.id.firstname)).setError("Must have at least 2 characters");
                     return;
                 }
 
                 if (!isFieldNotEmpty(lastName)) {
-                    ((EditText) findViewById(R.id.lastname)).setError("Không được để trống");
+                    ((EditText) findViewById(R.id.lastname)).setError("cannot be blank");
                     return;
                 }
 
@@ -126,27 +126,27 @@ public class SignUpActivity extends AppCompatActivity {
                 }
 
                 if (!isValidName(lastName)) {
-                    ((EditText) findViewById(R.id.lastname)).setError("Phải có ít nhất 2 kí tự");
+                    ((EditText) findViewById(R.id.lastname)).setError("Must have at least 2 characters");
                     return;
                 }
 
                 if (!isFieldNotEmpty(email)) {
-                    ((EditText) findViewById(R.id.email_address)).setError("Email không được để trống");
+                    ((EditText) findViewById(R.id.email_address)).setError("Email cannot be blank");
                     return;
                 }
 
                 if (!isValidEmail(email)) {
-                    ((EditText) findViewById(R.id.email_address)).setError("Email không hợp lệ");
+                    ((EditText) findViewById(R.id.email_address)).setError("Email invalid");
                     return;
                 }
 
                 if (!isFieldNotEmpty(password)) {
-                    ((EditText) findViewById(R.id.password)).setError("Mật khẩu không được để trống");
+                    ((EditText) findViewById(R.id.password)).setError("Password cannot be blank");
                     return;
                 }
 
                 if (!isValidPassword(password)) {
-                    ((EditText) findViewById(R.id.password)).setError("Mật khẩu phải có ít nhất 6 ký tự");
+                    ((EditText) findViewById(R.id.password)).setError("Password must have at least 6 characters");
                     return;
                 }
 
@@ -160,12 +160,12 @@ public class SignUpActivity extends AppCompatActivity {
                                     intent.putExtra("firstName", firstName);
                                     intent.putExtra("lastName", lastName);
                                     String displayName = firstName + " " + lastName;
-                                    intent.putExtra("displayName", displayName); // Ensure displayName is passed
+                                    intent.putExtra("displayName", displayName);
                                     startActivity(intent);
                                     finish();
-                                    Toast.makeText(SignUpActivity.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignUpActivity.this, "Signup successfully", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(SignUpActivity.this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignUpActivity.this, "Signup failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

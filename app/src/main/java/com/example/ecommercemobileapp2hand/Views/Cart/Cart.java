@@ -20,11 +20,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
 import com.example.ecommercemobileapp2hand.Controllers.CouponHandler;
+import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserCardsHandler;
 import com.example.ecommercemobileapp2hand.Models.Bag;
 import com.example.ecommercemobileapp2hand.Models.Coupon;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
+import com.example.ecommercemobileapp2hand.Models.UserAddress;
+import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.Adapter_Cart;
 import com.example.ecommercemobileapp2hand.Views.Checkout.Checkout;
@@ -34,6 +39,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -50,7 +56,9 @@ public class Cart extends AppCompatActivity {
     TextView selectCoupon;
     TextView txtDiscount;
     UserAccount user;
+    UserAddress userAddress;
     BigDecimal discountAmount = BigDecimal.ZERO;
+    Product product = new Product();
     private static final String TAG = "Cart";
 
     @Override
@@ -67,6 +75,7 @@ public class Cart extends AppCompatActivity {
         loadUserBag();
         back = findViewById(R.id.btnBack2);
         back.setOnClickListener(view -> finish());
+
         btncheckout = findViewById(R.id.btnCheckout);
         btncheckout.setOnClickListener(view -> {
             Intent myintent = new Intent(Cart.this, Checkout.class);
@@ -74,6 +83,7 @@ public class Cart extends AppCompatActivity {
             myintent.putExtra("discount",String.valueOf(discountAmount));
             startActivity(myintent);
         });
+
         removeAll = findViewById(R.id.removeAll);
         removeAll.setOnClickListener(view -> {
             AlertDialog.Builder builder=new AlertDialog.Builder(Cart.this);
@@ -84,6 +94,7 @@ public class Cart extends AppCompatActivity {
                         loadUserBag();
                     })).setNegativeButton("Cancel",(dialogInterface, i) -> {}).show();
         });
+
         addConTrols();
         addEvents();
     }
@@ -109,46 +120,66 @@ public class Cart extends AppCompatActivity {
             BigDecimal subtotal = new BigDecimal(subtotalStr);
 
             if (!coupon.isActive()) {
-                Toast.makeText(this, "Coupon không hợp lệ", Toast.LENGTH_SHORT).show();
+                discountAmount = BigDecimal.ZERO;
+                updateDiscountAndTotal(subtotal);
+                Toast.makeText(this, "Coupon is not valid", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             Date currentDate = new Date(System.currentTimeMillis());
             if (currentDate.before(coupon.getStartDate()) || currentDate.after(coupon.getEndDate())) {
-                Toast.makeText(this, "Coupon đã hết hạn", Toast.LENGTH_SHORT).show();
+                discountAmount = BigDecimal.ZERO;
+                updateDiscountAndTotal(subtotal);
+                Toast.makeText(this, "Coupon has expired", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // giảm giá theo tổng đơn hàng
             if (coupon.getType().equals("ORDER")) {
                 discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-            }
-            // giảm giá với giá trị đơn hàng tối thiểu
-            else if (coupon.getType().equals("MINORDER")) {
+            } else if (coupon.getType().equals("MINORDER")) {
                 BigDecimal minOrderValue = new BigDecimal("1000");
                 if (subtotal.compareTo(minOrderValue) >= 0) {
                     discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
                 } else {
-                    Toast.makeText(this, "Giá trị đơn hàng phải trên $1000", Toast.LENGTH_SHORT).show();
+                    discountAmount = BigDecimal.ZERO;
+                    updateDiscountAndTotal(subtotal);
+                    Toast.makeText(this, "Order must be over $1000", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else if (coupon.getType().equals("PRODUCT")) {
+                boolean hasNonDiscountedProducts = false;
+
+                for (Bag item : mylist) {
+                    Product product = item.getProduct();
+                    if (product != null && product.getCoupon_id() == coupon.getCouponId()) {
+                        discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                    } else {
+                        hasNonDiscountedProducts = true;
+                    }
+                }
+                if (hasNonDiscountedProducts) {
+                    runOnUiThread(() -> Toast.makeText(this, "Some products in the cart do not apply for the coupon", Toast.LENGTH_SHORT).show());
+                    txtDiscount.setText("0");
+                    txtTotal.setText(txtSubtotal.getText());
                     return;
                 }
             }
-            // giảm giá cho sản phẩm cụ thể
-            else if (coupon.getType().equals("PRODUCT")) {
-                discountAmount = applyProductDiscount(coupon);
-            }
 
-            BigDecimal newTotal = subtotal.subtract(discountAmount);
-            DecimalFormat df = new DecimalFormat("#.00");
-            txtDiscount.setText("$" + df.format(discountAmount));
-            txtTotal.setText("$" + df.format(newTotal));
-
-            if (myadapter != null) {
-                myadapter.setDiscountAmount(discountAmount);
-            }
+            updateDiscountAndTotal(subtotal);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Lỗi định dạng số", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Number format error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateDiscountAndTotal(BigDecimal subtotal) {
+        BigDecimal newTotal = subtotal.subtract(discountAmount);
+        DecimalFormat df = new DecimalFormat("#.00");
+        txtDiscount.setText("$" + df.format(discountAmount));
+        txtTotal.setText("$" + df.format(newTotal));
+
+        if (myadapter != null) {
+            myadapter.setDiscountAmount(discountAmount);
         }
     }
 
@@ -190,37 +221,13 @@ public class Cart extends AppCompatActivity {
                         applyCoupon(coupon);
                         Log.d("Coupon", "Coupon applied: " + couponCode);
                     } else {
-                        Toast.makeText(this, "Không tìm thấy coupon", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Coupon not found", Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e) {
-                Log.e(TAG, "Error checking coupon: " + e.getMessage(), e);
-                runOnUiThread(() -> Toast.makeText(this, "Lỗi khi kiểm tra coupon", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(this, "Error checking coupon", Toast.LENGTH_SHORT).show());
             }
         });
-    }
-
-    private BigDecimal applyProductDiscount(Coupon coupon) {
-        BigDecimal discountAmount = BigDecimal.ZERO;
-        boolean hasNonDiscountedProducts = false;
-
-        for (Bag item : mylist) {
-            Product product = item.getProduct();
-            if (product != null && product.getCoupon_id() == coupon.getCouponId()) {
-                // Nếu sản phẩm có coupon tương ứng, áp dụng giảm giá
-                BigDecimal productPrice = product.getPrice();
-                BigDecimal productDiscount = productPrice.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-                discountAmount = discountAmount.add(productDiscount);
-            } else {
-                hasNonDiscountedProducts = true;
-            }
-        }
-
-        if (hasNonDiscountedProducts) {
-            runOnUiThread(() -> Toast.makeText(this, "Một số sản phẩm trong giỏ hàng không áp dụng được coupon", Toast.LENGTH_SHORT).show());
-        }
-
-        return discountAmount;
     }
 
 
@@ -230,6 +237,15 @@ public class Cart extends AppCompatActivity {
             if (user != null) {
                 mylist = BagHandler.getData(user.getUserId());
                 if (mylist != null && !mylist.isEmpty()) {
+                    for (Bag item : mylist) {
+                        ProductHandler.getDataByProductID(item.getProduct_id(), new ProductHandler.Callback<Product>() {
+                        @Override
+                        public void onResult(Product product) {
+                            item.setProduct(product);
+                        }
+                    });
+                        item.setProduct(product);
+                    }
                     runOnUiThread(() -> {
                         myadapter = new Adapter_Cart(Cart.this, R.layout.layout_cart, mylist);
                         lv.setAdapter(myadapter);
@@ -238,8 +254,6 @@ public class Cart extends AppCompatActivity {
                     Intent intent = new Intent(Cart.this, EmptyCart.class);
                     startActivity(intent);
                 }
-            } else {
-
             }
         });
     }
