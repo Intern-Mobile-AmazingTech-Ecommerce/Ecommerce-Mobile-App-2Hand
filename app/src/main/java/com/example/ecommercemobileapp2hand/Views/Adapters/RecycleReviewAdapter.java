@@ -65,7 +65,7 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
         ProductReview reviews = reviewsList.get(position);
 
         UserAccount userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
-        if (userAccount.getImgUrl() != null) {
+        if (userAccount.getImgUrl() != null && !userAccount.getImgUrl().isEmpty()) {
             Util.getCloudinaryImageUrl(context, userAccount.getImgUrl(), -1, -1, new Util.Callback<String>() {
                 @Override
                 public void onResult(String result) {
@@ -75,7 +75,10 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
                     });
                 }
             });
-
+        }
+        else
+        {
+            Glide.with(context).load(R.drawable.avt).into(holder.imgAvt);
         }
         holder.tvCustomerName.setText(userAccount.getFullName());
         holder.tvDays.setText(getDayDifference(reviews.getCreated_at()));
