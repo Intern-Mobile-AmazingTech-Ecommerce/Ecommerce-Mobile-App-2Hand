@@ -113,6 +113,7 @@ public class UpdateCardActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 deleteCard();
+                                finish();
                             }
                         })
                         .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -127,18 +128,31 @@ public class UpdateCardActivity extends AppCompatActivity {
     }
     void deleteCard()
     {
-        service.submit(()->{
-            boolean isDelete = UserCardsHandler.deleteCardById(cardId);
-            this.runOnUiThread(()->{
-                if (isDelete)
-                {
-                    Toast.makeText(getApplicationContext(), "Delete card success", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Delete card fail", Toast.LENGTH_SHORT).show();
+//        service.submit(()->{
+//            boolean isDelete = UserCardsHandler.deleteCardById(cardId);
+//            this.runOnUiThread(()->{
+//                if (isDelete)
+//                {
+//                    Toast.makeText(getApplicationContext(), "Delete card success", Toast.LENGTH_SHORT).show();
+//                    finish();
+//                } else {
+//                    Toast.makeText(getApplicationContext(), "Delete card fail", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//        });
+        UserCardsHandler.deleteCardById(cardId, new UserCardsHandler.Callback<Boolean>(){
+                    @Override
+                    public void onResult(Boolean result) {
+                        if (result)
+                        {
+                            Toast.makeText(getApplicationContext(), "Card đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Cập nhật Card thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
-            });
-        });
+                );
     }
     void updateCard() {
         if (validateInput()) {

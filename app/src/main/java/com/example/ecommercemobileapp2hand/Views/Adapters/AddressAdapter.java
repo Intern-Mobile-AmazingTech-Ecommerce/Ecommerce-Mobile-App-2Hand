@@ -42,6 +42,9 @@ import java.util.concurrent.Future;
 
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressViewHolder>
 {
+    private int selectedPosition = 0;
+
+
     private ArrayList<UserAddress> userAddressList ;
     private Context context;
     private int layout;
@@ -51,10 +54,15 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
         void onItemClick(int position);
     }
 
+
     public AddressAdapter(ArrayList<UserAddress> userAddressList, Context context,int layout) {
         this.userAddressList = userAddressList;
         this.context = context;
         this.layout =layout;
+    }
+    public void setUserAddressList(ArrayList<UserAddress> userAddressList) {
+        this.userAddressList = userAddressList;
+        notifyDataSetChanged();
     }
 
     public AddressAdapter(ArrayList<UserAddress> userAddressList, Context context,int layout, OnItemClickListener listener) {

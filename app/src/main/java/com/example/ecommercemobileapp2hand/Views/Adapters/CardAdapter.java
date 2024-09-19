@@ -45,6 +45,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         this.layout=layout;
     }
 
+    public void setCardList(List<UserCards> cardList) {
+        this.cardList = cardList;
+        notifyDataSetChanged();
     public CardAdapter(List<UserCards> cardList, Context context,int layout,OnItemClickListener listener) {
         this.cardList = cardList;
         this.context = context;
