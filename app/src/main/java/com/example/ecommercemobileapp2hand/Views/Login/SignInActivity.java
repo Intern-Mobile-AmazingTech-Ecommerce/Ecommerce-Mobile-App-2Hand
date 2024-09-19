@@ -189,15 +189,12 @@ public class SignInActivity extends AppCompatActivity {
                     String email = user.getEmail();
                     String displayName = user.getDisplayName();
                     service.submit(()->{
-                        //UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
                         runOnUiThread(()->{
                             Toast.makeText(this, "Login successfully", Toast.LENGTH_SHORT).show();
                             handleSignInResult(user);
                             onLoginSuccess(email);
                         });
                     });
-
-
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "\n" + "Login failed", Toast.LENGTH_LONG).show();
