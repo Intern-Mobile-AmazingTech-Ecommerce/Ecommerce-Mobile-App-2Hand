@@ -48,7 +48,7 @@
         android:layout_height="80dp"
         android:layout_gravity="center"
         android:layout_marginTop="48dp"
-        android:src="@drawable/user"
+        android:src="@drawable/avt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
