@@ -37,7 +37,7 @@
         android:textFontWeight="700"
         android:layout_toLeftOf="@id/textViewEdit"
         android:layout_marginRight="20dp"
-        android:text="Active" />
+        android:text="Inactive" />
 
     <TextView
         android:id="@+id/textViewEdit"
