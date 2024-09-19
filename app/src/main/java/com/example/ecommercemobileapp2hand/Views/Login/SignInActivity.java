@@ -171,6 +171,7 @@ public class SignInActivity extends AppCompatActivity {
                                 intent.putExtra("UserAccount", result);
                                 intent.putExtra("email", email);
                                 intent.putExtra("displayName", user.getDisplayName());
+                                onLoginSuccess(email);
                                 startActivity(intent);
                                 finish();
                             }
@@ -197,7 +198,7 @@ public class SignInActivity extends AppCompatActivity {
                         runOnUiThread(()->{
                             Toast.makeText(this, "Login successfully", Toast.LENGTH_SHORT).show();
                             handleSignInResult(user);
-                            onLoginSuccess(email);
+//                            onLoginSuccess(email);
                         });
                     });
                 }
@@ -221,7 +222,7 @@ public class SignInActivity extends AppCompatActivity {
                             String displayName = user.getDisplayName();
 //                            UserAccountHandler.saveUserAccount(email, displayName, "Google");
                             handleSignInResult(user);
-                            onLoginSuccess(email);
+
                         }
                     } else {
                         Toast.makeText(this, "Login failed", Toast.LENGTH_SHORT).show();
@@ -239,10 +240,9 @@ public class SignInActivity extends AppCompatActivity {
         editor.putBoolean("isLoggedIn", true);
         editor.putString("email", email);
         editor.apply();
-
-        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+//        startActivity(intent);
+//        finish();
     }
 
 
