@@ -30,6 +30,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.config.CloudinaryConfig;
 import com.example.ecommercemobileapp2hand.R;
@@ -203,6 +204,10 @@ public class EditProfileActivity extends AppCompatActivity {
                         resultIntent.putExtra("updatedLastName", lastName);
                         resultIntent.putExtra("updatedPhoneNumber", phoneNumber);
                         resultIntent.putExtra("updatedImageUrl", uploadedImageUrl);
+                        UserAccountManager.getInstance().getCurrentUserAccount().setImgUrl(uploadedImageUrl);
+                        UserAccountManager.getInstance().getCurrentUserAccount().setFirstName(firstName);
+                        UserAccountManager.getInstance().getCurrentUserAccount().setLastName(lastName);
+                        UserAccountManager.getInstance().getCurrentUserAccount().setPhoneNumber(phoneNumber);
                         setResult(Activity.RESULT_OK, resultIntent);
                         Toast.makeText(EditProfileActivity.this, "Updated successfully", Toast.LENGTH_SHORT).show();
                     });

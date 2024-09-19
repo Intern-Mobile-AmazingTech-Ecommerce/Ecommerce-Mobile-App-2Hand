@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.ecommercemobileapp2hand.Controllers.ProductObjectHandler;
 import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserAccountHandler;
 import com.example.ecommercemobileapp2hand.Models.Bag;
 import com.example.ecommercemobileapp2hand.Models.ProductObject;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        getIt();
         addControl();
         binding();
     }
@@ -96,21 +96,31 @@ public class MainActivity extends AppCompatActivity {
             String email = intent.getStringExtra("email");
             String userId = intent.getStringExtra("user_id");
             // Lưu vào sharedpreferences
+            UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
+                @Override
+                public void onResult(UserAccount result) {
+                    userAccount = result;
+                    if (userAccount != null) {
+                        runOnUiThread(()->{
+                            UserAccountManager.getInstance().setCurrentUserAccount(userAccount);
+                            if (userAccount != null) {
+                                firstURL = userAccount.getImgUrl();
+                            } else {
+                                // Handle the case where userAccount is null
+                                firstURL = null;
+                            }
+                        });
+                    }
+
+                }
+            });
+
+
             sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("user_email", email);
             editor.putString("user_id", userId);
             editor.apply();
-        }
-    }
-
-    private void getIt() {
-        userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
-        if (userAccount != null) {
-            firstURL = userAccount.getImgUrl();
-        } else {
-            // Handle the case where userAccount is null
-            firstURL = null;
         }
     }
 
