@@ -101,7 +101,35 @@ public class NotificationsActivity extends AppCompatActivity {
             }
         });
     }
-
+//    void fetchNotifications()
+//    {
+//        new Thread(() ->{
+//            notificationsList = NotificationsHandler.initNotificationList1();
+//            runOnUiThread(() ->{
+//                if (notificationsList == null || notificationsList.isEmpty())
+//                {
+//                    NoNotifi();
+//                }else {
+//
+//                    if (adapter == null)
+//                    {
+//                        adapter = new NotificationsAdapter(notificationsList);
+//                        recyclerViewNotifi.setAdapter(adapter);
+//                    }else {
+//                        adapter.setNotificationsList(notificationsList);
+//                        adapter.notifyDataSetChanged();
+//
+//                    }
+//                    HaveNotifi();
+//                }
+//
+//            }
+//
+//            );
+//        }
+//
+//        ).start();
+//    }
 
     void NoNotifi()
     {

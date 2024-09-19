@@ -144,8 +144,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
     }
 
     private String getCurrentUserId() {
-        // Giả sử bạn sử dụng một Singleton để quản lý tài khoản người dùng
-        // Thay đổi cách lấy userId nếu cần thiết
+
         return UserAccountManager.getInstance().getCurrentUserAccount().getUserId();
     }
 
