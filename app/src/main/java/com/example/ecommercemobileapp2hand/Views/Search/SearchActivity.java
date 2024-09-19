@@ -672,7 +672,7 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(View view) {
                 sortByPriceAsc = null;
                 btnSortBy.setText("Sort by");
-                isNewest=false;
+                isNewest=true;
                 filterChangeSortBy = false;
                 if (numberFilter > 0) {
                     numberFilter -= 1;
