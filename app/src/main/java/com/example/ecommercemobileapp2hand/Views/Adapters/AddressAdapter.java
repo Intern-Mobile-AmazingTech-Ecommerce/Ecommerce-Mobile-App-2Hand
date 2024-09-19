@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,8 +48,11 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
     private ArrayList<UserAddress> userAddressList ;
     private Context context;
     private int layout;
-    private ArrayList<Bag> mylist;
-    private String discount;
+    private int addressID;
+    private OnItemClickListener listener;
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
 
 
     public AddressAdapter(ArrayList<UserAddress> userAddressList, Context context,int layout) {
@@ -60,16 +64,23 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
         this.userAddressList = userAddressList;
         notifyDataSetChanged();
     }
+
+    public AddressAdapter(ArrayList<UserAddress> userAddressList, Context context,int layout, OnItemClickListener listener) {
+        this.userAddressList = userAddressList;
+        this.context = context;
+        this.layout =layout;
+        this.listener=listener;
+    }
+
     @NonNull
     @Override
     public AdressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(layout,parent,false);
-        mylist= BagHandler.getData(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
         return new AdressViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdressViewHolder holder,int position) {
+    public void onBindViewHolder(@NonNull AdressViewHolder holder, @SuppressLint("RecyclerView") int position) {
         UserAddress address = userAddressList.get(position);
         holder.textViewAdress.setText(address.getStringAddress());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -86,24 +97,25 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
             }
         });
         if (layout==R.layout.custom_item_choose_address){
-            if(position == selectedPosition){
-                holder.rdbtnChoose.setText("Active");
+            if (addressID!=0){
+                if (address.getUser_address_id()==addressID){
+                    holder.rdbtnChoose.setText("Active");
+                }
+                else{
+                    holder.rdbtnChoose.setText("Inactive");
+                }
+                holder.rdbtnChoose.setChecked(address.getUser_address_id()==addressID);
             }
-            else{
-                holder.rdbtnChoose.setText("Inactive");
-            }
-            holder.rdbtnChoose.setChecked(position== selectedPosition);
+
             holder.rdbtnChoose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     holder.rdbtnChoose.setTag("Active");
-                    selectedPosition = holder.getAdapterPosition();
+                    addressID=address.getUser_address_id();
                     notifyDataSetChanged();
-                    Intent intent = new Intent(context,Checkout.class);
-                    intent.putExtra("listOrder",mylist);
-                    intent.putExtra("addressID",address.getUser_address_id());
-                    intent.putExtra("discount",discount);
-                    context.startActivity(intent);
+                    if (listener!=null){
+                        listener.onItemClick(address.getUser_address_id());
+                    }
                 }
             });
         }
@@ -123,8 +135,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressVi
             rdbtnChoose=itemView.findViewById(R.id.rdbtnChoose);
         }
     }
-
-    public void setDiscount(String discount){
-        this.discount=discount;
+    public void setAddressID(int addressID){
+        this.addressID=addressID;
     }
 }

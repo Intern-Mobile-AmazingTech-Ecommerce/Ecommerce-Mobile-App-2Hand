@@ -106,6 +106,26 @@ public class BagHandler {
         }
         return true;
     }
+    public static boolean deleteUserBagByBagID(int BagID){
+        conn = dbConnect.connectionClass();
+        if(conn!=null) {
+            try
+            {
+                CallableStatement cstmt = conn.prepareCall("call DeleteUserBagByBagID(?)");
+                cstmt.setInt(1,BagID);
+                cstmt.executeUpdate();
+            } catch (SQLException e) {
+                return false;
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
     public static void addBag(Bag bag,Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
         service.execute(()->{

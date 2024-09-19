@@ -29,10 +29,14 @@ import androidx.annotation.NonNull;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
 
-    //private int selectedPosition = 0;
     private List<UserCards> cardList;
     private Context context;
     private int layout;
+    private int cardID;
+    private OnItemClickListener listener;
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
 
 
     public CardAdapter(List<UserCards> cardList, Context context,int layout) {
@@ -44,6 +48,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
     public void setCardList(List<UserCards> cardList) {
         this.cardList = cardList;
         notifyDataSetChanged();
+    public CardAdapter(List<UserCards> cardList, Context context,int layout,OnItemClickListener listener) {
+        this.cardList = cardList;
+        this.context = context;
+        this.layout=layout;
+        this.listener=listener;
     }
 
     @NonNull
@@ -71,23 +80,28 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
                 context.startActivity(intent);
             }
         });
-//        if (layout==R.layout.custom_item_choose_card){
-//            if(position == selectedPosition){
-//                holder.rdbtnChoose.setText("Active");
-//            }
-//            else{
-//                holder.rdbtnChoose.setText("Inactive");
-//            }
-//            holder.rdbtnChoose.setChecked(position== selectedPosition);
-//            holder.rdbtnChoose.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    holder.rdbtnChoose.setText("Active");
-//                    selectedPosition = holder.getAdapterPosition();
-//                    notifyDataSetChanged();
-//                }
-//            });
-//        }
+        if (layout==R.layout.custom_item_choose_card){
+            if (cardID!=0){
+                if(cardID == card.getUser_cards_id()){
+                    holder.rdbtnChoose.setText("Active");
+                }
+                else{
+                    holder.rdbtnChoose.setText("Inactive");
+                }
+                holder.rdbtnChoose.setChecked(cardID== card.getUser_cards_id());
+            }
+            holder.rdbtnChoose.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.rdbtnChoose.setText("Active");
+                    cardID = card.getUser_cards_id();
+                    notifyDataSetChanged();
+                    if (listener!=null){
+                        listener.onItemClick(card.getUser_cards_id());
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -97,13 +111,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
         TextView cardNumberTextView;
-//        RadioButton rdbtnChoose;
+        RadioButton rdbtnChoose;
 
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
             cardNumberTextView = itemView.findViewById(R.id.tvCardNumber);
-//            rdbtnChoose=itemView.findViewById(R.id.rdbtnChoose);
+            rdbtnChoose=itemView.findViewById(R.id.rdbtnChoose);
         }
     }
 
+    public void setCardID(int cardID){
+        this.cardID=cardID;
+    }
 }

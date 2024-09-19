@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Checkout;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
@@ -22,6 +24,8 @@ import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.AddressAdapter;
+import com.example.ecommercemobileapp2hand.Views.MainActivity;
+import com.example.ecommercemobileapp2hand.Views.Orders.TrackOrderAcitivity;
 import com.example.ecommercemobileapp2hand.Views.Settings.AddAddressActivity;
 import com.example.ecommercemobileapp2hand.Views.Settings.ListAddressActivity;
 
@@ -37,7 +41,7 @@ public class ChooseAddressActivity extends AppCompatActivity {
     private CardView cv_address;
     private ArrayList<UserAddress> lstAddress;
     private AddressAdapter addressAdapter;
-    private String discount;
+    private int addressID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +53,7 @@ public class ChooseAddressActivity extends AppCompatActivity {
             return insets;
         });
         addControls();
-        getDiscount();
+        getAddressID();
     }
     @Override
     protected void onResume() {
@@ -80,9 +84,9 @@ public class ChooseAddressActivity extends AppCompatActivity {
             }
         });
     }
-    private void getDiscount(){
+    private void getAddressID(){
         Intent intent=getIntent();
-        discount=intent.getStringExtra("discount");
+        addressID=intent.getIntExtra("addressID",0);
     }
     private void loadListAddress() {
         service.execute(() -> {
@@ -98,8 +102,18 @@ public class ChooseAddressActivity extends AppCompatActivity {
                         lstAddress =result;
                         if (lstAddress != null && !lstAddress.isEmpty()) {
                             runOnUiThread(() -> {
-                                addressAdapter = new AddressAdapter(lstAddress, ChooseAddressActivity.this,R.layout.custom_item_choose_address);
-                                addressAdapter.setDiscount(discount);
+                                addressAdapter = new AddressAdapter(lstAddress, ChooseAddressActivity.this, R.layout.custom_item_choose_address, new AddressAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(int position) {
+                                        Intent resultIntent = new Intent();
+                                        resultIntent.putExtra("selected_item", position);
+                                        setResult(RESULT_OK, resultIntent);
+                                        finish();
+                                    }
+                                });
+                                if (addressID>0){
+                                    addressAdapter.setAddressID(addressID);
+                                }
                                 recy_address.setLayoutManager(new LinearLayoutManager(ChooseAddressActivity.this));
                                 recy_address.setAdapter(addressAdapter);
 
@@ -111,7 +125,6 @@ public class ChooseAddressActivity extends AppCompatActivity {
                         }
                     }
                 });
-
             }
         });
     }
