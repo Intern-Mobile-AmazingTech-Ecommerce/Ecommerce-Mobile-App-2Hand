@@ -90,11 +90,11 @@ public class CheckoutPaymentOnFragment extends Fragment {
         img_payment_arrowright.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment newFragment = new CheckoutPaymentFragment();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_Payment, newFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+//                Fragment newFragment = new CheckoutPaymentFragment();
+//                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+//                transaction.replace(R.id.fragment_Payment, newFragment);
+//                transaction.addToBackStack(null);
+//                transaction.commit();
             }
         });
         paymentSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {

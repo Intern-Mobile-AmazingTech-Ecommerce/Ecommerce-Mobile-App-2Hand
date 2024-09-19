@@ -36,6 +36,7 @@ public class ChooseCardActivity extends AppCompatActivity {
     private CardView cv_cards;
     private ArrayList<UserCards> lstCard;
     private CardAdapter cardAdapter;
+    private int cardID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,7 @@ public class ChooseCardActivity extends AppCompatActivity {
             return insets;
         });
         addControls();
+        getCardID();
     }
 
     @Override
@@ -79,7 +81,10 @@ public class ChooseCardActivity extends AppCompatActivity {
             }
         });
     }
-
+    private void getCardID(){
+        Intent intent=getIntent();
+        cardID=intent.getIntExtra("cardID",0);
+    }
     void loadListCard() {
         service.execute(() -> {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
@@ -94,7 +99,18 @@ public class ChooseCardActivity extends AppCompatActivity {
                         lstCard =result;
                         if (lstCard != null && !lstCard.isEmpty()) {
                             runOnUiThread(() -> {
-                                cardAdapter = new CardAdapter(lstCard, ChooseCardActivity.this,R.layout.item_card);
+                                cardAdapter = new CardAdapter(lstCard, ChooseCardActivity.this, R.layout.custom_item_choose_card, new CardAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(int position) {
+                                        Intent resultIntent = new Intent();
+                                        resultIntent.putExtra("selected_item", position);
+                                        setResult(RESULT_OK, resultIntent);
+                                        finish();
+                                    }
+                                });
+                                if (cardID>0){
+                                    cardAdapter.setCardID(cardID);
+                                }
                                 recy_cards.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                                 recy_cards.setAdapter(cardAdapter);
                             });
@@ -105,8 +121,6 @@ public class ChooseCardActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-
             }
         });
     }

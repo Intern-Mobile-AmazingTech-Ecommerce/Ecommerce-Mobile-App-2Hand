@@ -1,10 +1,10 @@
 package com.example.ecommercemobileapp2hand.Views.Cart;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,15 +20,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
 import com.example.ecommercemobileapp2hand.Controllers.CouponHandler;
-import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
-import com.example.ecommercemobileapp2hand.Controllers.UserCardsHandler;
 import com.example.ecommercemobileapp2hand.Models.Bag;
 import com.example.ecommercemobileapp2hand.Models.Coupon;
 import com.example.ecommercemobileapp2hand.Models.Product;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
-import com.example.ecommercemobileapp2hand.Models.UserAddress;
-import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.Adapter_Cart;
 import com.example.ecommercemobileapp2hand.Views.Checkout.Checkout;
@@ -38,7 +34,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -55,7 +50,6 @@ public class Cart extends AppCompatActivity {
     TextView selectCoupon;
     TextView txtDiscount;
     UserAccount user;
-    UserAddress userAddress;
     BigDecimal discountAmount = BigDecimal.ZERO;
     private static final String TAG = "Cart";
 
@@ -69,31 +63,27 @@ public class Cart extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        user=UserAccountManager.getInstance().getCurrentUserAccount();
         loadUserBag();
         back = findViewById(R.id.btnBack2);
         back.setOnClickListener(view -> finish());
-
         btncheckout = findViewById(R.id.btnCheckout);
         btncheckout.setOnClickListener(view -> {
             Intent myintent = new Intent(Cart.this, Checkout.class);
             myintent.putExtra("listOrder",mylist);
-            if (userAddress!=null){
-                myintent.putExtra("addressID",userAddress.getUser_address_id());
-            }
-            else{
-                myintent.putExtra("addressID",-1);
-            }
             myintent.putExtra("discount",String.valueOf(discountAmount));
             startActivity(myintent);
         });
-
         removeAll = findViewById(R.id.removeAll);
         removeAll.setOnClickListener(view -> {
-            BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-            loadUserBag();
+            AlertDialog.Builder builder=new AlertDialog.Builder(Cart.this);
+            builder.setTitle("Thông báo")
+                    .setMessage("Bạn có chắc rằng muốn xóa tất cả sản phẩm khỏi giỏ hàng không ?")
+                    .setPositiveButton("OK",((dialogInterface, i) -> {
+                        BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+                        loadUserBag();
+                    })).setNegativeButton("Cancel",(dialogInterface, i) -> {}).show();
         });
-
         addConTrols();
         addEvents();
     }
@@ -237,14 +227,6 @@ public class Cart extends AppCompatActivity {
     private void loadUserBag() {
         service.execute(() -> {
             user = UserAccountManager.getInstance().getCurrentUserAccount();
-            UserAddressHandler.getListAdressByUserId(user.getUserId(), new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
-                @Override
-                public void onResult(ArrayList<UserAddress> result) {
-                    if (!result.isEmpty()){
-                        userAddress=result.get(0);
-                    }
-                }
-            });
             if (user != null) {
                 mylist = BagHandler.getData(user.getUserId());
                 if (mylist != null && !mylist.isEmpty()) {

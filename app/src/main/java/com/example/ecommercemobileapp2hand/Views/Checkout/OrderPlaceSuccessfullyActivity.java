@@ -19,13 +19,16 @@ import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Orders.OrderDetailsActivity;
 import com.example.ecommercemobileapp2hand.Views.Orders.TrackOrderAcitivity;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class OrderPlaceSuccessfullyActivity extends AppCompatActivity {
     private Button btnSeeOrderDetails;
     private UserAccount userAccount;
     private UserOrder ord;
+    private ExecutorService service = Executors.newSingleThreadExecutor();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_order_place_successfully);
@@ -34,8 +37,10 @@ public class OrderPlaceSuccessfullyActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        userAccount= UserAccountManager.instance.getCurrentUserAccount();
-        ord=UserOrderHandler.GetLatestUserOrder(userAccount.getUserId());
+        userAccount= UserAccountManager.getInstance().getCurrentUserAccount();
+        service.execute(() -> {
+            ord=UserOrderHandler.GetLatestUserOrder(userAccount.getUserId());
+        });
         btnSeeOrderDetails=findViewById(R.id.btnSeeOrderDetails);
         btnSeeOrderDetails.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +48,7 @@ public class OrderPlaceSuccessfullyActivity extends AppCompatActivity {
                 Intent intent=new Intent(OrderPlaceSuccessfullyActivity.this, TrackOrderAcitivity.class);
                 intent.putExtra("UserAccount", userAccount);
                 intent.putExtra("order", ord);
-                startActivity(intent);
+                startActivityForResult(intent,2000);
             }
         });
     }
