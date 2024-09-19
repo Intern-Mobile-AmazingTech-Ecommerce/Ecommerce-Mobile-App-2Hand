@@ -112,14 +112,14 @@ public class OnboardingActivity extends AppCompatActivity {
                     String lastName = nameParts.length > 1 ? nameParts[1] : "";
 
                     UserAccountHandler.saveUserToDB(firstName, lastName, email, gender, ageRange);
-
                     SharedPreferences sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("gender_key", gender);
                     editor.putString("age_range_key", ageRange);
                     editor.putBoolean("onboardingCompleted", true);
+                    editor.putBoolean("isLoggedIn", true);
+                    editor.putString("email", email);
                     editor.apply();
-
                     Intent mainIntent = new Intent(OnboardingActivity.this, MainActivity.class);
                     mainIntent.putExtra("email", email);
                     startActivity(mainIntent);
