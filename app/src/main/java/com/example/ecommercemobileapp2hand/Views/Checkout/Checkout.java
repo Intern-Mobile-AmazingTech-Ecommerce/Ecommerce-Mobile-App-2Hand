@@ -183,7 +183,7 @@ public class Checkout extends AppCompatActivity {
             }
             subtotal = subtotal.add(price);
         }
-        total=subtotal.add(tax).add(shippingCost).subtract(discount);
+        total=subtotal.add(tax).add(shippingCost).subtract(discount).setScale(2, BigDecimal.ROUND_HALF_UP);
         txtSubtotal.setText("$"+String.valueOf(subtotal));
         txtTax.setText("$"+String.valueOf(tax));
         txtShippingCost.setText("$"+String.valueOf(shippingCost));
@@ -194,8 +194,8 @@ public class Checkout extends AppCompatActivity {
     private void getIT(){
         Intent intent = getIntent();
         if (intent!=null){
-            listOrder=(ArrayList<Bag>) intent.getSerializableExtra("listOrder");
-            discount=new BigDecimal(intent.getStringExtra("discount"));
+            listOrder=intent.getParcelableArrayListExtra("listOrder");
+            discount=new BigDecimal(intent.getStringExtra("discount")).setScale(2, BigDecimal.ROUND_HALF_UP);
         }
     }
     private void setAddressAndCard(){
