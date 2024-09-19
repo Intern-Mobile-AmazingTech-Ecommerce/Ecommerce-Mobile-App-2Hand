@@ -124,6 +124,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
             String currentUserId = getCurrentUserId();
             if (!Objects.equals(adminUserId, currentUserId)) {
                 Log.d("MyFirebaseMessagingService", "Không phải admin, không gửi thông báo sự kiện.");
+
                 return;
             }
 
@@ -152,8 +153,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("navigateTo", "NotificationsDetailFragment");
-        intent.putExtra("notification_title", messageTitle);
-        intent.putExtra("notification_body", messageBody);
+
 
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
@@ -170,6 +170,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
                 .setCustomContentView(notificationLayout)
                 .setCustomBigContentView(notificationLayoutExpanded)
                 .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -202,6 +203,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
                 .setCustomContentView(notificationLayout)
                 .setCustomBigContentView(notificationLayoutExpanded)
                 .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
                 .build();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
