@@ -1,8 +1,10 @@
 package com.example.ecommercemobileapp2hand.Controllers;
 
+import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -58,6 +60,34 @@ public class UserCardsHandler {
             shutDownExecutor(service);
         });
 
+    }
+    public static UserCards GetUserCardByCardID(int userCardId) {
+        UserCards card = new UserCards();
+        Connection conn = dbConnect.connectionClass();
+        if (conn != null) {
+            try {
+                CallableStatement cstmt = conn.prepareCall("call GetUserCardByCardID(?)");
+                cstmt.setInt(1, userCardId);
+                ResultSet rs = cstmt.executeQuery();
+                if (rs.next()) {
+                    card.setUser_cards_id(rs.getInt("user_cards_id"));
+                    card.setUser_card_number(rs.getString("user_card_number"));
+                    card.setUser_card_ccv(rs.getString("user_card_ccv"));
+                    card.setUser_card_exp(rs.getString("user_card_exp"));
+                    card.setUser_card_holder_name(rs.getString("user_card_holder_name"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return card;
     }
     public static void updateByCardId(int cardId, String cardNumber, String cardCcv, String cardExp, String cardHolderName,Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();

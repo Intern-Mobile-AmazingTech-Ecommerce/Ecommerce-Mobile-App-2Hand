@@ -1,10 +1,10 @@
 package com.example.ecommercemobileapp2hand.Views.Cart;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,7 +71,7 @@ public class Cart extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
+        user=UserAccountManager.getInstance().getCurrentUserAccount();
         loadUserBag();
         back = findViewById(R.id.btnBack2);
         back.setOnClickListener(view -> finish());
@@ -80,20 +80,19 @@ public class Cart extends AppCompatActivity {
         btncheckout.setOnClickListener(view -> {
             Intent myintent = new Intent(Cart.this, Checkout.class);
             myintent.putExtra("listOrder",mylist);
-            if (userAddress!=null){
-                myintent.putExtra("addressID",userAddress.getUser_address_id());
-            }
-            else{
-                myintent.putExtra("addressID",-1);
-            }
             myintent.putExtra("discount",String.valueOf(discountAmount));
             startActivity(myintent);
         });
 
         removeAll = findViewById(R.id.removeAll);
         removeAll.setOnClickListener(view -> {
-            BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-            loadUserBag();
+            AlertDialog.Builder builder=new AlertDialog.Builder(Cart.this);
+            builder.setTitle("Thông báo")
+                    .setMessage("Bạn có chắc rằng muốn xóa tất cả sản phẩm khỏi giỏ hàng không ?")
+                    .setPositiveButton("OK",((dialogInterface, i) -> {
+                        BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+                        loadUserBag();
+                    })).setNegativeButton("Cancel",(dialogInterface, i) -> {}).show();
         });
 
         addConTrols();
@@ -235,14 +234,6 @@ public class Cart extends AppCompatActivity {
     private void loadUserBag() {
         service.execute(() -> {
             user = UserAccountManager.getInstance().getCurrentUserAccount();
-            UserAddressHandler.getListAdressByUserId(user.getUserId(), new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
-                @Override
-                public void onResult(ArrayList<UserAddress> result) {
-                    if (!result.isEmpty()){
-                        userAddress = result.get(0);
-                    }
-                }
-            });
             if (user != null) {
                 mylist = BagHandler.getData(user.getUserId());
                 if (mylist != null && !mylist.isEmpty()) {
