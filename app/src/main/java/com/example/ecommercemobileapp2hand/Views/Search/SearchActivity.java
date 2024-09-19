@@ -268,9 +268,9 @@ public class SearchActivity extends AppCompatActivity {
 
             if (sortByPriceAsc != null) {
                 filterList.sort((p1, p2) -> {
-                    BigDecimal salePrice1 = getMinSalePrice(p1);
-                    BigDecimal salePrice2 = getMinSalePrice(p2);
-                    return sortByPriceAsc ? salePrice1.compareTo(salePrice2) : salePrice2.compareTo(salePrice1);
+                    BigDecimal basePrice1 = p1.getBase_price();
+                    BigDecimal basePrice2 = p2.getBase_price();
+                    return sortByPriceAsc ? basePrice1.compareTo(basePrice2) : basePrice2.compareTo(basePrice1);
                 });
             }
 
@@ -282,16 +282,6 @@ public class SearchActivity extends AppCompatActivity {
 
             // Clear any potential adapter caching (if applicable)
         });
-    }
-    private BigDecimal getMinSalePrice(Product product) {
-        if (product.getProductDetailsArrayList() == null || product.getProductDetailsArrayList().isEmpty()) {
-            return BigDecimal.ZERO;
-        }
-        return product.getProductDetailsArrayList().stream()
-                .filter(details -> details.getSale_price() != null)
-                .map(ProductDetails::getSale_price)
-                .min(BigDecimal::compareTo)
-                .orElse(BigDecimal.ZERO);
     }
     private void updateUIWithFilterResults(String text, ArrayList<Product> filterList) {
         ArrayList<Product> updatedFilterList = new ArrayList<>(filterList); // Create a new list to hold filtered results
