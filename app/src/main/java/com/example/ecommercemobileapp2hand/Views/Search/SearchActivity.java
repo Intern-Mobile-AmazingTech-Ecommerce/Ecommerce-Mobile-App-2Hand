@@ -100,6 +100,7 @@ public class SearchActivity extends AppCompatActivity {
     private static final long DEBOUNCE_DELAY = 1000; // 300ms delay
     private Handler searchHandler = new Handler();
     private Runnable searchRunnable;
+    private Boolean isNewest=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,12 +206,12 @@ public class SearchActivity extends AppCompatActivity {
                 }
 
                 if (!newText.trim().isEmpty()) {
-                    searchRunnable = () -> filterList(newText, genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
+                    searchRunnable = () -> filterList(newText, genderFilter, sortByPriceAsc, isNewest, onSale, price, isFreeShip);
                     if (searchHandler != null) {
                         searchHandler.postDelayed(searchRunnable, DEBOUNCE_DELAY);
                     }
                 }else {
-                    filterList("", genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
+                    filterList("", genderFilter, sortByPriceAsc,isNewest, onSale, price, isFreeShip);
                 }
                 return false;
             }
@@ -247,44 +248,40 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    void filterList(String text, String genderFilter, Boolean sortByPriceAsc, LocalDateTime thirtyDaysAgo, String onSale, String price,Boolean isFreeshipFilter) {
-        service.execute(()->{
-
+    void filterList(String text, String genderFilter, Boolean sortByPriceAsc,Boolean isNewest, String onSale, String price, Boolean isFreeshipFilter) {
+        service.execute(() -> {
             // Reset lstPro to the original list before filtering
             ArrayList<Product> filterList = new ArrayList<>(originalProductList);
 
-            // Apply filtering logic as before
-            filterList = filterList.stream().filter(product -> genderFilter.isEmpty() || product.getProductObject().getObject_name().equalsIgnoreCase(genderFilter))
+            // Apply filtering logic
+            filterList = filterList.stream()
+                    .filter(product -> genderFilter.isEmpty() || product.getProductObject().getObject_name().equalsIgnoreCase(genderFilter))
                     .filter(product -> onSale.isEmpty() || product.getProductDetailsArrayList()
                             .stream()
                             .anyMatch(productDetails -> productDetails.getSale_price().compareTo(BigDecimal.ZERO) != 0))
                     .filter(product -> isFreeshipFilter == null || product.getIsFreeship() == isFreeshipFilter)
-                    .filter(product -> product.getCreated_at().isAfter(thirtyDaysAgo))
-                    .sorted((p1, p2) -> {
-                        BigDecimal salePrice1 = getMinSalePrice(p1);
-                        BigDecimal salePrice2 = getMinSalePrice(p2);
-
-                        if (sortByPriceAsc != null) {
-                            return sortByPriceAsc ? salePrice1.compareTo(salePrice2) : salePrice2.compareTo(salePrice1);
-                        } else {
-                            return Integer.compare(p1.getProduct_id(), p2.getProduct_id());
-                        }
-                    })
                     .collect(Collectors.toCollection(ArrayList::new));
+            if(isNewest!=true){
+                filterList.sort((p1, p2) -> p2.getCreated_at().compareTo(p1.getCreated_at()));
+            }
+
+
+            if (sortByPriceAsc != null) {
+                filterList.sort((p1, p2) -> {
+                    BigDecimal salePrice1 = getMinSalePrice(p1);
+                    BigDecimal salePrice2 = getMinSalePrice(p2);
+                    return sortByPriceAsc ? salePrice1.compareTo(salePrice2) : salePrice2.compareTo(salePrice1);
+                });
+            }
 
             ArrayList<Product> finalFilterList = filterList;
 
-
-            runOnUiThread(()->{
-
+            runOnUiThread(() -> {
                 updateUIWithFilterResults(text, finalFilterList);
             });
 
             // Clear any potential adapter caching (if applicable)
         });
-
-
-
     }
     private BigDecimal getMinSalePrice(Product product) {
         if (product.getProductDetailsArrayList() == null || product.getProductDetailsArrayList().isEmpty()) {
@@ -597,7 +594,7 @@ public class SearchActivity extends AppCompatActivity {
                             bottomSheetDialog.dismiss();
 
                             // Call the filter list with updated data
-                            filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
+                            filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, isNewest, onSale, price, isFreeShip);
                         }
                     });
                     recycleGender.setAdapter(genderAdapter);
@@ -616,7 +613,7 @@ public class SearchActivity extends AppCompatActivity {
                     numberFilter -= 1;
                     filter.setText(String.valueOf(numberFilter));
                 }
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price, isFreeShip);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, isNewest, onSale, price, isFreeShip);
                 bottomSheetDialog.dismiss();
             }
         });
@@ -665,7 +662,7 @@ public class SearchActivity extends AppCompatActivity {
                     } else if (selectedSortBy.equalsIgnoreCase("Newest")) {
                         //Toast.makeText(getApplicationContext(),"newest", Toast.LENGTH_SHORT).show();
                         sortByPriceAsc = null;
-                        thirtyDaysAgo = now.minus(30, ChronoUnit.DAYS);
+                        isNewest=false;
                         btnSortBy.setText("Newest");
                         filterChangeSortBy = true;
                     } else {
@@ -674,7 +671,7 @@ public class SearchActivity extends AppCompatActivity {
                         btnSortBy.setText("Recommended");
                     }
                     bottomSheetDialog.dismiss();
-                    filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+                    filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, isNewest, onSale, price,isFreeShip);
 
             }
         }, btnSortBy.getText().toString());
@@ -685,13 +682,13 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(View view) {
                 sortByPriceAsc = null;
                 btnSortBy.setText("Sort by");
-                thirtyDaysAgo = LocalDateTime.MIN;
+                isNewest=false;
                 filterChangeSortBy = false;
                 if (numberFilter > 0) {
                     numberFilter -= 1;
                     filter.setText(String.valueOf(numberFilter));
                 }
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, isNewest, onSale, price,isFreeShip);
                 bottomSheetDialog.dismiss();
             }
         });
@@ -745,7 +742,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
 
                 bottomSheetDialog.dismiss();
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, isNewest, onSale, price,isFreeShip);
 
             }
         }, btnDeals.getText().toString());
@@ -762,7 +759,7 @@ public class SearchActivity extends AppCompatActivity {
                     numberFilter -= 1;
                     filter.setText(String.valueOf(numberFilter));
                 }
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, isNewest, onSale, price,isFreeShip);
                 bottomSheetDialog.dismiss();
             }
         });
@@ -810,7 +807,7 @@ public class SearchActivity extends AppCompatActivity {
                     filterChangedPrice = true;
                 }
                 bottomSheetDialog.dismiss();
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, isNewest, onSale, price,isFreeShip);
 
             }
         }, btnPrice.getText().toString());
@@ -826,7 +823,7 @@ public class SearchActivity extends AppCompatActivity {
                     numberFilter -= 1;
                     filter.setText(String.valueOf(numberFilter));
                 }
-                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, thirtyDaysAgo, onSale, price,isFreeShip);
+                filterList(searchView.getQuery().toString(), genderFilter, sortByPriceAsc, isNewest, onSale, price,isFreeShip);
                 bottomSheetDialog.dismiss();
             }
         });
