@@ -1,6 +1,8 @@
 package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,11 @@ import androidx.annotation.Nullable;
 
 import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
 import com.example.ecommercemobileapp2hand.Models.Bag;
+import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
+import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
+import com.example.ecommercemobileapp2hand.Views.Cart.EmptyCart;
 import com.example.ecommercemobileapp2hand.Views.Utils.Util;
 import com.squareup.picasso.Picasso;
 
@@ -35,13 +41,13 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
         this.myList = myList;
     }
 
-    @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater myInflater = context.getLayoutInflater();
-        convertView = myInflater.inflate(IdLayout, null);
-        Bag myCart = myList.get(position);
+    public View getView(int position,  View convertView, ViewGroup parent) {
 
+        Bag myCart = myList.get(position);
+        if (convertView==null){
+            convertView=LayoutInflater.from(parent.getContext()).inflate(IdLayout,parent,false);
+        }
         ImageView imgCart = convertView.findViewById(R.id.imgCart);
         Util.getCloudinaryImageUrl(context, myCart.getImage(), 64, 64, result -> {
             String url = result;
@@ -52,7 +58,7 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
         txt_NameCart.setText(myCart.getProduct_name());
 
         TextView txt_SizeCart = convertView.findViewById(R.id.txt_SizeCart);
-        txt_SizeCart.setText(txt_SizeCart.getText() + " " + myCart.getSize());
+        txt_SizeCart.setText("Size - " + myCart.getSize());
 
         BigDecimal price;
         if (myCart.getSalePrice().compareTo(BigDecimal.ZERO) > 0) {
@@ -64,7 +70,7 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
         txt_PriceCart.setText("$" + price);
 
         TextView txt_ColorCart = convertView.findViewById(R.id.txt_ColorCart);
-        txt_ColorCart.setText(txt_ColorCart.getText() + " " + myCart.getColor());
+        txt_ColorCart.setText("Color - " + myCart.getColor());
 
         TextView txt_Quantity = convertView.findViewById(R.id.txt_Quantity);
         txt_Quantity.setText(String.valueOf(myCart.getAmount()));
@@ -84,7 +90,9 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
                     newPrice = myCart.getBasePrice().multiply(BigDecimal.valueOf(quantity));
                 }
                 txt_PriceCart.setText("$" + newPrice);
-                myList = BagHandler.getData(myCart.getUser_id());
+                //myList = BagHandler.getData(myCart.getUser_id());
+                myList.get(position).setAmount(quantity);
+                notifyDataSetChanged();
                 setFee();
             }
             showMessage(result);
@@ -93,22 +101,44 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
         ImageButton imageButtonMinus = convertView.findViewById(R.id.imageButtonMinus);
         imageButtonMinus.setOnClickListener(view -> {
             int quantity = Integer.parseInt(txt_Quantity.getText().toString());
-            if (quantity > 1) {
+            if (quantity >= 1) {
                 quantity -= 1;
-                boolean result = BagHandler.updateProductAmount(myCart.getUser_id(), myCart.getProduct_details_size_id(), quantity);
-                if (result) {
-                    txt_Quantity.setText(String.valueOf(quantity));
-                    BigDecimal newPrice;
-                    if (myCart.getSalePrice().compareTo(BigDecimal.ZERO) > 0) {
-                        newPrice = myCart.getSalePrice().multiply(BigDecimal.valueOf(quantity));
-                    } else {
-                        newPrice = myCart.getBasePrice().multiply(BigDecimal.valueOf(quantity));
+                if (quantity==0){
+                    if (position>=0 &&position<myList.size()){
+                        int bagID=myCart.getBag_id();
+                        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                        builder.setTitle("Thông báo")
+                                        .setMessage("Bạn có chắc rằng muốn xóa sản phẩm "+myCart.getProduct_name()+" khỏi giỏ hàng không ?")
+                                                .setPositiveButton("OK",((dialogInterface, i) -> {
+                                                    myList.remove(position);
+                                                    notifyDataSetChanged();
+                                                    setFee();
+                                                    BagHandler.deleteUserBagByBagID(bagID);
+                                                    checkAdapter();
+                                                })).setNegativeButton("Cancel",(dialogInterface, i) -> {}).show();
+
+
                     }
-                    txt_PriceCart.setText("$" + newPrice);
-                    myList = BagHandler.getData(myCart.getUser_id());
-                    setFee();
                 }
-                showMessage(result);
+                else{
+                    boolean result = BagHandler.updateProductAmount(myCart.getUser_id(), myCart.getProduct_details_size_id(), quantity);
+                    if (result) {
+                        txt_Quantity.setText(String.valueOf(quantity));
+                        BigDecimal newPrice;
+                        if (myCart.getSalePrice().compareTo(BigDecimal.ZERO) > 0) {
+                            newPrice = myCart.getSalePrice().multiply(BigDecimal.valueOf(quantity));
+                        } else {
+                            newPrice = myCart.getBasePrice().multiply(BigDecimal.valueOf(quantity));
+                        }
+                        txt_PriceCart.setText("$" + newPrice);
+                        //myList = BagHandler.getData(myCart.getUser_id());
+                        myList.get(position).setAmount(quantity);
+                        notifyDataSetChanged();
+                        setFee();
+                    }
+                    showMessage(result);
+                }
+
             }
         });
         return convertView;
@@ -148,5 +178,11 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
     public void setDiscountAmount(BigDecimal discountAmount) {
         this.discountAmount = discountAmount;
         setFee(); // Recalculate fees with the new discount
+    }
+    private void checkAdapter(){
+        if (myList.isEmpty()){
+            Intent intent = new Intent(context, EmptyCart.class);
+            context.startActivity(intent);
+        }
     }
 }

@@ -62,6 +62,10 @@ public class ListAddressActivity extends AppCompatActivity {
         imgBack = findViewById(R.id.imgBack);
         recy_address = findViewById(R.id.recy_address);
         cv_address = findViewById(R.id.cv_address);
+
+        addressAdapter = new AddressAdapter(lstAddress, ListAddressActivity.this,R.layout.item_address);
+        recy_address.setLayoutManager(new LinearLayoutManager(ListAddressActivity.this));
+        recy_address.setAdapter(addressAdapter);
     }
     private void addEvents()
     {
@@ -82,8 +86,6 @@ public class ListAddressActivity extends AppCompatActivity {
      private void loadListAddress() {
         service.execute(() -> {
             SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-//            String email = sharedPreferences.getString("userEmail", "");
-//            UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
             UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
             if (user != null) {
                 String userId = user.getUserId();
@@ -91,17 +93,12 @@ public class ListAddressActivity extends AppCompatActivity {
                     @Override
                     public void onResult(ArrayList<UserAddress> result) {
                         lstAddress = result;
-                        if (lstAddress != null && !lstAddress.isEmpty()) {
-                            runOnUiThread(() -> {
-                                addressAdapter = new AddressAdapter(lstAddress, ListAddressActivity.this,R.layout.item_address);
-                                recy_address.setLayoutManager(new LinearLayoutManager(ListAddressActivity.this));
-                                recy_address.setAdapter(addressAdapter);
-                            });
-                        } else {
-                            runOnUiThread(() -> {
+                        runOnUiThread(() -> {
+                            addressAdapter.setUserAddressList(lstAddress);
+                            if (lstAddress == null || lstAddress.isEmpty()) {
                                 Toast.makeText(ListAddressActivity.this, "No address found", Toast.LENGTH_SHORT).show();
-                            });
-                        }
+                            }
+                        });
                     }
                 });
 

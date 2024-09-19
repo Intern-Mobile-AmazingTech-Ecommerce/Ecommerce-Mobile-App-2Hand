@@ -5,6 +5,7 @@ import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.Models.UserOrderProducts;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -99,15 +100,16 @@ public class UserOrderHandler {
         }
         return userOrder;
     }
-    public static int createUserOrder(String userID,int userAddressID){
+    public static int createUserOrder(String userID, int userAddressID, BigDecimal totalPrice){
         conn = dbConnect.connectionClass();
         int userOrderID=-1;
         if(conn!=null) {
             try
             {
-                CallableStatement cstmt = conn.prepareCall("call CreateUserOrder(?,?)");
+                CallableStatement cstmt = conn.prepareCall("call CreateUserOrder(?,?,?)");
                 cstmt.setString(1, userID);
                 cstmt.setInt(2,userAddressID);
+                cstmt.setBigDecimal(3,totalPrice);
                 ResultSet rs = cstmt.executeQuery();
                 if (rs.next()){
                     userOrderID=rs.getInt(1);

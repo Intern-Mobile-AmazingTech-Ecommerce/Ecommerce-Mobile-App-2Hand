@@ -3,6 +3,7 @@ package com.example.ecommercemobileapp2hand.Controllers;
 import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,6 +60,35 @@ public class UserAddressHandler {
             callback.onResult(list);
         });
 
+    }
+    public static UserAddress GetUserAddressByAddressID(int userAddressId){
+        UserAddress address = new UserAddress();
+        conn = dbConnect.connectionClass();
+        if (conn != null) {
+            try {
+                CallableStatement cstmt = conn.prepareCall("call GetUserAddressByAddressID(?)");
+                cstmt.setInt(1, userAddressId);
+                ResultSet rs = cstmt.executeQuery();
+                if (rs.next()) {
+                    address.setUser_address_id(rs.getInt("user_address_id"));
+                    address.setUser_address_street(rs.getString("user_address_street"));
+                    address.setUser_address_city(rs.getString("user_address_city"));
+                    address.setUser_address_state(rs.getString("user_address_state"));
+                    address.setUser_address_zipcode(rs.getString("user_address_zipcode"));
+                    address.setUser_address_phone(rs.getString("user_address_phone"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return address;
     }
     public static void insertAddress(String UserID,String street,String city,String state, String zipcode,String phoneNumber, Callback<Boolean> callback){
         ExecutorService service = Executors.newCachedThreadPool();

@@ -113,6 +113,7 @@ public class UpdateAdressActivity extends AppCompatActivity {
                            @Override
                            public void onClick(DialogInterface dialogInterface, int i) {
                                deleteAddress();
+                               finish();
                            }
                        })
                        .setNegativeButton("Không", new DialogInterface.OnClickListener() {

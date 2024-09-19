@@ -81,11 +81,11 @@ public class CheckoutAddressOnFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Create the new fragment
-                Fragment newFragment = new CheckoutAddressFragment();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_Address, newFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+//                Fragment newFragment = new CheckoutAddressFragment();
+//                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+//                transaction.replace(R.id.fragment_Address, newFragment);
+//                transaction.addToBackStack(null);
+//                transaction.commit();
             }
         });
     }

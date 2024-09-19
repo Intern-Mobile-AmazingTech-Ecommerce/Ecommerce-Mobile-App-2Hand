@@ -1,11 +1,13 @@
 package com.example.ecommercemobileapp2hand.Views.Orders;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.ComponentActivity;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.OrderStatusHandler;
+import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
 import com.example.ecommercemobileapp2hand.Controllers.UserOrderProductsHandler;
 import com.example.ecommercemobileapp2hand.Models.OrderStatus;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
@@ -23,6 +26,7 @@ import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.TrackOrderAdapter;
+import com.example.ecommercemobileapp2hand.Views.MainActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +44,7 @@ public class TrackOrderAcitivity extends AppCompatActivity {
     UserOrder order;
     UserAccount userAccount;
     TrackOrderAdapter trackOrderAdapter;
-
+    String callingActivityName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,22 +122,43 @@ public class TrackOrderAcitivity extends AppCompatActivity {
             }
         });
 
-        String s1 = "";
-        for (UserAddress address : userAccount.getLstAddress())
-        {
-            if (address.getUser_address_id() == order.getUser_address_id())
-            {
-                s1 += address.getUser_address_street() + " " + address.getUser_address_city() + ", " + address.getUser_address_state() + " " + address.getUser_address_zipcode() + "\n" + address.getUser_address_phone();
+        UserAddressHandler.getListAdressByUserId(userAccount.getUserId(), new UserAddressHandler.Callback<ArrayList<UserAddress>>() {
+            @Override
+            public void onResult(ArrayList<UserAddress> result) {
+                String s1 = "";
+                for (UserAddress address : result)
+                {
+                    if (address.getUser_address_id() == order.getUser_address_id())
+                    {
+                        s1 += address.getUser_address_street() + " " + address.getUser_address_city() + ", " + address.getUser_address_state() + " " + address.getUser_address_zipcode() + "\n" + address.getUser_address_phone();
+                    }
+                }
+                String finalS = s1;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tv_shippingdetails.setText(finalS);
+                    }
+                });
+
             }
-        }
-        tv_shippingdetails.setText(s1);
+        });
+
     }
 
     void addevents() {
         img_Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                if (callingActivityName!=null){
+                    if (callingActivityName.equals("com.example.ecommercemobileapp2hand.Views.Checkout.OrderPlaceSuccessfullyActivity")){
+                        Intent intent = new Intent(TrackOrderAcitivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                }
+                else{
+                    finish();
+                }
             }
         });
         tv_viewall.setOnClickListener(new View.OnClickListener() {
@@ -150,5 +175,9 @@ public class TrackOrderAcitivity extends AppCompatActivity {
         Intent intent = getIntent();
         userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
         order = (UserOrder) intent.getSerializableExtra("order");
+        ComponentName callingActivity=getCallingActivity();
+        if (callingActivity!=null){
+            callingActivityName= callingActivity.getClassName();
+        }
     }
 }

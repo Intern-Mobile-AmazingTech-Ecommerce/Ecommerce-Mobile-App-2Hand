@@ -10,11 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Settings.AddAddressActivity;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +37,8 @@ public class CheckoutAddressFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    ExecutorService service = Executors.newCachedThreadPool();
+    private int mParam1;
     private String mParam2;
     private TextView txtShippingAddress;
     private String discount;
@@ -48,10 +56,10 @@ public class CheckoutAddressFragment extends Fragment {
      * @return A new instance of fragment CheckoutAddressFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CheckoutAddressFragment newInstance(String param1,String param2) {
+    public static CheckoutAddressFragment newInstance(int param1, String param2) {
         CheckoutAddressFragment fragment = new CheckoutAddressFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
+        args.putInt(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
@@ -61,7 +69,7 @@ public class CheckoutAddressFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam1 = getArguments().getInt(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
@@ -83,8 +91,16 @@ public class CheckoutAddressFragment extends Fragment {
         txtShippingAddress=view.findViewById(R.id.txtShippingAddress);
     }
     private void addEvents(){
-        if (mParam1!=null){
-            txtShippingAddress.setText(mParam1);
+        if (mParam1>0){
+            service.execute(()->{
+                UserAddress userAddress = UserAddressHandler.GetUserAddressByAddressID(mParam1);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        txtShippingAddress.setText(userAddress.getUser_address_street());
+                    }
+                });
+            });
         }
         if (mParam2!=null){
             discount=mParam2;
@@ -95,7 +111,9 @@ public class CheckoutAddressFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ChooseAddressActivity.class);
                 intent.putExtra("discount",discount);
+                intent.putExtra("addressID",mParam1);
                 startActivity(intent);
+
             }
         });
     }

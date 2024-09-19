@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="14dp"
-                android:text="Size - " />
+                android:text="" />
 
             <TextView
                 android:id="@+id/txt_ColorCart"
@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="14dp"
-                android:text="Color - " />
+                android:text="" />
 
             <ImageButton
                 android:id="@+id/imageButtonAdd"
