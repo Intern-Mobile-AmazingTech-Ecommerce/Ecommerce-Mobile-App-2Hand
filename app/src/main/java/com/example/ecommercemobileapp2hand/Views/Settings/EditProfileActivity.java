@@ -150,7 +150,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private boolean isValidPhoneNumber(String phoneNumber) {
-        return phoneNumber.matches("^\\+?\\d{1,3}[\\s-]?\\d{1,4}[\\s-]?\\d{4,10}$");
+        return phoneNumber.matches("^0\\d{9}$");
     }
 
     private void uploadImage(String firstName, String lastName, String phoneNumber) {

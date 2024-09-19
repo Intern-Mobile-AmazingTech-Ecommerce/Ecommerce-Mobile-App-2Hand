@@ -121,47 +121,66 @@ public class Cart extends AppCompatActivity {
             BigDecimal subtotal = new BigDecimal(subtotalStr);
 
             if (!coupon.isActive()) {
-                Toast.makeText(this, "\n" + "Coupon is not valid", Toast.LENGTH_SHORT).show();
-                Toast.makeText(this, "\n" + "Coupon is not valid", Toast.LENGTH_SHORT).show();
+                discountAmount = BigDecimal.ZERO;
+                updateDiscountAndTotal(subtotal);
+                Toast.makeText(this, "Coupon is not valid", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             Date currentDate = new Date(System.currentTimeMillis());
             if (currentDate.before(coupon.getStartDate()) || currentDate.after(coupon.getEndDate())) {
-                Toast.makeText(this, "\n" + "Coupon has expired", Toast.LENGTH_SHORT).show();
+                discountAmount = BigDecimal.ZERO;
+                updateDiscountAndTotal(subtotal);
+                Toast.makeText(this, "Coupon has expired", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // giảm giá theo tổng đơn hàng
             if (coupon.getType().equals("ORDER")) {
                 discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-            }
-            // giảm giá với giá trị đơn hàng tối thiểu
-            else if (coupon.getType().equals("MINORDER")) {
+            } else if (coupon.getType().equals("MINORDER")) {
                 BigDecimal minOrderValue = new BigDecimal("1000");
                 if (subtotal.compareTo(minOrderValue) >= 0) {
                     discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
                 } else {
-                    Toast.makeText(this, "Order value must be over $1000", Toast.LENGTH_SHORT).show();
+                    discountAmount = BigDecimal.ZERO;
+                    updateDiscountAndTotal(subtotal);
+                    Toast.makeText(this, "Order must be over $1000", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            } else if (coupon.getType().equals("PRODUCT")) {
+                boolean hasNonDiscountedProducts = false;
+
+                for (Bag item : mylist) {
+                    Product product = item.getProduct();
+                    if (product != null && product.getCoupon_id() == coupon.getCouponId()) {
+                        discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                    } else {
+                        hasNonDiscountedProducts = true;
+                    }
+                }
+                if (hasNonDiscountedProducts) {
+                    runOnUiThread(() -> Toast.makeText(this, "Some products in the cart do not apply for the coupon", Toast.LENGTH_SHORT).show());
+                    txtDiscount.setText("0");
+                    txtTotal.setText(txtSubtotal.getText());
                     return;
                 }
             }
-            // giảm giá cho sản phẩm cụ thể
-            else if (coupon.getType().equals("PRODUCT")) {
-                discountAmount = applyProductDiscount(coupon);
-            }
 
-            BigDecimal newTotal = subtotal.subtract(discountAmount);
-            DecimalFormat df = new DecimalFormat("#.00");
-            txtDiscount.setText("$" + df.format(discountAmount));
-            txtTotal.setText("$" + df.format(newTotal));
-
-            if (myadapter != null) {
-                myadapter.setDiscountAmount(discountAmount);
-            }
+            updateDiscountAndTotal(subtotal);
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Number format error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateDiscountAndTotal(BigDecimal subtotal) {
+        BigDecimal newTotal = subtotal.subtract(discountAmount);
+        DecimalFormat df = new DecimalFormat("#.00");
+        txtDiscount.setText("$" + df.format(discountAmount));
+        txtTotal.setText("$" + df.format(newTotal));
+
+        if (myadapter != null) {
+            myadapter.setDiscountAmount(discountAmount);
         }
     }
 
@@ -210,28 +229,6 @@ public class Cart extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(this, "Error checking coupon", Toast.LENGTH_SHORT).show());
             }
         });
-    }
-
-    private BigDecimal applyProductDiscount(Coupon coupon) {
-        BigDecimal discountAmount = BigDecimal.ZERO;
-        boolean hasNonDiscountedProducts = false;
-
-        for (Bag item : mylist) {
-            Product product = item.getProduct();
-            if (product != null && product.getCoupon_id() == coupon.getCouponId()) {
-                BigDecimal productPrice = product.getPrice();
-                BigDecimal productDiscount = productPrice.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-                discountAmount = discountAmount.add(productDiscount);
-            } else {
-                hasNonDiscountedProducts = true;
-            }
-        }
-
-        if (hasNonDiscountedProducts) {
-            runOnUiThread(() -> Toast.makeText(this, "Some products are not apply for this coupon", Toast.LENGTH_SHORT).show());
-        }
-
-        return discountAmount;
     }
 
 
