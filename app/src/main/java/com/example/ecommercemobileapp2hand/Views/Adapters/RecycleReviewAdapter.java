@@ -76,9 +76,6 @@ public class RecycleReviewAdapter extends RecyclerView.Adapter<RecycleReviewAdap
                 }
             });
 
-        } else {
-            Bitmap bitmap = Util.convertStringToBitmapFromAccess(context.getApplicationContext(), "avt.png");
-            holder.imgAvt.setImageBitmap(bitmap);
         }
         holder.tvCustomerName.setText(userAccount.getFullName());
         holder.tvDays.setText(getDayDifference(reviews.getCreated_at()));
