@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.itemHome) {
-                    if (firstURL != userAccount.getImgUrl()) {
+                    if (firstURL != (userAccount.getImgUrl() != null ? userAccount.getImgUrl() : "") ) {
                         firstURL = userAccount.getImgUrl();
                         loadAvt();
                     }

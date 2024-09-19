@@ -159,7 +159,12 @@ public class SignInActivity extends AppCompatActivity {
                     public void onResult(UserAccount result) {
                         runOnUiThread(() -> {
                             if (result == null) {
-                                Toast.makeText(getApplicationContext(),"Login Failed",Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(SignInActivity.this, OnboardingActivity.class);
+                                intent.putExtra("email", email);
+                                intent.putExtra("displayName", user.getDisplayName());
+                                startActivity(intent);
+                                finish();
+
                             } else {
                                 Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                                 UserAccountManager.getInstance().setCurrentUserAccount(result);
@@ -189,7 +194,7 @@ public class SignInActivity extends AppCompatActivity {
                     String email = user.getEmail();
                     String displayName = user.getDisplayName();
                     service.submit(()->{
-                        //UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
+//                        UserAccountHandler.saveUserAccount(email, displayName, "Facebook");
                         runOnUiThread(()->{
                             Toast.makeText(this, "Login successfully", Toast.LENGTH_SHORT).show();
                             handleSignInResult(user);
