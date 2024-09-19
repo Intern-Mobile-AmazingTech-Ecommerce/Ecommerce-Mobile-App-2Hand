@@ -141,7 +141,7 @@ public class UserOrderHandler {
                     ResultSet rs = cstmt.executeQuery();
                     while (rs.next())
                     {
-                        UserOrder userOrder = new UserOrder(rs.getInt(1) ,rs.getString(2), rs.getInt(3), rs.getBigDecimal(4), rs.getInt(5) , rs.getString(6));
+                        UserOrder userOrder = new UserOrder(rs.getInt(1) ,rs.getString(2), rs.getInt(3), rs.getBigDecimal(4), rs.getInt(5) , rs.getString(6), rs.getBigDecimal((7)));
 
                         userOrderList.add(userOrder);
                     }

@@ -10,17 +10,19 @@ public class UserOrder implements Serializable {
     private BigDecimal total_price;
     private int order_status_id;
     private String created_at;
+    private BigDecimal total_sale;
 
     public UserOrder() {
     }
 
-    public UserOrder(int user_order_id,String user_id, int user_address_id, BigDecimal total_price, int order_status_id, String created_at) {
+    public UserOrder(int user_order_id,String user_id, int user_address_id, BigDecimal total_price, int order_status_id, String created_at, BigDecimal total_sale) {
         this.user_order_id = user_order_id;
         this.user_id=user_id;
         this.user_address_id = user_address_id;
         this.total_price = total_price;
         this.order_status_id = order_status_id;
         this.created_at = created_at;
+        this.total_sale = total_sale;
     }
 
     public String getUser_id() {
@@ -69,5 +71,13 @@ public class UserOrder implements Serializable {
 
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
+    }
+
+    public BigDecimal getTotal_sale() {
+        return total_sale;
+    }
+
+    public void setTotal_sale(BigDecimal total_sale) {
+        this.total_sale = total_sale;
     }
 }
