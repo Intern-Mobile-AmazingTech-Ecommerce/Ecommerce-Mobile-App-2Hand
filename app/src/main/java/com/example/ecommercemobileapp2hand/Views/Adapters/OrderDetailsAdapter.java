@@ -83,10 +83,10 @@ public class OrderDetailsAdapter extends RecyclerView.Adapter<OrderDetailsAdapte
             holder.tv_BasePrice.setPaintFlags(holder.tv_BasePrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             holder.tv_BasePrice.setVisibility(View.GONE);
-            holder.tv_SalePrice.setText("$" + String.valueOf(details.getSale_price()));
+            holder.tv_SalePrice.setText("$" + String.valueOf(details.getBase_price()));
         }
-        BigDecimal totalPrice = details.getSale_price().multiply(BigDecimal.valueOf(details.getAmount()));
-        holder.tvTotalPricePro.setText("Subtotal: $" + totalPrice);
+//        BigDecimal totalPrice = details.getSale_price().multiply(BigDecimal.valueOf(details.getAmount()));
+        holder.tvTotalPricePro.setText("Subtotal: $" + details.getTotal_pricepro());
 
         if (checkDeliverd) {
             if (details.isReviewed() == true) {
