@@ -41,6 +41,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         this.layout=layout;
     }
 
+    public void setCardList(List<UserCards> cardList) {
+        this.cardList = cardList;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

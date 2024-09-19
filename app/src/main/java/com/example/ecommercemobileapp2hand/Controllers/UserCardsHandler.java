@@ -4,7 +4,6 @@ import com.example.ecommercemobileapp2hand.Models.UserCards;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -128,7 +127,7 @@ public class UserCardsHandler {
             shutDownExecutor(service);
         });
     }
-    public static boolean deleteCardById(int cardId) {
+    public static boolean deleteCardById(int cardId, Callback<Boolean> callback) {
         Connection conn = dbConnect.connectionClass();
         PreparedStatement pstmt = null;
 

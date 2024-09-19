@@ -42,18 +42,24 @@ import java.util.concurrent.Future;
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.AdressViewHolder>
 {
     private int selectedPosition = 0;
+
+
     private ArrayList<UserAddress> userAddressList ;
     private Context context;
     private int layout;
     private ArrayList<Bag> mylist;
     private String discount;
 
+
     public AddressAdapter(ArrayList<UserAddress> userAddressList, Context context,int layout) {
         this.userAddressList = userAddressList;
         this.context = context;
         this.layout =layout;
     }
-
+    public void setUserAddressList(ArrayList<UserAddress> userAddressList) {
+        this.userAddressList = userAddressList;
+        notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public AdressViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

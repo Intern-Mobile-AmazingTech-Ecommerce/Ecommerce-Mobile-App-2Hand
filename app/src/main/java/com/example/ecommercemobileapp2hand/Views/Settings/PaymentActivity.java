@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,7 +51,6 @@ public class PaymentActivity extends AppCompatActivity {
             return insets;
         });
         addControls();
-
     }
 
     @Override
@@ -66,6 +66,9 @@ public class PaymentActivity extends AppCompatActivity {
         recy_cards = findViewById(R.id.recy_cards);
         cv_cards = findViewById(R.id.cv_cards);
 
+        cardAdapter = new CardAdapter(lstCard, PaymentActivity.this,R.layout.item_card);
+        recy_cards.setLayoutManager(new LinearLayoutManager(PaymentActivity.this));
+        recy_cards.setAdapter(cardAdapter);
     }
     private void addEvents()
     {
@@ -86,8 +89,6 @@ public class PaymentActivity extends AppCompatActivity {
 
     void loadListCard() {
         SharedPreferences sharedPreferences = this.getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
-//            String email = sharedPreferences.getString("userEmail", "");
-//            UserAccount user = UserAccountHandler.getUserAccountByEmail(email);
         UserAccount user = UserAccountManager.getInstance().getCurrentUserAccount();
         if (user != null) {
             String userId = user.getUserId();
@@ -95,13 +96,13 @@ public class PaymentActivity extends AppCompatActivity {
                 @Override
                 public void onResult(ArrayList<UserCards> result) {
                     lstCard = result;
-                    if (lstCard != null && !lstCard.isEmpty()) {
-                        runOnUiThread(() -> {
-                            cardAdapter = new CardAdapter(lstCard, PaymentActivity.this,R.layout.item_card);
-                            recy_cards.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                            recy_cards.setAdapter(cardAdapter);
-                        });
-                    }
+                    runOnUiThread(()->{
+                        cardAdapter.setCardList(lstCard);
+                        if (lstCard == null && lstCard.isEmpty()) {
+                            Toast.makeText(PaymentActivity.this, "No card found", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
                 }
             });
         }
