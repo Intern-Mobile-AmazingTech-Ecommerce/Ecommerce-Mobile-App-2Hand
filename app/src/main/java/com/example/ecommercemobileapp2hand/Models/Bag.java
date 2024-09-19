@@ -1,9 +1,14 @@
 package com.example.ecommercemobileapp2hand.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class Bag implements Serializable {
+public class Bag implements Parcelable {
     private int bag_id;
     private String user_id;
     private int product_details_size_id;
@@ -33,6 +38,34 @@ public class Bag implements Serializable {
         this.image = image;
         this.product = product;
     }
+
+    protected Bag(Parcel in) {
+        bag_id = in.readInt();
+        user_id = in.readString();
+        product_details_size_id = in.readInt();
+        product_details_id = in.readInt();
+        product_id = in.readInt();
+        product_name = in.readString();
+        size = in.readString();
+        amount = in.readInt();
+        color = in.readString();
+        image = in.readString();
+        basePrice= new BigDecimal(in.readString());
+        salePrice= new BigDecimal(in.readString());
+        product = in.readParcelable(Product.class.getClassLoader());
+    }
+
+    public static final Creator<Bag> CREATOR = new Creator<Bag>() {
+        @Override
+        public Bag createFromParcel(Parcel in) {
+            return new Bag(in);
+        }
+
+        @Override
+        public Bag[] newArray(int size) {
+            return new Bag[size];
+        }
+    };
 
     public Product getProduct() {
         return product;
@@ -145,4 +178,25 @@ public class Bag implements Serializable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeInt(bag_id);
+        parcel.writeString(user_id);
+        parcel.writeInt(product_details_size_id);
+        parcel.writeInt(product_details_id);
+        parcel.writeInt(product_id);
+        parcel.writeString(product_name);
+        parcel.writeString(size);
+        parcel.writeInt(amount);
+        parcel.writeString(color);
+        parcel.writeString(image);
+        parcel.writeString(basePrice.toString());
+        parcel.writeString(salePrice.toString());
+        parcel.writeParcelable(product, i);
+    }
 }

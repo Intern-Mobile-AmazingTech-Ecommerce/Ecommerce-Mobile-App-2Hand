@@ -79,7 +79,9 @@ public class Cart extends AppCompatActivity {
         btncheckout = findViewById(R.id.btnCheckout);
         btncheckout.setOnClickListener(view -> {
             Intent myintent = new Intent(Cart.this, Checkout.class);
-            myintent.putExtra("listOrder",mylist);
+            Bundle bundle =new Bundle();
+            bundle.putParcelableArrayList("listOrder",mylist);
+            myintent.putExtras(bundle);
             myintent.putExtra("discount",String.valueOf(discountAmount));
             startActivity(myintent);
         });
@@ -173,13 +175,14 @@ public class Cart extends AppCompatActivity {
     }
 
     private void updateDiscountAndTotal(BigDecimal subtotal) {
-        BigDecimal newTotal = subtotal.subtract(discountAmount);
+        BigDecimal newTotal = subtotal.subtract(discountAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
+        BigDecimal formattedDiscountAmount = discountAmount.setScale(2, BigDecimal.ROUND_HALF_UP);
         DecimalFormat df = new DecimalFormat("#.00");
-        txtDiscount.setText("$" + df.format(discountAmount));
+        txtDiscount.setText("$" + df.format(formattedDiscountAmount));
         txtTotal.setText("$" + df.format(newTotal));
 
         if (myadapter != null) {
-            myadapter.setDiscountAmount(discountAmount);
+            myadapter.setDiscountAmount(formattedDiscountAmount);
         }
     }
 
