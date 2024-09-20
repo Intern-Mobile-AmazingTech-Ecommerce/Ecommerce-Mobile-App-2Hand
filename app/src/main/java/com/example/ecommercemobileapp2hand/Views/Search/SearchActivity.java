@@ -255,6 +255,7 @@ public class SearchActivity extends AppCompatActivity {
 
             // Apply filtering logic
             filterList = filterList.stream()
+                    .filter(product -> text.isEmpty() || product.getProduct_name().toLowerCase().contains(text.toLowerCase()))
                     .filter(product -> genderFilter.isEmpty() || product.getProductObject().getObject_name().equalsIgnoreCase(genderFilter))
                     .filter(product -> onSale.isEmpty() || product.getProductDetailsArrayList()
                             .stream()
