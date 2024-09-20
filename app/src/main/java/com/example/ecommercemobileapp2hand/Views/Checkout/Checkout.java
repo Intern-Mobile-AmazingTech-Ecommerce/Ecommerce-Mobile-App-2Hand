@@ -144,10 +144,10 @@ public class Checkout extends AppCompatActivity {
                         service.execute(() -> {
                             int userOrderID;
                             if (userAddressID>0){
-                                userOrderID= UserOrderHandler.createUserOrder(userAccount.getUserId(),userAddressID,total);
+                                userOrderID= UserOrderHandler.createUserOrder(userAccount.getUserId(),userAddressID,total,discount);
                             }
                             else{
-                                userOrderID= UserOrderHandler.createUserOrder(userAccount.getUserId(),userAddress.getUser_address_id(),total);
+                                userOrderID= UserOrderHandler.createUserOrder(userAccount.getUserId(),userAddress.getUser_address_id(),total,discount);
                             }
                             if (userOrderID>0){
                                 for(Bag bag : listOrder){
@@ -157,7 +157,6 @@ public class Checkout extends AppCompatActivity {
                                 startActivity(orderSuccess);
                             }
                         });
-
                     }
                     else{
                         Toast.makeText(getApplicationContext(),"Bạn chưa có thông tin thẻ ngân hàng",Toast.LENGTH_SHORT).show();
@@ -183,7 +182,7 @@ public class Checkout extends AppCompatActivity {
             }
             subtotal = subtotal.add(price);
         }
-        total=subtotal.add(tax).add(shippingCost).subtract(discount).setScale(2, BigDecimal.ROUND_HALF_UP);
+        total=subtotal.add(tax).add(shippingCost.subtract(discount)).setScale(2, BigDecimal.ROUND_HALF_UP);
         txtSubtotal.setText("$"+String.valueOf(subtotal));
         txtTax.setText("$"+String.valueOf(tax));
         txtShippingCost.setText("$"+String.valueOf(shippingCost));
