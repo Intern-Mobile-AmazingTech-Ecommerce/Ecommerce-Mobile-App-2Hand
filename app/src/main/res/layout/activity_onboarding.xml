@@ -50,9 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Men"
+            android:textColor="@color/white"
             android:layout_marginRight="20dp"
-            style="@style/TEXT"
-
             />
 
         <Button
@@ -94,6 +93,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Finish"
+        android:textColor="@color/white"
         android:fontFamily="@font/circularstdmedium500"
         android:backgroundTint="#8E6CEF"
         android:layout_marginRight="24dp"

@@ -1,26 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#8E6CEF"
-    android:orientation="vertical"
     tools:context=".Views.Checkout.OrderPlaceSuccessfullyActivity">
 
-    <ImageView
+    <LinearLayout
+        android:layout_alignParentTop="true"
         android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="86dp"
-        android:paddingBottom="68dp"
-        app:srcCompat="@drawable/imageordersuccess" />
+     >
+
+        <ImageView
+
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="86dp"
+            android:paddingBottom="68dp"
+            app:srcCompat="@drawable/imageordersuccess" />
+    </LinearLayout>
+
 
     <LinearLayout
         style="@style/orderSuccessfully"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/imageView2"
+        android:layout_alignParentBottom="true"
         android:layout_weight="1"
         android:orientation="vertical"
         android:paddingLeft="29dp"
@@ -56,11 +68,11 @@
 
         <Button
             android:id="@+id/btnSeeOrderDetails"
+            style="@style/btn_continue"
             android:layout_width="342dp"
             android:layout_height="52dp"
             android:layout_gravity="center"
-            style="@style/btn_continue"
             android:backgroundTint="@color/purple"
             android:text="See Order details" />
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

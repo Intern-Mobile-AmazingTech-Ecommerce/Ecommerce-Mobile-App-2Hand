@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         btnAvt = findViewById(R.id.btnAvt);
         btnBag = findViewById(R.id.btnBag);
         btnObject = findViewById(R.id.btnObject);
-        sharedPreferences = getSharedPreferences("my_userID", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
         gender = sharedPreferences.getString("gender_key", "");
         if (gender.isEmpty()) {
             gender = "Men";
@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onGenderSelected(String selectedGender) {
                             btnObject.setText(selectedGender);
-                            sharedPreferences = getSharedPreferences("my_userID", MODE_PRIVATE);
+                            sharedPreferences = getSharedPreferences("user_prefs", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("gender_key", selectedGender);
                             Boolean isSaved = editor.commit();

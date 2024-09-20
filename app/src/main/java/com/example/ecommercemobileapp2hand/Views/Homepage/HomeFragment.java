@@ -132,7 +132,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void getGenderKey() {
-        sharedPreferences = getActivity().getSharedPreferences("my_userID", Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("user_prefs", Context.MODE_PRIVATE);
         gender = sharedPreferences.getString("gender_key", "");
         if (gender.isEmpty()) {
             gender = "Men";
