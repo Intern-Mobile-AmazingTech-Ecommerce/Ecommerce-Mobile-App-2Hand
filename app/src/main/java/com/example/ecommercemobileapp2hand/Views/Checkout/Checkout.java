@@ -159,11 +159,11 @@ public class Checkout extends AppCompatActivity {
                         });
                     }
                     else{
-                        Toast.makeText(getApplicationContext(),"Bạn chưa có thông tin thẻ ngân hàng",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"You don't have bank card information yet",Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
-                    Toast.makeText(getApplicationContext(),"Bạn chưa có thông tin địa chỉ",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"You don't have address information yet",Toast.LENGTH_SHORT).show();
                 }
             }
         });
