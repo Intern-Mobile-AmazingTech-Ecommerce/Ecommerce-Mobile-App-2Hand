@@ -89,8 +89,8 @@ public class Cart extends AppCompatActivity {
         removeAll = findViewById(R.id.removeAll);
         removeAll.setOnClickListener(view -> {
             AlertDialog.Builder builder=new AlertDialog.Builder(Cart.this);
-            builder.setTitle("Thông báo")
-                    .setMessage("Bạn có chắc rằng muốn xóa tất cả sản phẩm khỏi giỏ hàng không ?")
+            builder.setTitle("Question")
+                    .setMessage("Are you sure you want to delete all the product from cart ?")
                     .setPositiveButton("OK",((dialogInterface, i) -> {
                         BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
                         loadUserBag();

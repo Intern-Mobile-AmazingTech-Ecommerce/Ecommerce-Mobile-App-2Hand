@@ -100,16 +100,17 @@ public class UserOrderHandler {
         }
         return userOrder;
     }
-    public static int createUserOrder(String userID, int userAddressID, BigDecimal totalPrice){
+    public static int createUserOrder(String userID, int userAddressID, BigDecimal totalPrice,BigDecimal totalSale){
         conn = dbConnect.connectionClass();
         int userOrderID=-1;
         if(conn!=null) {
             try
             {
-                CallableStatement cstmt = conn.prepareCall("call CreateUserOrder(?,?,?)");
+                CallableStatement cstmt = conn.prepareCall("call CreateUserOrder(?,?,?,?)");
                 cstmt.setString(1, userID);
                 cstmt.setInt(2,userAddressID);
                 cstmt.setBigDecimal(3,totalPrice);
+                cstmt.setBigDecimal(4,totalSale);
                 ResultSet rs = cstmt.executeQuery();
                 if (rs.next()){
                     userOrderID=rs.getInt(1);

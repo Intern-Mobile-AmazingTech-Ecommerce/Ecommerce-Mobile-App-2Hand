@@ -153,6 +153,8 @@ public class TrackOrderAcitivity extends AppCompatActivity {
                 if (callingActivityName!=null){
                     if (callingActivityName.equals("com.example.ecommercemobileapp2hand.Views.Checkout.OrderPlaceSuccessfullyActivity")){
                         Intent intent = new Intent(TrackOrderAcitivity.this, MainActivity.class);
+                        intent.putExtra("email",userAccount.getEmail());
+                        intent.putExtra("user_id",userAccount.getUserId());
                         startActivity(intent);
                     }
                 }

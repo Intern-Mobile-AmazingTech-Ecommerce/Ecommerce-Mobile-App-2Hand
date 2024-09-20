@@ -107,8 +107,8 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
                     if (position>=0 &&position<myList.size()){
                         int bagID=myCart.getBag_id();
                         AlertDialog.Builder builder=new AlertDialog.Builder(context);
-                        builder.setTitle("Thông báo")
-                                        .setMessage("Bạn có chắc rằng muốn xóa sản phẩm "+myCart.getProduct_name()+" khỏi giỏ hàng không ?")
+                        builder.setTitle("Question")
+                                        .setMessage("Are you sure you want to delete the product "+myCart.getProduct_name()+" from cart ?")
                                                 .setPositiveButton("OK",((dialogInterface, i) -> {
                                                     myList.remove(position);
                                                     notifyDataSetChanged();
