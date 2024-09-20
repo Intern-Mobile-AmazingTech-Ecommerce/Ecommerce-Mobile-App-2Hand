@@ -133,10 +133,10 @@ public class UpdateAdressActivity extends AppCompatActivity {
                 runOnUiThread(()->{
                     if (result)
                     {
-                        Toast.makeText(getApplicationContext(), "Địa chỉ đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Delete address success", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Cập nhật địa chỉ thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Delete address fail", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -155,9 +155,9 @@ public class UpdateAdressActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         if (result) {
                             finish();
-                            Toast.makeText(getApplicationContext(), "Địa chỉ đã được cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Update address success", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Cập nhật địa chỉ thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Update address fail", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -170,41 +170,39 @@ public class UpdateAdressActivity extends AppCompatActivity {
         // Street Validation
         String street = editTextStreet.getText().toString();
         if (street.isEmpty()) {
-            editTextStreet.setError("Trường này không được bỏ trống");
+            editTextStreet.setError("Street is required");
             isValid = false;
         }
 
         // City Validation
         String city = editTextCity.getText().toString();
         if (city.isEmpty()) {
-            editTextCity.setError("Trường này không được bỏ trống");
+            editTextCity.setError("Cityis required");
             isValid = false;
         }
 
         // Phone Validation
         String phone = editTextPhone.getText().toString();
         if (phone.isEmpty() || !phone.matches("\\d{10,11}")) { // Assuming a phone number between 10 and 15 digits
-            editTextPhone.setError("Trường này không được bỏ trống và phải chứa từ 10 đến 11 số");
+            editTextPhone.setError("Phone number is required and must contain between 10 and 11 digits.");
             isValid = false;
         }
 
         // State Validation
         String state = editTextState.getText().toString();
         if (state.isEmpty()) {
-            editTextState.setError("Trường này không được bỏ trống");
+            editTextState.setError("State address is required");
             isValid = false;
         }
 
         // Zip Code Validation
         String zip = editTextZipCode.getText().toString();
         if (zip.isEmpty() || !zip.matches("\\d{5}(-\\d{4})?")) {
-            editTextZipCode.setError("Trường này không được bỏ trống và phải đúng định dạng ZIP");
+            editTextZipCode.setError("Zip code is required and must contain 5 digits.");
             isValid = false;
         }
-
-        // Show overall error message if not valid
         if (!isValid) {
-            Toast.makeText(this, "Vui lòng kiểm tra lại các trường thông tin", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please check the information fields again.", Toast.LENGTH_SHORT).show();
         }
 
         return isValid;
