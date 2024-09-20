@@ -201,7 +201,7 @@ public class Cart extends AppCompatActivity {
             if (!enteredCouponCode.isEmpty()) {
                 checkCoupon(enteredCouponCode);
             } else {
-                Toast.makeText(this, "Vui lòng nhập mã coupon", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter the coupon code", Toast.LENGTH_SHORT).show();
             }
         });
 

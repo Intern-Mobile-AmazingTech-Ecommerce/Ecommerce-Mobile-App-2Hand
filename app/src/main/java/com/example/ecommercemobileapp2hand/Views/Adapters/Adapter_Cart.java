@@ -171,7 +171,7 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
 
     private void showMessage(boolean result) {
         if (!result) {
-            Toast.makeText(context, "Đã đến giới hạn sản phẩm còn trong kho", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Reached the limit of products in stock", Toast.LENGTH_SHORT).show();
         }
     }
 
