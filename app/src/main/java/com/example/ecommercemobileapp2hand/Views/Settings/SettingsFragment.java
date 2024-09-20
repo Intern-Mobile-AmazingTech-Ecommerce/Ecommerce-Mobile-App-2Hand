@@ -5,10 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,11 +132,11 @@ public class SettingsFragment extends Fragment {
     private void fetchUserData(String email) {
         if (email != null) {
 //            userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
-           UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
+            UserAccountHandler.getUserAccount(email, new UserAccountHandler.Callback<UserAccount>() {
                 @Override
                 public void onResult(UserAccount result) {
                     userAccount = result;
-                    getActivity().runOnUiThread(()->{
+                    getActivity().runOnUiThread(() -> {
                         if (userAccount != null) {
                             tvEmail.setText(userAccount.getEmail());
                             tvUserName.setText(userAccount.getFirstName() + " " + userAccount.getLastName());
@@ -160,6 +164,7 @@ public class SettingsFragment extends Fragment {
             Log.e(TAG, "Email not found");
         }
     }
+
     private void signOut() {
         GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(requireActivity(),
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build());
@@ -177,7 +182,6 @@ public class SettingsFragment extends Fragment {
             Toast.makeText(getActivity(), "SignOut successfully", Toast.LENGTH_SHORT).show();
         });
     }
-
 
 
     @Override
@@ -201,6 +205,7 @@ public class SettingsFragment extends Fragment {
             }
         }
     }
+
     private void nightModeSwitch(View view) {
         switcher = view.findViewById(R.id.switcher);
         sharedPreferences = requireActivity().getSharedPreferences("MODE", Context.MODE_PRIVATE);
@@ -219,10 +224,13 @@ public class SettingsFragment extends Fragment {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.putExtra("navigateTo", "SettingsFragment");
             intent.putExtra("ActionBarOFF", true);
-            intent.putExtra("hideActionBar", true);
-            startActivity(intent);
+            getActivity().startActivity(intent);
+//          getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            getActivity().finish();
 
-            getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//
+//
+
         });
     }
 }
