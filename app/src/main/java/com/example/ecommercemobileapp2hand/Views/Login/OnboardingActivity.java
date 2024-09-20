@@ -97,7 +97,7 @@ public class OnboardingActivity extends AppCompatActivity {
             ageRange = ageAdapter.getItem(selectedPosition).getAge();
 
             if (selectedPosition == 0) {
-                Toast.makeText(OnboardingActivity.this, "Vui lòng chọn độ tuổi", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OnboardingActivity.this, "\n" + "Please select age", Toast.LENGTH_SHORT).show();
                 return;
             }
 

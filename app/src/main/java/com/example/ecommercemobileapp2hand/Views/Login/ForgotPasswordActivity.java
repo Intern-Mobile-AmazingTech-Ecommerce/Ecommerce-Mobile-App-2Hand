@@ -51,7 +51,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         btnContinue_2.setOnClickListener(v -> {
             String email = edtEmail.getText().toString().trim();
             if (!isValidEmail(email)) {
-                ((EditText) findViewById(R.id.email_address)).setError("Email không hợp lệ");
+                ((EditText) findViewById(R.id.email_address)).setError("Email invalid");
                 return;
             }
             else {
@@ -78,7 +78,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 }else {
-                                    Toast.makeText(ForgotPasswordActivity.this, "Loi", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ForgotPasswordActivity.this, "Error", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
