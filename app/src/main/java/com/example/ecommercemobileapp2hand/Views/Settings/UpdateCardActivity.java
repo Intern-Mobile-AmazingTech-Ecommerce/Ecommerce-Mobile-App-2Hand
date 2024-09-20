@@ -128,18 +128,6 @@ public class UpdateCardActivity extends AppCompatActivity {
     }
     void deleteCard()
     {
-//        service.submit(()->{
-//            boolean isDelete = UserCardsHandler.deleteCardById(cardId);
-//            this.runOnUiThread(()->{
-//                if (isDelete)
-//                {
-//                    Toast.makeText(getApplicationContext(), "Delete card success", Toast.LENGTH_SHORT).show();
-//                    finish();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "Delete card fail", Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//        });
         UserCardsHandler.deleteCardById(cardId, new UserCardsHandler.Callback<Boolean>(){
                     @Override
                     public void onResult(Boolean result) {
@@ -189,8 +177,8 @@ public class UpdateCardActivity extends AppCompatActivity {
 
         // Expiration Date Validation
         String expText = editTextExp.getText().toString();
-        if (expText.isEmpty() || !expText.matches("^[0-9/-]+$")) {
-            editTextExp.setError("This field cannot be left blank and must contain only letters");
+        if (expText.isEmpty() || !expText.matches("^\\\\d{2}-\\\\d{2}-\\\\d{4}$")) {
+            editTextExp.setError("Invalid format. Please enter date in dd-MM-YYYY.");
             isValid = false;
         }
 
