@@ -45,7 +45,7 @@ public class Checkout extends AppCompatActivity {
     private static final int REQUEST_CODE_ACTIVITY_CHOOSE_ADDRESS = 1;
     private static final int REQUEST_CODE_ACTIVITY_CHOOSE_CARD = 2;
 
-    private ImageView imgBack;
+    private ImageView imgBack, imgCard;
     private RelativeLayout btnPlaceOrder;
     private TextView txtSubtotal,txtTotal,txtTax,txtShippingCost,txtPrice,txtDiscount,txtShippingAddress,txtPayment;
     private ArrayList<Bag> listOrder=new ArrayList<Bag>();
@@ -86,7 +86,8 @@ public class Checkout extends AppCompatActivity {
         btnPlaceOrder= findViewById(R.id.btnAddToBag);
         addressLayout=findViewById(R.id.addressLayout);
         paymentLayout=findViewById(R.id.paymentLayout);
-
+        imgCard = findViewById(R.id.imgCart);
+        imgCard.setVisibility(View.GONE);
     }
     @Override
     protected void onResume() {
@@ -240,7 +241,9 @@ public class Checkout extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (userCard!=null){
-                        txtPayment.setText(userCard.getUser_card_number());
+                        String cardNumber = userCard.getUser_card_number();
+                        txtPayment.setText("**** "+cardNumber.substring(cardNumber.length() - 4));
+                        imgCard.setVisibility(View.VISIBLE);
                     }
                 }
             });
