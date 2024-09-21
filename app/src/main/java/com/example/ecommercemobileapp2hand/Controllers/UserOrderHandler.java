@@ -87,6 +87,7 @@ public class UserOrderHandler {
                     userOrder.setTotal_price(rs.getBigDecimal(4));
                     userOrder.setOrder_status_id(rs.getInt(5));
                     userOrder.setCreated_at(rs.getString(6));
+                    userOrder.setTotal_sale(rs.getBigDecimal(7));
                 }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
