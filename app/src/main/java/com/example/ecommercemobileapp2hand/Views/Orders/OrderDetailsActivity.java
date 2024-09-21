@@ -21,6 +21,7 @@ import com.example.ecommercemobileapp2hand.Models.UserOrderProducts;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.OrderDetailsAdapter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -31,7 +32,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private ExecutorService service = Executors.newCachedThreadPool();
     private ImageView imgBack;
     private RecyclerView recy_orderdetails;
-    private TextView tvtotal_price;
+    private TextView tvMerchandise, tvShippingCost, tvDiscount, tvOrderTotal;
     private UserOrder order;
     private ArrayList<UserOrderProducts> lst;
     private OrderDetailsAdapter orderDetailsAdapter;
@@ -88,7 +89,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
                     recy_orderdetails.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
                     recy_orderdetails.setItemAnimator(new DefaultItemAnimator());
                     recy_orderdetails.setAdapter(orderDetailsAdapter);
-                    tvtotal_price.setText("Total price: $" + String.valueOf(order.getTotal_price()));
+                    tvMerchandise.setText("$" + String.valueOf(order.getTotal_price().add(order.getTotal_sale()).subtract(BigDecimal.valueOf(8).setScale(2, BigDecimal.ROUND_HALF_UP))));
+                    tvShippingCost.setText("$" + String.valueOf(BigDecimal.valueOf(8).setScale(2, BigDecimal.ROUND_HALF_UP)));
+                    tvDiscount.setText("-$" + String.valueOf(order.getTotal_sale()));
+                    tvOrderTotal.setText("$" + String.valueOf(order.getTotal_price()));
                 });
             }
         });
@@ -97,7 +101,10 @@ public class OrderDetailsActivity extends AppCompatActivity {
     private void addControls() {
         imgBack = findViewById(R.id.imgBack);
         recy_orderdetails = findViewById(R.id.recy_orderdetails);
-        tvtotal_price = findViewById(R.id.tvtotal_price);
+        tvMerchandise = findViewById(R.id.tvMerchandiseSubtotal);
+        tvShippingCost = findViewById(R.id.tvShippingCost);
+        tvDiscount = findViewById(R.id.tvDiscount);
+        tvOrderTotal = findViewById(R.id.tvOrderTotal);
     }
 
     private void addEvents() {

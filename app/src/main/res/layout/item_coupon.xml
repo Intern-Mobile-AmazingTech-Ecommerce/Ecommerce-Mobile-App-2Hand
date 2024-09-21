@@ -19,8 +19,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Coupon Code"
+            style="@style/TEXT"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:fontFamily="@font/circularstdmedium500"
+            android:textFontWeight="500"
             android:textColor="@android:color/black"
             android:layout_marginBottom="4dp"/>
 
