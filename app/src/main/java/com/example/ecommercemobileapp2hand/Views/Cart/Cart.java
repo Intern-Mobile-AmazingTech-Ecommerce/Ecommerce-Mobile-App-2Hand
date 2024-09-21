@@ -178,7 +178,7 @@ public class Cart extends AppCompatActivity {
         BigDecimal newTotal = subtotal.subtract(discountAmount).setScale(2, BigDecimal.ROUND_HALF_UP);
         BigDecimal formattedDiscountAmount = discountAmount.setScale(2, BigDecimal.ROUND_HALF_UP);
         DecimalFormat df = new DecimalFormat("#.00");
-        txtDiscount.setText("$" + df.format(formattedDiscountAmount));
+        txtDiscount.setText("-$" + df.format(formattedDiscountAmount));
         txtTotal.setText("$" + df.format(newTotal));
 
         if (myadapter != null) {

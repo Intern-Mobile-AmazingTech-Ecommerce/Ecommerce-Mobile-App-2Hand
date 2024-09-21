@@ -64,13 +64,13 @@ public class Checkout extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_checkout);
-        addControl();
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
         getIT();
+        addControl();
         setAddressAndCard();
     }
     private void addControl(){
@@ -93,7 +93,7 @@ public class Checkout extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         addEvent();
-
+        setFee();
     }
 
     @Override
@@ -117,7 +117,6 @@ public class Checkout extends AppCompatActivity {
     private void addEvent(){
         // Set the back button to handle click event
         imgBack.setOnClickListener(v -> onBackPressed());
-        setFee();
 
         addressLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,7 +171,7 @@ public class Checkout extends AppCompatActivity {
     private void setFee(){
         BigDecimal subtotal=BigDecimal.ZERO;
         BigDecimal tax=BigDecimal.ZERO;
-        BigDecimal shippingCost=BigDecimal.ZERO;
+        BigDecimal shippingCost=BigDecimal.valueOf(8).setScale(2, BigDecimal.ROUND_HALF_UP);
         BigDecimal price;
         for (Bag bag : listOrder){
             if (bag.getSalePrice().compareTo(BigDecimal.ZERO)>0){
@@ -189,7 +188,7 @@ public class Checkout extends AppCompatActivity {
         txtShippingCost.setText("$"+String.valueOf(shippingCost));
         txtTotal.setText("$"+String.valueOf(total));
         txtPrice.setText("$"+String.valueOf(total));
-        txtDiscount.setText("$"+String.valueOf(discount));
+        txtDiscount.setText("-$"+String.valueOf(discount));
     }
     private void getIT(){
         Intent intent = getIntent();

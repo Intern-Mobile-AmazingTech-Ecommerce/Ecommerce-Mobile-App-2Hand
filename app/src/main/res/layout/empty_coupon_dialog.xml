@@ -9,11 +9,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="30dp"
-        android:layout_marginRight="24dp"
-        android:orientation="vertical">
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp">
 
         <ImageView
             android:id="@+id/imageView4"
@@ -34,8 +32,10 @@
             android:id="@+id/btn_close_coupon_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="27dp"
+            style="@style/btn_continue"
+            android:backgroundTint="@color/purple"
             android:text="Close" />
     </LinearLayout>
 

@@ -151,7 +151,7 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
         TextView txtShippingCost = context.findViewById(R.id.txtShippingCost);
         BigDecimal subtotal = BigDecimal.ZERO;
         BigDecimal tax = BigDecimal.ZERO;
-        BigDecimal shippingCost = BigDecimal.ZERO;
+        BigDecimal shippingCost = BigDecimal.valueOf(8).setScale(2, BigDecimal.ROUND_HALF_UP);
         BigDecimal total;
         BigDecimal price;
         for (Bag bag : myList) {
