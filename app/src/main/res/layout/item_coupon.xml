@@ -24,7 +24,6 @@
             android:textStyle="bold"
             android:fontFamily="@font/circularstdmedium500"
             android:textFontWeight="500"
-            android:textColor="@android:color/black"
             android:layout_marginBottom="4dp"/>
 
         <TextView

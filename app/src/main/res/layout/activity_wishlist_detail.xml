@@ -63,6 +63,8 @@
         android:layout_marginTop="124dp"
         android:text="There are no products in the wish list."
         android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingHorizontal="25dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

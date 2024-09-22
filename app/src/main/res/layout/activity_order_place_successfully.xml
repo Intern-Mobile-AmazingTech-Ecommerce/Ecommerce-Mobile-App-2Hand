@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#8E6CEF"
+    style="@style/orderSuccessfully"
     tools:context=".Views.Checkout.OrderPlaceSuccessfullyActivity">
 
     <LinearLayout
@@ -13,6 +13,7 @@
         android:id="@+id/imageView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#8E6CEF"
      >
 
         <ImageView

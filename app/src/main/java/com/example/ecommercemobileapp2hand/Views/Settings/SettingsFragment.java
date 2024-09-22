@@ -128,7 +128,7 @@ public class SettingsFragment extends Fragment {
             startActivityForResult(intent, 1);
         });
     }
-
+    
     private void fetchUserData(String email) {
         if (email != null) {
 //            userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
