@@ -88,39 +88,43 @@ public class UserCardsHandler {
         }
         return card;
     }
-    public static void updateByCardId(int cardId, String cardNumber, String cardCcv, String cardExp, String cardHolderName,Callback<Boolean> callback) {
+    public static void updateByCardId(int cardId, String cardNumber, String cardCcv, String cardExp, String cardHolderName, Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
-        service.execute(()->{
+        service.execute(() -> {
             Connection conn = dbConnect.connectionClass();
             PreparedStatement pstmt = null;
 
-            if (conn != null) {
-                try {
+            try {
+                if (conn != null) {
+                    SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    String expFormatted = outputFormat.format(inputFormat.parse(cardExp));
                     String sql = "UPDATE user_cards SET user_card_number = ?, user_card_ccv = ?, user_card_exp = ?, user_card_holder_name = ? WHERE user_cards_id = ?";
                     pstmt = conn.prepareStatement(sql);
                     pstmt.setString(1, cardNumber);
                     pstmt.setString(2, cardCcv);
-                    pstmt.setString(3, cardExp);
+                    pstmt.setString(3, expFormatted);
                     pstmt.setString(4, cardHolderName);
                     pstmt.setInt(5, cardId);
 
                     int rowsUpdated = pstmt.executeUpdate();
                     callback.onResult(rowsUpdated > 0);
+                } else {
+                    callback.onResult(false);
+                }
+            } catch (SQLException | ParseException e) {
+                e.printStackTrace();
+                callback.onResult(false);
+            } finally {
+                try {
+                    if (pstmt != null) pstmt.close();
+                    if (conn != null) conn.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    throw new RuntimeException(e);
-                } finally {
-                    try {
-                        if (pstmt != null) pstmt.close();
-                        conn.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
                 }
+                shutDownExecutor(service);
             }
-            shutDownExecutor(service);
         });
-
     }
     public static void insertCard(String userID, String cardNumber, String ccv, String exp, String holderName, Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();

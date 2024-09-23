@@ -123,58 +123,66 @@ public class UserAddressHandler {
         });
 
     }
-    public static void updateAddressById(int addressId, String street, String city, String state, String zip, String phone,Callback<Boolean> callback) {
+    public static void updateAddressById(int addressId, String street, String city, String state, String zip, String phone, Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
-        service.execute(()->{
+        service.execute(() -> {
             Connection conn = dbConnect.connectionClass();
             PreparedStatement pstmt = null;
 
-            if (conn != null) {
-                try {
+            try {
+                if (conn != null) {
                     String sql = "UPDATE user_address SET user_address_street = ?, user_address_city = ?, user_address_state = ?, user_address_zipcode = ?, user_address_phone = ? WHERE user_address_id = ?";
                     pstmt = conn.prepareStatement(sql);
-                    System.out.println(street);
-                    System.out.println(city);
-                    System.out.println(state);
                     pstmt.setString(1, street);
                     pstmt.setString(2, city);
                     pstmt.setString(3, state);
                     pstmt.setString(4, zip);
                     pstmt.setString(5, phone);
-                    pstmt.setInt(6,addressId);
-
+                    pstmt.setInt(6, addressId);
                     int rowsUpdated = pstmt.executeUpdate();
                     callback.onResult(rowsUpdated > 0);
+                } else {
+                    callback.onResult(false);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                callback.onResult(false);
+            } finally {
+                try {
+                    if (pstmt != null) pstmt.close();
+                    if (conn != null) conn.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    throw new RuntimeException(e);
-                } finally {
-                    try {
-                        if (pstmt != null) pstmt.close();
-                        conn.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
                 }
+                shutDownExecutor(service);
             }
-            shutDownExecutor(service);
         });
-
     }
     public static void deleteAddressById(int addressId, Callback<Boolean> callback) {
         ExecutorService service = Executors.newCachedThreadPool();
-        service.execute(()->{
+        service.execute(() -> {
             Connection conn = dbConnect.connectionClass();
             PreparedStatement pstmt = null;
 
             if (conn != null) {
                 try {
-                    String sql = "DELETE FROM user_address WHERE user_address_id = ?";
-                    pstmt = conn.prepareStatement(sql);
+                    // Kiểm tra xem có bản ghi nào trong user_order tham chiếu đến user_address_id không
+                    String checkSql = "SELECT COUNT(*) FROM user_order WHERE user_address_id = ?";
+                    pstmt = conn.prepareStatement(checkSql);
+                    pstmt.setInt(1, addressId);
+                    ResultSet rs = pstmt.executeQuery();
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        callback.onResult(false); // Không thể xóa vì có ràng buộc khóa ngoại
+                        return;
+                    }
+
+                    // Xóa bản ghi trong user_address
+                    String deleteSql = "DELETE FROM user_address WHERE user_address_id = ?";
+                    pstmt = conn.prepareStatement(deleteSql);
                     pstmt.setInt(1, addressId);
 
                     int rowsDeleted = pstmt.executeUpdate();
-                    callback.onResult( rowsDeleted > 0);
+                    callback.onResult(rowsDeleted > 0);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     throw new RuntimeException(e);
@@ -189,8 +197,8 @@ public class UserAddressHandler {
             }
             shutDownExecutor(service);
         });
-
     }
+
     private static void shutDownExecutor(ExecutorService executorService) {
         executorService.shutdown();
         try {

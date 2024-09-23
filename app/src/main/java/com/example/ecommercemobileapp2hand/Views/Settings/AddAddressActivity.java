@@ -259,8 +259,9 @@ public class AddAddressActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (edtZipCode.getText().toString().isEmpty()) {
-                    edtZipCode.setError("Zip code is required");
+                String zip = edtZipCode. getText().toString();
+                if (zip.isEmpty() || !zip.matches("\\d{5}(-\\d{4})?")) {
+                    edtZipCode.setError("Zip code is required and must contain 5 digits.");
                 }
             }
         });
