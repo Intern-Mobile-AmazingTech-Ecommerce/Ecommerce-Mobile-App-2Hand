@@ -153,8 +153,8 @@ public class UpdateCardActivity extends AppCompatActivity {
                 public void onResult(Boolean result) {
                     runOnUiThread(() -> {
                         if (result) {
-                            finish();
                             Toast.makeText(getApplicationContext(), "Update card success", Toast.LENGTH_SHORT).show();
+                            finish();
                         } else {
                             Toast.makeText(getApplicationContext(), "Update card fail", Toast.LENGTH_SHORT).show();
                         }
@@ -177,7 +177,7 @@ public class UpdateCardActivity extends AppCompatActivity {
 
         // Expiration Date Validation
         String expText = editTextExp.getText().toString();
-        if (expText.isEmpty() || !expText.matches("^\\\\d{2}-\\\\d{2}-\\\\d{4}$")) {
+        if (expText.isEmpty() || !expText.matches("^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\\d{2}$")) {
             editTextExp.setError("Invalid format. Please enter date in dd-MM-YYYY.");
             isValid = false;
         }
