@@ -2,6 +2,7 @@ package com.example.ecommercemobileapp2hand.Views.FirebaseMessagingService;
 
 import com.example.ecommercemobileapp2hand.Controllers.UserOrderHandler;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
+import com.example.ecommercemobileapp2hand.Models.UserOrder;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.example.ecommercemobileapp2hand.Views.Notifications.NotificationDetailFragment;
@@ -36,9 +37,7 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
     ExecutorService service = Executors.newCachedThreadPool();
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // Kiểm tra nếu tin nhắn có data
-
-        Log.d("MyFirebaseMessagingService", "Tin nhắn đã nhận: " + remoteMessage.getData().toString());
+//        Log.d("MyFirebaseMessagingService", "Tin nhắn đã nhận: " + remoteMessage.getData().toString());
         if (remoteMessage.getData().size() > 0) {
             handleDataMessage(remoteMessage);
         }
@@ -55,15 +54,14 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
     private void handleDataMessage(RemoteMessage remoteMessage) {
         String userOrderId = remoteMessage.getData().get("user_order_id");
         String orderStatusId = remoteMessage.getData().get("order_status_id");
-        String userId = remoteMessage.getData().get("user_id");
 
         // Kiểm tra nếu userId từ tin nhắn khớp với userId của người dùng hiện tại
-        String currentUserId = getCurrentUserId();
-        if (!Objects.equals(userId, currentUserId)) {
-            // Nếu không phải userId của người dùng hiện tại, không làm gì cả
-            Log.d("MyFirebaseMessagingService", "UserId không khớp, không gửi thông báo.");
-            return;
-        }
+//        String currentUserId = getCurrentUserId();
+//        if (!Objects.equals(userId, currentUserId)) {
+//            // Nếu không phải userId của người dùng hiện tại, không làm gì cả
+//            Log.d("MyFirebaseMessagingService", "UserId không khớp, không gửi thông báo.");
+//            return;
+//        }
 
         // Chuyển đổi order_status_id sang order_status_name
         String orderStatusName = getOrderStatusName(orderStatusId);
@@ -73,25 +71,32 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
             @Override
             public void onResult(Boolean result) {
                 if (result) {
-                    Log.d("MyFirebaseMessagingService", "Đã cập nhật trạng thái đơn hàng thành công.");
+//                    Log.d("MyFirebaseMessagingService", "Đã cập nhật trạng thái đơn hàng thành công.");
                 } else {
-                    Log.d("MyFirebaseMessagingService", "Cập nhật trạng thái đơn hàng thất bại.");
+//                    Log.d("MyFirebaseMessagingService", "Cập nhật trạng thái đơn hàng thất bại.");
                 }
             }
         });
+        UserOrderHandler.getUserOrderById(Integer.parseInt(userOrderId), new UserOrderHandler.Callback<UserOrder>() {
+            @Override
+            public void onResult(UserOrder userOrder) {
+                if (userOrder != null) {
+                    String userId = userOrder.getUser_id();
 
-        // Tạo đối tượng thông báo mới
-        Notifications notification = new Notifications();
-        notification.setNotifications_content(notificationContent);
-        notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
-        notification.setUser_id(userId);
-        notification.setViewed(false);
-
-        // Lưu thông báo vào cơ sở dữ liệu
-        NotificationsHandler.saveNotification(notification);
-
-        // Gửi thông báo đến user đó
-//        sendOrderStatusNotification("Cập nhật trạng thái đơn hàng", notificationContent);
+                    // Tạo đối tượng thông báo mới
+                    Notifications notification = new Notifications();
+                    notification.setNotifications_content(notificationContent);
+                    notification.setCreated_at(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+                    notification.setUser_id(userId);  // Lưu user_id từ đơn hàng
+                    notification.setViewed(false);
+                    NotificationsHandler.saveNotification(notification);
+                    // Gửi thông báo đến user đó (nếu cần)
+                    // sendOrderStatusNotification("Cập nhật trạng thái đơn hàng", notificationContent);
+                } else {
+//                    Log.d("MyFirebaseMessagingService", "Không tìm thấy đơn hàng với userOrderId: " + userOrderId);
+                }
+            }
+        });
     }
 
     private String getOrderStatusName(String orderStatusId) {
@@ -143,10 +148,10 @@ public class MyFirebaseMessagingService  extends FirebaseMessagingService {
 //        });
 //    }
 
-    private String getCurrentUserId() {
-
-        return UserAccountManager.getInstance().getCurrentUserAccount().getUserId();
-    }
+//    private String getCurrentUserId() {
+//
+//        return UserAccountManager.getInstance().getCurrentUserAccount().getUserId();
+//    }
 
 //    private void sendNotification(String messageTitle, String messageBody) {
 //        Intent intent = new Intent(this, MainActivity.class);
