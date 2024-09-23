@@ -71,6 +71,45 @@ public class UserOrderHandler {
         });
 
     }
+
+    public static void getUserOrderById(int userOrderId, Callback<UserOrder> callback) {
+        ExecutorService service = Executors.newCachedThreadPool();
+        service.execute(() -> {
+            conn = dbConnect.connectionClass();
+            UserOrder userOrder = null;
+            if (conn != null) {
+                try {
+                    String query = "SELECT * FROM user_order WHERE user_order_id = ?";
+                    try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                        stmt.setInt(1, userOrderId);
+                        ResultSet rs = stmt.executeQuery();
+                        if (rs.next()) {
+                            userOrder = new UserOrder(
+                                    rs.getInt("user_order_id"),
+                                    rs.getString("user_id"),
+                                    rs.getInt("user_address_id"),
+                                    rs.getBigDecimal("total_price"),
+                                    rs.getInt("order_status_id"),
+                                    rs.getString("created_at"),
+                                    rs.getBigDecimal("total_sale")
+                            );
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        conn.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            callback.onResult(userOrder);
+            shutDownExecutor(service);
+        });
+    }
+
     public static UserOrder GetLatestUserOrder (String userID){
         conn = dbConnect.connectionClass();
         UserOrder userOrder=new UserOrder();
