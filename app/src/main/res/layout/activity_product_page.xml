@@ -260,13 +260,14 @@
                             android:orientation="horizontal"
                             android:layout_marginRight="25dp">
                             <ImageButton
-                                android:id="@+id/btnIncreaseQuantity"
+
+                                android:id="@+id/btnDecreaseQuantity"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:backgroundTint="@color/purple"
                                 android:layout_alignParentStart="true"
                                 app:icon="@drawable/add"
-                                android:src="@drawable/add"
+                                android:src="@drawable/minus"
                                 android:background="@drawable/shape"
                                 />
                             <TextView
@@ -281,16 +282,16 @@
 
                                 />
                             <ImageButton
-
-                                android:id="@+id/btnDecreaseQuantity"
+                                android:id="@+id/btnIncreaseQuantity"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:backgroundTint="@color/purple"
                                 android:layout_alignParentStart="true"
                                 app:icon="@drawable/add"
-                                android:src="@drawable/minus"
+                                android:src="@drawable/add"
                                 android:background="@drawable/shape"
                                 />
+
                         </LinearLayout>
 
                     </RelativeLayout>

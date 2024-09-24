@@ -89,12 +89,13 @@
                 android:text="" />
 
             <ImageButton
-                android:id="@+id/imageButtonAdd"
-                style="@style/cart_btn_add"
+                android:id="@+id/imageButtonMinus"
+                style="@style/cart_btn_minus"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginRight="8dp" />
+                android:layout_marginRight="8dp"
+                />
 
             <TextView
                 android:id="@+id/txt_Quantity"
@@ -104,14 +105,15 @@
                 android:layout_gravity="center"
                 android:text="1"
                 android:textSize="14dp"></TextView>
-
             <ImageButton
-                android:id="@+id/imageButtonMinus"
-                style="@style/cart_btn_minus"
+                android:id="@+id/imageButtonAdd"
+                style="@style/cart_btn_add"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
-                android:layout_marginLeft="8dp" />
+                android:layout_marginLeft="8dp"
+                />
+
         </LinearLayout>
 
     </LinearLayout>

@@ -33,12 +33,13 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
     int IdLayout;
     ArrayList<Bag> myList;
     BigDecimal discountAmount = BigDecimal.ZERO; // Add this line
-
-    public Adapter_Cart(Activity context, int idLayout, ArrayList<Bag> myList) {
+    OnItemBagClickListener onItemBagClickListener;
+    public Adapter_Cart(Activity context, int idLayout, ArrayList<Bag> myList, OnItemBagClickListener onItemBagClickListener) {
         super(context, idLayout, myList);
         this.context = context;
         IdLayout = idLayout;
         this.myList = myList;
+        this.onItemBagClickListener = onItemBagClickListener;
     }
 
     @Override
@@ -94,6 +95,7 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
                 myList.get(position).setAmount(quantity);
                 notifyDataSetChanged();
                 setFee();
+                onItemBagClickListener.onItemBagClick(myList);
             }
             showMessage(result);
         });
@@ -114,6 +116,7 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
                                                     notifyDataSetChanged();
                                                     setFee();
                                                     BagHandler.deleteUserBagByBagID(bagID);
+                                                    onItemBagClickListener.onItemBagClick(myList);
                                                     checkAdapter();
                                                 })).setNegativeButton("Cancel",(dialogInterface, i) -> {}).show();
 
@@ -135,6 +138,7 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
                         myList.get(position).setAmount(quantity);
                         notifyDataSetChanged();
                         setFee();
+                        onItemBagClickListener.onItemBagClick(myList);
                     }
                     showMessage(result);
                 }
@@ -143,7 +147,6 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
         });
         return convertView;
     }
-
     private void setFee() {
         TextView txtSubtotal = context.findViewById(R.id.txtSubtotal);
         TextView txtTax = context.findViewById(R.id.txtTax);
@@ -184,5 +187,8 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
             Intent intent = new Intent(context, EmptyCart.class);
             context.startActivity(intent);
         }
+    }
+    public interface OnItemBagClickListener {
+        void onItemBagClick( ArrayList<Bag> myList);
     }
 }

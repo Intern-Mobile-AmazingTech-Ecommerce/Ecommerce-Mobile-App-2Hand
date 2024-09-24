@@ -81,7 +81,7 @@ public class CouponDialog extends Dialog {
     private BigDecimal calculateSubtotal() {
         BigDecimal subtotal = BigDecimal.ZERO;
         for (Bag item : mylist) {
-            subtotal = subtotal.add(item.getBasePrice().multiply(BigDecimal.valueOf(item.getAmount())));
+            subtotal = subtotal.add(item.getSalePrice().compareTo(BigDecimal.ZERO) != 0 ? item.getSalePrice().multiply(BigDecimal.valueOf(item.getAmount())) : item.getBasePrice().multiply(BigDecimal.valueOf(item.getAmount())) );
         }
         return subtotal;
     }

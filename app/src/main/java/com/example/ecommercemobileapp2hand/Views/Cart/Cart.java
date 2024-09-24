@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
 import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
 import com.example.ecommercemobileapp2hand.Controllers.CouponHandler;
 import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
@@ -60,6 +61,7 @@ public class Cart extends AppCompatActivity {
     BigDecimal discountAmount = BigDecimal.ZERO;
     Product product = new Product();
     private static final String TAG = "Cart";
+    private String currentCouponCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,7 @@ public class Cart extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        user=UserAccountManager.getInstance().getCurrentUserAccount();
+        user = UserAccountManager.getInstance().getCurrentUserAccount();
         loadUserBag();
         back = findViewById(R.id.btnBack2);
         back.setOnClickListener(view -> finish());
@@ -79,22 +81,23 @@ public class Cart extends AppCompatActivity {
         btncheckout = findViewById(R.id.btnCheckout);
         btncheckout.setOnClickListener(view -> {
             Intent myintent = new Intent(Cart.this, Checkout.class);
-            Bundle bundle =new Bundle();
-            bundle.putParcelableArrayList("listOrder",mylist);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("listOrder", mylist);
             myintent.putExtras(bundle);
-            myintent.putExtra("discount",String.valueOf(discountAmount));
+            myintent.putExtra("discount", String.valueOf(discountAmount));
             startActivity(myintent);
         });
 
         removeAll = findViewById(R.id.removeAll);
         removeAll.setOnClickListener(view -> {
-            AlertDialog.Builder builder=new AlertDialog.Builder(Cart.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(Cart.this);
             builder.setTitle("Question")
                     .setMessage("Are you sure you want to delete all the product from cart ?")
-                    .setPositiveButton("OK",((dialogInterface, i) -> {
+                    .setPositiveButton("OK", ((dialogInterface, i) -> {
                         BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
                         loadUserBag();
-                    })).setNegativeButton("Cancel",(dialogInterface, i) -> {}).show();
+                    })).setNegativeButton("Cancel", (dialogInterface, i) -> {
+                    }).show();
         });
 
         addConTrols();
@@ -130,11 +133,12 @@ public class Cart extends AppCompatActivity {
             // Chuyển thành BigDecimal
             BigDecimal subtotal = new BigDecimal(subtotalStr);
             BigDecimal shippingCost = new BigDecimal(shippingCostStr);
-            BigDecimal totalAmount = subtotal.add(shippingCost);
+//            BigDecimal totalAmount = subtotal.add(shippingCost);
 
             //check coupon
             if (!coupon.isActive()) {
                 discountAmount = BigDecimal.ZERO;
+                BigDecimal totalAmount = subtotal.add(shippingCost);
                 updateDiscountAndTotal(totalAmount);
                 Toast.makeText(this, "Coupon is not valid", Toast.LENGTH_SHORT).show();
                 return;
@@ -144,6 +148,7 @@ public class Cart extends AppCompatActivity {
             Date currentDate = new Date(System.currentTimeMillis());
             if (currentDate.before(coupon.getStartDate()) || currentDate.after(coupon.getEndDate())) {
                 discountAmount = BigDecimal.ZERO;
+                BigDecimal totalAmount = subtotal.add(shippingCost);
                 updateDiscountAndTotal(totalAmount);
                 Toast.makeText(this, "Coupon has expired", Toast.LENGTH_SHORT).show();
                 return;
@@ -154,7 +159,8 @@ public class Cart extends AppCompatActivity {
 
             //ORDER, áp dụng giảm giá cho toàn bộ đơn hàng
             if (coupon.getType().equals("ORDER")) {
-                discountAmount = totalAmount.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                BigDecimal totalAmount = discountAmount.add(shippingCost);
                 Log.d(TAG, "Order Discount Amount: " + discountAmount);
                 updateDiscountAndTotal(totalAmount);
                 Toast.makeText(this, "Coupon applied: " + coupon.getDiscountValue() + "% off on the entire order", Toast.LENGTH_LONG).show();
@@ -165,22 +171,27 @@ public class Cart extends AppCompatActivity {
                 for (Bag item : mylist) {
                     Product product = item.getProduct();
                     if (product != null && product.getCoupon_id() == coupon.getCouponId()) {
-                        productTotal = productTotal.add(item.getBasePrice().multiply(BigDecimal.valueOf(item.getAmount())));
                         discountedProducts.add(product.getProduct_name());
+                        productTotal = productTotal.add(item.getSalePrice().compareTo(BigDecimal.ZERO) != 0 ? item.getSalePrice().multiply(BigDecimal.valueOf(item.getAmount())) : item.getBasePrice().multiply(BigDecimal.valueOf(item.getAmount())));
                     }
+
+
                 }
                 if (discountedProducts.isEmpty()) {
                     Toast.makeText(this, "No products in the cart apply for the coupon", Toast.LENGTH_SHORT).show();
-                    txtDiscount.setText("0");
-                    txtTotal.setText(txtSubtotal.getText());
+                    BigDecimal totalWithShipping = subtotal.add(shippingCost);
+                    updateDiscountAndTotal(totalWithShipping);
+                    txtDiscount.setText("$0.00");
+                    txtTotal.setText("$"+totalWithShipping.toString());
                     return;
                 }
 
                 // tính thêm shipping cost
-                BigDecimal totalWithShipping = productTotal.add(shippingCost);
+
                 //áp dụng discount
-                discountAmount = totalWithShipping.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-                updateDiscountAndTotal(totalAmount);
+                discountAmount = productTotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                BigDecimal totalWithShipping = discountAmount.add(shippingCost);
+                updateDiscountAndTotal(totalWithShipping);
 
                 //thông báo
                 StringBuilder message = new StringBuilder("Discount applied to: ");
@@ -194,13 +205,19 @@ public class Cart extends AppCompatActivity {
             else if (coupon.getType().equals("MINORDER")) {
                 BigDecimal minOrderAmount = new BigDecimal("1000");
                 if (subtotal.compareTo(minOrderAmount) >= 0) {
-                    discountAmount = totalAmount.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                    discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                    BigDecimal totalAmount = discountAmount.add(shippingCost);
                     Log.d(TAG, "MinOrder Discount Amount: " + discountAmount);
                     updateDiscountAndTotal(totalAmount);
                     Toast.makeText(this, "Coupon applied: " + coupon.getDiscountValue() + "% off on orders over " + minOrderAmount, Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(this, "Order total must be at least " + minOrderAmount + " to apply this coupon", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                discountAmount = BigDecimal.ZERO;
+                BigDecimal totalAmount = subtotal.add(shippingCost);
+                updateDiscountAndTotal(totalAmount);
+                Toast.makeText(this, "Coupon type not valid", Toast.LENGTH_SHORT).show();
             }
 
         } catch (NumberFormatException e) {
@@ -224,16 +241,18 @@ public class Cart extends AppCompatActivity {
 
     private void addEvents() {
         selectCoupon.setOnClickListener(view -> {
-        CouponDialog couponDialog = new CouponDialog(this, mylist, coupon -> {
-            couponCode.setText(coupon.getCode());
-            checkCoupon(coupon.getCode());
+            CouponDialog couponDialog = new CouponDialog(this, mylist, coupon -> {
+                couponCode.setText(coupon.getCode());
+                currentCouponCode = coupon.getCode();
+                checkCoupon(coupon.getCode());
+            });
+            couponDialog.show();
         });
-        couponDialog.show();
-    });
 
         applyCouponButton.setOnClickListener(view -> {
             String enteredCouponCode = couponCode.getText().toString();
             if (!enteredCouponCode.isEmpty()) {
+                currentCouponCode = enteredCouponCode;
                 checkCoupon(enteredCouponCode);
             } else {
                 Toast.makeText(this, "Please enter the coupon code", Toast.LENGTH_SHORT).show();
@@ -257,7 +276,7 @@ public class Cart extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (coupon != null) {
                         applyCoupon(coupon);
-                        Log.d("Coupon", "Coupon applied: " + couponCode);
+//                        Log.d("Coupon", "Coupon applied: " + couponCode);
                     } else {
                         Toast.makeText(this, "Coupon not found", Toast.LENGTH_SHORT).show();
                     }
@@ -277,15 +296,24 @@ public class Cart extends AppCompatActivity {
                 if (mylist != null && !mylist.isEmpty()) {
                     for (Bag item : mylist) {
                         ProductHandler.getDataByProductID(item.getProduct_id(), new ProductHandler.Callback<Product>() {
-                        @Override
-                        public void onResult(Product product) {
-                            item.setProduct(product);
-                        }
-                    });
+                            @Override
+                            public void onResult(Product product) {
+                                item.setProduct(product);
+                            }
+                        });
                         item.setProduct(product);
                     }
                     runOnUiThread(() -> {
-                        myadapter = new Adapter_Cart(Cart.this, R.layout.layout_cart, mylist);
+                        myadapter = new Adapter_Cart(Cart.this, R.layout.layout_cart, mylist, new Adapter_Cart.OnItemBagClickListener() {
+                            @Override
+                            public void onItemBagClick(ArrayList<Bag> myList) {
+                                mylist = myList;
+                                if (currentCouponCode != null && !currentCouponCode.isEmpty()) {
+                                    checkCoupon(currentCouponCode);
+                                }
+
+                            }
+                        });
                         lv.setAdapter(myadapter);
                     });
                 } else {
