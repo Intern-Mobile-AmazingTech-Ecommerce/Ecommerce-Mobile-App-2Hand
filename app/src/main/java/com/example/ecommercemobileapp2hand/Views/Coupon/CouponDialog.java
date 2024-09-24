@@ -16,22 +16,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.ecommercemobileapp2hand.Controllers.CouponHandler;
+import com.example.ecommercemobileapp2hand.Models.Bag;
 import com.example.ecommercemobileapp2hand.Models.Coupon;
 import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.CouponAdapter;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CouponDialog extends Dialog {
     private static final String TAG = "CouponDialog";
     private List<Coupon> coupons;
+    private List<Bag> mylist; // Add this line
     private Context context;
     private OnCouponSelectedListener onCouponSelectedListener;
 
-    public CouponDialog(@NonNull Context context, OnCouponSelectedListener onCouponSelectedListener) {
+    public CouponDialog(@NonNull Context context, List<Bag> mylist, OnCouponSelectedListener onCouponSelectedListener) { // Update constructor
         super(context);
         this.context = context;
         this.coupons = new ArrayList<>();
+        this.mylist = mylist; // Add this line
         this.onCouponSelectedListener = onCouponSelectedListener;
     }
 
@@ -46,11 +51,39 @@ public class CouponDialog extends Dialog {
             @Override
             public void onResult(ArrayList<Coupon> result) {
                 ((Activity) context).runOnUiThread(() -> {
-                    coupons.addAll(result);
+                    BigDecimal subtotal = calculateSubtotal();
+                    for (Coupon coupon : result) {
+                        if (coupon.getType().equals("MINORDER") && subtotal.compareTo(new BigDecimal("1000")) < 0) {
+                            continue; // Ẩn coupon MINORDER nếu tổng giá trị đơn hàng dưới 1000$
+                        }
+
+                        if (coupon.getType().equals("PRODUCT")) {
+                            boolean hasMatchingProduct = false;
+                            for (Bag item : mylist) {
+                                if (item.getProduct() != null && item.getProduct().getCoupon_id() == coupon.getCouponId()) {
+                                    hasMatchingProduct = true;
+                                    break;
+                                }
+                            }
+                            if (!hasMatchingProduct) {
+                                continue; // Ẩn coupon PRODUCT nếu không có sản phẩm nào có coupon_id trùng
+                            }
+                        }
+
+                        coupons.add(coupon); // Thêm coupon hợp lệ vào danh sách
+                    }
                     setupDialog();
                 });
             }
         });
+    }
+
+    private BigDecimal calculateSubtotal() {
+        BigDecimal subtotal = BigDecimal.ZERO;
+        for (Bag item : mylist) {
+            subtotal = subtotal.add(item.getBasePrice().multiply(BigDecimal.valueOf(item.getAmount())));
+        }
+        return subtotal;
     }
 
     private void setupDialog() {
