@@ -115,59 +115,94 @@ public class Cart extends AppCompatActivity {
 
     private void applyCoupon(Coupon coupon) {
         try {
+            // Lấy subtotal và shipping cost
             String subtotalStr = txtSubtotal.getText().toString().replace("$", "");
+            String shippingCostStr = txtShippingCost.getText().toString().replace("$", "");
+
+            // kt và gán 0 nếu chuỗi rỗng
             if (subtotalStr == null || subtotalStr.isEmpty()) {
                 subtotalStr = "0";
             }
-            BigDecimal subtotal = new BigDecimal(subtotalStr);
+            if (shippingCostStr == null || shippingCostStr.isEmpty()) {
+                shippingCostStr = "0";
+            }
 
+            // Chuyển thành BigDecimal
+            BigDecimal subtotal = new BigDecimal(subtotalStr);
+            BigDecimal shippingCost = new BigDecimal(shippingCostStr);
+            BigDecimal totalAmount = subtotal.add(shippingCost);
+
+            //check coupon
             if (!coupon.isActive()) {
                 discountAmount = BigDecimal.ZERO;
-                updateDiscountAndTotal(subtotal);
+                updateDiscountAndTotal(totalAmount);
                 Toast.makeText(this, "Coupon is not valid", Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            //ktra ngày hiện tại có hợp lệ không
             Date currentDate = new Date(System.currentTimeMillis());
             if (currentDate.before(coupon.getStartDate()) || currentDate.after(coupon.getEndDate())) {
                 discountAmount = BigDecimal.ZERO;
-                updateDiscountAndTotal(subtotal);
+                updateDiscountAndTotal(totalAmount);
                 Toast.makeText(this, "Coupon has expired", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (coupon.getType().equals("ORDER")) {
-                discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-            } else if (coupon.getType().equals("MINORDER")) {
-                BigDecimal minOrderValue = new BigDecimal("1000");
-                if (subtotal.compareTo(minOrderValue) >= 0) {
-                    discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-                } else {
-                    discountAmount = BigDecimal.ZERO;
-                    updateDiscountAndTotal(subtotal);
-                    Toast.makeText(this, "Order must be over $1000", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } else if (coupon.getType().equals("PRODUCT")) {
-                boolean hasNonDiscountedProducts = false;
+            discountAmount = BigDecimal.ZERO;
+            List<String> discountedProducts = new ArrayList<>();
 
+            //ORDER, áp dụng giảm giá cho toàn bộ đơn hàng
+            if (coupon.getType().equals("ORDER")) {
+                discountAmount = totalAmount.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                Log.d(TAG, "Order Discount Amount: " + discountAmount);
+                updateDiscountAndTotal(totalAmount);
+                Toast.makeText(this, "Coupon applied: " + coupon.getDiscountValue() + "% off on the entire order", Toast.LENGTH_LONG).show();
+            }
+            //PRODUCT, tính tổng giá trị sản phẩm có coupon_id tương ứng
+            else if (coupon.getType().equals("PRODUCT")) {
+                BigDecimal productTotal = BigDecimal.ZERO;
                 for (Bag item : mylist) {
                     Product product = item.getProduct();
                     if (product != null && product.getCoupon_id() == coupon.getCouponId()) {
-                        discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-                    } else {
-                        hasNonDiscountedProducts = true;
+                        productTotal = productTotal.add(item.getBasePrice().multiply(BigDecimal.valueOf(item.getAmount())));
+                        discountedProducts.add(product.getProduct_name());
                     }
                 }
-                if (hasNonDiscountedProducts) {
-                    runOnUiThread(() -> Toast.makeText(this, "Some products in the cart do not apply for the coupon", Toast.LENGTH_SHORT).show());
+                if (discountedProducts.isEmpty()) {
+                    Toast.makeText(this, "No products in the cart apply for the coupon", Toast.LENGTH_SHORT).show();
                     txtDiscount.setText("0");
                     txtTotal.setText(txtSubtotal.getText());
                     return;
                 }
+
+                // tính thêm shipping cost
+                BigDecimal totalWithShipping = productTotal.add(shippingCost);
+                //áp dụng discount
+                discountAmount = totalWithShipping.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                updateDiscountAndTotal(totalAmount);
+
+                //thông báo
+                StringBuilder message = new StringBuilder("Discount applied to: ");
+                for (String productName : discountedProducts) {
+                    message.append(productName).append(", ");
+                }
+                message.setLength(message.length() - 2);
+                Toast.makeText(this, message.toString(), Toast.LENGTH_LONG).show();
+            }
+            // MINORDER, áp dụng giảm giá nếu tổng đơn hàng đạt mức 1000$
+            else if (coupon.getType().equals("MINORDER")) {
+                BigDecimal minOrderAmount = new BigDecimal("1000");
+                if (subtotal.compareTo(minOrderAmount) >= 0) {
+                    discountAmount = totalAmount.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
+                    Log.d(TAG, "MinOrder Discount Amount: " + discountAmount);
+                    updateDiscountAndTotal(totalAmount);
+                    Toast.makeText(this, "Coupon applied: " + coupon.getDiscountValue() + "% off on orders over " + minOrderAmount, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Order total must be at least " + minOrderAmount + " to apply this coupon", Toast.LENGTH_SHORT).show();
+                }
             }
 
-            updateDiscountAndTotal(subtotal);
         } catch (NumberFormatException e) {
             e.printStackTrace();
             Toast.makeText(this, "Number format error", Toast.LENGTH_SHORT).show();
@@ -189,12 +224,12 @@ public class Cart extends AppCompatActivity {
 
     private void addEvents() {
         selectCoupon.setOnClickListener(view -> {
-            CouponDialog couponDialog = new CouponDialog(this, coupon -> {
-                couponCode.setText(coupon.getCode());
-                checkCoupon(coupon.getCode());
-            });
-            couponDialog.show();
+        CouponDialog couponDialog = new CouponDialog(this, mylist, coupon -> {
+            couponCode.setText(coupon.getCode());
+            checkCoupon(coupon.getCode());
         });
+        couponDialog.show();
+    });
 
         applyCouponButton.setOnClickListener(view -> {
             String enteredCouponCode = couponCode.getText().toString();
