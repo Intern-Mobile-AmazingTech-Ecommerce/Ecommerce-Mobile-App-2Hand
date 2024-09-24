@@ -159,8 +159,9 @@ public class Cart extends AppCompatActivity {
 
             //ORDER, áp dụng giảm giá cho toàn bộ đơn hàng
             if (coupon.getType().equals("ORDER")) {
-                discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-                BigDecimal totalAmount = discountAmount.add(shippingCost);
+
+                BigDecimal totalAmount = subtotal.add(shippingCost);
+                discountAmount = totalAmount.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
                 Log.d(TAG, "Order Discount Amount: " + discountAmount);
                 updateDiscountAndTotal(totalAmount);
                 Toast.makeText(this, "Coupon applied: " + coupon.getDiscountValue() + "% off on the entire order", Toast.LENGTH_LONG).show();
@@ -205,8 +206,8 @@ public class Cart extends AppCompatActivity {
             else if (coupon.getType().equals("MINORDER")) {
                 BigDecimal minOrderAmount = new BigDecimal("1000");
                 if (subtotal.compareTo(minOrderAmount) >= 0) {
-                    discountAmount = subtotal.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
-                    BigDecimal totalAmount = discountAmount.add(shippingCost);
+                    BigDecimal totalAmount = subtotal.add(shippingCost);
+                    discountAmount = totalAmount.multiply(coupon.getDiscountValue()).divide(new BigDecimal("100"));
                     Log.d(TAG, "MinOrder Discount Amount: " + discountAmount);
                     updateDiscountAndTotal(totalAmount);
                     Toast.makeText(this, "Coupon applied: " + coupon.getDiscountValue() + "% off on orders over " + minOrderAmount, Toast.LENGTH_LONG).show();
