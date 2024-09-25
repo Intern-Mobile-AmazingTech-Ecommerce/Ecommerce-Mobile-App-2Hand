@@ -166,10 +166,21 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
             subtotal = subtotal.add(price);
         }
         total = subtotal.add(tax).add(shippingCost).subtract(discountAmount); // Apply discount here
-        txtSubtotal.setText("$" + subtotal);
-        txtTax.setText("$" + tax);
-        txtShippingCost.setText("$" + shippingCost);
-        txtTotal.setText("$" + total);
+        if(txtSubtotal!=null)
+            txtSubtotal.setText("$" + subtotal);
+
+       if(txtTax!=null)
+       {
+           txtTax.setText("$" + tax);
+       }
+       if(txtShippingCost!=null)
+       {
+           txtShippingCost.setText("$" + shippingCost);
+       }
+       if(txtTotal!=null)
+       {
+           txtTotal.setText("$" + total);
+       }
     }
 
     private void showMessage(boolean result) {
