@@ -1,12 +1,15 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -30,6 +33,9 @@ public class UpdateAdressActivity extends AppCompatActivity {
     ImageView imgBack;
     int addressId;
     AlertDialog.Builder builder;
+    Dialog dialog;
+    Button buttonDialogCancel, buttonDialogConfirm;
+    TextView textViewTitle, textViewContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +65,15 @@ public class UpdateAdressActivity extends AppCompatActivity {
         buttonSave = findViewById(R.id.btnSaveAddress);
         buttonDelete = findViewById(R.id.btnDeleteAddress);
         imgBack = findViewById(R.id.imgBack);
-        builder = new AlertDialog.Builder(this);
+        dialog = new Dialog(UpdateAdressActivity.this);
+        dialog.setContentView(R.layout.custom_dialog_box);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.shapedialog));
+        dialog.setCancelable(false);
+        buttonDialogConfirm = dialog.findViewById(R.id.btnDialogConfirm);
+        buttonDialogCancel = dialog.findViewById(R.id.btnDialogCancel);
+        textViewContent = dialog.findViewById(R.id.txtContent);
+        textViewTitle = dialog.findViewById(R.id.txtTitle);
         loadData();
     }
     void loadData() {
@@ -104,24 +118,24 @@ public class UpdateAdressActivity extends AppCompatActivity {
         });
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
-               builder.setTitle("Warning!!!")
-                       .setMessage("Bạn có muốn xoá địa chỉ này ?")
-                       .setCancelable(true)
-                       .setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialogInterface, int i) {
-                               deleteAddress();
-                               finish();
-                           }
-                       })
-                       .setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialogInterface, int i) {
-                               dialogInterface.cancel();
-                           }
-                       }).show();
+            public void onClick(View view) {
+                textViewTitle.setText("Warning !!!");
+                textViewContent.setText("Do you want delete this address ?");
+                dialog.show();
+            }
+        });
+        buttonDialogCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        buttonDialogConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAddress();
+                dialog.dismiss();
+                finish();
             }
         });
     }

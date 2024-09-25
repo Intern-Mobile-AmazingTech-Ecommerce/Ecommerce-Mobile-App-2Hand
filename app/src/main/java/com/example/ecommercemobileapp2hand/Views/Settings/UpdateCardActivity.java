@@ -1,5 +1,6 @@
 package com.example.ecommercemobileapp2hand.Views.Settings;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,9 +9,11 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -36,6 +39,9 @@ public class UpdateCardActivity extends AppCompatActivity {
     int cardId;
     AlertDialog.Builder builder;
     boolean isValid ;
+    Dialog dialog;
+    Button buttonDialogCancel, buttonDialogConfirm;
+    TextView textViewTitle, textViewContent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +71,16 @@ public class UpdateCardActivity extends AppCompatActivity {
         imgBack = findViewById(R.id.imgBack);
         buttonDelete = findViewById(R.id.btnDeleteCard);
         builder = new AlertDialog.Builder(this);
+
+        dialog = new Dialog(UpdateCardActivity.this);
+        dialog.setContentView(R.layout.custom_dialog_box);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.shapedialog));
+        dialog.setCancelable(false);
+        buttonDialogConfirm = dialog.findViewById(R.id.btnDialogConfirm);
+        buttonDialogCancel = dialog.findViewById(R.id.btnDialogCancel);
+        textViewContent = dialog.findViewById(R.id.txtContent);
+        textViewTitle = dialog.findViewById(R.id.txtTitle);
         loadData();
     }
     void loadData()
@@ -107,24 +123,25 @@ public class UpdateCardActivity extends AppCompatActivity {
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                builder.setTitle("Warning!!!")
-                        .setMessage("Do you want to delete this card?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                deleteCard();
-                                finish();
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.cancel();
-                            }
-                        }).show();
+                textViewTitle.setText("Warning !!!");
+                textViewContent.setText("Do you want delete this card ?");
+                dialog.show();
             }
         });
-
+        buttonDialogCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        buttonDialogConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteCard();
+                dialog.dismiss();
+                finish();
+            }
+        });
     }
     void deleteCard()
     {
@@ -139,8 +156,7 @@ public class UpdateCardActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Cập nhật Card thất bại. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
                         }
                     }
-                }
-                );
+                });
     }
     void updateCard() {
         if (validateInput()) {
