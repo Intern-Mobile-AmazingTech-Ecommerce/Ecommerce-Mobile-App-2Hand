@@ -62,6 +62,7 @@ import com.example.ecommercemobileapp2hand.Views.Adapters.RecycleSizeAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.RecylerColorAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.SortByAdapter;
 import com.example.ecommercemobileapp2hand.Views.Adapters.WishListAdapter;
+import com.example.ecommercemobileapp2hand.Views.Cart.Cart;
 import com.example.ecommercemobileapp2hand.Views.Homepage.HomeFragment;
 import com.example.ecommercemobileapp2hand.Views.MainActivity;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -104,6 +105,7 @@ public class ProductPage extends AppCompatActivity {
     private BigDecimal totalPrice;
     private BigDecimal productPrice;
     private RelativeLayout btnAddToBag, btnOutOfStock;
+    private ArrayList<Bag> bag=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -334,6 +336,7 @@ public class ProductPage extends AppCompatActivity {
                             if (result) {
                                 runOnUiThread(() -> {
                                     Toast.makeText(ProductPage.this, "Added to bag successfully.", Toast.LENGTH_SHORT).show();
+                                    showSubCart();
                                 });
                             } else {
                                 runOnUiThread(() -> {
@@ -390,6 +393,37 @@ public class ProductPage extends AppCompatActivity {
         recycleReviews.setLayoutManager(layoutManager);
         recycleReviews.getLayoutManager().setItemPrefetchEnabled(true);
         recycleReviews.setAdapter(reviewAdapter);
+    }
+    private void showSubCart()
+    {
+        userAccount = UserAccountManager.getInstance().getCurrentUserAccount();
+        if (userAccount != null) {
+
+            bag = BagHandler.getData(userAccount.getUserId());
+        }
+        BigDecimal productTotal = BigDecimal.ZERO;
+        for (Bag item : bag) {
+            productTotal = productTotal.add(item.getSalePrice().compareTo(BigDecimal.ZERO) != 0 ? item.getSalePrice().multiply(BigDecimal.valueOf(item.getAmount())) : item.getBasePrice().multiply(BigDecimal.valueOf(item.getAmount())));
+
+        }
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.sub_cart_overlay, null);
+        bottomSheetDialog.setContentView(dialogView);
+        ImageButton btnClose = dialogView.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
+        TextView tvTotal=dialogView.findViewById(R.id.tvTotal);
+        tvTotal.setText("$" +productTotal.toString());
+        Button btnCheckOut=dialogView.findViewById(R.id.btnCheckout);
+        btnCheckOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cartIntent = new Intent(ProductPage.this, Cart.class);
+                startActivity(cartIntent);
+            }
+        });
+        bottomSheetDialog.show();
+
     }
 
     private void showColorOverlay(String type) {
