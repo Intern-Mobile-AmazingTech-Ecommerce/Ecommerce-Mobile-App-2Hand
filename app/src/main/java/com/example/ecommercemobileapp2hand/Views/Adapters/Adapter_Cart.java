@@ -197,6 +197,7 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
         if (myList.isEmpty()){
             Intent intent = new Intent(context, EmptyCart.class);
             context.startActivity(intent);
+            context.finish();
         }
     }
     public interface OnItemBagClickListener {

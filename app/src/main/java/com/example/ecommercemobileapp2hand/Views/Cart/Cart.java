@@ -1,8 +1,10 @@
 package com.example.ecommercemobileapp2hand.Views.Cart;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
@@ -57,12 +59,16 @@ public class Cart extends AppCompatActivity {
     TextView selectCoupon;
     TextView txtDiscount;
     UserAccount user;
-    UserAddress userAddress;
     BigDecimal discountAmount = BigDecimal.ZERO;
     Product product = new Product();
     private static final String TAG = "Cart";
     private String currentCouponCode;
-
+    private final BroadcastReceiver closeActivity = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,35 +79,25 @@ public class Cart extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        IntentFilter filter = new IntentFilter("CLOSE_ACTIVITY");
+        registerReceiver(closeActivity, filter, Context.RECEIVER_NOT_EXPORTED);
+
         user = UserAccountManager.getInstance().getCurrentUserAccount();
         loadUserBag();
-        back = findViewById(R.id.btnBack2);
-        back.setOnClickListener(view -> finish());
-
-        btncheckout = findViewById(R.id.btnCheckout);
-        btncheckout.setOnClickListener(view -> {
-            Intent myintent = new Intent(Cart.this, Checkout.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("listOrder", mylist);
-            myintent.putExtras(bundle);
-            myintent.putExtra("discount", String.valueOf(discountAmount));
-            startActivity(myintent);
-        });
-
-        removeAll = findViewById(R.id.removeAll);
-        removeAll.setOnClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Cart.this);
-            builder.setTitle("Question")
-                    .setMessage("Are you sure you want to delete all the product from cart ?")
-                    .setPositiveButton("OK", ((dialogInterface, i) -> {
-                        BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-                        loadUserBag();
-                    })).setNegativeButton("Cancel", (dialogInterface, i) -> {
-                    }).show();
-        });
-
         addConTrols();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         addEvents();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(closeActivity);
     }
 
     private void addConTrols() {
@@ -114,6 +110,9 @@ public class Cart extends AppCompatActivity {
         applyCouponButton = findViewById(R.id.applyCouponButton);
         selectCoupon = findViewById(R.id.select_coupon);
         txtDiscount = findViewById(R.id.txtDiscount);
+        back = findViewById(R.id.btnBack2);
+        btncheckout = findViewById(R.id.btnCheckout);
+        removeAll = findViewById(R.id.removeAll);
     }
 
     private void applyCoupon(Coupon coupon) {
@@ -175,8 +174,6 @@ public class Cart extends AppCompatActivity {
                         discountedProducts.add(product.getProduct_name());
                         productTotal = productTotal.add(item.getSalePrice().compareTo(BigDecimal.ZERO) != 0 ? item.getSalePrice().multiply(BigDecimal.valueOf(item.getAmount())) : item.getBasePrice().multiply(BigDecimal.valueOf(item.getAmount())));
                     }
-
-
                 }
                 if (discountedProducts.isEmpty()) {
                     Toast.makeText(this, "No products in the cart apply for the coupon", Toast.LENGTH_SHORT).show();
@@ -241,6 +238,30 @@ public class Cart extends AppCompatActivity {
 
 
     private void addEvents() {
+        back.setOnClickListener(view -> finish());
+
+        btncheckout.setOnClickListener(view -> {
+            Intent myintent = new Intent(Cart.this, Checkout.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("listOrder", mylist);
+            myintent.putExtras(bundle);
+            myintent.putExtra("discount", String.valueOf(discountAmount));
+            startActivity(myintent);
+        });
+
+        removeAll.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(Cart.this);
+            builder.setTitle("Question")
+                    .setMessage("Are you sure you want to delete all the product from cart ?")
+                    .setPositiveButton("OK", ((dialogInterface, i) -> {
+                        BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+                        Intent intent = new Intent(Cart.this, EmptyCart.class);
+                        startActivity(intent);
+                        finish();
+                    })).setNegativeButton("Cancel", (dialogInterface, i) -> {
+                    }).show();
+        });
+
         selectCoupon.setOnClickListener(view -> {
             CouponDialog couponDialog = new CouponDialog(this, mylist, coupon -> {
                 couponCode.setText(coupon.getCode());
@@ -287,13 +308,10 @@ public class Cart extends AppCompatActivity {
             }
         });
     }
-
-
     private void loadUserBag() {
         service.execute(() -> {
             user = UserAccountManager.getInstance().getCurrentUserAccount();
-            if (user != null) {
-                mylist = BagHandler.getData(user.getUserId());
+            mylist = BagHandler.getData(user.getUserId());
                 if (mylist != null && !mylist.isEmpty()) {
                     for (Bag item : mylist) {
                         ProductHandler.getDataByProductID(item.getProduct_id(), new ProductHandler.Callback<Product>() {
@@ -312,16 +330,12 @@ public class Cart extends AppCompatActivity {
                                 if (currentCouponCode != null && !currentCouponCode.isEmpty()) {
                                     checkCoupon(currentCouponCode);
                                 }
-
                             }
                         });
                         lv.setAdapter(myadapter);
                     });
-                } else {
-                    Intent intent = new Intent(Cart.this, EmptyCart.class);
-                    startActivity(intent);
                 }
-            }
         });
+
     }
 }

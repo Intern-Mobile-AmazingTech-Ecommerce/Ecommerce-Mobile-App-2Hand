@@ -155,6 +155,9 @@ public class Checkout extends AppCompatActivity {
                                 }
                                 Intent orderSuccess=new Intent(Checkout.this, OrderPlaceSuccessfullyActivity.class);
                                 startActivity(orderSuccess);
+                                Intent intent = new Intent("CLOSE_ACTIVITY");
+                                sendBroadcast(intent);
+                                finish();
                             }
                         });
                     }
