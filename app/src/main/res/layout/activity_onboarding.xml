@@ -52,6 +52,7 @@
             android:text="Men"
             android:textColor="@color/white"
             android:layout_marginRight="20dp"
+            style="@style/button_signin"
             />
 
         <Button
