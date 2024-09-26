@@ -179,13 +179,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 ArrayList<Bag> listBag = BagHandler.getData(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-                if (!listBag.isEmpty()) {
-                    Intent myintent = new Intent(MainActivity.this, Cart.class);
-                    startActivity(myintent);
-                } else {
-                    Intent myintent = new Intent(MainActivity.this, EmptyCart.class);
-                    startActivity(myintent);
-                }
+                runOnUiThread(() -> {
+                    if (!listBag.isEmpty()) {
+                        Intent myintent = new Intent(MainActivity.this, Cart.class);
+                        startActivity(myintent);
+                    } else {
+                        Intent myintent = new Intent(MainActivity.this, EmptyCart.class);
+                        startActivity(myintent);
+                    }
+                });
             }
         });
     }
@@ -198,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
             btnAvt.setVisibility(GONE);
             btnBag.setVisibility(GONE);
             tvFragmentName.setVisibility(View.GONE);
-
             LoadFragment(new SettingsFragment());
             bottomNavigationView.setSelectedItemId(R.id.itemSettings);
         } else if (intent != null && "OrdersFragment".equals(intent.getStringExtra("navigateTo"))) {

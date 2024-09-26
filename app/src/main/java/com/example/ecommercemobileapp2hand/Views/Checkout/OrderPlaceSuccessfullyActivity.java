@@ -48,7 +48,9 @@ public class OrderPlaceSuccessfullyActivity extends AppCompatActivity {
                 Intent intent=new Intent(OrderPlaceSuccessfullyActivity.this, TrackOrderAcitivity.class);
                 intent.putExtra("UserAccount", userAccount);
                 intent.putExtra("order", ord);
-                startActivityForResult(intent,2000);
+                intent.putExtra("activity","orderPlace");
+                startActivity(intent);
+                finish();
             }
         });
     }

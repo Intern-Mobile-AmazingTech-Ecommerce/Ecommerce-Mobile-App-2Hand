@@ -151,11 +151,12 @@ public class TrackOrderAcitivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (callingActivityName!=null){
-                    if (callingActivityName.equals("com.example.ecommercemobileapp2hand.Views.Checkout.OrderPlaceSuccessfullyActivity")){
+                    if (callingActivityName.equals("orderPlace")){
                         Intent intent = new Intent(TrackOrderAcitivity.this, MainActivity.class);
                         intent.putExtra("email",userAccount.getEmail());
                         intent.putExtra("user_id",userAccount.getUserId());
                         startActivity(intent);
+                        finish();
                     }
                 }
                 else{
@@ -177,9 +178,6 @@ public class TrackOrderAcitivity extends AppCompatActivity {
         Intent intent = getIntent();
         userAccount = (UserAccount) intent.getSerializableExtra("UserAccount");
         order = (UserOrder) intent.getSerializableExtra("order");
-        ComponentName callingActivity=getCallingActivity();
-        if (callingActivity!=null){
-            callingActivityName= callingActivity.getClassName();
-        }
+        callingActivityName=intent.getStringExtra("activity");
     }
 }

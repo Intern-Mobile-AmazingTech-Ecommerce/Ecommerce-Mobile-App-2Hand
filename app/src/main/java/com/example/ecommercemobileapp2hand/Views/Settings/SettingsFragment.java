@@ -227,10 +227,8 @@ public class SettingsFragment extends Fragment {
             getActivity().startActivity(intent);
 //          getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             getActivity().finish();
-
 //
 //
-
         });
     }
 }

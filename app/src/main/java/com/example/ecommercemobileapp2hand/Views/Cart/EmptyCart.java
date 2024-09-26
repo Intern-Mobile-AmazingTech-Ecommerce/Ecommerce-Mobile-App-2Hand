@@ -38,6 +38,7 @@ public class EmptyCart extends AppCompatActivity {
             public void onClick(View view) {
                 Intent myintent = new Intent(EmptyCart.this, MainActivity.class);
                 startActivity(myintent);
+                finish();
             }
         });
         // Nut quay ve
@@ -46,6 +47,7 @@ public class EmptyCart extends AppCompatActivity {
             public void onClick(View view) {
                 Intent myintent = new Intent(EmptyCart.this, MainActivity.class);
                 startActivity(myintent);
+                finish();
             }
         });
     }
