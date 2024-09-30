@@ -2,11 +2,13 @@ package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.example.ecommercemobileapp2hand.Controllers.BagHandler;
 import com.example.ecommercemobileapp2hand.Models.Bag;
@@ -100,6 +103,36 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
             showMessage(result);
         });
 
+        Dialog dialog;
+        Button buttonDialogCancel, buttonDialogConfirm;
+        TextView textViewTitle, textViewContent;
+        dialog = new Dialog(context);
+        dialog.setContentView(R.layout.custom_dialog_box);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.shapedialog));
+        dialog.setCancelable(false);
+        buttonDialogConfirm = dialog.findViewById(R.id.btnDialogConfirm);
+        buttonDialogCancel = dialog.findViewById(R.id.btnDialogCancel);
+        textViewContent = dialog.findViewById(R.id.txtContent);
+        textViewTitle = dialog.findViewById(R.id.txtTitle);
+        buttonDialogCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        buttonDialogConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myList.remove(position);
+                notifyDataSetChanged();
+                setFee();
+                int bagID=myCart.getBag_id();
+                BagHandler.deleteUserBagByBagID(bagID);
+                onItemBagClickListener.onItemBagClick(myList);
+                checkAdapter();
+            }
+        });
         ImageButton imageButtonMinus = convertView.findViewById(R.id.imageButtonMinus);
         imageButtonMinus.setOnClickListener(view -> {
             int quantity = Integer.parseInt(txt_Quantity.getText().toString());
@@ -107,20 +140,9 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
                 quantity -= 1;
                 if (quantity==0){
                     if (position>=0 &&position<myList.size()){
-                        int bagID=myCart.getBag_id();
-                        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-                        builder.setTitle("Question")
-                                        .setMessage("Are you sure you want to delete the product "+myCart.getProduct_name()+" from cart ?")
-                                                .setPositiveButton("OK",((dialogInterface, i) -> {
-                                                    myList.remove(position);
-                                                    notifyDataSetChanged();
-                                                    setFee();
-                                                    BagHandler.deleteUserBagByBagID(bagID);
-                                                    onItemBagClickListener.onItemBagClick(myList);
-                                                    checkAdapter();
-                                                })).setNegativeButton("Cancel",(dialogInterface, i) -> {}).show();
-
-
+                        textViewTitle.setText("Question");
+                        textViewContent.setText("Are you sure you want to delete the product "+myCart.getProduct_name()+" from cart ?");
+                        dialog.show();
                     }
                 }
                 else{

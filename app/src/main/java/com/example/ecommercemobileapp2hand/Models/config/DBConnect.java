@@ -13,7 +13,7 @@ public class DBConnect {
         ip = "10.0.2.2";
         database = "Ecommerce2Hand";
         username = "sa";
-        password = "123456";
+        password = "123";
         port = "1433";
         Connection conn = null;
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
