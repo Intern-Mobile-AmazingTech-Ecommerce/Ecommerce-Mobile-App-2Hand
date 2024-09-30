@@ -1,12 +1,15 @@
 package com.example.ecommercemobileapp2hand.Views.Cart;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +40,7 @@ import com.example.ecommercemobileapp2hand.R;
 import com.example.ecommercemobileapp2hand.Views.Adapters.Adapter_Cart;
 import com.example.ecommercemobileapp2hand.Views.Checkout.Checkout;
 import com.example.ecommercemobileapp2hand.Views.Coupon.CouponDialog;
+import com.example.ecommercemobileapp2hand.Views.Settings.UpdateAdressActivity;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -58,6 +62,9 @@ public class Cart extends AppCompatActivity {
     ImageButton applyCouponButton;
     TextView selectCoupon;
     TextView txtDiscount;
+    Dialog dialog;
+    Button buttonDialogCancel, buttonDialogConfirm;
+    TextView textViewTitle, textViewContent;
     UserAccount user;
     BigDecimal discountAmount = BigDecimal.ZERO;
     Product product = new Product();
@@ -113,6 +120,15 @@ public class Cart extends AppCompatActivity {
         back = findViewById(R.id.btnBack2);
         btncheckout = findViewById(R.id.btnCheckout);
         removeAll = findViewById(R.id.removeAll);
+        dialog = new Dialog(Cart.this);
+        dialog.setContentView(R.layout.custom_dialog_box);
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setBackgroundDrawable(getDrawable(R.drawable.shapedialog));
+        dialog.setCancelable(false);
+        buttonDialogConfirm = dialog.findViewById(R.id.btnDialogConfirm);
+        buttonDialogCancel = dialog.findViewById(R.id.btnDialogCancel);
+        textViewContent = dialog.findViewById(R.id.txtContent);
+        textViewTitle = dialog.findViewById(R.id.txtTitle);
     }
 
     private void applyCoupon(Coupon coupon) {
@@ -248,20 +264,30 @@ public class Cart extends AppCompatActivity {
             myintent.putExtra("discount", String.valueOf(discountAmount));
             startActivity(myintent);
         });
-
-        removeAll.setOnClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(Cart.this);
-            builder.setTitle("Question")
-                    .setMessage("Are you sure you want to delete all the product from cart ?")
-                    .setPositiveButton("OK", ((dialogInterface, i) -> {
-                        BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
-                        Intent intent = new Intent(Cart.this, EmptyCart.class);
-                        startActivity(intent);
-                        finish();
-                    })).setNegativeButton("Cancel", (dialogInterface, i) -> {
-                    }).show();
+        removeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                textViewTitle.setText("Warning !!!");
+                textViewContent.setText("Are you sure you want to delete all the product from cart ?");
+                dialog.show();
+            }
         });
-
+        buttonDialogCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        buttonDialogConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                BagHandler.deleteUserBag(UserAccountManager.getInstance().getCurrentUserAccount().getUserId());
+                dialog.dismiss();
+                Intent intent = new Intent(Cart.this, EmptyCart.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         selectCoupon.setOnClickListener(view -> {
             CouponDialog couponDialog = new CouponDialog(this, mylist, coupon -> {
                 couponCode.setText(coupon.getCode());
