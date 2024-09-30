@@ -1,11 +1,13 @@
 package com.example.ecommercemobileapp2hand.Views.Adapters;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.ecommercemobileapp2hand.Controllers.ProductHandler;
@@ -22,6 +25,7 @@ import com.example.ecommercemobileapp2hand.Models.ProductDetails;
 import com.example.ecommercemobileapp2hand.Models.UserAccount;
 import com.example.ecommercemobileapp2hand.Models.Wishlist;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Settings.UpdateAdressActivity;
 import com.example.ecommercemobileapp2hand.Views.Settings.WishlistActivity;
 import com.example.ecommercemobileapp2hand.Views.Settings.WishlistDetail;
 
@@ -128,27 +132,39 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
             holder.iconArrowRight.setVisibility(View.VISIBLE);
             holder.cbAdded.setVisibility(View.GONE);
         }
-
-        holder.wishListItem.setOnLongClickListener(v -> {
-            new AlertDialog.Builder(context)
-                    .setTitle("Delete Wishlist")
-                    .setMessage("Are you sure you want to delete this wishlist?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        WishlistHandler.clearWishlist(item.getWishlist_id(), new WishlistHandler.Callback<Boolean>() {
-                            @Override
-                            public void onResult(Boolean result) {
-                                if(result){
-                                    ((android.app.Activity) context).runOnUiThread(()->{
-                                        Toast.makeText(context, "Wishlist deleted", Toast.LENGTH_SHORT).show();
-                                    });
-                                }else {
-                                    ((android.app.Activity) context).runOnUiThread(()->{
-                                        Toast.makeText(context, "Failed to delete wishlist", Toast.LENGTH_SHORT).show();
-                                    });
-                                }
+        holder.buttonDialogCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.dialog.dismiss();
+            }
+        });
+        holder.wishListItem.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                holder.textViewTitle.setText("Warning !!!");
+                holder.textViewContent.setText("Do you want to delete this wishlist ?");
+                holder.dialog.show();
+                return true;
+            }
+        });
+        holder.buttonDialogConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WishlistHandler.clearWishlist(item.getWishlist_id(), new WishlistHandler.Callback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean result) {
+                        ((android.app.Activity) context).runOnUiThread(() -> {
+                            if (result) {
+                                Toast.makeText(context, "Wishlist deleted", Toast.LENGTH_SHORT).show();
+                                wishlistItems.remove(item);
+                                notifyDataSetChanged();
+                            } else {
+                                Toast.makeText(context, "Failed to delete wishlist", Toast.LENGTH_SHORT).show();
                             }
                         });
-                        WishlistHandler.removeWishlist(item.getWishlist_id(), new WishlistHandler.Callback<Boolean>() {
+                    }
+                });
+                WishlistHandler.removeWishlist(item.getWishlist_id(), new WishlistHandler.Callback<Boolean>() {
                             @Override
                             public void onResult(Boolean result) {
                                 if(result){
@@ -163,11 +179,8 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
                                 }
                             }
                         });
-                        Intent intent=new Intent(context, WishlistActivity.class);
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-            return true;
+                holder.dialog.dismiss();
+            }
         });
     }
 
@@ -192,6 +205,9 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
         ImageView iconArrowRight;
         ConstraintLayout wishListItem;
         CheckBox cbAdded;
+        Dialog dialog;
+        Button buttonDialogCancel, buttonDialogConfirm;
+        TextView textViewTitle, textViewContent;
         public WishlistViewHolder(View itemView) {
             super(itemView);
             cbAdded = itemView.findViewById(R.id.cbAdded);
@@ -200,6 +216,15 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
             iconHearth = itemView.findViewById(R.id.icon_hearth);
             iconArrowRight = itemView.findViewById(R.id.icon_arrow_right);
             wishListItem = itemView.findViewById(R.id.wishList_item);
+            dialog = new Dialog(itemView.getContext());
+            dialog.setContentView(R.layout.custom_dialog_box);
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.shapedialog));
+            dialog.setCancelable(false);
+            buttonDialogConfirm = dialog.findViewById(R.id.btnDialogConfirm);
+            buttonDialogCancel = dialog.findViewById(R.id.btnDialogCancel);
+            textViewContent = dialog.findViewById(R.id.txtContent);
+            textViewTitle = dialog.findViewById(R.id.txtTitle);
         }
     }
     public interface WishListItemClickedListener{
