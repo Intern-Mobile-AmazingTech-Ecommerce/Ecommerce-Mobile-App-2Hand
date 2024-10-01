@@ -153,15 +153,18 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
                 WishlistHandler.clearWishlist(item.getWishlist_id(), new WishlistHandler.Callback<Boolean>() {
                     @Override
                     public void onResult(Boolean result) {
-                        ((android.app.Activity) context).runOnUiThread(() -> {
-                            if (result) {
+                        if(result){
+                            ((android.app.Activity) context).runOnUiThread(()->{
                                 Toast.makeText(context, "Wishlist deleted", Toast.LENGTH_SHORT).show();
                                 wishlistItems.remove(item);
                                 notifyDataSetChanged();
-                            } else {
+                            });
+                        }else {
+                            ((android.app.Activity) context).runOnUiThread(()->{
                                 Toast.makeText(context, "Failed to delete wishlist", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                            });
+                        }
+
                     }
                 });
                 WishlistHandler.removeWishlist(item.getWishlist_id(), new WishlistHandler.Callback<Boolean>() {
@@ -169,6 +172,7 @@ public class WishListAdapter  extends RecyclerView.Adapter<WishListAdapter.Wishl
                             public void onResult(Boolean result) {
                                 if(result){
                                     ((android.app.Activity) context).runOnUiThread(()->{
+                                        Toast.makeText(context, "Wishlist deleted", Toast.LENGTH_SHORT).show();
                                         wishlistItems.remove(item);
                                         notifyDataSetChanged();
                                     });
