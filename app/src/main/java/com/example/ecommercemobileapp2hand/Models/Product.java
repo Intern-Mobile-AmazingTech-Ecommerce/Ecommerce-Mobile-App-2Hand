@@ -27,7 +27,6 @@ public class Product implements Parcelable {
     @JsonProperty ("product_details_array")
     private ArrayList<ProductDetails> productDetailsArrayList;
     private BigDecimal sold;
-
     public BigDecimal getSold() {
         return sold;
     }

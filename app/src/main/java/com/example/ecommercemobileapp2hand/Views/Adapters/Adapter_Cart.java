@@ -131,6 +131,7 @@ public class Adapter_Cart extends ArrayAdapter<Bag> {
                 BagHandler.deleteUserBagByBagID(bagID);
                 onItemBagClickListener.onItemBagClick(myList);
                 checkAdapter();
+                dialog.dismiss();
             }
         });
         ImageButton imageButtonMinus = convertView.findViewById(R.id.imageButtonMinus);
