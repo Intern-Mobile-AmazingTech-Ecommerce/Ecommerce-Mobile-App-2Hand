@@ -129,6 +129,45 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Sale Off"
+                    android:textSize="16dp"
+                    android:textStyle="normal"
+                    style="@style/TEXT"
+                    android:fontFamily="@font/gabarito"
+                    android:textFontWeight="700"
+                    />
+
+                <TextView
+                    android:id="@+id/tvSaleOffSeeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="See All"
+                    android:textSize="16dp"
+                    style="@style/TEXT"
+                    />
+            </RelativeLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewSaleOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="4dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
                     android:textSize="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

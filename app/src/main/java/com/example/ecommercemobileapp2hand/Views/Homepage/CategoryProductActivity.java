@@ -46,6 +46,7 @@ public class CategoryProductActivity extends AppCompatActivity {
     private ProductCardAdapter proAdapter;
     private ArrayList<Product> topSellingList;
     private ArrayList<Product> newInList;
+    private ArrayList<Product> saleOffList;
     private String gender;
     private SharedPreferences sharedPreferences;
 
@@ -99,6 +100,9 @@ public class CategoryProductActivity extends AppCompatActivity {
         } else if (intent.getParcelableArrayListExtra("NewInList") != null) {
             newInList = intent.getParcelableArrayListExtra("NewInList");
         }
+        else if (intent.getParcelableArrayListExtra("SaleOffList") != null) {
+            saleOffList = intent.getParcelableArrayListExtra("SaleOffList");
+        }
 //        latch.countDown();
     }
 
@@ -141,6 +145,13 @@ public class CategoryProductActivity extends AppCompatActivity {
             tvCategoryName.setText("New In (" + newInList.size() + ")");
             recyCategoryProduct.setAdapter(proAdapter);
         }
+        else if (saleOffList.size() > 0) {
+
+            proAdapter = new ProductCardAdapter(saleOffList, CategoryProductActivity.this);
+            tvCategoryName.setText("Sale Off (" + saleOffList.size() + ")");
+            recyCategoryProduct.setAdapter(proAdapter);
+        }
+
         recyCategoryProduct.setLayoutManager(new GridLayoutManager(this, 2));
         recyCategoryProduct.setItemAnimator(new DefaultItemAnimator());
 //        recyCategoryProduct.setAdapter(proAdapter);
