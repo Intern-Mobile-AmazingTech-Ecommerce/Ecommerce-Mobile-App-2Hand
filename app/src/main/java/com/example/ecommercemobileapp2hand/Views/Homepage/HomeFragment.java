@@ -76,6 +76,11 @@ public class HomeFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private MaterialButton btnSearch;
 
+    private RecyclerView recyclerViewSaleOff;
+    private ArrayList<com.example.ecommercemobileapp2hand.Models.Product> lstProSaleOff;
+    private ProductCardAdapter SaleOffAdapter;
+    private TextView tvSaleOffSeeAll;
+
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -156,6 +161,7 @@ public class HomeFragment extends Fragment {
                 ProductManager.getInstance().setLstPro(lstPro);
                 getActivity().runOnUiThread(()->{
                     loadTopSellingProductsData();
+                    loadSaleOffProductsData();
                     loadNewInProductsData();
                 });
             }
@@ -176,6 +182,8 @@ public class HomeFragment extends Fragment {
         tvNewInSeeAll = view.findViewById(R.id.tvNewInSeeAll);
         tvTopSellingSeeAll = view.findViewById(R.id.tvTopSellingSeeAll);
         btnSearch = view.findViewById(R.id.btnSearch);
+        tvSaleOffSeeAll=view.findViewById(R.id.tvSaleOffSeeAll);
+        recyclerViewSaleOff=view.findViewById(R.id.recyclerViewSaleOff);
     }
 
     private void loadCategoriesData() {
@@ -222,7 +230,7 @@ public class HomeFragment extends Fragment {
         });
 
     }
-    public void loadTopSellingProductsData() {
+   public void loadTopSellingProductsData() {
 
         if (lstPro != null && lstPro.size() > 0) {
             lstProTopSelling = lstPro.stream()
@@ -244,6 +252,33 @@ public class HomeFragment extends Fragment {
             recyclerViewTopSelling.setLayoutManager(layoutManager);
             recyclerViewTopSelling.getLayoutManager().setItemPrefetchEnabled(true);
             recyclerViewTopSelling.setAdapter(TopSellingAdapter);
+        }
+
+
+    }
+    public void loadSaleOffProductsData() {
+
+        if (lstPro != null && lstPro.size() > 0) {
+            lstProSaleOff = lstPro.stream()
+                    .filter(product -> product.getProductDetailsArrayList().stream()
+                            .anyMatch(details -> details.getSale_price().compareTo(BigDecimal.ZERO) > 0))
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            ArrayList<Product> subSaleOffList = lstProSaleOff.size() > 5 ? lstProSaleOff.subList(0, 5).stream().collect(Collectors.toCollection(ArrayList::new)) : lstProSaleOff;
+            SaleOffAdapter = new ProductCardAdapter(subSaleOffList, getActivity(), new ProductCardAdapter.FavoriteClickedListener() {
+                @Override
+                public void onDoneClicked() {
+                    ResetProduct();
+                }
+            });
+        } else {
+            lstProSaleOff = new ArrayList<>();
+        }
+        if (getActivity() != null) {
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            recyclerViewSaleOff.setLayoutManager(layoutManager);
+            recyclerViewSaleOff.getLayoutManager().setItemPrefetchEnabled(true);
+            recyclerViewSaleOff.setAdapter(SaleOffAdapter);
         }
 
 
@@ -286,6 +321,16 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getContext(), CategoryProductActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("TopSellingList", lstProTopSelling);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        tvSaleOffSeeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CategoryProductActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList("SaleOffList", lstProSaleOff);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
