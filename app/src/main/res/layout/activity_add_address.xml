@@ -50,23 +50,31 @@
         android:inputType="text"
         style="@style/address_param_box" />
 
-    <EditText
-        android:id="@+id/edtCity"
+<!--    <EditText-->
+<!--        android:id="@+id/edtCity"-->
+<!--        android:layout_below="@+id/edtStreetAddress"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="24dp"-->
+<!--        android:layout_marginBottom="12dp"-->
+<!--        android:hint="City"-->
+<!--        android:inputType="text"-->
+<!--        style="@style/address_param_box" />-->
+    <Spinner
+        android:id="@+id/provinceSpinner"
         android:layout_below="@+id/edtStreetAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
-        android:hint="City"
-        android:inputType="text"
-        style="@style/address_param_box" />
-
+        style="@style/address_param_box"
+        />
     <EditText
         android:id="@+id/edtPhone"
         style="@style/address_param_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/edtCity"
+        android:layout_below="@+id/provinceSpinner"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
         android:hint="Phone"
@@ -80,16 +88,23 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
         android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/districtsSpinner"
 
-        <EditText
-            android:id="@+id/edtState"
-            style="@style/address_param_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
-            android:hint="State"
-            android:inputType="text" />
+            style="@style/address_param_box"/>
+<!--        <EditText-->
+<!--            android:id="@+id/edtState"-->
+<!--            style="@style/address_param_box"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginRight="20dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:hint="State"-->
+<!--            android:inputType="text" />-->
 
         <EditText
             android:id="@+id/edtZipCode"
@@ -99,7 +114,10 @@
             android:layout_weight="1"
             android:hint="Zip Code"
             android:inputType="number" />
+
     </LinearLayout>
+
+
 
     <Button
         android:id="@+id/btnSaveAddress"
