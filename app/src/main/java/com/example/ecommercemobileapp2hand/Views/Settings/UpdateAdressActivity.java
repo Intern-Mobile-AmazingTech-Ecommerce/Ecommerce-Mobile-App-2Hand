@@ -111,6 +111,8 @@ public class UpdateAdressActivity extends AppCompatActivity {
         String phone = intent.getStringExtra("phone");
 //        String state = intent.getStringExtra("state");
         String zip = intent.getStringExtra("zip");
+        String savedProvince = intent.getStringExtra("city");
+        String savedDistrict = intent.getStringExtra("state");
         if (street != null) {
             editTextStreet.setText(street);
         }
@@ -126,6 +128,9 @@ public class UpdateAdressActivity extends AppCompatActivity {
         if (zip != null) {
             editTextZipCode.setText(zip);
         }
+        // Lưu thông tin tỉnh và quận đã lưu
+        city = savedProvince;
+        selectedDistrict = savedDistrict;
     }
     private void setupRetrofit() {
         addressApi = new Retrofit.Builder()
@@ -144,6 +149,15 @@ public class UpdateAdressActivity extends AppCompatActivity {
                     // Populate spinner with provinces (consider using an ArrayAdapter)
                     ProvinceAdapter adapter = new ProvinceAdapter(UpdateAdressActivity.this, provinces);
                     provinceSpinner.setAdapter(adapter);
+                    // Chọn đúng tỉnh đã lưu
+                    if (city != null) {
+                        for (int i = 0; i < provinces.size(); i++) {
+                            if (provinces.get(i).getName().equals(city)) {
+                                provinceSpinner.setSelection(i);
+                                break;
+                            }
+                        }
+                    }
                 } else {
                     Toast.makeText(UpdateAdressActivity.this, "Failed to load provinces", Toast.LENGTH_SHORT).show();
                 }
@@ -160,40 +174,39 @@ public class UpdateAdressActivity extends AppCompatActivity {
         provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Lấy tỉnh đã chọn
                 Province selectedProvince = provinces.get(position);
                 List<District> districts = selectedProvince.getDistricts();
-
-                // Cập nhật spinner quận/huyện
                 List<String> districtNames = new ArrayList<>();
+
                 for (District district : districts) {
                     districtNames.add(district.getName());
                 }
 
-                // Lưu tên tỉnh vào biến city
                 city = selectedProvince.getName();
 
-                // Sử dụng ArrayAdapter cho quận/huyện
                 ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(UpdateAdressActivity.this,
                         android.R.layout.simple_spinner_item, districtNames);
                 districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 districtsSpinner.setAdapter(districtAdapter);
 
-                // Cập nhật selectedDistrict khi quận/huyện được chọn
-                districtsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        selectedDistrict = districtNames.get(position); // Lưu tên quận/huyện đã chọn
+                // Chọn đúng quận/huyện đã lưu
+                if (selectedDistrict != null) {
+                    for (int i = 0; i < districtNames.size(); i++) {
+                        if (districtNames.get(i).equals(selectedDistrict)) {
+                            districtsSpinner.setSelection(i);
+                            break;
+                        }
                     }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {}
-                });
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
+
+
+
+
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
