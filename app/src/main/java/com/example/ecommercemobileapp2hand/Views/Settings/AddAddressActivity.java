@@ -12,10 +12,13 @@ import android.view.KeyEvent;
 import android.util.Log;
 
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -24,28 +27,52 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.ecommercemobileapp2hand.API.AddressApi;
+
+
 import com.example.ecommercemobileapp2hand.Controllers.UserAddressHandler;
+import com.example.ecommercemobileapp2hand.Models.District;
+import com.example.ecommercemobileapp2hand.Models.Province;
 import com.example.ecommercemobileapp2hand.Models.Singleton.UserAccountManager;
 import com.example.ecommercemobileapp2hand.Models.UserAddress;
 import com.example.ecommercemobileapp2hand.Models.config.DBConnect;
 import com.example.ecommercemobileapp2hand.R;
+import com.example.ecommercemobileapp2hand.Views.Adapters.DistrictAdapter;
+import com.example.ecommercemobileapp2hand.Views.Adapters.ProvinceAdapter;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AddAddressActivity extends AppCompatActivity {
     private ExecutorService service;
     private ImageView imgBack;
     private EditText edtStreetAddress, edtCity, edtState, edtZipCode, edtPhoneNumber;
     private Button btnSaveAddress;
+    private Spinner provinceSpinner,districtsSpinner;
+
+    private AddressApi addressApi;
+    private int provinceCode;
+    private List<Province> provinces;
+    private String city;
+    private String selectedDistrict;
+
     Connection connection;
 
-
+    //https://provinces.open-api.vn/api/?depth=2
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +96,8 @@ public class AddAddressActivity extends AppCompatActivity {
         addEvents();
         validateInput();
         addAddress();
+        setupRetrofit();
+        loadProvinces();
     }
 
     @Override
@@ -86,27 +115,76 @@ public class AddAddressActivity extends AppCompatActivity {
             }
         }
     }
-
+    //
     private void addControls() {
         imgBack = findViewById(R.id.imgBack);
         edtStreetAddress = findViewById(R.id.edtStreetAddress);
-        edtCity = findViewById(R.id.edtCity);
-        edtState = findViewById(R.id.edtState);
+//        edtCity = findViewById(R.id.edtCity);
+//        edtState = findViewById(R.id.edtState); // api
         edtZipCode = findViewById(R.id.edtZipCode);
         btnSaveAddress = findViewById(R.id.btnSaveAddress);
         edtPhoneNumber = findViewById(R.id.edtPhone);
+        provinceSpinner = findViewById(R.id.provinceSpinner);
+        districtsSpinner = findViewById(R.id.districtsSpinner);
+    }
+    private void setupRetrofit() {
+        addressApi = new Retrofit.Builder()
+                .baseUrl("https://provinces.open-api.vn/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(AddressApi.class);
     }
 
+    private void loadProvinces() {
+        addressApi.getAllProvinces().enqueue(new Callback<List<Province>>() {
+            @Override
+            public void onResponse(Call<List<Province>> call, Response<List<Province>> response) {
+                if (response.isSuccessful()) {
+                    provinces = response.body();
+                    // Create a list for the province spinner
+                    List<String> provinceNames = new ArrayList<>();
+                    provinceNames.add("Select Province"); // Add default prompt
+                    for (Province province : provinces) {
+                        provinceNames.add(province.getName());
+                    }
+                    // Populate spinner with provinces
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(AddAddressActivity.this,
+                            android.R.layout.simple_spinner_item, provinceNames);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    provinceSpinner.setAdapter(adapter);
+                } else {
+                    Toast.makeText(AddAddressActivity.this, "Failed to load provinces", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Province>> call, Throwable t) {
+                Toast.makeText(AddAddressActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
     private void addAddress() {
+
         btnSaveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String streetAddress = edtStreetAddress.getText().toString();
-                String city = edtCity.getText().toString();
-                String state = edtState.getText().toString();
+//                String city = edtCity.getText().toString();
+//                String state = edtState.getText().toString();
                 String zipCode = edtZipCode.getText().toString();
                 String phone = edtPhoneNumber.getText().toString();
-                UserAddressHandler.insertAddress(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), streetAddress, city, state, zipCode, phone, new UserAddressHandler.Callback<Boolean>() {
+                // Kiểm tra xem giá trị của spinner có phải là giá trị mặc định không
+                if (provinceSpinner.getSelectedItemPosition() == 0 ) {
+                    Toast.makeText(AddAddressActivity.this, "Please select valid Province ", Toast.LENGTH_SHORT).show();
+                    return; // Không cho phép lưu
+                }
+                if ( districtsSpinner.getSelectedItemPosition() == 0) {
+                    Toast.makeText(AddAddressActivity.this, "Please select valid  District", Toast.LENGTH_SHORT).show();
+                    return; // Không cho phép lưu
+                }
+                UserAddressHandler.insertAddress(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), streetAddress, city, selectedDistrict, zipCode, phone, new UserAddressHandler.Callback<Boolean>() {
                     @Override
                     public void onResult(Boolean result) {
                         if (result) {
@@ -128,24 +206,68 @@ public class AddAddressActivity extends AppCompatActivity {
 
 
     private void addEvents() {
+        // Set default state for the districts spinner
+        List<String> defaultDistricts = new ArrayList<>();
+        defaultDistricts.add("Select District"); // Default prompt
+        ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(AddAddressActivity.this,
+                android.R.layout.simple_spinner_item, defaultDistricts);
+        districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        districtsSpinner.setAdapter(districtAdapter);
+
+
+
+        provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+
+                    return;
+                }
+                Province selectedProvince = provinces.get(position - 1); // Adjusted to match list
+                List<District> districts = selectedProvince.getDistricts();
+
+                // Update districts spinner
+                List<String> districtNames = new ArrayList<>();
+                districtNames.add("Select District"); // Add default prompt
+                for (District district : districts) {
+                    districtNames.add(district.getName());
+                }
+
+                // Save the province name
+                city = selectedProvince.getName();
+
+                // Use ArrayAdapter for districts
+                ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(AddAddressActivity.this,
+                        android.R.layout.simple_spinner_item, districtNames);
+                districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                districtsSpinner.setAdapter(districtAdapter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        // Similar logic for districtsSpinner's selection can be added here
+
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
         btnSaveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String streetAddress = edtStreetAddress.getText().toString();
-                String city = edtCity.getText().toString();
-                String state = edtState.getText().toString();
                 String zipCode = edtZipCode.getText().toString();
                 String phoneNumber = edtPhoneNumber.getText().toString();
-                if (!isEmpty(streetAddress, city, state, zipCode,phoneNumber)) {
+
+                if (!isEmpty(streetAddress, city, selectedDistrict, zipCode, phoneNumber)) {
                     Toast.makeText(AddAddressActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AddAddressActivity.this, "Fail", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(AddAddressActivity.this, "Fail", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -163,8 +285,8 @@ public class AddAddressActivity extends AppCompatActivity {
             }
         };
         edtStreetAddress.setFilters(new InputFilter[]{filter});
-        edtCity.setFilters(new InputFilter[]{filter});
-        edtState.setFilters(new InputFilter[]{filter});
+//        edtCity.setFilters(new InputFilter[]{filter});
+//        edtState.setFilters(new InputFilter[]{filter});
         edtStreetAddress.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -181,22 +303,22 @@ public class AddAddressActivity extends AppCompatActivity {
                 }
             }
         });
-        edtState.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (edtState.getText().toString().isEmpty()) {
-                    edtState.setError("State is required");
-                }
-            }
-        });
+//        edtState.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                if (edtState.getText().toString().isEmpty()) {
+//                    edtState.setError("State is required");
+//                }
+//            }
+//        });
         edtPhoneNumber.setFilters(new InputFilter[]{new InputFilter() {
             @Override
             public CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
@@ -232,22 +354,22 @@ public class AddAddressActivity extends AppCompatActivity {
                 }
             }
         });
-        edtCity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (edtCity.getText().toString().isEmpty()) {
-                    edtCity.setError("City is required");
-                }
-            }
-        });
+//        edtCity.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                if (edtCity.getText().toString().isEmpty()) {
+//                    edtCity.setError("City is required");
+//                }
+//            }
+//        });
         edtZipCode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
