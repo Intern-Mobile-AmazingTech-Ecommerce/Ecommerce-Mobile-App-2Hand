@@ -19,7 +19,8 @@ public class Province {
         this.phoneCode = phoneCode;
         this.districts = districts;
     }
-
+    public Province() {
+    }
     // Getters and Setters
     public String getName() {
         return name;

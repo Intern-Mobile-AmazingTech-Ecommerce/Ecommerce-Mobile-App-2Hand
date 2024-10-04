@@ -38,17 +38,16 @@
             android:textFontWeight="700"
             android:textSize="16dp" />
     </RelativeLayout>
-
-    <EditText
-        android:id="@+id/edtStreetAddress"
+    <Spinner
+        android:id="@+id/provinceSpinner"
         android:layout_below="@id/linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
-        android:hint="Street Address"
-        android:inputType="text"
-        style="@style/address_param_box" />
+        style="@style/address_param_box"
+        />
+
 
 <!--    <EditText-->
 <!--        android:id="@+id/edtCity"-->
@@ -60,68 +59,54 @@
 <!--        android:hint="City"-->
 <!--        android:inputType="text"-->
 <!--        style="@style/address_param_box" />-->
+
+
     <Spinner
-        android:id="@+id/provinceSpinner"
-        android:layout_below="@+id/edtStreetAddress"
+        android:id="@+id/districtsSpinner"
+        android:layout_below="@+id/provinceSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
-        style="@style/address_param_box"
-        />
+        style="@style/address_param_box"/>
+    <EditText
+        android:id="@+id/edtStreetAddress"
+        android:layout_below="@+id/districtsSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="12dp"
+        android:hint="Street Address"
+        android:inputType="text"
+        style="@style/address_param_box" />
     <EditText
         android:id="@+id/edtPhone"
         style="@style/address_param_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/provinceSpinner"
+        android:layout_below="@+id/edtStreetAddress"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
         android:hint="Phone"
         android:inputType="text" />
-
-    <LinearLayout
-        android:id="@+id/linearstatezip"
+    <EditText
+        android:id="@+id/edtZipCode"
+        style="@style/address_param_box"
+        android:layout_below="@+id/edtPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edtPhone"
         android:layout_marginHorizontal="24dp"
         android:layout_marginBottom="12dp"
-        android:orientation="horizontal">
-        <Spinner
-            android:id="@+id/districtsSpinner"
+        android:hint="Zip Code"
+        android:inputType="number" />
 
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_weight="1"
-            style="@style/address_param_box"/>
-<!--        <EditText-->
-<!--            android:id="@+id/edtState"-->
-<!--            style="@style/address_param_box"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginRight="20dp"-->
-<!--            android:layout_weight="1"-->
-<!--            android:hint="State"-->
-<!--            android:inputType="text" />-->
-
-        <EditText
-            android:id="@+id/edtZipCode"
-            style="@style/address_param_box"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Zip Code"
-            android:inputType="number" />
-
-    </LinearLayout>
 
 
 
     <Button
         android:id="@+id/btnSaveAddress"
         style="@style/btn_continue"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

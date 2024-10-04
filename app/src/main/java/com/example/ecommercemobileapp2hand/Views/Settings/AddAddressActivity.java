@@ -139,10 +139,18 @@ public class AddAddressActivity extends AppCompatActivity {
         addressApi.getAllProvinces().enqueue(new Callback<List<Province>>() {
             @Override
             public void onResponse(Call<List<Province>> call, Response<List<Province>> response) {
-                if (response.isSuccessful() ) {
+                if (response.isSuccessful()) {
                     provinces = response.body();
-                    // Populate spinner with provinces (consider using an ArrayAdapter)
-                    ProvinceAdapter adapter = new ProvinceAdapter(AddAddressActivity.this, provinces);
+                    // Create a list for the province spinner
+                    List<String> provinceNames = new ArrayList<>();
+                    provinceNames.add("Select Province"); // Add default prompt
+                    for (Province province : provinces) {
+                        provinceNames.add(province.getName());
+                    }
+                    // Populate spinner with provinces
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(AddAddressActivity.this,
+                            android.R.layout.simple_spinner_item, provinceNames);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     provinceSpinner.setAdapter(adapter);
                 } else {
                     Toast.makeText(AddAddressActivity.this, "Failed to load provinces", Toast.LENGTH_SHORT).show();
@@ -158,6 +166,7 @@ public class AddAddressActivity extends AppCompatActivity {
 
 
     private void addAddress() {
+
         btnSaveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -166,6 +175,15 @@ public class AddAddressActivity extends AppCompatActivity {
 //                String state = edtState.getText().toString();
                 String zipCode = edtZipCode.getText().toString();
                 String phone = edtPhoneNumber.getText().toString();
+                // Kiểm tra xem giá trị của spinner có phải là giá trị mặc định không
+                if (provinceSpinner.getSelectedItemPosition() == 0 ) {
+                    Toast.makeText(AddAddressActivity.this, "Please select valid Province ", Toast.LENGTH_SHORT).show();
+                    return; // Không cho phép lưu
+                }
+                if ( districtsSpinner.getSelectedItemPosition() == 0) {
+                    Toast.makeText(AddAddressActivity.this, "Please select valid  District", Toast.LENGTH_SHORT).show();
+                    return; // Không cho phép lưu
+                }
                 UserAddressHandler.insertAddress(UserAccountManager.getInstance().getCurrentUserAccount().getUserId(), streetAddress, city, selectedDistrict, zipCode, phone, new UserAddressHandler.Callback<Boolean>() {
                     @Override
                     public void onResult(Boolean result) {
@@ -188,45 +206,48 @@ public class AddAddressActivity extends AppCompatActivity {
 
 
     private void addEvents() {
+        // Set default state for the districts spinner
+        List<String> defaultDistricts = new ArrayList<>();
+        defaultDistricts.add("Select District"); // Default prompt
+        ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(AddAddressActivity.this,
+                android.R.layout.simple_spinner_item, defaultDistricts);
+        districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        districtsSpinner.setAdapter(districtAdapter);
+
+
+
         provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // Lấy tỉnh đã chọn
-                Province selectedProvince = provinces.get(position);
+                if (position == 0) {
+
+                    return;
+                }
+                Province selectedProvince = provinces.get(position - 1); // Adjusted to match list
                 List<District> districts = selectedProvince.getDistricts();
 
-                // Cập nhật spinner quận/huyện
+                // Update districts spinner
                 List<String> districtNames = new ArrayList<>();
+                districtNames.add("Select District"); // Add default prompt
                 for (District district : districts) {
                     districtNames.add(district.getName());
                 }
 
-                // Lưu tên tỉnh vào biến city
+                // Save the province name
                 city = selectedProvince.getName();
 
-                // Sử dụng ArrayAdapter cho quận/huyện
+                // Use ArrayAdapter for districts
                 ArrayAdapter<String> districtAdapter = new ArrayAdapter<>(AddAddressActivity.this,
                         android.R.layout.simple_spinner_item, districtNames);
                 districtAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 districtsSpinner.setAdapter(districtAdapter);
-
-                // Cập nhật selectedDistrict khi quận/huyện được chọn
-                districtsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        selectedDistrict = districtNames.get(position); // Lưu tên quận/huyện đã chọn
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {}
-                });
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-
+        // Similar logic for districtsSpinner's selection can be added here
 
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,18 +255,19 @@ public class AddAddressActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         btnSaveAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String streetAddress = edtStreetAddress.getText().toString();
-//                String city = edtCity.getText().toString();
-//                String state = edtState.getText().toString();
                 String zipCode = edtZipCode.getText().toString();
                 String phoneNumber = edtPhoneNumber.getText().toString();
-                if (!isEmpty(streetAddress, city, selectedDistrict, zipCode,phoneNumber)) {
+
+                if (!isEmpty(streetAddress, city, selectedDistrict, zipCode, phoneNumber)) {
                     Toast.makeText(AddAddressActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(AddAddressActivity.this, "Fail", Toast.LENGTH_SHORT).show();
                 }
-                Toast.makeText(AddAddressActivity.this, "Fail", Toast.LENGTH_SHORT).show();
             }
         });
     }
