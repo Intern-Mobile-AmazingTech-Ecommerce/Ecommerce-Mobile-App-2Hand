@@ -287,7 +287,7 @@ public class HomeFragment extends Fragment {
     public void loadNewInProductsData() {
         if (lstPro != null && lstPro.size() > 0) {
             LocalDateTime now = LocalDateTime.now();
-            LocalDateTime thirtyDaysAgo = now.minus(60, ChronoUnit.DAYS);
+            LocalDateTime thirtyDaysAgo = now.minus(120, ChronoUnit.DAYS);
             lstProNewIn = lstPro.stream()
                     .filter(product -> product.getCreated_at().isAfter(thirtyDaysAgo))
                     .collect(Collectors.toCollection(ArrayList::new));

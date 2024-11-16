@@ -120,11 +120,6 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (!isAlphabet(lastName)) {
-                    ((EditText) findViewById(R.id.lastname)).setError("Không hợp lệ");
-                    return;
-                }
-
                 if (!isValidName(lastName)) {
                     ((EditText) findViewById(R.id.lastname)).setError("Must have at least 2 characters");
                     return;
